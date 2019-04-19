@@ -1,0 +1,69 @@
+<div ng-show='modalVisible' class='trans-layer'></div>
+<div class='modal-container-addeditsupplier' ng-class='{modalactive: modalVisible}'>
+    <div class="wrapper">
+        <span>Id:</span><span>{{buyer.id}}</span>
+        <span title="Применить" class="glyphicon glyphicon-ok item-add" style="float: left;"
+              ng-show="buyer.name.length>0 && buyer.address.length > 0"
+              ng-click="appendData()"></span>
+        <span class="add-edit-buyer-warning" ng-show="warning.length">{{warning}}</span>
+        <span title="Закрыть" class="glyphicon glyphicon-remove item-blank" style="float: right;"
+              ng-click="closeModal()"></span>
+        <div>
+            <div>
+                <span>Наименование:</span>
+                <span class="warning-item-input" ng-hide="buyer.name.length > 0">Введите наименование</span>
+                <input type="text" class="form-control" ng-model="buyer.name" placeholder=""/>
+            </div>
+
+            <div>
+                <span>Адрес:</span>
+                <span class="warning-item-input" ng-hide="buyer.address.length > 0">Введите адрес</span>
+                <input type="text" class="form-control" ng-model="buyer.address" placeholder=""/>
+            </div>
+
+            <div style="display: flex;">
+                <span style="width: 20%;">Текущий долг:</span>
+                <span style="width: 20%;">Скидка %:</span>
+                <span style="width: 60%;">Расчетный счет:</span>
+            </div>
+            <div style="display: flex;">
+                <input style="width: 20%;" type="number" class="form-control" min="0" max="100"
+                        ng-model="buyer.debt"/>
+                <div style="width: 20%;">
+                    <input type="number" class="form-control" min="0" max="100"
+                           ng-model="buyer.discount"
+                    placeholder=""/>
+                </div>
+                <div style="width: 60%;">
+                    <input type="text" class="form-control" maxlength="28"
+                           ng-model="buyer.account"
+                           placeholder="Расчетный счет"/>
+                </div>
+            </div>
+
+        </div>
+        <div style="display: flex;">
+            <span style="width: 40%;">УНП:</span>
+            <span style="width: 60%;">Банк:</span>
+        </div>
+        <div style="display: flex;margin-bottom: 10px;">
+            <!--<span class="warning-item-input" ng-hide="buyer.unp.length == 9">-->
+                <!--Введите УНП (9 знаков)-->
+            <!--</span>-->
+            <input  style="width: 40%;" type="text" class="form-control" maxlength="9"
+                    ng-model="buyer.unp" placeholder="УНП"/>
+            <div style="width: 60%;">
+                <bank-input bank="buyer.bank"></bank-input>
+            </div>
+        </div>
+        <div style="display: flex;"
+             ng-show = "user.role == 'ROLE_ADMIN'">
+            <input style="zoom: 1.5; position: absolute; margin: auto;"
+                   type="checkbox"
+                   ng-model="buyer.sellByComingPrices"/>
+            <label style="margin-left: 20px; color: coral;">
+                Продажа по ценам поступления: {{(buyer.sellByComingPrices) ? "Да" : "Нет"}}
+            </label>
+        </div>
+    </div>
+</div>

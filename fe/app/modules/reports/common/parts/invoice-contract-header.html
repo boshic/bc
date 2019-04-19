@@ -1,0 +1,48 @@
+<div style="text-align: justify;">
+    <div class="contract-header">
+        <span style="font-weight: bold">{{"СЧЕТ-ДОГОВОР №" + data.id}}</span>
+        <span>{{" от "}}</span>
+        <span>{{data.date | date:'dd.MM.yyyy HH:mm' }}</span>
+    </div>
+    <div class="contract-row">
+        <span style="font-weight: bold; margin-left: 3%;">
+            {{data.stock.organization.name + " "}}
+        </span>
+        <span>
+            , именуемый в дальнейшем «Продавец», в лице
+        </span>
+        <span style="font-weight: bold;">
+            {{data.stock.organization.positionForContracts || '. . . . . . . . . . . .' + ' '}}
+        </span>
+        <span style="font-weight: bold;">
+            {{data.stock.organization.bossNameForContracts || '. . . . . . . . . . . .' + ' '}}
+        </span>
+        <span>
+            , с одной стороны, и
+        </span>
+        <span style="font-weight: bold;">
+            {{data.buyer.name + " "}}
+        </span>
+        <span>
+            , в лице
+            . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+            с другой стороны, именуемый(ая) в дальнейшем «Покупатель», действующий(ая) на основании
+            . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .,
+            заключили настоящий договор о нижеследующем:
+        </span>
+        <div>
+            <span style="font-weight: bold;">
+                1.Предмет договора.
+            </span>
+        </div>
+        <div>
+            <span>
+                Поставщик поставляет, а Покупатель оплачивает и принимает товар, согласно следующей спецификации,
+            </span>
+            <span style="font-weight: bold;">
+                являющейся протоколом согласования цены:
+            </span>
+        </div>
+    </div>
+
+</div>

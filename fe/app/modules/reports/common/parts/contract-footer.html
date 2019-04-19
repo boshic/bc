@@ -1,0 +1,94 @@
+<div>
+    <div  style="display: flex; margin-top: 1%;">
+        <div style="width: 50%;  padding-right: 1%;">
+            <div>
+                <span style="font-weight: bold;">
+                    Продавец:
+                </span>
+            </div>
+            <div>
+                <span>
+                    {{data.stock.organization.name}}
+                </span>
+            </div>
+            <div>
+                <span style="font-weight: bold;">
+                    Юридический адрес:
+                </span>
+            </div>
+            <div>
+                <span>
+                    {{data.stock.organization.address}}
+                </span>
+            </div>
+            <div>
+                <span>
+                    {{'Р/сч: ' + data.stock.organization.bankAccount + ' в '
+                        + data.stock.organization.bank.name + ' код '
+                        + data.stock.organization.bank.code + ', адрес: '
+                        + data.stock.organization.bank.address }}
+                </span>
+            <!--</div>-->
+            <!--<div>-->
+                <span>
+                    {{', УНП: ' + data.stock.organization.regNum}}
+                </span>
+            </div>
+        </div>
+        <div style="width: 50%;  padding-left: 1%;">
+            <div>
+                <span style="font-weight: bold;">
+                    Покупатель:
+                </span>
+            </div>
+            <div>
+                <span>
+                    {{data.buyer.name}}
+                </span>
+            </div>
+            <div>
+                <span style="font-weight: bold;">
+                    Юридический адрес:
+                </span>
+            </div>
+            <div>
+                <span>
+                    {{data.buyer.address}}
+                </span>
+            </div>
+            <div>
+                <span>
+                    {{'Р/сч: ' + data.buyer.account + ' в ' + data.buyer.bank.name + ' код '
+                        + data.buyer.bank.code + ', адрес: ' + data.buyer.bank.address}}
+                </span>
+            <!--</div>-->
+            <!--<div>-->
+                <span>
+                    {{', УНП: ' + data.buyer.unp}}
+                </span>
+            </div>
+        </div>
+    </div>
+    <div  style="display: flex; margin-top: 22px;">
+        <div style="width: 50%; display: flex;  padding-right: 1%;">
+            <div>
+                <span style="font-weight: bold;">Продавец:</span>
+            </div>
+            <div style="text-align: right;">
+                <span>{{" ________________ " + data.user.position + " " + data.user.fullName }}</span>
+            </div>
+            <img style="position: absolute; left: 95px; margin-top: -24px;"
+                 ng-if = "data.showStamp"
+                 ng-src="data:image/JPEG;base64,{{data.user.stamp}}"/>
+        </div>
+
+        <div style="width: 50%; display: flex;  padding-left: 1%;">
+            <div>
+                <span style="font-weight: bold;">Покупатель:</span>
+            </div>
+            <div>
+                <span> ________________ </span>
+            </div>
+        </div>
+    </div>
+</div>

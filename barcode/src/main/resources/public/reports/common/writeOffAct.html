@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<head>
+    <title>Счет-договор</title>
+</head>
+<body ng-controller="ctrlr">
+
+<!--<div ng-transclude></div>-->
+<div>
+    <text-edit-modal
+            after-close = 'modalClose()'
+            modal-data="modalData">
+    </text-edit-modal>
+</div>
+
+<div class="root-container">
+
+    <div style="font-weight: bold;">
+        {{reportData.stock.address}}
+    </div>
+
+    <div style="font-weight: bold; display: flex;">
+        <div style="width: 65%; font-weight: bold; margin-top: 40px; text-align: center;">
+            <div>{{"АКТ № " + reportData.id}}</div>
+            <div>
+                <span>на списание товаров от </span>
+                <span>{{reportData.date | date:'dd.MM.yyyy HH:mm' }}</span>
+                <span>{{ "за период " + reportData.comment }}</span>
+            </div>
+        </div>
+        <div style="width: 35%;">
+            <div>"УТВЕРЖДАЮ"</div>
+            <div>{{reportData.stock.organization.bossPosition}}</div>
+            <div style="margin-top: 15px; display: flex;">
+                <div>
+                    <div>_____________</div>
+                    <div style="line-height: 0.5; padding-left: 15px; font-weight: normal;">(подпись)</div>
+                </div>
+                <div style="line-height: 1;margin-left: 5px; font-weight: normal;">
+                    {{reportData.stock.organization.bossName}}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div style="margin-top: 10px;">
+        <div>
+            <span style="font-weight: bold;">Организация:</span>
+            <span>{{ reportData.stock.organization.name}}</span>
+        </div>
+        <div>
+            <span style="font-weight: bold;">Место хранения:</span>
+            <span>{{reportData.stock.name}}</span>
+        </div>
+    </div>
+
+    <div style="margin-top: 10px;">
+        <div>Мы, нижеподписавшиеся, подтверждаем, что нижеперечисленная номенклатура была использована</div>
+        <div style="border-bottom: 1px solid lightgray; width: 98%; margin-left: 1%; margin-top: 20px;"></div>
+        <div style="border-bottom: 1px solid lightgray; width: 98%; margin-left: 1%; margin-top: 20px;"></div>
+    </div>
+
+    <div style="margin-top: 10px;">
+        <table class="table table-bordered"
+               style="width: 98%; margin-left: 1%;">
+            <thead>
+                <tr style="font-weight: bold; text-align: center;">
+                    <td style="width: 5%;">№</td>
+                    <td>Номенклатура</td>
+                    <td style="width: 5%;">Ед. изм.</td>
+                    <td style="width: 7%;">Количество</td>
+                    <td style="width: 7%;">Цена</td>
+                    <td style="width: 8%;">Сумма</td>
+                    <td style="width: 25%;">
+                        <button class="glyphicon glyphicon-pencil edit-comment unprintable"
+                                ng-click="openCommentModal(undefined)">
+                        </button>
+                        <span>Причина списания</span>
+                    </td>
+                </tr>
+            </thead>
+            <tbody>
+                <tr ng-repeat="row in reportData.rows track by $index">
+                    <td style="text-align: center;">{{$index + 1}}</td>
+                    <td>{{row.item.name + '('+ row.item.ean + ')'}}</td>
+                    <td style="text-align: center;">{{row.item.unit}}</td>
+                    <td style="text-align: center;">{{row.quantity}}</td>
+                    <td style="text-align: center;">{{row.price}}</td>
+                    <td style="text-align: center;">{{(row.quantity*row.price).toFixed(2)}}</td>
+                    <td>
+                        <button class="glyphicon glyphicon-pencil edit-comment unprintable"
+                            ng-click="openCommentModal($index)">
+                        </button>
+                        <span>{{row.comment}}</span>
+                    </td>
+                </tr>
+            </tbody>
+            <tfoot>
+                <tr style="font-weight: bold;">
+                    <td colspan="3" style="text-align: right;">ИТОГО ПО АКТУ:</td>
+                    <td style="text-align: center;">{{reportData.totals.quantity}}</td>
+                    <td style="text-align: center;"></td>
+                    <td style="text-align: center;">{{(reportData.totals.sum).toFixed(2)}}</td>
+                    <td></td>
+                </tr>
+            </tfoot>
+        </table>
+    </div>
+
+    <div style="margin-top: 10px; font-weight: bold;">
+        <span>Всего по настоящему акту списана номенклатура на сумму:</span>
+        <span>{{(reportData.totals.sum).toFixed(2) | num2phrase}}</span>
+    </div>
+
+    <div style="margin-top: 10px; font-weight: normal;">
+        <div style="display: flex;">
+            <div style="width: 25%">Председатель комиссии</div>
+            <div style="width: 25%; text-align: center;">_____________________</div>
+            <div style="width: 20%; text-align: center;">_______________</div>
+            <div style="width: 30%; text-align: center;">_____________________</div>
+        </div>
+        <div style="display: flex; line-height: 0.6;">
+            <div style="width: 25%;"></div>
+            <div style="width: 25%; text-align: center;">(должность)</div>
+            <div style="width: 20%; text-align: center;">(подпись)</div>
+            <div style="width: 30%; text-align: center;">(расшифровка)</div>
+        </div>
+        <div style="display: flex; margin-top: 10px;">
+            <div style="width: 25%">Члены комиссии</div>
+            <div style="width: 25%; text-align: center;">_____________________</div>
+            <div style="width: 20%; text-align: center;">_______________</div>
+            <div style="width: 30%; text-align: center;">_____________________</div>
+        </div>
+        <div style="display: flex; line-height: 0.6;">
+            <div style="width: 25%;"></div>
+            <div style="width: 25%; text-align: center;">(должность)</div>
+            <div style="width: 20%; text-align: center;">(подпись)</div>
+            <div style="width: 30%; text-align: center;">(расшифровка)</div>
+        </div>
+        <div style="display: flex; margin-top: 10px;">
+            <div style="width: 25%"></div>
+            <div style="width: 25%; text-align: center;">_____________________</div>
+            <div style="width: 20%; text-align: center;">_______________</div>
+            <div style="width: 30%; text-align: center;">_____________________</div>
+        </div>
+        <div style="display: flex; line-height: 0.6;">
+            <div style="width: 25%;"></div>
+            <div style="width: 25%; text-align: center;">(должность)</div>
+            <div style="width: 20%; text-align: center;">(подпись)</div>
+            <div style="width: 30%; text-align: center;">(расшифровка)</div>
+        </div>
+        <div style="display: flex; margin-top: 10px;">
+            <div style="width: 25%"></div>
+            <div style="width: 25%; text-align: center;">_____________________</div>
+            <div style="width: 20%; text-align: center;">_______________</div>
+            <div style="width: 30%; text-align: center;">_____________________</div>
+        </div>
+        <div style="display: flex; line-height: 0.6;">
+            <div style="width: 25%;"></div>
+            <div style="width: 25%; text-align: center;">(должность)</div>
+            <div style="width: 20%; text-align: center;">(подпись)</div>
+            <div style="width: 30%; text-align: center;">(расшифровка)</div>
+        </div>
+
+    </div>
+
+</div>
+
+<script async="true" data-main="/scripts/modules/reports/common/writeOffAct.js"
+        src="/scripts/libs/require.min.js">
+</script>
+</body>
+</html>

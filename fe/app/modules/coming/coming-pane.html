@@ -1,0 +1,250 @@
+<div ng-transclude></div>
+<div ng-hide='!filter.calcTotal'
+     ng-if="user.shadeWhenQuyering"
+     class='trans-layer'>
+</div>
+
+<div class="menu-panel unprintable" ng-keyup="handleKeyup($event)">
+
+    <div class = "blank-search-row hoverable"
+         ng-click="blankSearch()">
+        <input class="searchinput" type="text"
+               id="coming-pane"
+               name="search" placeholder="Поиск приходов..."
+               ng-model="filter.ean"
+               ng-keydown="setEanPrefix($event)"
+        />
+    </div>
+
+    <button class='glyphicon glyphicon-arrow-down pane-searchinput-btn'
+            title="найти по фрагменту в наименовании"
+            ng-disabled = "filter.ean.length === 0"
+            ng-click="filter.searchString = filter.ean">
+    </button>
+
+    <div class="pane-right-menu">
+        <div class="coming-pane-right-menu-option" title="Напечатать">
+            <print-menu
+                    ng-show="rows.length > 0"
+                    report-id="undefined"
+                    report-list-visible="reportListVisible"
+                    reports = 'reports'>
+            </print-menu>
+        </div>
+        <div class="coming-pane-right-menu-option">
+            <span class="glyphicon glyphicon-refresh"
+                ng-click="refresh()">
+            </span>
+        </div>
+        <div class="coming-pane-right-menu-option">
+            <common-filter filter="filter"
+                           reset-filter="resetFilter()">
+            </common-filter>
+        </div>
+    </div>
+</div>
+<div class="items-table">
+        <div style="display: flex;">
+            <div style="width: 65%; text-align: center;">
+                <div ng-show="rows.length > 0">
+                    <totals totals="totals"></totals>
+                </div>
+            </div>
+            <div class="quick-filter-container" style="width: 35%;">
+                <quick-filter filter="filter"></quick-filter>
+            </div>
+        </div>
+
+    <table class="table table-bordered table-responsive">
+        <thead class="pane-thead" ng-show="rows.length">
+        <td style="width: 4%;">
+            <span class="sortable-thead-value" ng-click="filter.sortField='id'">Номер</span>
+            <span>
+                <sorting-row listening-field="'id'" field="filter.sortField"
+                             sort-direction="filter.sortDirection">
+                </sorting-row>
+            </span>
+        </td>
+        <td style="width: 20%;">
+            <span class="sortable-thead-value" ng-click="filter.sortField='doc.date'">Дата</span>
+            <span>
+                <sorting-row listening-field="'doc.date'" field="filter.sortField"
+                             sort-direction="filter.sortDirection">
+                </sorting-row>
+            </span>
+            <span class="sortable-thead-value" ng-click="filter.sortField='doc.name'">, документ,</span>
+            <span>
+                <sorting-row listening-field="'doc.name'" field="filter.sortField"
+                             sort-direction="filter.sortDirection">
+                </sorting-row>
+            </span>
+            <span class="sortable-thead-value" ng-click="filter.sortField='doc.supplier.name'">поставщик</span>
+            <span>
+                <sorting-row listening-field="'doc.supplier.name'" field="filter.sortField"
+                             sort-direction="filter.sortDirection">
+                </sorting-row>
+            </span>
+        </td>
+        <td>
+            <!--<span class="sortable-thead-value">Наименование (склад, секция)</span>-->
+            <span class="sortable-thead-value" ng-click="filter.sortField='item.name'">Наименование</span>
+            <span>
+                <sorting-row listening-field="'item.name'" field="filter.sortField"
+                             sort-direction="filter.sortDirection">
+                </sorting-row>
+            </span>
+            <span class="sortable-thead-value" ng-click="filter.sortField='stock.name'">(склад,</span>
+            <span>
+                <sorting-row listening-field="'stock.name'" field="filter.sortField"
+                             sort-direction="filter.sortDirection">
+                </sorting-row>
+            </span>
+            <span class="sortable-thead-value" ng-click="filter.sortField='item.section.name'">секция)</span>
+            <span>
+                <sorting-row listening-field="'item.section.name'" field="filter.sortField"
+                             sort-direction="filter.sortDirection">
+                </sorting-row>
+            </span>
+            <div class="page-picker-on-sold-pane">
+                <div>
+                    <page-picker page="filter.page" pages="pages"></page-picker>
+                </div>
+            </div>
+        </td>
+        <td style="width: 6%;">
+            <span class="sortable-thead-value" ng-click="filter.sortField='currentQuantity'">Факт (</span>
+            <span>
+                <sorting-row listening-field="'currentQuantity'" field="filter.sortField"
+                             sort-direction="filter.sortDirection">
+                </sorting-row>
+            </span>
+            <span class="sortable-thead-value" ng-click="filter.sortField='quantity'">пришло)</span>
+            <span>
+                <sorting-row listening-field="'quantity'" field="filter.sortField"
+                             sort-direction="filter.sortDirection">
+                </sorting-row>
+            </span>
+        </td>
+        <td style="width: 6%;">
+            <span class="sortable-thead-value" ng-click="filter.sortField='priceIn'">Цена</span>
+            <span>
+                <sorting-row listening-field="'priceIn'" field="filter.sortField"
+                             sort-direction="filter.sortDirection">
+                </sorting-row>
+            </span>
+        </td>
+        <td style="width: 6%;">Сумма</td>
+        <td class="unprintable" style="width: 11%;">Автор, комментарий</td>
+        </thead>
+        <tbody ng-show="rows.length">
+            <tr class="hoverable middle-rows"
+                ng-class='{deletedRow: (x.quantity == 0)}'
+                ng-repeat="x in rows track by $index">
+                <td class="price-data">{{ ($index + 1) + (filter.page - 1)*filter.rowsOnPage }}</td>
+                <td>
+                    <span title="Дата прихода"
+                          class="clickable-filter-value"
+                          ng-click = "filter.fromDate = x.doc.date">
+                        {{ x.doc.date | date:'dd.MM.yy' }}
+                    </span>
+                    <span title="Документ"
+                          class="clickable-filter-value"
+                        ng-click = "filter.document = x.doc">
+                        {{x.doc.name}}
+                    </span>
+                    <span class="price-out-on-coming-pane clickable-filter-value" title="Поставщик"
+                        ng-click = "filter.supplier = x.doc.supplier">
+                        {{x.doc.supplier.name}}
+                    </span>
+                </td>
+
+                <td>
+
+                    <div class="dropdown" style="position: absolute;">
+                        <span class="glyphicon glyphicon-filter unprintable"></span>
+                        <ul class="dropdown-menu hoverable comments-container item-title">
+                            <li class="clickable-filter-value"
+                                ng-click="filter.ean = x.item.ean">
+                                {{x.item.ean}}
+                            </li>
+                            <phrase-by-word-to-filter
+                                    filter="filter.searchString"
+                                    comment="x.item.name">
+                            </phrase-by-word-to-filter>
+                        </ul>
+                    </div>
+
+                    <span class="item-name-on-coming-item-pane"
+                          ng-click="openComingModal()">{{ x.item.name }}
+                    </span>
+
+                    <div style="text-align: right; margin-right: 12px;">
+                        <span class="clickable-filter-value item-additional-info-on-cp"
+                              style="margin-left: 3px;"
+                              ng-click = 'filter.stock = x.stock'>
+                                {{x.stock.name + '. '}}
+                        </span>
+                        <span class="clickable-filter-value item-additional-info-on-cp"
+                              ng-click = 'filter.section = x.item.section'>
+                                    {{x.item.section.name}}
+                        </span>
+                        <span style="position: absolute;">
+                            <div class="dropdown">
+                                <span class="glyphicon glyphicon-filter unprintable"></span>
+                                <ul class="dropdown-menu hoverable comments-container">
+                                    <phrase-by-word-to-filter
+                                            filter="filter.sectionPart"
+                                            comment="x.item.section.name">
+                                    </phrase-by-word-to-filter>
+                                </ul>
+                            </div>
+                        </span>
+                    </div>
+
+                </td>
+                <td class="price-data" title="Текущее количество"
+                    ng-class='{sold: !(x.quantity == x.currentQuantity)}'>
+                        {{ x.currentQuantity }}
+                    <span class="price-out-on-coming-pane" title="Количество по приходу">
+                        {{ '/ ' + x.quantity}}
+                    </span>
+                </td>
+                <td class="price-data" title="Цена учетная">{{ x.price}}
+                    <span class="price-out-on-coming-pane" title="Цена розничная">
+                        {{'/ ' + x.priceOut}}
+                    </span>
+                </td>
+                <td class="price-data" title="Сумма">{{ (x.price*x.currentQuantity).toFixed(2) }}</td>
+                <td class="unprintable">
+                        <div>
+                            <button class="glyphicon glyphicon-shopping-cart btn-on-pane
+                                    sell-icon-on-coming-pane"
+                                    ng-show="x.currentQuantity > 0"
+                                    ng-if="user.role == 'ROLE_ADMIN' || x.stock.id === user.stock.id"
+                                    ng-click="sellThis()"
+                                    title="Продать именно его!"></button>
+                            <button class="glyphicon glyphicon-send btn-on-pane
+                                    sell-icon-on-coming-pane"
+                                    title="Переместить именно его!"
+                                    ng-show="x.currentQuantity > 0"
+                                    ng-if="user.role == 'ROLE_ADMIN' || user.actsAllowed.indexOf('moving') > -1"
+                                    ng-click="moveThis()"></button>
+                            <span style="cursor: pointer; float: right">
+                                <div class="dropdown">
+                                    <span class="glyphicon glyphicon-th-list"></span>
+                                    <ul class="dropdown-menu hoverable comments-container left-side"
+                                        ng-show="x.comment.length > 0">
+                                        <phrase-by-word-to-filter filter="filter.comment" comment="x.comment"></phrase-by-word-to-filter>
+                                    </ul>
+                                </div>
+                            </span>
+                        </div>
+                        <span>{{" " + x.user.name + " "}}</span>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+<coming-modal modal-config="modalConfig"></coming-modal>
+<selling-modal modal-config="sellingModalConfig"></selling-modal>
+<moving-modal modal-config="movingModalConfig"></moving-modal>

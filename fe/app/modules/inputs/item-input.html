@@ -1,0 +1,78 @@
+<div class="dropdown">
+    <span class="warning-item-input" ng-show="warning">Не выбран товар!</span>
+    <textarea title="Товар" rows="2" class="form-control coming-item-name"
+              placeholder="Товар (введите >2 символов)"
+              id="item-input"
+              ng-keydown="setEanPrefix($event)"
+              ng-model="item.name"
+              ng-change="checkItem()"
+              ng-readonly="!canChange">
+    </textarea>
+    <span class="item-input-toolbox" style="top: 0px;">
+        <item-input-total total="items.length"></item-input-total>
+        <button class="glyphicon glyphicon-question-sign item-query"
+                title="остаток по складу"
+                ng-disabled="items.length>50 || items.length === 0"
+                ng-hide="stock === undefined">
+        </button>
+    </span>
+    <ul class="dropdown-menu hoverable item-dropdown">
+        <li>
+            <table class="table">
+                <thead>
+                <tr>
+                    <td>
+                        <a href="#" style="float: left;padding-left: 3%;" title="Добавить товар" ng-click="addEditItem(true)">
+                            <span class="glyphicon glyphicon-plus item-add"></span>
+                        </a>
+                    </td>
+                    <td></td>
+                    <td>
+                        <span style="float: right;" class="glyphicon glyphicon-remove item-blank"
+                              ng-click="blankSearchAndGetItemsBy()" title="Очистить поиск">
+                        </span>
+                    </td>
+                </tr>
+                </thead>
+                <tbody>
+                <tr class="hoverable" ng-repeat="x in items">
+                    <td class="hoverable" style="width: 55px;"
+                        ng-click="selectItem()" title="Код">{{ x.id }}</td>
+                    <td style="display: flex;">
+                        <div style="display: flex; width: 100%;">
+                            <div class="hoverable" style="width: 100%;">
+                                <span ng-click="selectItem()">{{ x.name }}</span>
+                            </div>
+                            <div style="width: 20px; font-size: 20px;">
+                                <span>
+                                    <div class="dropdown">
+                                        <span class="glyphicon glyphicon-info-sign"></span>
+                                        <ul class="dropdown-menu hoverable comments-container item-title left-side"
+                                            style="    left: -105px;">
+                                            <li class="clickable-filter-value">
+                                                {{x.ean + ', ' + x.section.name}}
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </span>
+                            </div>
+                        </div>
+                    </td>
+                    <td style="width: 100px;">
+                        <span class="glyphicon glyphicon-plus item-add"
+                              title="Добавить товар копированием" ng-click="addEditItem(true)">
+                        </span>
+                        <span class="glyphicon glyphicon-pencil item-edit"
+                              title="Редактировать строку" ng-click="addEditItem(false)">
+                        </span>
+                        <span class="glyphicon glyphicon-minus item-delete"
+                              title="Удалить строку" ng-click="deleteItem(false)">
+                        </span>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </li>
+    </ul>
+</div>
+<add-edit-item></add-edit-item>

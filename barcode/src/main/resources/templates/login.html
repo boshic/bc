@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+<head>
+    <title>Авторизация</title>
+    <style type="text/css">
+        input {
+            width: 200px;
+            margin-top: 5px;
+            color: coral;
+            padding: 14px;
+            font-size: 33px;
+            border-radius: 5px;
+            font-weight: bold;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div th:if="${param.error}">
+        Invalid username and password.
+    </div>
+    <div th:if="${param.logout}">
+        Совершен выход из системы!
+    </div>
+    <form th:action="@{/login}" method="post" style="margin-top: 10%">
+
+        <div style="text-align: center;">
+            <label>Пользователь</label>
+            <br/>
+            <input type="text" name="username"/>
+            <br/>
+            <label>Пароль</label>
+            <br/>
+            <input type="password" name="password"/>
+            <br/>
+            <input type="submit" value="Войти" style="margin-top: 5px"/>
+        </div>
+    </form>
+</body>
+</html>

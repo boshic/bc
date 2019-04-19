@@ -1,0 +1,28 @@
+<!--<div class="dropdown" style="display: inherit;">-->
+    <div>
+        <span class="page-control glyphicon glyphicon-fast-backward" ng-click="setFirstPage()"></span>
+        <span class="page-control glyphicon glyphicon-step-backward" ng-click="pageBack()"></span>
+
+        <div class="dropdown" style="display: inline-block;">
+            <button class="btn btn-default dropdown-toggle page-control page-control-page-picker"
+                    type="button" data-toggle="dropdown"
+                    ng-click="togglePagePicker()">{{page}}
+                        <span class="caret"></span>
+            </button>
+            <ul class="dropdown-menu page-picker-list-of-pages" ng-show="pagePickerVisible">
+                <li style="list-style: none;">
+                    <table class="table">
+                        <tbody>
+                        <tr class="hoverable" ng-repeat="x in pages">
+                            <td class="hoverable" ng-click="selectPage()">{{x}}</td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </li>
+            </ul>
+        </div>
+
+        <span class="page-control glyphicon glyphicon-step-forward" ng-click="pageForward()"></span>
+        <span class="page-control glyphicon glyphicon-fast-forward" ng-click="setLastPage()"></span>
+    </div>
+<!--</div>-->

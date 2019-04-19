@@ -1,0 +1,91 @@
+<div ng-transclude></div>
+<div class="menu-panel hoverable unprintable"
+     ng-keyup="handleKeyup($event)"
+     ng-show="(user.role == 'ROLE_ADMIN' || user.actsAllowed.indexOf('moving') > -1)">
+    <div class = "blank-search-row" ng-click="blankSearch()">
+        <input class="searchinput " type="text"
+               id="moving-pane"
+               ng-keyDown="setEanPrefix($event)"
+               ng-model="barcode"
+               name="search" placeholder="Введите штрих-код..."/>
+        <span style="margin-left: 5px;" class="selling-warning" ng-show="warning.length">{{warning}}</span>
+    </div>
+    <div class="one-control-on-pane" ng-show="!rows.length">
+        <div class="one-icon-on-control-pane">
+            <stock-picker allow-all="allowAllStocks" stock="stock"></stock-picker>
+        </div>
+    </div>
+</div>
+<div>
+    <quantity-changer-modal
+            check-input = 'checkRows()'
+            after-close = 'blankSearch()'
+            modal-data="quantityChangerModalData">
+    </quantity-changer-modal>
+</div>
+<div class="items-table table-responsive"
+     ng-show="rows.length"
+     ng-keyup="handleKeyup($event)">
+
+    <div style="height: 60px;" class="unprintable">
+        <div class="move-button-on-moving-pane">
+            <button class="glyphicon glyphicon-send sell-icon" title="Переместить"
+                    ng-click="moveThis()"
+                    ng-show="canRelease">
+            </button>
+        </div>
+        <div class="comment-input-on-moving-pane">
+            <comment-input ng-model="comment"></comment-input>
+        </div>
+        <div class="stock-input-on-moving-pane">
+            <stock-picker allow-all="allowAllStocks" stock="stockDest"></stock-picker>
+        </div>
+        <div class="total-sum total-sum-on-moving-pane">
+            <span style="margin-right: 10%;">{{(totals.quantity.toFixed(2)) + " ед."}}</span>
+            <span style="color: yellow;">{{(totals.sum).toFixed(2) + " руб."}}</span>
+        </div>
+    </div>
+
+    <table class="table table-bordered">
+            <thead class="pane-thead">
+                <td style="width: 60px;">Номер</td>
+                <td>Наименование</td>
+                <td style="width: 100px;" class="unprintable">Доступно, шт.</td>
+                <td style="width: 115px;">Перемещаем, шт.</td>
+                <td style="width: 100px;">Цена, руб., коп.</td>
+                <td style="width: 100px;">Сумма, руб., коп.</td>
+                <td class="unprintable">
+                    <a href="#" title="удалить ВСЕ товары" ng-click="deleteRows()">
+                        <span class="glyphicon glyphicon-remove item-blank"></span>
+                    </a>
+                </td>
+            </thead>
+        <tbody>
+            <tr class="hoverable" ng-repeat="x in rows track by $index">
+                <td class="hoverable" title="Номер">{{ $index + 1 }}</td>
+                <td class="hoverable" title="">{{ x.item.name + "(" + x.item.ean + ")"}}</td>
+                <td class="hoverable current-quantity unprintable" title="Текущее количество">{{ x.currentQuantity }}</td>
+                <td class="hoverable for-sale" title="К перемещению">
+                    <div>
+                        <button class='change-quantity-btn'
+                                ng-click='openQuantityChangerModal($index)'>
+                            <span unit-sensitive unit="x.item.unit" quantity="x.quantity"></span>
+                        </button>
+                    </div>
+                </td>
+                <td class="hoverable" title="Цена продажи">
+                    <input type="number" class="form-control selling-quantity" ng-model="x.price"
+                           ng-change="checkRows()"
+                            ng-class="{'warning-input': x.price==0||''}"
+                    />
+                </td>
+                <td class="hoverable" title="сумма">{{ (x.quantity*x.price).toFixed(2) }}</td>
+                <td class="unprintable">
+                    <a href="#" title="удалить строку" ng-click="deleteRows()">
+                        <span class="glyphicon glyphicon-remove item-blank"></span>
+                    </a>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>

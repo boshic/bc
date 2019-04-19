@@ -1,0 +1,138 @@
+<div ng-transclude></div>
+<div class="item-input-on-panes"
+        ng-show="item.name.length > 0">
+    <item-input item="item" stock="stock"></item-input>
+</div>
+<div>
+    <quantity-changer-modal
+            check-input = 'checkRows()'
+            after-close = 'blankSearch()'
+            modal-data="quantityChangerModalData">
+    </quantity-changer-modal>
+</div>
+<div class="menu-panel unprintable" ng-keyup="handleKeyup($event)">
+
+    <div class = "blank-search-row hoverable" ng-click="blankSearch()">
+        <input class="searchinput" name="search" placeholder="Введите штрих-код..." type="text"
+               id="selling-pane"
+               ng-model="barcode"
+               ng-keydown="setEanPrefix($event)"/>
+               <!--ng-change="getItemsForSell()"-->
+        <span style="margin-left: 5px;" class="selling-warning" ng-show="warning.length">{{warning}}</span>
+    </div>
+
+    <button class='glyphicon glyphicon-arrow-up pane-searchinput-btn'
+            title="искать по наименованию"
+            ng-disabled = "barcode.length === 0"
+            ng-click="item = {name: barcode}">
+    </button>
+
+    <div class="one-control-on-pane"
+         ng-show="!rows.length && (user.role == 'ROLE_ADMIN' || user.actsAllowed.indexOf('sellFromAllStocks')>-1)">
+        <div class="one-icon-on-control-pane">
+            <stock-picker allow-all="allowAllStocks" stock="stock"></stock-picker>
+        </div>
+    </div>
+</div>
+<div class="items-table"
+     ng-show="rows.length"
+     ng-keyup="handleKeyup($event)">
+
+    <div style="height: 65px; background: lightgray; padding-top: 3px;">
+        <div style="display: flex;">
+            <div style="width: 10%;">
+                <button class="glyphicon glyphicon-shopping-cart sell-icon"
+                        ng-click="sellThis()"
+                        ng-show="canRelease"
+                        title="Продать">
+                </button>
+            </div>
+            <div class="print-icon-on-selling-modal">
+                <print-menu
+                        report-list-visible="reportListVisible"
+                        report-id="undefined"
+                        reports = "reports">
+                </print-menu>
+
+            </div>
+            <div style="width: 20%;">
+                <comment-input ng-model="comment"></comment-input>
+            </div>
+            <div style="width: 3px;"></div>
+            <div style="width: 25%;">
+                <buyer-input buyer="buyer"></buyer-input>
+            </div>
+            <div style="width: 3px;"></div>
+            <div style="width: 40%;" class="total-sum-on-selling-modal">
+                <span style="margin-right: 10%;">{{(totals.quantity.toFixed(3)) + " ед."}}</span>
+                <span style="color: yellow;">{{(totals.sum).toFixed(2) + " руб."}}</span>
+            </div>
+        </div>
+    </div>
+
+    <table class="table table-bordered unprintable table-responsive">
+        <thead class="pane-thead">
+            <td style="width: 60px;">Номер</td>
+            <td>Наименование</td>
+            <td style="width: 70px;">Ед.изм.</td>
+            <td style="width: 70px;" class="unprintable">Ост.</td>
+            <td style="width: 83px;">НДС %</td>
+            <td style="width: 95px;">К продаже</td>
+            <td style="width: 120px;">Цена, руб., коп.</td>
+            <td style="width: 100px;">Сумма руб., коп.
+                <span style="font-weight: lighter;" title="Скидка" ng-if="buyer.discount > 0">
+                        {{ "применена скидка в размере " + buyer.discount + "%" }}
+                </span>
+            </td>
+            <td style="width: 60px;" class="unprintable">
+                <a href="#" title="удалить ВСЕ товары" ng-click="deleteRows()">
+                    <span class="glyphicon glyphicon-remove item-blank"></span>
+                </a>
+            </td>
+        </thead>
+        <tbody>
+            <tr class="hoverable" ng-repeat="x in rows track by $index">
+                <td class="price-data" title="Номер">{{ $index + 1 }}</td>
+                <td title="{{'по ' + x.doc.name + ' от ' + x.doc.date + ' от ' + x.doc.supplier.name}}">
+                    <span>{{ x.item.name + "(" + x.item.ean + ")"}}</span>
+                    <span style="color: white; font-weight: bold;">
+                        {{x.item.section.name}}
+                    </span>
+                </td>
+                <td class="text-table-row" title="Единица измерения">{{ x.item.unit }}</td>
+                <td class="text-table-row" title="Текущее количество">{{ x.currentQuantity }}</td>
+                <td class="hoverable" title="ставка НДС">
+                    <input type="number" class="form-control selling-quantity"
+                           ng-model="x.vat" min="0"/>
+                </td>
+                <td class="hoverable for-sale" title="К продаже">
+                    <div>
+                        <button class='change-quantity-btn'
+                                ng-click='openQuantityChangerModal($index)'>
+                            <span unit-sensitive unit="x.item.unit" quantity="x.quantity"></span>
+                        </button>
+                    </div>
+                </td>
+                <td class="hoverable" title="Цена продажи">
+                    <input type="number" class="form-control selling-quantity" min="0"
+                           ng-readonly="buyer.sellByComingPrices"
+                           ng-model="x.price"
+                           ng-change="checkRows()"
+                           ng-class="{'warning-input': x.price < 0||''}"/>
+                </td>
+                <td class="text-table-row" title="Сумма">{{ (x.quantity*x.price).toFixed(2) }}
+                    <div>
+                        <span class="price-out-on-coming-pane" title="Сумма со скидкой" ng-if="buyer.discount > 0">
+                            {{ (x.quantity*(getDiscountedPrice(x.price, buyer.discount))).toFixed(2) }}
+                        </span>
+                    </div>
+                </td>
+                <td>
+                    <a href="#" title="удалить строку" ng-click="deleteRows()">
+                        <span class="glyphicon glyphicon-remove item-blank"></span>
+                    </a>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>

@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="stylesheet" href="/webjars/fe/0.1.0/css/prices.css"/>
+    <head>
+        <title>Ценники</title>
+    </head>
+<!--ng-app="prices"-->
+<body ng-controller="pricesCtrl">
+    <!--ng-app="prices"-->
+
+    <div style="margin: 1%;">
+        <div class="col-xs-8 prices-3-in-line"
+             ng-repeat='price in prices track by $index'>
+
+            <div class="dropdown hoverable">
+
+                <div class="item-name item-name-text">{{price.item.name}}</div>
+
+                <ul class="dropdown-menu hoverable price-controls-container unprintable">
+                    <li class="price-controls-panel">
+                        <button class="glyphicon glyphicon-plus price-control-btn add"
+                            ng-click="copyPrice()">
+                        </button>
+                        <button class="glyphicon glyphicon-remove price-control-btn remove"
+                                ng-click='deletePrice()'></button>
+                    </li>
+                </ul>
+            </div>
+            <div class="additional-info">
+                <span>по</span>
+                <span>{{price.doc.name}}</span>
+                <span>от</span>
+                <span>{{price.doc.date | date:'dd.MM.yy'}}</span>
+                <span>{{', ' + stock.organization.name}}</span>
+            </div>
+            <div class="price-out">
+
+                <span class="rub-price">
+                    {{price.rub}}
+                </span>
+                <span class="kop-price">
+                    {{price.kop}}
+                </span>
+            </div>
+            <div class="rub-kop">
+                <span>
+                    <span class="item-unit">{{'1' + price.item.unit}}</span>
+                    руб.
+                </span>
+                <span>коп.</span>
+            </div>
+            <div>
+                <svg class="barcode" width="143" height="74"></svg>
+            </div>
+
+
+        </div>
+
+        <!--</div>-->
+    </div>
+
+    <script src="/webjars/fe/0.1.0/prices.js"></script>
+    </body>
+</html>

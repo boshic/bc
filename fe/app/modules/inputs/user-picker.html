@@ -1,0 +1,17 @@
+<div class="dropdown" style="display: inherit;">
+    <button class="dropdown-toggle user-select" type="button" data-toggle="dropdown">
+        {{user.name}}
+        <span class="caret-left"></span>
+    </button>
+    <ul class="dropdown-menu user-dropdown">
+        <li>
+            <span>НДС: </span>
+            <input type="text" ng-model="user.stock.organization.vatValue"/>
+        </li>
+        <li>
+            <form action="/logout" method="post">
+                <input type="submit" value="Выйти" class = "hoverable logout-btn"/>
+            </form>
+        </li>
+    </ul>
+</div>

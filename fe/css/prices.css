@@ -1,0 +1,144 @@
+@media print {
+    .unprintable {
+        display: none!important;
+    }
+    .printable {
+        display: block!important;
+    }
+    .printable-td {
+        display: table-cell!important;
+    }
+    input {
+        border: none!important;
+    }
+    /*td {*/
+    /*font-size: 10px;*/
+    /*}*/
+}
+
+
+.dropdown > .hoverable {
+    display: none;
+}
+
+.dropdown:hover > .hoverable {
+
+    display: block;
+}
+.prices-3-in-line{
+    border: 0.5px solid lightgray;
+    padding: 2px;
+    height: 140px;
+    width: calc(100% / 3 - 0px);
+    color: black;
+    text-align: justify;
+    page-break-inside: avoid;
+    /*cursor: no-drop;*/
+}
+
+/*.prices-3-in-line:hover {*/
+    /*background: coral;*/
+/*}*/
+
+.barcode {
+    position: absolute;
+    top: 48%;
+    left: -2%;
+    z-index: -1;
+}
+
+.price-out {
+    /*font-size: 33px;*/
+    position: absolute;
+    top: 43%;
+    right: 1%;
+}
+
+.rub-price {
+    font-size: 40px;
+    margin-right: -10px;
+}
+
+.kop-price {
+    font-size: 20px;
+}
+
+.rub-kop {
+    position: absolute;
+    top: 72%;
+    right: 0%;
+    font-style: italic;
+}
+
+.additional-info {
+    position: absolute;
+    text-align: left;
+    font-size: 10px;
+    top: 85%;
+    font-family: serif;
+    line-height: 100%;
+}
+
+.item-unit {
+    position: absolute;
+    /* font-weight: bold; */
+    font-style: normal;
+    /* top: -143%; */
+    right: 115%;
+}
+
+.item-name-text {
+    display: table-cell;
+    line-height: 100%;
+    font-family: serif;
+    font-weight: bold;
+    font-size: 13px;
+    text-align: center;
+    height: 69px;
+    width: 268px;
+    vertical-align: middle;
+}
+
+.price-controls-container {
+    margin-top: -8px;
+    width: 40%;
+    margin-left: 30%;
+    border: none;
+    background: transparent;
+    box-shadow: none;
+}
+
+.price-controls-panel {
+    text-align: center;
+    font-size: 35px;
+}
+
+.price-control-btn {
+    border: none;
+    background: none;
+}
+
+button.add {
+    color: green;
+}
+
+button.remove {
+    color: red;
+}
+
+button:hover {
+    color: black;
+}
+
+.col-xs-1, .col-sm-1, .col-md-1, .col-lg-1, .col-xs-2, .col-sm-2, .col-md-2, .col-lg-2, .col-xs-3, .col-sm-3, .col-md-3, .col-lg-3, .col-xs-4, .col-sm-4, .col-md-4, .col-lg-4, .col-xs-5, .col-sm-5, .col-md-5, .col-lg-5, .col-xs-6, .col-sm-6, .col-md-6, .col-lg-6, .col-xs-7, .col-sm-7, .col-md-7, .col-lg-7, .col-xs-8, .col-sm-8, .col-md-8, .col-lg-8, .col-xs-9, .col-sm-9, .col-md-9, .col-lg-9, .col-xs-10, .col-sm-10, .col-md-10, .col-lg-10, .col-xs-11, .col-sm-11, .col-md-11, .col-lg-11, .col-xs-12, .col-sm-12, .col-md-12, .col-lg-12 {
+    position: relative;
+    min-height: 1px;
+    padding-right: 15px;
+    padding-left: 15px;
+}
+.col-xs-1, .col-xs-2, .col-xs-3, .col-xs-4, .col-xs-5, .col-xs-6, .col-xs-7, .col-xs-8, .col-xs-9, .col-xs-10, .col-xs-11, .col-xs-12 {
+    float: left;
+}
+.col-xs-8 {
+    width: 33.3333%;
+}

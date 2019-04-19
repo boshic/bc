@@ -1,0 +1,21 @@
+<div ng-hide='modalConfig.hidden' class='trans-layer'></div>
+<div class='modal-container' ng-class='{modalactive: !modalConfig.hidden}' ng-transclude>
+    <div class="invoice-modal-container">
+        <div style="display: flex";>
+            <div style="width: 100%;">
+                <span>{{'Документ номер ' + invoice.id}}</span>
+            </div>
+            <div>
+                <span class="glyphicon glyphicon-remove item-blank close-invoice-modal"
+                      ng-click="modalConfig.hidden = true">
+                </span>
+            </div>
+        </div>
+        <div class="print-icon-on-invoice-modal" title="Напечатать">
+            <print-menu
+                    report-id="invoice.id"
+                    reports = "reports">
+            </print-menu>
+        </div>
+    </div>
+</div>

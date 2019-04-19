@@ -1,0 +1,69 @@
+<div ng-hide='modalConfig.hidden' class='trans-layer'></div>
+<div class='modal-container' ng-class='{modalactive: !modalConfig.hidden}' ng-transclude>
+    <span class="glyphicon glyphicon-remove item-blank close-selling-modal"
+          ng-click="closeModal()">
+    </span>
+    <div class="items-table"
+         ng-keyup="handleKeyup($event)">
+        <div style="height: 65px; background: lightgray; padding-top: 3px;">
+            <div style="display: flex;">
+                <div style="width: 10%;">
+                    <button class="glyphicon glyphicon-shopping-cart sell-icon"
+                        ng-click="sellThis()"
+                        ng-show="canRelease"
+                        title="Продать">
+                    </button>
+                </div>
+                <div class="print-icon-on-selling-modal">
+                    <print-menu
+                            report-list-visible="reportListVisible"
+                            report-id="undefined"
+                            reports = "reports">
+                    </print-menu>
+                </div>
+                <div style="width: 20%;">
+                    <comment-input ng-model="comment"></comment-input>
+                </div>
+                <div style="width: 3px;"></div>
+                <div style="width: 25%;">
+                    <buyer-input buyer="buyer"></buyer-input>
+                </div>
+                <div style="width: 3px;"></div>
+                <div style="width: 40%;" class="total-sum-on-selling-modal">
+                    <span style="margin-right: 10%;">{{(totals.quantity.toFixed(2)) + " ед."}}</span>
+                    <span style="color: yellow;">{{(totals.sum).toFixed(2) + " руб."}}</span>
+                </div>
+            </div>
+        </div>
+        <table class="table table-bordered selling-modal-table table-responsive">
+            <tr class="pane-thead">
+                <td style="width: 60px;">Номер</td>
+                <td>Наименование</td>
+                <td style="width: 100px;" class="unprintable">Доступно, шт.</td>
+                <td style="width: 115px;">К продаже, шт.</td>
+                <td style="width: 100px;">Цена, руб., коп.</td>
+            </tr>
+                <tbody>
+                    <tr class="hoverable" ng-repeat="x in rows track by $index">
+                        <td class="price-data" title="Номер">{{ $index + 1 }}</td>
+                        <td title="">{{ x.coming.item.name + "(" + x.coming.item.ean + ")"}}</td>
+                        <td class="current-quantity unprintable" title="Текущее количество">{{ x.currentQuantity }}</td>
+                        <td class="hoverable for-sale" title="К продаже">
+                            <input type="number"
+                                   class="form-control selling-quantity"
+                                   id="change-quantity-on-selling-modal"
+                                   ng-model="x.quantity"
+                                   ng-change="checkRows()"/>
+                        </td>
+                        <td class="hoverable" title="Цена продажи">
+                            <input type="number" class="form-control selling-quantity" min="0"
+                                   ng-model="x.price"
+                                   ng-readonly="buyer.sellByComingPrices"
+                                   ng-change="checkRows()"
+                                   ng-class="{'warning-input': x.price==0||''}"/>
+                        </td>
+                    </tr>
+                </tbody>
+        </table>
+    </div>
+</div>

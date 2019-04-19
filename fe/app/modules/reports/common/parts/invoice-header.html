@@ -1,0 +1,34 @@
+<div>
+    <div class="invoice-row-for-printing" ng-click = "click()">
+        <span style="font-weight: bold">{{"СЧЕТ-ФАКТУРА №" + data.id}}</span>
+        <span>{{" от "}}</span>
+        <span>{{data.date | date:'dd.MM.yyyy HH:mm' }}</span>
+    </div>
+    <div class="invoice-row-for-printing">
+        <span style="font-weight: bold">{{"Поставщик: "}}</span>
+        <span>{{data.stock.organization.name + " " + data.stock.organization.address}}</span>
+    </div>
+    <div class="invoice-row-for-printing">
+        <span>
+            {{"УНП:" + data.stock.organization.regNum + ", р/с:" + data.stock.organization.bankAccount +
+            " в " + data.stock.organization.bank.name + ", адрес банка: "
+            + data.stock.organization.bank.address + ", БИК:" + data.stock.organization.bank.code}}
+        </span>
+    </div>
+    <div class="invoice-row-for-printing">
+        <span style="font-weight: bold">{{"Плательщик: "}}</span>
+        <span>{{data.buyer.name + ", " + data.buyer.address + ". " + data.comment}}</span>
+        <span ng-if="data.buyer.unp.length == 9">
+            {{", УНП:" + data.buyer.unp}}
+        </span>
+        <span ng-if="data.buyer.account.length>20 && data.buyer.bank.id > 0">
+            {{", р/с:" + data.buyer.account + " в " + data.buyer.bank.name +
+            ", адрес банка: " + data.buyer.bank.address + ", БИК: " + data.buyer.bank.code}}
+        </span>
+    </div>
+
+    <div class="invoice-row-for-printing">
+        <span style="font-size: smaller;">Счет действителен в течение 3-х банковских дней</span>
+    </div>
+
+</div>

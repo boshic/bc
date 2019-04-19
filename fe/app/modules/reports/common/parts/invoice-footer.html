@@ -1,0 +1,25 @@
+<div>
+    <div class="invoice-row-for-printing">
+        <span style="font-weight: bold">{{"Всего наименований: " + data.totals.lines}}</span>
+    </div>
+
+    <div class="invoice-row-for-printing" ng-if="data.totals.vatSum > 0">
+        <span>Сумма НДС: </span>
+        <span style="font-weight: bold;">{{(data.totals.vatSum).toFixed(2) | num2phrase}}</span>
+    </div>
+    <div class="invoice-row-for-printing" ng-if="data.totals.vatSum == 0">
+        <span>{{"Сумма НДС: Без НДС."}}</span>
+    </div>
+    <div class="invoice-row-for-printing">
+        <span>Всего к оплате на сумму с НДС:</span>
+        <span style="font-weight: bold;">{{(data.totals.sum).toFixed(2) | num2phrase}}</span>
+    </div>
+    <div>
+        <span>Счет выдал:</span>
+        <span>{{" ________________ " + data.user.position + " " + data.user.fullName }}
+            <img class="invoice-stamp"
+                 ng-if = "data.showStamp"
+                 ng-src="data:image/JPEG;base64,{{data.user.stamp}}"/>
+        </span>
+    </div>
+</div>

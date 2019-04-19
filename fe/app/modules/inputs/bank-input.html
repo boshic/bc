@@ -1,0 +1,45 @@
+<div class="dropdown">
+    <span class="warning-item-input" ng-show = "warning">Не выбран банк!</span>
+    <input title="{{item.name}}" type="text" class="form-control bank-ipnut" placeholder="Банк"
+           id="bank-input"
+           ng-model="item.name"
+           ng-change="getItems()"
+           ng-readonly="!canChange"/>
+    <span class="item-input-toolbox">
+        <item-input-total total="items.length"></item-input-total>
+    </span>
+    <ul class="dropdown-menu hoverable supplier-dropdown">
+        <li>
+            <table class="table">
+                <thead>
+                <tr>
+                    <td>
+                        <a href="#" style="float: left;padding-left: 3%;" title="Добавить банк" ng-click="addEditItem(true)">
+                            <span class="glyphicon glyphicon-plus item-add"></span>
+                        </a>
+                    </td>
+                    <td></td>
+                    <td>
+                        <span style="float: right;" class="glyphicon glyphicon-remove item-blank"
+                              ng-click="blankSearchAndGetItemsBy()" title="Очистить поиск">
+                        </span>
+                    </td>
+                </tr>
+                </thead>
+                <tbody>
+                <tr class="hoverable" ng-repeat="x in items" ng-click="selectItem()">
+                    <td class="hoverable" title="Код">{{ x.code }}</td>
+                    <td class="hoverable" title="Наименование">{{ x.name }}</td>
+                    <td>
+                        <a href="#" title="Редактировать строку" style="float: right;"
+                           ng-click="addEditItem(false)">
+                            <span class="glyphicon glyphicon-pencil item-edit"></span>
+                        </a>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </li>
+    </ul>
+</div>
+<add-edit-bank></add-edit-bank>

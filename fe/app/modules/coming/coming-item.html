@@ -1,0 +1,70 @@
+<div class="wrapper items-modal" ng-class='{locked: hasSellings}' ng-keyup="handleKeyup($event)">
+    <div class="header-controls">
+        <div class="code-container-on-coming">
+            <span>Приход товара. Код:</span>
+            <span style="color: black;" ng-bind="coming.id"></span>
+        </div>
+        <div class="add-edit-panel">
+                <span class="glyphicon glyphicon-plus item-add" title="Оприходовать/Скопировать"
+                      ng-click="addComing()"
+                      ng-show="canCome">
+                </span>
+            <div style="display: inline-flex;" ng-show="!hasSellings">
+                <span class="glyphicon glyphicon-pencil item-edit" title="Записать изменения"
+                      ng-click="updateComing()"
+                      ng-show="canChange">
+                </span>
+                <span class="glyphicon glyphicon-minus item-delete" title="Удалить приход"
+                      ng-click="deleteComing()"
+                      ng-show="canChange">
+                </span>
+            </div>
+        </div>
+    </div>
+    <div class="item-supplier-container-on-coming">
+        <div class="item-container-on-coming">
+            <item-input item="coming.item"></item-input>
+        </div>
+        <div class="supplier-container-on-coming">
+            <doc-input doc="coming.doc"></doc-input>
+        </div>
+    </div>
+    <div class="item-ean-container-on-coming">
+        <input title="Штрих-код" ng-model="coming.item.ean" class="form-control"
+               placeholder="Штрих-код" readonly/>
+    </div>
+    <div class="coming">
+        <table class="table" style="margin-bottom: 1%">
+            <thead>
+            <tr>
+                <td>Сумма по документу</td>
+                <td>Цена розничная</td>
+                <td>Количество</td>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td class="comingdetails">
+                    <input title="Сумма по позиции" type="number" string-to-number
+                           class="form-control" ng-model="coming.sumIn"
+                        ng-change="getPriceIn()"/>
+                </td>
+                <td class="comingdetails">
+                    <input title="Цена розничная" type="number" class="form-control" ng-model="coming.priceOut"/>
+                </td>
+                <td class="comingdetails">
+                    <input title="Количество" type="number" ng-model="coming.quantity"
+                           id="coming-item-start-pos"
+                           class="form-control"
+                           ng-change="changeQuantity()" ng-readonly="hasSellings"/>
+                </td>
+            </tr>
+            <tr>
+                <td title="цена прихода" class="comingdetails">{{ coming.price }}</td>
+                <td title="сумма по продажной цене" class="comingdetails">{{(coming.quantity*coming.priceOut).toFixed(2)}}</td>
+                <td class="comingdetails">Всего</td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>

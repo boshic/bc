@@ -1,0 +1,2071 @@
+/* #barcodecanvas, #barcodecanvasg hoverable focus container*/
+
+@media print {
+    .unprintable {
+        display: none!important;
+    }
+    .printable {
+        display: block!important;
+    }
+    .printable-td {
+        display: table-cell!important;
+    }
+    input {
+        border: none!important;
+    }
+    /*td {*/
+        /*font-size: 10px;*/
+    /*}*/
+}
+
+.printable, .printable-td {
+    display: none;
+}
+
+/*@media print { @page { margin: 2cm; }}*/
+
+
+#result {
+	font-family: verdana;
+	font-size: 1.5em;
+	text-align: center;	
+}
+
+#barcode {
+	position: relative;
+	text-align: center;	
+}	
+
+#barcodecanvas {
+	display: none;
+}
+
+a.close-modal {
+    margin-top:15px;
+    margin-right:15px;
+}
+
+.rootdiv {
+    margin: auto; width: 90%;
+}
+
+.systeminfo {
+    background: antiquewhite;
+    text-align: left;
+    width: 100%;
+    margin: auto;
+}
+
+.systeminfocell{
+    border: white 1px solid;
+    color: blue;
+}
+
+.processespanel {
+    background-color: cornsilk;
+}
+
+.processesbtngroup {
+    width: 90%;
+    padding-top: 2px;
+    padding-left: 5%;
+    padding-right: 5%;
+}
+
+.processestable {
+    background-color:grey;
+    text-align: center;
+}
+
+div.items-table {
+    overflow-x: unset;
+    /*border-bottom: coral 2px solid;*/
+    /*border-right: coral 2px solid;*/
+    /*border-left: coral 2px solid;*/
+}
+
+.filemanagertable {
+    text-align: center; table-layout: fixed;
+}
+
+.filemanagertd {
+    display: flex;
+    border: none;
+    word-break: break-all;
+}
+
+.rootsul {
+    min-width: 220px;
+}
+
+.dirbtn {
+    float: right;
+    outline: outset;
+}
+
+.destinationdirbtn {
+    background-color: #23B0A7;
+    margin: auto;
+    outline: outset;
+}
+
+.filesul {
+    font-size: 12px;
+}
+
+.listnonetype {
+    list-style-type: none;
+    float: none;
+}
+
+.aligncenter {
+    text-align: center;
+}
+
+.clearprocessul {
+    min-width: 5%;
+    left:50%;
+    /*top: 0%;*/
+    font-size: 16px;
+    text-align: center;
+    background-color: transparent;
+}
+
+.processbtn {
+    padding: 0px;
+    margin: 2px;
+    outline:outset;
+}
+
+.selectedfiles {
+    margin: 2px;
+    font-size: 10px;
+    text-align: left;
+    color: darkblue;
+    border: 1px solid;
+}
+
+.selectedfilesfunctions {
+    color: orangered!important;
+    background: yellow;
+}
+
+.selectedfilesul {
+    text-align: center;
+}
+
+/*.container a:hover, .dropdown:hover .dropbtn {*/
+
+.dropdown > .hoverable {
+    display: none;
+}
+
+.dropdown:hover > .hoverable {
+    /*position: ;*/
+
+    display: block;
+}
+
+.supplier-dropdown {
+    right: 0px;
+    overflow-y: auto;
+    max-height: 200px;
+    margin-top: -5px;
+    width: 85%;
+}
+
+.item-dropdown {
+    overflow-y: auto;
+    max-height: 300px;
+    margin-top: 56px;
+    margin-left: 10%;
+    width: 90%;
+}
+
+.dropdown > .focusable {
+    display: none;    
+}
+
+.dropdown:focus > .focusable {
+    /*position: ;*/
+    margin-top: 0px;
+    display: block;
+    margin-left: 5%;
+    width: 90%;    
+}
+
+.dropdown-menu > .hoverable {
+    display: none;
+}
+
+.dropdown-menu:hover > .hoverable {
+    /*position: ;*/
+    margin: 0px;
+    display: inline-block;
+}
+
+tr.hoverable:hover {
+    background: rgba(0, 0, 255, 0.11);
+}
+
+td.hoverable:hover, span.hoverable:hover   {
+    background: coral;
+    color: white;
+    cursor: pointer;
+}
+
+div.hoverable:hover  {
+    /*color: white;*/
+    background: coral;
+    border-radius: 5px;
+    cursor: cell;
+}
+
+.dropdown .filebtn {
+    font-size: 11px;
+    /*border: none;*/
+    outline: none;
+    color: blue;
+    padding: 1px 1px;
+    background-color: inherit;
+}
+
+.container a:hover, .dropdown:hover .filebtn {
+    background-color: blue!important;
+    color: yellow;
+}
+
+.commonWarning {
+    text-align: center!important;
+}
+
+
+/*------------------------------tab_styles*/
+body {font-family: "Lato", sans-serif;}
+
+/* Style the tab */
+div.tab {
+    overflow: hidden;
+    border: 1px solid #ccc;
+    background-color: #f1f1f1;
+}
+
+/* Style the buttons inside the tab */
+div.tab button {
+    background-color: inherit;
+    float: left;
+    border: none;
+    outline: none;
+    cursor: pointer;
+    padding: 14px 16px;
+    transition: 0.3s;
+    font-size: 17px;
+}
+
+/* Change background color of buttons on hover */
+div.tab button:hover {
+    background-color: #ddd;
+}
+
+/* Create an active/current tablink class */
+div.tab button.active {
+    background-color: #ccc;
+}
+
+/* Style the tab content */
+.tabcontent {
+    display: none;
+    padding: 6px 12px;
+    border: 1px solid #ccc;
+    border-top: none;
+}
+
+/* Style the close button */
+.topright {
+    float: right;
+    cursor: pointer;
+    font-size: 20px;
+}
+
+.topright:hover {color: red;}
+
+.tabcontentext {
+    border-color: cornsilk;
+    /*width: 50%;*/
+    text-align: center;
+    background-color: transparent;
+    box-shadow: 10px 10px 5px #888888;
+}
+
+
+
+/*/--------------------------------Animated Search input--------------*/
+
+.searchinput {
+    width: 150px;
+    height: 40px;
+    margin-top: 2px;
+    margin-bottom: 2px;
+    margin-left: -1px;
+    /*margin-bottom: 5px;*/
+    box-sizing: border-box;
+    /*border: 2px solid coral;*/
+    text-align: center;
+    /*border-radius: 4px;*/
+    font-size: 14px;
+    background-color: ghostwhite;
+    /*background-image: url('searchicon.png');*/
+    background-position: 10px 10px;
+    background-repeat: no-repeat;
+    /*padding: 12px 20px 12px 40px;*/
+    -webkit-transition: width 0.4s ease-in-out;
+    transition: width 0.4s ease-in-out;
+}
+
+.searchinput:focus {
+    width: 40%;
+}
+
+/*---------------------------------AnimatedButton-----------------*/
+
+/*button {*/
+    /*background-color: lightgoldenrodyellow;*/
+    /*border: none;*/
+/*     border-color: orange; */
+/*     color: grey; */
+    /*width: 200px;*/
+    /*position: relative;    */
+    /*font-size: 15px;*/
+    /*padding: 5px;*/
+    /*text-align: center;*/
+    /*-webkit-transition-duration: 0.4s; !* Safari *!*/
+    /*transition-duration: 0.4s;*/
+    /*text-decoration: none;*/
+    /*overflow: hidden;*/
+    /*cursor: pointer;*/
+/*}*/
+
+/*button:after {*/
+    /*content: "";*/
+     /*background: #90EE90; */
+    /*background: black;*/
+    /*display: block;*/
+    /*position: absolute;*/
+    /*padding-top: 300%;*/
+    /*padding-left: 350%;*/
+    /*margin-left: -20px!important;*/
+    /*margin-top: -120%;*/
+    /*opacity: 0;*/
+    /*transition: all 0.8s*/
+/*}*/
+
+/*button:active:after {*/
+    /*padding: 0;*/
+    /*margin: 0;*/
+    /*opacity: 1;*/
+    /*transition: 0s*/
+/*}*/
+
+/* ------------------------------------------------------------------------------- */
+
+input.barcode-input {
+    text-align: center;
+    font-size: 22px;
+    width: 49%;
+}
+
+button.barcode-submit {
+    width:49%;
+}
+
+/*=-=-=-=-=-ModalStyles*=-=-=-=-=-=-=-=-=-/
+
+/* The Modal (background) */
+.cam-modal {
+    display: none; /* Hidden by default */
+    position: fixed; /* Stay in place */
+    z-index: 1; /* Sit on top */    
+    left: 0;
+    top: 0%;
+    width: 100%; /* Full width */
+    height: 100%; /* Full height */
+    overflow: auto; /* Enable scroll if needed */
+    background-color: rgb(0,0,0); /* Fallback color */
+    background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+}
+
+.cam-modal-content {
+    position: relative;
+    background-color: #fefefe;
+    padding: 0;
+    border: 1px solid #888;
+    width: 65%;
+    box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2),0 6px 20px 0 rgba(0,0,0,0.19);
+    -webkit-animation-name: animatetop;
+    -webkit-animation-duration: 0.4s;
+    animation-name: animatetop;
+    animation-duration: 0.4s
+}
+
+.cam-modal-header {
+    display: block;
+    text-align: center;
+    padding: 6px;
+    background-color: aliceblue;
+    color: blue;
+}
+
+.modal {
+    display: none; /* Hidden by default */
+    position: fixed; /* Stay in place */
+    z-index: 1; /* Sit on top */
+    /*padding-top: 100px; !* Location of the box *!*/
+    left: 0;
+    top: 0;
+    width: 100%; /* Full width */
+    height: 100%; /* Full height */
+    overflow: auto; /* Enable scroll if needed */
+    background-color: rgb(0,0,0); /* Fallback color */
+    background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+}
+
+/* Modal Content */
+.modal-content {
+    position: relative;
+    background-color: #fefefe;
+    padding: 0;
+    border: 1px solid #888;
+    width: 65%;
+    box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2),0 6px 20px 0 rgba(0,0,0,0.19);
+    -webkit-animation-name: animatetop;
+    -webkit-animation-duration: 0.4s;
+    animation-name: animatetop;
+    animation-duration: 0.4s
+}
+
+.modal-content.fileopermodal {
+    position: relative;
+    margin-top: 5%;
+    margin-left: 20%;
+    background-color: #fefefe;
+    padding: 0;
+    border: 1px solid #888;
+    width: 65%;
+    box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2),0 6px 20px 0 rgba(0,0,0,0.19);
+    -webkit-animation-name: animatetop;
+    -webkit-animation-duration: 0.4s;
+    animation-name: animatetop;
+    animation-duration: 0.4s
+}
+
+.loadingModal {
+    position: relative;
+    background-color: #fefefe;
+    margin: auto;
+    margin-top: 25%;
+    padding: 0;
+    /*border: 1px solid #888;*/
+    width: 5%;
+    box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2),0 6px 20px 0 rgba(0,0,0,0.19);
+    -webkit-animation-name: animatetop;
+    -webkit-animation-duration: 0.4s;
+    animation-name: animatetop;
+    animation-duration: 0.4s
+}
+
+
+/* Add Animation */
+@-webkit-keyframes animatetop {
+    from {top:-300px; opacity:0}
+    to {top:0; opacity:1}
+}
+
+@keyframes animatetop {
+    from {top:-300px; opacity:0}
+    to {top:0; opacity:1}
+}
+
+/* The Close Button */
+.close {
+    color: darkblue;
+    float: left;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+    color: #000;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.modal-header {
+    padding: 2px 16px;
+    background-color: #5cb85c;
+    color: white;
+}
+
+.fileopermodal-modal-header {
+    display: block;
+    text-align: center;
+    padding: 6px;
+    background-color: sandybrown;
+    color: blue;
+}
+
+.modal-body {padding: 2px 16px;}
+
+.modal-footer {
+    padding: 2px 16px;
+    background-color: #5cb85c;
+    color: white;
+}
+
+textarea.command {
+    background-color: burlywood;
+    text-align: center;
+    width: 100%;
+}
+
+.fileopermodalexec{
+    width: 100%;
+    background-color: transparent;
+    border-color: aliceblue;
+}
+
+/* angular test modal input*/
+
+/*@import url("https://fonts.googleapis.com/css?family=Raleway");
+
+/*body,.btn {*/
+  /*font-family: 'Raleway';*/
+/*}*!*/
+
+/*!*.btn {*!*/
+  /*!*background: teal;*!*/
+  /*!*color: white;*!*/
+/*!*!*   padding: 15px; *!*!*/
+  /*!*border-radius: 5px;*!*/
+  /*!*cursor: pointer;*!*/
+  /*!*font-size: 15px;*!*/
+  /*!*font-weight: normal;*!*/
+  /*!*outline: none;*!*/
+/*!*}*!*/
+
+.trans-layer {
+  position: fixed;
+  top: 0;
+  left: 0;
+
+  width: 100%;
+  height: 100%;
+
+    background: rgba(9, 10, 11, 0.5);
+  z-index: 1000;
+}
+
+.modal-container {
+  width: 90%;
+  position: fixed;
+  left: 5%;
+  top: 10%;
+  z-index: 1001;
+  
+  /*max-height: 90%;*/
+  /*overflow-y: auto;  */
+   
+  opacity: 0;
+  /*border-radius: 3px;*/
+  /*background: white;*/
+  /*border: 1px solid teal;*/
+  
+  transform: translate(0,-200%);
+  -webkit-transform: translate(0,-200%);
+  
+  transition: opacity ease-in-out .3s, transform ease-in-out .3s;
+  -webkit-transition: opacity ease-in-out .3s, transform ease-in-out .3s;
+}
+
+.modal-container-addeditsupplier {
+  width: 90%;
+  
+  position: fixed;
+  left: 0%;
+  top: 5%;
+  z-index: 1001;
+  
+  max-height: 90%;
+  /*overflow-y: auto;  */
+   
+  opacity: 0;
+  border-radius: 3px;
+  background: white;
+  border: 1px solid teal;
+  
+  transform: translate(0,-200%);
+  -webkit-transform: translate(0,-200%);
+  
+  transition: opacity ease-in-out .3s, transform ease-in-out .3s;
+  -webkit-transition: opacity ease-in-out .3s, transform ease-in-out .3s;
+}
+
+.modal-heading {
+  background: #eaeaea;
+  text-align: center;
+  padding: 10px;
+}
+
+.modal-cont {
+  padding: 15px;
+}
+
+.modalactive {
+    /*padding: 10px;*/
+    opacity: 1;
+    transform: translate(0,0);
+    -webkit-transform: translate(0,0);
+}
+
+div.items-modal {
+    text-align: center;
+    font-size: 16px;
+}
+
+div.items-modal > input, textarea{
+    background: beige;
+}
+
+/*div.price > input, span {    */
+    /*display: inline-flex;*/
+    /*width: 45%;    */
+/*}*/
+
+/*div.price {*/
+    /*width: 60%;*/
+/*}*/
+
+/*div.price > input {*/
+    /*background: beige;*/
+/*}*/
+
+/*div.items-modal-bottom-btns > button {*/
+    /*margin-top: 1px;*/
+/*}*/
+
+button.update-item-btn {
+    border: 2px solid green;
+    color: green;
+    background: transparent;
+}
+
+button.delete-item-btn {
+    border: 2px solid red;
+    color: red;
+}
+
+button.add-item-btn {
+    border: 2px solid orange;
+    color: orange;
+}
+
+button.add-comming-btn {
+    width: 95%;
+    height: 35px;
+    font-size: 20px;
+    border: 2px solid blue;
+    color: blue;
+    padding: 2px;
+    margin-bottom: 5px;
+}
+
+.tab-pane {
+    /*margin-top: 1%;*/
+}
+
+.tabbable {
+    background: transparent;
+}
+
+td.comingdetails > input {
+    width: 100%;
+    height: 40px;
+    font-size: 30px;
+    text-align: center;
+}
+
+td.comingdetails {
+    font-size: 30px;
+    text-align: center;
+}
+
+
+/*.nav-tabs > li.active > a:hover {*/
+    /*color: white;*/
+    /*cursor: default;*/
+    /*background-color: #fff;*/
+    /*border: none; */
+    /*border-bottom-color: transparent;*/
+/*}*/
+.nav-tabs > li.active > a, .nav-tabs > li.active > a:focus {
+    padding: 5px;
+    color: coral;
+    border: coral 4px solid;
+}
+
+span.item-add {
+    cursor: pointer;
+    color: green;
+    font-size: 22px;
+    margin: 1%;
+}
+
+button.item-query {
+    padding: 0px;
+    border: none;
+    background: none;
+    /*color: coral;*/
+    /*position: absolute;*/
+    /*font-size: 40px;*/
+    /*right: 3px;*/
+    top: 5px;
+}
+
+button.item-query:hover {
+    color: black;
+}
+
+.item-input-toolbox {
+    position: absolute;
+    right: 3px;
+    font-size: 40px;
+    color: coral;
+    top: -12px;
+}
+
+
+span.item-arrow-up {
+    cursor: pointer;
+    color: green;
+    font-size: 22px;
+    margin-top: 5px;
+}
+
+span.item-add:hover {
+    color: black;
+    font-size: 24px;
+}
+
+span.item-delete {
+    cursor: pointer;
+    color: red;
+    font-size: 22px;
+}
+
+span.item-delete:hover {
+    color: black;
+    font-size: 24px;
+}
+
+span.item-edit {
+    cursor: pointer;
+    color: orange;
+    font-size: 22px;
+}
+
+span.item-edit:hover {
+    color: black;
+    font-size: 24px;
+}
+
+span.filter-item {
+    cursor: pointer;
+    color: coral;
+    font-size: 36px;
+}
+
+span.filter-item:hover {
+    color: blueviolet;
+    font-size: 36px;
+}
+
+span.item-blank {
+    cursor: pointer;
+    color: coral;
+    font-size: 22px;
+}
+
+.eraser-icon {
+    cursor: pointer;
+    color: coral;
+}
+
+span.item-blank.close-modal {
+    position: absolute;
+    left: 97%;
+    font-size: 30px;
+    color: coral;
+}
+
+span.item-blank.close-selling-modal {
+    left: 97%;
+    font-size: 30px;
+    color: coral;
+}
+
+span.item-blank:hover {
+    color: black;
+}
+
+
+span.item-blank.clear-search {
+    vertical-align: middle;
+    color: coral;
+}
+
+ul.suppliers {
+    position: relative;
+}
+
+div.wrapper {
+    border-radius: 10px;
+    background: lightgrey;
+    padding: 1%;
+}
+
+div.modal-container-addeditsupplier > input {
+    width: 95%;
+}
+
+.coming-doc-input {
+    width: 30%;
+    display: inline;
+    float: right;
+    margin-bottom: 2px;
+}
+
+.coming-item-name {
+    float: left;
+    font-size: 16px;
+}
+
+span.warning-item-input {
+    background: coral;
+    color: white;
+    position: absolute;
+    margin-top: 30px;
+}
+
+input.coming-valid {
+    width:80px;
+    display: inline-block;
+    margin-right: 100px;
+}
+textarea.buyer-name {
+    font-size: 16px;
+}
+
+ul.buyer-dropdown {
+    margin-top: 0px;
+    width: 95%;
+    overflow-y: auto;
+    max-height: 300px;
+    /*left: -45%;*/
+}
+
+div.buyer-debt {
+    position: absolute;
+    background: brown;
+    color: aliceblue;
+    padding-right: 2%;
+    padding-left: 2%;
+}
+button.sell-item-btn {
+    float: right;
+    margin-bottom: 7px;
+    width: 50%;
+    background: ghostwhite;
+}
+
+div.locked {
+    border: coral 10px solid;
+    padding: 5px;
+}
+
+input.selling-quantity {
+    text-align: center;
+    padding-top: 0px;
+    padding-bottom: 0px;
+    /*font-size: 14px;*/
+    font-weight: bold;
+    background: inherit;
+    border: none;
+    font-size: 22px;
+}
+
+div.total-sellings {
+    float: right;
+    font-size: 24px;
+}
+.total-quantity {
+    border-top-left-radius: 15px;
+    /*border-bottom-left-radius: 15px;*/
+    text-align: center;
+    font-size: 30px;
+    background: coral;
+    color: yellow;
+    /*font-weight: bold;*/
+}
+
+.total-sum {
+
+    position: absolute;
+    right: 2%;
+    width: 30%;
+    height: 59px;
+    padding-top: 10px;
+
+    border-top-left-radius: 15px;
+    text-align: center;
+    font-size: 30px;
+    background: coral;
+    color: white;
+}
+
+.total-sum-on-selling-modal {
+
+    height: 59px;
+    padding-top: 10px;
+
+    border-top-left-radius: 15px;
+    text-align: center;
+    font-size: 30px;
+    background: coral;
+    color: white;
+}
+
+.total-sum-on-moving-pane {
+    /*position: absolute;*/
+    /*right: 2%;*/
+    width: 37%;
+    /*height: 59px;*/
+    /*border-top-left-radius: 15px;*/
+    /*text-align: center;*/
+    /*font-size: 30px;*/
+    /*background: coral;*/
+    /*color: white;*/
+}
+
+
+    /*border-top-left-radius: 15px;*/
+    /*text-align: center;*/
+    /*font-size: 30px;*/
+    /*background: coral;*/
+    /*color: white;*/
+    /*margin: 1%;*/
+/*}*/
+
+span.selling-warning {
+    font-size: 20px;
+    background: coral;
+    color: white;
+}
+
+td > span.selling-warning {
+    font-size: 24px;
+}
+
+div.selectedpane {
+    /*border: coral 2px solid;*/
+    background: lightgrey;
+    box-shadow: 10px 10px 5px;
+}
+
+.pane-thead {
+    text-align: center;
+    font-weight: bold;
+    background: white;
+    color: black;
+    font-size: 16px;
+}
+
+.form-control:focus {
+    border-color: coral;
+}
+
+.form-control[disabled], .form-control[readonly], fieldset[disabled] .form-control {
+    cursor: not-allowed;
+    background-color: lightgray;
+    opacity: 1;
+    color: coral;
+    /*font-size: 16px;*/
+    /*font-weight: bold;*/
+    border: coral 2px solid;
+}
+
+div.menu-panel {
+    display: flex;
+    /*border-top: coral 2px solid;*/
+    /*border-left: coral 2px solid;*/
+    /*border-right: coral 2px solid;*/
+    padding-top: 2px;
+}
+
+.nav-tabs > li {
+    margin-bottom: -3px;
+}
+
+.table {
+    /*border: 2px solid #ddd;*/
+    margin-bottom: 0px;
+}
+
+div.add-edit-panel {
+    display: table;
+    margin-left: auto;
+}
+
+td.sold {
+    border-right: coral 8px solid !important;
+}
+
+.user-input-container-on-coming {
+    float: right;
+    margin-left: 10px;
+}
+
+.doc-input-container {
+    display: inline-flex;
+    width: 100%;
+}
+
+.doc-input-container-on-coming {
+    width: 650px;
+    font-weight: bold;
+    background: silver;
+    color: coral;
+    /*border: coral 2px solid*/
+}
+
+.code-container-on-coming {
+    text-align: center;
+    /*width: 300px;*/
+    color: coral;
+    font-weight: bold;
+    padding-top: 9px;
+}
+
+.header-controls {
+    display: flex;
+}
+
+.item-supplier-container-on-coming {
+    margin-top: 5px;
+    display: flex;
+}
+
+.item-container-on-coming {
+    width: 49%;
+}
+
+.supplier-container-on-coming {
+    width: 49%;
+    margin-left: 1%;
+}
+
+.item-ean-container-on-coming {
+    width: 200px;
+    display: flex;
+    margin-top: 2px;
+}
+
+.doc-picker-container {
+  display: inline-flex;
+    border-radius: 4px;
+    border: 2px coral solid;
+    height: 34px;
+}
+
+.doc-name {
+    cursor: pointer;
+    width: 120px;
+    border: none !important;
+    border-radius: 0px;
+    height: 30px;
+}
+
+.doc-supplier {
+    width: 220px;
+    border: none !important;
+    border-radius: 0px;
+    height: 30px;
+    cursor: pointer;
+}
+
+
+.doc-date {
+    padding-top: 4px;
+    width: 152px;
+    background: lightgray;
+    color: coral;
+    font-weight: bold;
+}
+
+.doc-date-pickers {
+    display: flex;
+}
+
+.doc-date-pickers>input[type="datetime-local"] {
+    width: 148px;
+}
+
+.doc-date-pickers>span {
+    padding: 7px;
+}
+
+.docs-list {
+    overflow-y: auto;
+    max-height: 300px;
+    position: absolute;
+    z-index: 1000;
+    min-width: 370px;
+    padding: 5px 0;
+    margin: 2px 0 0;
+    font-size: 14px;
+    text-align: left;
+    list-style: none;
+    background-color: #fff;
+    -webkit-background-clip: padding-box;
+    background-clip: padding-box;
+    border: 1px solid #ccc;
+    /*border: 1px solid rgba(0, 0, 0, .15);*/
+    border-radius: 4px;
+    -webkit-box-shadow: 0 6px 12px rgba(0, 0, 0, .175);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, .175);
+}
+
+.docs-list-editing {
+    /*overflow-y: auto;*/
+    width: 100%;
+    max-height: 300px;
+    position: absolute;
+    z-index: 1000;
+    min-width: 370px;
+    padding: 5px 0;
+    margin: 2px 0 0;
+    font-size: 14px;
+    text-align: left;
+    list-style: none;
+    background-color: #fff;
+    -webkit-background-clip: padding-box;
+    background-clip: padding-box;
+    border: 1px solid #ccc;
+    /*border: 1px solid rgba(0, 0, 0, .15);*/
+    border-radius: 4px;
+    -webkit-box-shadow: 0 6px 12px rgba(0, 0, 0, .175);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, .175);
+}
+
+
+.picked {
+    background: white;
+}
+
+.new-coming-doc-pricein {
+    text-align: center;
+    vertical-align: middle;
+    font-size: 22px;
+}
+
+.doc-and-supplier-on-new-coming {
+    display: flex;
+    width: 100%;
+}
+
+.supplier-on-new-coming {
+    width: 100%;
+}
+
+.doc-on-new-coming {
+    width: 100%;
+}
+
+.add-coming-button-on-new-coming {
+    width: 100%;
+    color: white;
+    background: coral;
+    padding: 0;
+    font-weight: bold;
+    font-size: 30px;
+    border: white 2px solid;
+}
+
+.clickable-top-panel {
+    width: 96%;
+}
+
+.pane-right-menu {
+    width: auto;
+    padding-left: 2px;
+    display: flex;
+    background: white;
+    border-top-left-radius: 5px;
+    border-left: 2px solid coral;
+    border-top: 2px solid coral;
+    border-right: 2px solid coral;
+
+}
+
+/*.coming-pane-right-menu {*/
+    /*width: 116px;*/
+
+/*}*/
+
+.one-control-on-pane {
+    display: flex;
+    width: 29px;
+    margin-right: 8px;
+}
+
+/*.two-controls-on-pane {*/
+    /*display: flex;*/
+    /*width: 56px;*/
+    /*!*margin-right: 8px;*!*/
+/*}*/
+
+
+.blank-search-row {
+    width: 100%;
+}
+
+.controls-on-selling-pane {
+    margin-left: auto;
+}
+
+.filter-on-coming-pane {
+    display: inline;
+}
+
+.filter-on-selling-pane {
+    display: inline;
+}
+
+.coming-filter-settings-list {
+    z-index: 1;
+    min-width: 450px;
+    list-style: none;
+    position: absolute;
+    right: 2%;
+    border: black 1px solid;
+    padding: 5px;
+    background: white;
+    font-size: 14px;
+    color: black;
+}
+
+.root-container {
+    margin: 1%;
+}
+
+.ok-btn-on-coming-filter {
+    width: 100%;
+    color: white;
+    background: coral;
+    padding: 0px;
+    font-size: 25px;
+}
+
+.ok-btn-on-selling-filter {
+    width: 78%;
+    color: white;
+    background: coral;
+    padding: 0px;
+    font-size: 25px;
+}
+
+.clear-btn-on-selling-filter {
+    width: 10%;
+    color: white;
+    background: coral;
+    padding: 0px;
+    font-size: 25px;
+}
+
+.ok-btn-on-coming-filter {
+    width: 81%;
+    color: white;
+    background: coral;
+    padding: 0px;
+    font-size: 25px;
+}
+
+.clear-btn-on-coming-filter {
+    width: 9%;
+    color: white;
+    background: coral;
+    padding: 0px;
+    font-size: 25px;
+}
+
+
+
+.cancel-btn-on-coming-filter {
+    width: 49%;
+    color: coral;
+    background: white;
+    padding: 0px;
+    font-size: 25px;
+}
+
+input.warning-input {
+    border: 3px solid coral;
+}
+
+.stock-icon {
+    font-size: 24px;
+    margin-right: 3px;
+    color: coral;
+    background: white;
+    padding: 4px;
+    cursor: pointer;
+    border: 2px solid coral;
+}
+
+.stock-icon:hover {
+    background: silver;
+}
+
+.stocks-list {
+    font-size: small;
+    position: absolute;
+    right: 40px;
+    top: -16px;
+    background: white;
+    padding: 2px;
+    border: 2px solid coral;
+    z-index: 1;
+}
+
+.unselected-stock {
+    color: silver;
+    font-weight: bold;
+}
+
+.selected-stock {
+    background: silver;
+    color: coral;
+    font-weight: bold;
+}
+
+.user-control-container {
+    position: absolute;
+    right: 1%;
+    /*top: 1%;*/
+}
+
+
+button.user-select {
+    box-shadow: grey 1px 8px 2px;
+    border-radius: 5px;
+    width: 120px;
+    background: white;
+    border: coral 2px solid;
+    color: coral;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.logout-btn {
+    background: white;
+    color: coral;
+    border: 4px solid coral;
+    width: 100%;
+}
+.user-select:hover, .logout-btn:hover {
+    background: coral;
+    color: white;
+}
+
+.user-dropdown {
+    width: 210px;
+    margin-top: -21px;
+    padding: 0px;
+    margin-left: -209px;
+}
+
+.supplier-container-on-doc {
+    width: 100%;
+}
+
+.filter-row {
+    margin: 1%;
+}
+
+.with-margin-bottom {
+    margin-bottom: 18px;
+}
+
+.container-sell-buyer-comment-on-selling-pane {
+    display: flex;
+}
+
+.buyer-input-on-selling-pane {
+
+    position: absolute;
+    right: 32%;
+    margin-right: 3px;
+    width: 25%;
+
+    /*width: 35%;*/
+    /*margin-left: 1%;*/
+}
+
+.comment-input-on-selling-pane {
+    position: absolute;
+    right: 57%;
+    margin-right: 6px;
+    width: 20%;
+}
+
+
+.comment-input-on-moving-pane {
+    position: absolute;
+    right: 39%;
+    margin-right: 6px;
+    width: 20%;
+}
+
+.sell-button-on-selling-pane {
+    display: flex;
+    width: 10%;
+}
+
+.stock-container-on-coming-filter {
+    display: inline-block;
+    float: left;
+    margin-top: 1px;
+}
+
+.total-quantity-on-sold-pane {
+    width: 25%;
+    text-align: center;
+    font-size: 39px;
+    background: coral;
+    color: yellow;
+    font-weight: bold;
+}
+.total-sum-on-sold-pane {
+    width: 45%;
+    text-align: center;
+    font-size: 39px;
+    background: coral;
+    color: white;
+    font-weight: bold;
+}
+
+.add-edit-buyer-warning {
+    background: coral;
+    color: white;
+    margin: 1%;
+}
+
+.page-picker-on-sold-pane {
+    background: white;
+    font-size: 15px;
+}
+
+.page-picker-on-sold-pane > div {
+    /*margin-left: 45%;*/
+}
+
+.page-picker-list-of-pages {
+    position: absolute;
+    overflow-y: auto;
+    max-height: 200px;
+    margin-left: 15%;
+    min-width: 50px;
+}
+
+.page-control {
+    position: inherit;
+    cursor: pointer;
+}
+
+.page-control:hover {
+    color: coral;
+}
+
+.page-control-page-picker {
+    font-weight: bold;
+}
+
+.price-out-on-coming-pane {
+    font-weight: bold;
+}
+
+.totals-root-div {
+    box-shadow: 5px 5px 5px 0px;
+    display: flex;
+    background: coral;
+    border-radius: 10px;
+}
+.totals-quantity {
+    width: 50%;
+}
+.totals-sum {
+    width: 50%;
+}
+
+.value-on-totals {
+    color: yellow;
+    font-size: 40px;
+    padding-left: 5%;
+}
+
+.description-on-totals {
+    color: white;
+    font-size: 25px;
+    padding-left: 1%;
+}
+
+.pane-toggler {
+    color: coral;
+    font-weight: bold;
+    border: 2px solid white;
+    padding: 6px;
+}
+
+.pane-toggler:hover {
+    background: coral!important;
+    color: white!important;
+}
+
+.sell-info-on-selling-pane {
+    margin-left: 20%;
+    font-size: 20px;
+}
+
+.invoice-row-for-printing {
+    margin: 3px;
+}
+
+.contract-header {
+    text-align: center;
+}
+
+.contract-row {
+
+}
+
+.comment-on-selling-pane {
+    font-size: inherit;
+    width: 100%;
+    margin-left: 1%;
+    margin-right: 1%;
+    border: none;
+}
+
+.sell-icon {
+    font-size: 57px;
+    color: coral;
+    border: none;
+    background: lightgray;
+    width: 10%;
+}
+
+.sell-icon-on-selling-modal {
+    margin-right: 38%;
+}
+
+.sell-icon:hover {
+    color: yellow;
+}
+
+.stock-input-on-moving-pane {
+    position: absolute;
+    margin-right: 6px;
+    right: 59%;
+}
+
+.move-button-on-moving-pane {
+    width: 10%;
+    position: absolute;
+}
+
+td.price-data {
+    text-align: center;
+    vertical-align: inherit;
+    font-size: 16px;
+}
+
+.sell-icon-on-coming-pane {
+    position: inherit;
+}
+
+.selling-modal-table {
+    background: lightgray;
+}
+
+.invoice-body {
+    font-size: 10px!important;
+}
+
+.invoice-body-header {
+    font-weight: bold;
+}
+
+.invoice-body-row {
+    text-align: center;
+}
+
+.comment-container {
+    display: flex;
+    border: 2px solid coral;
+    border-radius: 4px;
+    /*margin-left: 1%;*/
+    background: snow;
+    padding: 1px;
+}
+
+.checkbox_1_5 {
+    zoom: 1.5; position: absolute;
+}
+
+.main-pane {
+    /*width: 10%;*/
+    /*text-align: center;*/
+}
+
+.moving-modal-header {
+    position: absolute;
+    margin-right: 6px;
+    margin-top: 3px;
+}
+
+.comment-input-on-moving-modal {
+    right: 32%;
+    width: 25%;
+}
+
+.stock-picker-on-moving-modal {
+    right: 57%;
+}
+
+.invoice-stamp {
+    position: absolute;
+    left: 104px;
+    margin-top: -6px;
+}
+
+.print-icon {
+    font-size: 30px;
+    color: coral;
+    position: absolute;
+    cursor: pointer;
+}
+
+.print-icon-on-selling-modal {
+    width: 5%;
+    margin-right: -5px;
+    text-align: right;
+    font-size: 30px;
+    color: coral;
+    cursor: pointer;
+}
+
+.print-icon-on-selling-pane {
+    right: 78%;
+}
+
+.one-icon-on-control-pane {
+    position: relative;
+    width: 100%;
+}
+
+.print-icon:hover {
+    color: yellow;
+}
+
+.report-list-table {
+    font-size: 16px;
+}
+
+.filter-row-two-elements {
+    width: 96%;
+}
+
+.totals-on-new-coming {
+    width: 35%;
+    text-align: center;
+    font-size: 32px;
+    background: coral;
+    color: yellow;
+    border-top-left-radius: 12px;
+    margin-left: 1%;
+}
+
+.generate-bc-btn {
+    width: 3%;
+    font-size: 19px;
+    font-weight: bold;
+    padding: 1px;
+    margin-bottom: 5px;
+    margin-top: 3px;
+    border: none;
+    background: lightgrey;
+}
+
+.enabled-button {
+    color: coral;
+}
+
+.enabled-button:hover {
+    color: white;
+}
+
+.disabled-button {
+    color: grey;
+}
+
+.deletedRow {
+    background: white;
+    color: grey;
+}
+
+.middle-rows > td {
+    vertical-align: middle!important;
+    padding: 4px!important;
+}
+
+.clickable-filter-value {
+    cursor: pointer;
+}
+
+.clickable-filter-value:hover {
+    background: coral;
+    color: black;
+}
+
+.comment-row {
+    color: black;
+    cursor: pointer;
+}
+
+.comment-row:hover {
+    background: coral;
+    color: white;
+}
+
+.btn-on-pane {
+    color: coral;
+    padding: 2px;
+    font-size: 15px;
+    border-radius: 5px;
+    font-weight: bold;
+}
+
+.comments-container {
+    padding-left: 5px;
+    padding-right: 5px;
+    top: 84%;
+    left: -3%;
+    min-width: 0px;
+}
+
+ul.left-side {
+    left: -105px;
+}
+
+.sip-date-changer {
+    top: 75%;
+}
+
+.sip-date-changer-ok-btn {
+    background: white;
+    font-weight: bold;
+    color: green;
+    /*border: 1px solid lightgray;*/
+    top: 0px;
+    border-radius: 5px;
+    width: 100%;
+    height: 30px;
+    border: 1px solid coral;
+}
+
+.sip-date-changer-ok-btn:hover {
+    background: coral;
+    color: white;
+}
+
+.item-title {
+    top: 10px;
+    color: black;
+}
+
+.item-name-on-coming-item-pane {
+    margin-left: 15px;
+}
+
+.item-name-on-coming-item-pane:hover {
+    border-radius: 5px;
+    background: coral;
+    color: white;
+    cursor: pointer;
+}
+
+.invoice-modal-container {
+    margin-top: 28px;
+    background: white;
+    height: 100px;
+    width: 30%;
+    margin-left: 35%;
+    border-radius: 5px;
+    padding-left: 10px;
+    padding-top: 5px;
+    text-align: center;
+}
+
+span.close-invoice-modal {
+    margin-top: -7px;
+    font-size: 30px;
+    color: coral;
+}
+
+.print-icon-on-invoice-modal {
+    font-size: 50px;
+    color: coral;
+    cursor: pointer;
+}
+
+.coming-pane-right-menu-option {
+    font-size: 30px;
+    cursor: pointer;
+    color: coral;
+    position: relative;
+    /*width: 34%;*/
+
+}
+
+.coming-pane-right-menu-option:hover {
+    color: lightgrey;
+}
+
+td.quick-filter {
+    text-align: right;
+    font-weight: normal;
+}
+
+.quick-filter-comment {
+    border: 2px coral dotted;
+    border-radius: 5px;
+    display: inline-table;
+}
+
+.quick-filter-comment-delete {
+    text-align: center;
+    min-width: 0px;
+    cursor: pointer;
+    top: 65%;
+    z-index: 1001;
+}
+
+.quick-filter-comment-delete:hover {
+    background: coral;
+    color: white;
+}
+
+.background-white:hover {
+    background: white;
+    color: black;
+}
+
+.word-from-phrase-eraser-title {
+    background: coral;
+    color: white;
+    font-size: 10px;
+}
+
+.item-additional-info-on-cp {
+    font-weight: bold;
+    /*margin-left: auto;*/
+    /*margin-left: 15px;*/
+    font-size: small;
+    /*float: right;*/
+}
+
+.totals-and-quick-filter-container {
+    border-right: 1px solid white;
+    display: flex;
+}
+
+.quick-filter-container {
+
+    background: white;
+    margin-left: 5px;
+    border: 2px coral solid;
+    border-top-left-radius: 10px;
+    padding: 3px;
+    font-family: times;
+    font-size: large;
+}
+
+.item-input-filter {
+    color: coral;
+    top: 4px;
+    left: 2px;
+}
+
+.item-quick-filter-ul {
+    top: -5px;
+    min-width: 200px;
+    left: 20px;
+}
+
+.item-quick-filter-icon {
+    position: absolute;
+    margin-left: 3px;
+    color: coral;
+}
+
+.item-quick-filter-icon:hover {
+    color: white;
+    cursor: pointer;
+}
+
+.available-by-ean {
+    background: white;
+    color: coral;
+    font-weight: bold;
+    font-size: 22px!important;
+}
+
+.inherited {
+    color: inherit;
+}
+
+.item-input-on-panes {
+    /*width: 100%;*/
+    padding-left: 10%;
+    width: 80%;
+    display: inline-block;
+}
+
+.pane-searchinput-btn {
+    background: lightgrey;
+    color: coral;
+    font-size: 30px;
+    top: 2px;
+    padding: 0px;
+    height: 42px;
+    border: none;
+}
+
+.overhead-percentage {
+    border-radius: 3px;
+    padding: 1px;
+    font-size: 12px;
+    position: absolute;
+    background: coral;
+    font-weight: bold;
+    color: white;
+    margin-left: 2px;
+    margin-top: -5px;
+}
+
+.quantity-changer-input {
+    font-size: 100px;
+    height: 150px;
+    text-align: center;
+    color: black;
+}
+
+.quantity-changer-btn {
+    background: coral;
+    width: 100%;
+    color: white;
+    height: 110px;
+    font-size: 50px;
+}
+
+.change-quantity-btn {
+    width: 100%;
+    font-size: 25px;
+    background: inherit;
+    border-bottom: 2px solid coral;
+    box-shadow: 6px 8px 4px #888888;
+}
+
+.text-table-row {
+    font-size: 25px;
+    text-align: center;
+}
+
+.print-cmp-btn {
+    border: none;
+    background: none;
+}
+
+.add-comment-btn {
+    color: green;
+    width: 100%;
+    border: none;
+    background: white;
+    font-size: 20px;
+}
+
+.text-edit-modal-field {
+    width: 100%;
+    font-size: 24px;
+}
+
+.filter-eraser {
+    margin-top: 5px; font-size: 22px;
+}
+
+.comment-cause {
+    background: lightgray;
+    text-align: center;
+    padding: 10px;
+}
+
+.send-item-name-to-section-btn {
+    background: white;
+    border: none;
+    color: coral;
+    font-size: 22px;
+}
+
+.send-item-name-to-section-btn:hover {
+    color: black;
+}
+
+.comment-input-on-text-modal {
+    font-size: 30px;
+}
+
+.sortable-thead-value {
+
+}
+
+.sortable-thead-value:hover {
+    cursor: pointer;
+    color: coral;
+}
+
+.sorting-row {
+    background: none;
+    border: none;
+    color: coral;
+}
+
+.sorting-row:hover {
+    color: lightgray;
+}
+
+.current-quantity-on-changer-modal {
+    background: lightgray;
+    top: 5px;
+    /* font-weight: bold; */
+    font-size: 45px;
+    border-radius: 5px;
+}

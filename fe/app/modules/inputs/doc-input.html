@@ -1,0 +1,91 @@
+<div class="dropdown">
+    <div class="doc-input-container">
+        <div class="doc-picker-container">
+            <span class="warning-item-input" ng-show="warning">Не выбран документ основание!</span>
+            <input class="form-control doc-name" title="{{doc.name}}" type="text" placeholder="Документ"
+               ng-model="doc.name"
+               ng-change="getDocs()"
+               ng-readonly="!docsListVisible"
+               ng-click="showDocsList()"/>
+            <div class="doc-date"
+                 ng-click="showDatePicker()"
+                 ng-class='{picked: datePickerVisible}'>
+                <span>от</span>
+                <span>{{ doc.date | date:'dd-MM-yyyy'}}</span>
+            </div>
+        </div>
+        <div class="supplier-container-on-doc">
+            <input title="{{doc.supplier.name}}" type="text" class="form-control"
+               ng-model="doc.supplier.name"
+               placeholder="Поставщик" readonly="true"/>
+        </div>
+    </div>
+    <div class="docs-list"
+         ng-show="datePickerVisible" >
+        <div class="doc-date-pickers">
+            <span>c</span>
+            <input date-input class="form-control" type="datetime-local" ng-model="dateFrom"/>
+            <span>по</span>
+            <input date-input class="form-control" type="datetime-local" ng-model="dateTo"/>
+        </div>
+    </div>
+    <div
+        ng-show="docsListVisible"
+        ng-class="{'docs-list':!addingVisible,'docs-list-editing':addingVisible}">
+        <table class="table">
+            <thead>
+                <tr ng-show="addingVisible">
+                    <td colspan="4">
+                        <div style="display: flex; margin-bottom: 1%;">
+                            <input date-input class="form-control" type="date"
+                               style="width: 45%;"
+                               ng-model="newDoc.date"
+                               ng-change="checkDoc()"/>
+                          <input class="form-control" placeholder="Документ"
+                               style="width: 55%;"
+                               title="Документ" type="text"
+                               ng-model="newDoc.name"
+                               ng-change="checkDoc()"/>
+                           <span title="Применить" class="glyphicon glyphicon-ok item-add" style="float: left;"
+                              ng-click="appendData()"
+                              ng-show="canChange">
+                            </span>
+                        </div>
+                        <supplier-input supplier="newDoc.supplier"></supplier-input>
+                    </td>
+                </tr>
+                <tr ng-hide="addingVisible">
+                    <td colspan="3">
+                        <span class="glyphicon glyphicon-plus item-add"
+                              title="Добавить документ" ng-click="addEditDoc()">
+                        </span>
+                        <span class="glyphicon glyphicon-remove item-blank"
+                              style="float: right;" title="Очистить поиск"
+                            ng-click="blankNameAndGetItemsBy()">
+                        </span>
+                    </td>
+                </tr>
+            </thead>
+            <tbody ng-hide="addingVisible">
+            <tr class="hoverable" ng-repeat="x in docs">
+                <td style="width: 90px;" class="hoverable" title="Код"
+                    ng-click="selectDoc()">
+                    {{ x.date | date:'dd.MM.yy' }}
+                </td>
+                <td class="hoverable" ng-click="selectDoc()" title="Наименование">{{ x.name }}</td>
+                <td style="width: 65px;">
+                <div class="add-edit-panel">
+                        <span class="glyphicon glyphicon-pencil item-edit"
+                              title="Редактировать строку"
+                              ng-click="addEditDoc()">
+                        </span>
+                        <span class="glyphicon glyphicon-minus item-delete"
+                              title="Удалить строку">
+                        </span>
+                </div>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+</div>

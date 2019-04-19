@@ -1,0 +1,34 @@
+<div ng-hide='modalHidden' class='trans-layer'></div>
+<div class='modal-container-addeditsupplier' ng-class='{modalactive: !modalHidden}'>
+    <div class="wrapper">
+        <span>Id:</span><span>{{item.id}}</span>
+        <span title="Применить" class="glyphicon glyphicon-ok item-add" style="float: left;"
+              ng-show="item.name.length > 0 && item.address.length>0 && item.code.length>4"
+              ng-click="appendData()"></span>
+        <span title="Закрыть" class="glyphicon glyphicon-remove item-blank" style="float: right;"
+              ng-click="closeModal()"></span>
+        <div>
+            <div>
+                <div>
+                    <span>Наименование:</span>
+                    <span class="warning-item-input" ng-hide="item.name.length > 0">Введите наименование</span>
+                    <input type="text" class="form-control"  placeholder="Наименование"
+                           ng-model="item.name"/>
+                </div>
+                <div>
+                    <span>Адрес:</span>
+                    <span class="warning-item-input" ng-hide="item.name.length > 0">Введите адрес</span>
+                    <input type="text" class="form-control"  placeholder="Адрес:"
+                           ng-model="item.address"/>
+                </div>
+                <div>
+                    <span>Код:</span>
+                    <span class="warning-item-input" ng-hide="item.code.length > 0">Введите код</span>
+                    <input type="text" class="form-control" placeholder="БИК"
+                           ng-model="item.code"
+                           ng-change="item.code = item.code.toUpperCase()"/>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

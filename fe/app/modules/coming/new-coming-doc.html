@@ -1,0 +1,134 @@
+<div ng-transclude></div>
+
+<div class="item-input-on-panes"
+     ng-show="item.name.length > 0">
+    <item-input item="item"></item-input>
+</div>
+<div class="item-input-on-panes"
+     ng-show="reportListVisible">
+    <buyer-input buyer="buyer"></buyer-input>
+</div>
+<div>
+    <quantity-changer-modal
+            check-input = 'checkRows()'
+            after-close = 'blankSearch()'
+            modal-data="quantityChangerModalData">
+    </quantity-changer-modal>
+</div>
+<div class="menu-panel unprintable" ng-keyup="handleKeyup($event)">
+
+    <div class = "blank-search-row hoverable" ng-click="blankSearch()">
+        <input class="searchinput" name="search" placeholder="Введите штрих-код..." type="text"
+               id="new-coming-doc"
+               ng-model="barcode"
+               ng-keydown="setEanPrefix($event)"/>
+        <span style="margin-left: 5px;" class="selling-warning" ng-show="warning.length">{{warning}}</span>
+    </div>
+
+    <button class='glyphicon glyphicon-arrow-up pane-searchinput-btn'
+            title="искать по наименованию"
+            ng-disabled = "barcode.length === 0"
+            ng-click="editItem(barcode)">
+    </button>
+
+    <div class="pane-right-menu" style="width: auto;">
+        <div class="coming-pane-right-menu-option" style="width: 50%; margin-top: 1px;">
+            <print-menu
+                    report-list-visible="reportListVisible"
+                    report-id="undefined"
+                    reports = "reports">
+            </print-menu>
+        </div>
+        <div class="coming-pane-right-menu-option">
+            <stock-picker allow-all="allowAllStocks" stock="stock"></stock-picker>
+        </div>
+    </div>
+
+</div>
+
+<div class="items-table"
+     ng-show="rows.length"
+     ng-keydown="handleKeyup($event)">
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <td colspan="7">
+                    <div class="doc-and-supplier-on-new-coming">
+                        <div style="width: 65%;">
+                            <doc-input doc="doc"></doc-input>
+                        </div>
+                        <div class="totals-on-new-coming">
+                            <span style="margin-right: 10%;">{{(totals.quantity.toFixed(3)) + " ед."}}</span>
+                            <span style="color: yellow;">{{(totals.sum).toFixed(2) + " руб."}}</span>
+                        </div>
+                    </div>
+                </td>
+            </tr>
+        </thead>
+        <thead class="pane-thead">
+            <td style="width: 60px;">Номер</td>
+            <td>Наименование</td>
+            <td style="width: 100px;">Количество</td>
+            <td style="width: 115px;">Приходная</td>
+            <td style="width: 160px;">Сумма</td>
+            <td style="width: 160px;">Продажи</td>
+            <td>
+                <a href="#" title="удалить ВСЕ товары" ng-click="deleteRows()">
+                    <span class="glyphicon glyphicon-remove item-blank"></span>
+                </a>
+            </td>
+        </thead>
+        <tbody>
+            <tr class="hoverable" ng-repeat="x in rows track by $index">
+                <td class="hoverable" title="Номер">{{ $index + 1 }}</td>
+                <td class="hoverable" title="Товар">
+                    <a href="#" style="color: black; text-decoration: unset;">
+                        <span class="item-name-on-coming-item-pane"
+                              ng-click="editItem(x.item.name)">
+                            {{ x.item.name}}
+                        </span>
+                    </a>
+                </td>
+                <td class="hoverable for-sale" title="Пришло">
+                    <div>
+                        <button class='change-quantity-btn'
+                                ng-click='openQuantityChangerModal($index)'>
+                            <span unit-sensitive unit="x.item.unit" quantity="x.quantity"></span>
+                        </button>
+                    </div>
+                </td>
+                <td class="hoverable new-coming-doc-pricein" title="Цена прихода">
+                    {{x.price}}
+                    <span class="overhead-percentage"
+                        ng-show="x.price > 0 && x.priceOut > 0">
+                        {{ ((100 * x.priceOut / x.price)-100).toFixed(1) + '%'}}
+                    </span>
+                </td>
+                <td class="hoverable" title="Сумма">
+                    <input type="number" class="form-control selling-quantity"
+                           string-to-number
+                           ng-model="x.sum"
+                           ng-class="{'warning-input': x.sum==0 || ''}"/>
+                </td>
+                <td class="hoverable" title="Цена продажи">
+                    <input type="number" class="form-control selling-quantity"
+                           ng-model="x.priceOut"
+                           ng-change = 'checkRows()'
+                           ng-class="{'warning-input': x.priceOut==0||''}"/>
+                </td>
+                <td style="text-align: center; padding-top: 14px;">
+                    <a href="#" title="удалить строку" ng-click="deleteRows()">
+                        <span class="glyphicon glyphicon-remove item-blank"></span>
+                    </a>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <div class="add-coming-container-on-new-coming"
+         ng-show="canRelease">
+        <button class="add-coming-button-on-new-coming"
+                ng-click="makeComing()">
+            Оприходовать
+        </button>
+    </div>
+</div>

@@ -1,0 +1,143 @@
+<span class="glyphicon glyphicon-filter" ng-click="toggleFilter()"></span>
+<ul class="coming-filter-settings-list" ng-show="filter.visible" ng-keyup="handleKeyup($event)">
+
+    <li class="filter-row">
+        <div class="stock-container-on-coming-filter">
+            <stock-picker allow-all="allowAllStocks" stock="filter.stock"></stock-picker>
+        </div>
+        <button class="ok-btn-on-coming-filter"
+                ng-click="resetFilter()">
+            Сбросить фильтр
+        </button>
+        <button class="clear-btn-on-coming-filter"
+                ng-click="toggleFilter()" title="Закрыть">
+            Х
+        </button>
+    </li>
+    <li class="filter-row">
+        <div class="doc-date-pickers">
+            <span>c</span>
+            <input date-input class="form-control" type="date"
+                   id="filter-input"
+                   ng-readonly="filter.calcTotal"
+                   ng-model="filter.fromDate"/>
+            <span>по</span>
+            <input date-input class="form-control" type="date"
+                   ng-readonly="filter.calcTotal"
+                   ng-model="filter.toDate"/>
+        </div>
+    </li>
+
+    <li class="filter-row"
+        ng-if = "filter.hideNullQuantity != null">
+        <input style="zoom: 1.5; position: absolute;" type="checkbox" ng-model="filter.hideNullQuantity"/>
+        <label style="margin-left: 5%; margin-top: 1%;  color: coral;">
+            Убрать нулевые остатки: {{(filter.hideNullQuantity) ? "Да" : "Нет"}}
+        </label>
+    </li>
+
+    <li class="filter-row"
+        ng-if = "filter.groupByItems != null">
+        <input style="zoom: 1.5; position: absolute;" type="checkbox" ng-model="filter.groupByItems"/>
+        <label style="margin-left: 5%; margin-top: 1%;  color: coral;">
+            Группировать по товару: {{(filter.groupByItems) ? "Да" : "Нет"}}
+        </label>
+    </li>
+
+    <li class="filter-row" style="display: inline-flex;">
+        <input class="form-control" style="width: 30%;" type="number" min="1"
+               ng-readonly="filter.calcTotal"
+               ng-model="filter.rowsOnPage"/>
+        <label style="margin-left: 1%;margin-top: 1%; color: coral;">Количество строк на странице</label>
+    </li>
+
+    <li class="filter-row">
+        <div style="display: flex;">
+            <input class="form-control filter-row-two-elements" type="text"
+                   list="commentsList"
+                   placeholder="Комментарий"
+                   ng-readonly="filter.calcTotal"
+                   ng-model="filter.comment"/>
+
+            <datalist id="commentsList">
+                <option ng-repeat="x in filter.comments">
+                    {{x}}
+                </option>
+            </datalist>
+            <eraser class="filter-eraser" data="filter.comment"></eraser>
+        </div>
+    </li>
+
+    <li class="filter-row with-margin-bottom"
+        ng-if = "filter.document != null">
+        <doc-input doc="filter.document"></doc-input>
+    </li>
+
+    <li class="filter-row with-margin-bottom"
+        ng-if = "filter.supplier != null">
+        <supplier-input
+                supplier="filter.supplier"
+                suppliers="filter.suppliers">
+        </supplier-input>
+    </li>
+
+    <li class="filter-row"
+        ng-if = "filter.buyer != null">
+        <buyer-input buyer="filter.buyer" buyers="filter.buyers"></buyer-input>
+    </li>
+
+    <li class="filter-row"
+        ng-if = "filter.sectionPart != null">
+        <div style="display: flex;">
+            <input class="form-control filter-row-two-elements" type="text"
+                   placeholder="Поиск по фрагменту наименования секции"
+                   ng-readonly="filter.calcTotal"
+                   ng-change="filter.section.name=filter.sectionPart"
+                   ng-model="filter.sectionPart"/>
+            <eraser class="filter-eraser" data="filter.sectionPart"></eraser>
+        </div>
+    </li>
+
+    <li class="filter-row with-margin-bottom"
+        ng-if = "filter.section != null">
+        <div style="display: flex;">
+            <div class="filter-row-two-elements">
+                <item-section-input
+                        section="filter.section"
+                        sections="filter.sections">
+                </item-section-input>
+            </div>
+            <span class='glyphicon glyphicon-arrow-up item-arrow-up'
+                  title="найти по фрагменту"
+                  ng-click="filter.sectionPart = filter.section.name">
+            </span>
+        </div>
+    </li>
+
+    <li class="filter-row">
+        <div style="display: flex;">
+            <input class="form-control filter-row-two-elements" type="text"
+                   placeholder="Поиск по фрагменту наименования товара"
+                   ng-readonly="filter.calcTotal"
+                   ng-change="filter.item.name=filter.searchString"
+                   ng-model="filter.searchString"/>
+            <eraser class="filter-eraser" data="filter.searchString"></eraser>
+        </div>
+    </li>
+
+    <li class="filter-row">
+        <div style="display: flex;">
+            <div class="filter-row-two-elements">
+                <item-input item="filter.item"></item-input>
+            </div>
+            <span class='glyphicon glyphicon-arrow-up item-arrow-up'
+                  title="найти по фрагменту"
+                  ng-click="filter.searchString = filter.item.name">
+            </span>
+        </div>
+    </li>
+
+<!-- -&#45;&#45;-->
+
+
+</ul>
