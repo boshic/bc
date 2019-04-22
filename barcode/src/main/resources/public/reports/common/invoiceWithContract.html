@@ -2,21 +2,20 @@
 <html>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="stylesheet" href="/webjars/fe/0.1.0/css/invoice.css"/>
     <head>
         <title>Счет-договор</title>
     </head>
-    <body ng-controller="ctrlr">
+    <body ng-controller="invoiceCtrl">
         <!--ng-app="invoiceWithContract"-->
 
         <div style="margin-left: 3%;">
             <invoice-contract-header invoice-data="reportData"></invoice-contract-header>
             <invoice-body invoice-data="reportData"></invoice-body>
             <invoice-contract-body invoice-data="reportData"></invoice-contract-body>
-            <contract-footer invoice-data="reportData"></contract-footer>
+            <common-contract-footer invoice-data="reportData"></common-contract-footer>
         </div>
 
-         <script async="true" data-main="/scripts/modules/reports/common/invoiceWithContract.js"
-                 src="/scripts/libs/require.min.js">
-         </script>
+        <script src="/webjars/fe/0.1.0/invoice.js"></script>
     </body>
 </html>

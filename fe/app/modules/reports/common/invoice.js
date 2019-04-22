@@ -8,6 +8,8 @@ import '../../../factories/invoice-factory';
 import '../../../filters/num-2-phrase';
 import './parts/common-reports-parts';
 
+import '../../../../css/invoice.css';
+
         let invoiceCtrlr = (invoiceFactory, $location, $window, httpService, $s) => {
 
             $s.reportData = {};

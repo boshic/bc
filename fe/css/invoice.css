@@ -1,0 +1,22 @@
+.invoice-row-for-printing {
+    margin: 3px;
+}
+
+.invoice-body {
+    font-size: 10px!important;
+}
+
+.invoice-body-header {
+    font-weight: bold;
+    text-align: center;
+}
+
+.invoice-body-row {
+    text-align: center;
+}
+
+td.price-data {
+    text-align: center;
+    vertical-align: inherit;
+    font-size: 16px;
+}

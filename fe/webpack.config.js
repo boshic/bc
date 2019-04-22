@@ -1,5 +1,5 @@
-var packageJSON = require('./package.json');
-var path = require('path');
+const packageJSON = require('./package.json');
+const path = require('path');
 const webpack = require('webpack');
 
 const TerserJSPlugin = require('terser-webpack-plugin');
@@ -17,7 +17,8 @@ module.exports = {
     entry: {
         main:'./app/index.js',
         prices: './app/modules/reports/common/prices.js',
-        invoice: './app/modules/reports/common/invoice.js'
+        invoice: './app/modules/reports/common/invoice.js',
+        writeOffAct: './app/modules/reports/common/writeOffAct.js'
     },
 
     output: {
@@ -29,8 +30,8 @@ module.exports = {
     // watchOptions : {
     //     aggregateTimeout: 100
     // },
-   // mode: 'production',
-    mode: 'development',
+   mode: 'production',
+    // mode: 'development',
    //  mode: NODE_ENV == 'development' ? 'development' : 'production',
     devtool: NODE_ENV == 'development' ? 'source-map' : false,
     module: {
