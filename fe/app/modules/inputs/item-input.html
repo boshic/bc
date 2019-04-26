@@ -2,7 +2,7 @@
     <span class="warning-item-input" ng-show="warning">Не выбран товар!</span>
     <textarea title="Товар" rows="2" class="form-control coming-item-name"
               placeholder="Товар (введите >2 символов)"
-              id="item-input"
+              id="{{inputId}}"
               ng-keydown="setEanPrefix($event)"
               ng-model="item.name"
               ng-change="checkItem()"
@@ -22,7 +22,8 @@
                 <thead>
                 <tr>
                     <td>
-                        <a href="#" style="float: left;padding-left: 3%;" title="Добавить товар" ng-click="addEditItem(true)">
+                        <a href="#" style="float: left;padding-left: 3%;" title="Добавить товар"
+                           ng-click="addEditItem({name: item.name, ean: item.ean})">
                             <span class="glyphicon glyphicon-plus item-add"></span>
                         </a>
                     </td>
@@ -60,10 +61,12 @@
                     </td>
                     <td style="width: 100px;">
                         <span class="glyphicon glyphicon-plus item-add"
-                              title="Добавить товар копированием" ng-click="addEditItem(true)">
+                              title="Добавить товар копированием"
+                              ng-click="addEditItem({name: x.name, ean: x.ean})">
                         </span>
                         <span class="glyphicon glyphicon-pencil item-edit"
-                              title="Редактировать строку" ng-click="addEditItem(false)">
+                              title="Редактировать строку"
+                              ng-click="addEditItem(x.id)">
                         </span>
                         <span class="glyphicon glyphicon-minus item-delete"
                               title="Удалить строку" ng-click="deleteItem(false)">

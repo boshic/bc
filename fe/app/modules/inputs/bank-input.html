@@ -1,7 +1,7 @@
 <div class="dropdown">
     <span class="warning-item-input" ng-show = "warning">Не выбран банк!</span>
     <input title="{{item.name}}" type="text" class="form-control bank-ipnut" placeholder="Банк"
-           id="bank-input"
+           id="{{inputId}}"
            ng-model="item.name"
            ng-change="getItems()"
            ng-readonly="!canChange"/>
@@ -14,7 +14,8 @@
                 <thead>
                 <tr>
                     <td>
-                        <a href="#" style="float: left;padding-left: 3%;" title="Добавить банк" ng-click="addEditItem(true)">
+                        <a href="#" style="float: left;padding-left: 3%;" title="Добавить банк"
+                           ng-click="addEditItem({})">
                             <span class="glyphicon glyphicon-plus item-add"></span>
                         </a>
                     </td>
@@ -27,12 +28,13 @@
                 </tr>
                 </thead>
                 <tbody>
-                <tr class="hoverable" ng-repeat="x in items" ng-click="selectItem()">
+                <tr class="hoverable" ng-repeat="x in items"
+                    ng-click="selectItem()">
                     <td class="hoverable" title="Код">{{ x.code }}</td>
                     <td class="hoverable" title="Наименование">{{ x.name }}</td>
                     <td>
                         <a href="#" title="Редактировать строку" style="float: right;"
-                           ng-click="addEditItem(false)">
+                           ng-click="addEditItem(x.id)">
                             <span class="glyphicon glyphicon-pencil item-edit"></span>
                         </a>
                     </td>

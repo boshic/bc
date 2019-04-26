@@ -24,6 +24,13 @@ let sellingPaneCntrlr = ($s, $http, paneFactory, elem, printFactory, modalFactor
             paneFactory.getItemsForRelease( {filter: ean, stockId: $s.stock.id}, 'getComingForSell', $s);
         };
 
+        let setDefaultBuyer = () => {
+            let buyer = paneFactory.user.buyer || null;
+            if(!$s.rows.length && typeof buyer === 'object' && buyer !=null && buyer.id > 0)
+                $s.buyer = buyer;
+
+        };
+
         $s.getDiscountedPrice = paneFactory.getDiscountedPrice;
 
         $s.$watchCollection("[comment, rows, buyer, rows.length]", (nv, ov) => {
@@ -64,6 +71,7 @@ let sellingPaneCntrlr = ($s, $http, paneFactory, elem, printFactory, modalFactor
             else {
                 $s.comment = "";
                 $s.rows=[];
+                setDefaultBuyer();
             }
             $s.blankSearch();
         };
@@ -81,6 +89,7 @@ let sellingPaneCntrlr = ($s, $http, paneFactory, elem, printFactory, modalFactor
         $s.$on("tabSelected", (event, data) => {
             if (data.event != null && paneFactory.paneToggler(data.pane) === "Продавать!") {
                 $s.user = paneFactory.user;
+                setDefaultBuyer();
                 $s.blankSearch();
             }
         });

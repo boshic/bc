@@ -93,6 +93,10 @@ import snd from '../../media/audio/sell.mp3';
                     //             return p.name;
                     //     });
                     // },
+                    generateUuid: () => {
+                        return Math.random().toString(36).substring(2, 15)
+                            + Math.random().toString(36).substring(2, 15)
+                    },
                     paneToggler: (pane) => {
                         for(let p of pane.$$childTail.panes) {
                             if(p.selected)
@@ -100,20 +104,21 @@ import snd from '../../media/audio/sell.mp3';
                         };
                     },
                     changeElementState: (element, states) => {
-                        states.forEach((state) => {
-                            $timeout(function() {
-                                try {
-                                    if(state === 'focus')
-                                        this.focus();
-                                    if(state === 'select')
-                                        this.select();
-                                }
-                                catch (e) {
-                                    console.log(e.message);
-                                    // $window.location.reload();
-                                }
-                            }.bind(element), focusTimeout);
-                        });
+                        if(element != null)
+                            states.forEach((state) => {
+                                $timeout(function() {
+                                    try {
+                                        if(state === 'focus')
+                                            this.focus();
+                                        if(state === 'select')
+                                            this.select();
+                                    }
+                                    catch (e) {
+                                        console.log(e.message);
+                                        // $window.location.reload();
+                                    }
+                                }.bind(element), focusTimeout);
+                            });
                     },
                     keyupHandler: (e, callback1, callback2) => {
                         if (e.keyCode == 27)

@@ -26,8 +26,8 @@ public class WebMvcConfig extends WebMvcConfigurerAdapter {
         registry.addViewController("/").setViewName("forward:/index.html");
     }
 
-    // During development, webpack server runs on localhost:8080
-    // Make the browser happy by returning CORS headers in this case
+//     During development, webpack server runs on localhost:8080
+//     Make the browser happy by returning CORS headers in this case
     @Bean
     @Profile("dev")
     public WebMvcConfigurer corsConfigurer() {

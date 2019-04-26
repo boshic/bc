@@ -1,12 +1,12 @@
 <div class="dropdown">
     <span class="warning-item-input" ng-show="warning">Не выбран поставщик!</span>
-    <input title="{{supplier.name}}" type="text" class="form-control" placeholder="Поставщик"
-           id="supplier-input"
-           ng-model="supplier.name"
+    <input title="{{item.name}}" type="text" class="form-control" placeholder="Поставщик"
+           id="{{inputId}}"
+           ng-model="item.name"
            ng-change="getItems()"
            ng-readonly="!canChange"/>
     <span class="item-input-toolbox">
-        <item-input-total total="suppliers.length"></item-input-total>
+        <item-input-total total="items.length"></item-input-total>
     </span>
     <ul class="dropdown-menu hoverable supplier-dropdown">
         <li>
@@ -15,7 +15,7 @@
                 <tr>
                     <td style="width: 5%;">
                         <a href="#" style="float: left;padding-left: 3%;"
-                           title="Добавить поставщика" ng-click="addEditSupplier(true)">
+                           title="Добавить поставщика" ng-click="addEditItem({})">
                             <span class="glyphicon glyphicon-plus item-add"></span>
                         </a>
                     </td>
@@ -28,11 +28,11 @@
                 </tr>
                 </thead>
                 <tbody>
-                <tr class="hoverable" ng-repeat="x in suppliers">
+                <tr class="hoverable" ng-repeat="x in items">
                     <td class="hoverable" ng-click="selectSupplier()" title="Код">{{ x.id }}</td>
                     <td class="hoverable" ng-click="selectSupplier()" title="Наименование">{{ x.name }}</td>
                     <td>
-                        <a href="#" title="Редактировать строку" ng-click="addEditSupplier(false)">
+                        <a href="#" title="Редактировать строку" ng-click="addEditItem(x.id)">
                             <span class="glyphicon glyphicon-pencil item-edit"></span>
                         </a>
                         <!--<a href="#" style="float: left;" title="Удалить строку">-->

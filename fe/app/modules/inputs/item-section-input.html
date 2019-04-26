@@ -1,22 +1,22 @@
 <div class="dropdown">
     <span class="warning-item-input" ng-show = "warning">Не выбрана секция!</span>
     <div class="dropdown" style="position: absolute;"
-         ng-show="section.name.length > 0">
+         ng-show="item.name.length > 0">
         <span class="glyphicon glyphicon-filter item-input-filter"></span>
         <ul class="dropdown-menu hoverable quick-filter-comment-delete background-white">
             <word-from-phrase-eraser
-                    phrase="section.name"
+                    phrase="item.name"
                     title="наименование секции">
             </word-from-phrase-eraser>
         </ul>
     </div>
-    <input title="{{section.name}}" type="text" class="form-control section-ipnut" placeholder="Секция"
-           id="section-input"
-           ng-model="section.name"
+    <input title="{{item.name}}" type="text" class="form-control section-ipnut" placeholder="Секция"
+           id="{{inputId}}"
+           ng-model="item.name"
            ng-change="getItems()"
            ng-readonly="!canChange"/>
     <span class="item-input-toolbox">
-        <item-input-total total="sections.length"></item-input-total>
+        <item-input-total total="items.length"></item-input-total>
     </span>
     <ul class="dropdown-menu hoverable supplier-dropdown">
         <li>
@@ -24,7 +24,8 @@
                 <thead>
                 <tr>
                     <td>
-                        <a href="#" style="float: left;padding-left: 3%;" title="Добавить секцию" ng-click="addEditSection(true)">
+                        <a href="#" style="float: left;padding-left: 3%;" title="Добавить секцию"
+                           ng-click="addEditItem({})">
                             <span class="glyphicon glyphicon-plus item-add"></span>
                         </a>
                     </td>
@@ -37,7 +38,7 @@
                 </tr>
                 </thead>
                 <tbody>
-                <tr class="hoverable" style="text-align: right;" ng-repeat="x in sections">
+                <tr class="hoverable" style="text-align: right;" ng-repeat="x in items">
                     <td style="width: 50px;">
                         <span>{{ x.id }}</span>
                         <span class="item-quick-filter-icon" style="font-size: 22px;">
@@ -45,7 +46,7 @@
                             <span class="glyphicon glyphicon-filter"></span>
                             <ul class="dropdown-menu hoverable item-quick-filter-ul">
                                 <phrase-by-word-to-filter
-                                        filter="section.name"
+                                        filter="item.name"
                                         comment="x.name">
                                 </phrase-by-word-to-filter>
                             </ul>
@@ -57,7 +58,7 @@
                     </td>
                     <td style="width: 35px";>
                         <a href="#" title="Редактировать строку"
-                           ng-click="addEditSection(false)">
+                           ng-click="addEditItem(x.id)">
                             <span class="glyphicon glyphicon-pencil item-edit"></span>
                         </a>
                     </td>

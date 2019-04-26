@@ -21,11 +21,12 @@ import './modules/selling/invoices-pane';
 
 import './factories/http-service';
 import './factories/user-service';
+import './factories/buyer-factory';
 import './factories/pane-factory';
 
 
 angular.module('barcode', [
-    'common-http-service', 'user-service', 'pane-factory',
+    'common-http-service', 'user-service', 'pane-factory', 'buyer-factory',
     'inputs', 'modals', 'common-filter',
     'pane-elements', 'text-utils', 'print-menu',
     'sold-pane', 'selling-pane', 'invoices-pane',

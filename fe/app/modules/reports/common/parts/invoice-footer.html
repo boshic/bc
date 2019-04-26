@@ -15,8 +15,8 @@
         <span style="font-weight: bold;">{{(data.totals.sum).toFixed(2) | num2phrase}}</span>
     </div>
     <div>
-        <span>Счет выдал:</span>
-        <span>{{" ________________ " + data.user.position + " " + data.user.fullName }}
+        <!--<span>Счет выдал:</span>-->
+        <span>{{" ________________ " + data.stock.organization.bossPosition + " " + data.stock.organization.bossName }}
             <img class="invoice-stamp"
                  ng-if = "data.showStamp"
                  ng-src="data:image/JPEG;base64,{{data.user.stamp}}"/>

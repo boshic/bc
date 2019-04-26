@@ -1,9 +1,9 @@
-<div ng-hide='sectionModalHidden' class='trans-layer'></div>
-<div class='modal-container-addeditsupplier' ng-class='{modalactive: !sectionModalHidden}'>
+<div ng-hide='modalHidden' class='trans-layer'></div>
+<div class='modal-container-addeditsupplier' ng-class='{modalactive: !modalHidden}'>
     <div class="wrapper">
         <span>Id:</span><span>{{item.id}}</span>
         <span title="Применить" class="glyphicon glyphicon-ok item-add" style="float: left;"
-              ng-show="section.name.length > 0"
+              ng-show="item.name.length > 0"
               ng-click="appendData()"></span>
         <span title="Закрыть" class="glyphicon glyphicon-remove item-blank" style="float: right;"
               ng-click="closeModal()"></span>
@@ -11,8 +11,10 @@
             <div>
                 <div>
                     <span>Наименование</span>
-                    <span class="warning-item-input" ng-hide="section.name.length > 0">Введите наименование</span>
-                    <input type="text" class="form-control" ng-model="section.name" placeholder=""/>
+                    <span class="warning-item-input" ng-hide="item.name.length > 0">Введите наименование</span>
+                    <input type="text" class="form-control"
+                           id="{{inputId}}"
+                           ng-model="item.name" placeholder=""/>
                 </div>
             </div>
         </div>

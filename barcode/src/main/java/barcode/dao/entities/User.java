@@ -47,6 +47,11 @@ public class User {
     @JoinColumn(name = "stock_id")
     private Stock stock;
 
+    @ManyToOne
+    @JoinColumn(name = "buyer_id")
+    private Buyer buyer;
+
+
     @ElementCollection
     private Set<AllowedStock> stocksAllowed;
 
@@ -154,5 +159,13 @@ public class User {
 
     public void setUserActionsAllowed(Set<String> userActionsAllowed) {
         this.actionsAllowed = userActionsAllowed;
+    }
+
+    public Buyer getBuyer() {
+        return buyer;
+    }
+
+    public void setBuyer(Buyer buyer) {
+        this.buyer = buyer;
     }
 }

@@ -1,7 +1,3 @@
-/**
- * Created by xlinux on 23.11.18.
- */
-// define(['angular'], angular => {
     angular.module('user-service', [])
         .factory('userService',[ '$http', '$q', 'paneFactory',
             function ($http, $q, paneFactory) {
@@ -17,4 +13,3 @@
                 };
             }
         ]);
-// });

@@ -31,4 +31,10 @@ public class BuyerController {
         return this.buyerHandler.getBuyers(filter);
     }
 
+    @GetMapping(path="/getBuyerById")
+    public @ResponseBody Buyer getItemById(@RequestParam Long id) {
+        return this.buyerHandler.getBuyerById(id);
+    }
+
+
 }

@@ -1,7 +1,7 @@
 <div class="dropdown">
     <span class="warning-item-input" ng-show="warning">Не выбран покупатель!</span>
     <textarea title="Покупатель"  rows="2" class="form-control buyer-name"
-              id="buyer-input"
+              id="{{inputId}}"
               placeholder="Выберите покупателя"
               ng-model="buyer.name"
               ng-readonly="!canChange">
@@ -25,7 +25,8 @@
                 <thead>
                 <tr>
                     <td style="width: 5%;">
-                        <a href="#" style="float: left;padding-left: 3%;" title="Добавить покупателя" ng-click="addEditItem()">
+                        <a href="#" style="float: left;padding-left: 3%;" title="Добавить покупателя"
+                           ng-click="addEditItem()">
                             <span class="glyphicon glyphicon-plus item-add"></span>
                         </a>
                     </td>
@@ -44,7 +45,8 @@
                     </td>
                     <td class="hoverable" ng-click="selectItem()" title="Наименование">{{ x.name }}</td>
                     <td>
-                        <a href="#" title="Редактировать строку" ng-click="addEditItem()">
+                        <a href="#" title="Редактировать строку"
+                           ng-click="addEditItem()">
                             <span class="glyphicon glyphicon-pencil item-edit"></span>
                         </a>
                         <!--<a href="#" style="float: left;" title="Удалить строку" ng-click="deleteItem()">-->

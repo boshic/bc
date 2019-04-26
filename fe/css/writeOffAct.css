@@ -24,7 +24,8 @@
 }
 
 .edit-comment {
-    color: coral; font-size: 22px;
+    color: coral;
+    font-size: 22px;
     cursor: pointer;
     background: none;
     border: none;

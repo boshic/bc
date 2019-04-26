@@ -1,4 +1,3 @@
-import angular from 'angular';
 import userPickerTpl from './user-picker.html';
 import pagePickerTpl from './page-picker.html';
 import bankInputTpl from './bank-input.html';
@@ -12,7 +11,9 @@ import itemSectionInputTpl from './item-section-input.html';
 import addEditItemSectionTpl from './add-edit-item-section.html';
 import supplierInputTpl from './supplier-input.html';
 
-let bankInputCtrlr = ($s, httpService, paneFactory, elem, ctrlr) => {
+let bankInputCtrlr = ($s, httpService, paneFactory, itemFactory, ctrlr) => {
+
+    $s.inputId = paneFactory.generateUuid();
     $s.items = [];
     $s.item = {name:""};
     $s.warning = true;
@@ -27,7 +28,7 @@ let bankInputCtrlr = ($s, httpService, paneFactory, elem, ctrlr) => {
     $s.blankSearchAndGetItemsBy = () => {
         $s.setItem(null);
         $s.canChange = true;
-        paneFactory.changeElementState(document.getElementById('bank-ipnut'), ['focus']);
+        paneFactory.changeElementState(document.getElementById($s.inputId), ['focus']);
     };
 
     $s.checkItem = () => {
@@ -45,9 +46,8 @@ let bankInputCtrlr = ($s, httpService, paneFactory, elem, ctrlr) => {
             $s.checkItem();
     }, true);
 
-    ctrlr.getAddEditData = (scope, elem) => {
+    ctrlr.getAddEditData = (scope) => {
         $s.addEditScope = scope;
-        $s.addEditElement = elem;
     };
 
     $s.getItems = () => {
@@ -58,16 +58,8 @@ let bankInputCtrlr = ($s, httpService, paneFactory, elem, ctrlr) => {
         );
     };
 
-    $s.addEditItem = function (newItem) {
-        let item = this.x;
-        $s.addEditScope.modalHidden = false;
-        if (newItem) {
-            (item) ? $s.addEditScope.item = {name: item.name}
-                : $s.addEditScope.item = {};
-        } else {
-            $s.addEditScope.getItemById(item.id);
-        }
-        $s.addEditElement.find('.form-control').focus();
+    $s.addEditItem = (item) => {
+        return itemFactory.addEditItem(item, $s.addEditScope);
     };
 
     $s.selectItem = function() {
@@ -76,9 +68,10 @@ let bankInputCtrlr = ($s, httpService, paneFactory, elem, ctrlr) => {
 
 };
 
-let addEditBankCntrlr = ($s, httpService) => {
+let addEditBankCntrlr = ($s, httpService, paneFactory) => {
     $s.modalHidden = true;
     $s.item = {};
+    $s.inputId = paneFactory.generateUuid();
 
     $s.closeModal = () => {
         $s.modalHidden = true;
@@ -101,8 +94,9 @@ let addEditBankCntrlr = ($s, httpService) => {
     };
 };
 
-let buyerInputCntrlr = ($s, httpService, paneFactory, elem) => {
+let buyerInputCntrlr = ($s, httpService, paneFactory) => {
 
+    $s.inputId = paneFactory.generateUuid();
     $s.buyers = [];
     $s.buyer = {name:"", sellByComingPrices: false};
     $s.warning = true;
@@ -142,7 +136,7 @@ let buyerInputCntrlr = ($s, httpService, paneFactory, elem) => {
     $s.clearBuyer = () => {
         $s.buyer = {name:""};
         $s.checkItem();
-        paneFactory.changeElementState(document.getElementById('buyer-input'), ['focus']);
+        paneFactory.changeElementState(document.getElementById($s.inputId), ['focus']);
     };
 };
 
@@ -256,8 +250,9 @@ let docCtrlr = ($s, httpService) => {
 
 };
 
-let itemCntrlr = ($s, paneFactory, httpService, elem, ctrlr) => {
+let itemCntrlr = ($s, paneFactory, httpService, itemFactory, ctrlr) => {
 
+    $s.inputId = paneFactory.generateUuid();
     $s.items = [];
     $s.item = {name:""};
     $s.warning = true;
@@ -268,9 +263,8 @@ let itemCntrlr = ($s, paneFactory, httpService, elem, ctrlr) => {
             $s.checkItem();
     }, true);
 
-    ctrlr.getAddEditData = (scope, elem) => {
-        $s.childScope = scope;
-        $s.childElement = elem;
+    ctrlr.getAddEditData = (scope) => {
+        $s.addEditScope = scope;
     };
 
     $s.getItems = () => {
@@ -295,16 +289,8 @@ let itemCntrlr = ($s, paneFactory, httpService, elem, ctrlr) => {
 
     };
 
-    $s.addEditItem = function (newItem) {
-        let item = this.x;
-        $s.childScope.itemsModalHidden = false;
-        if (newItem) {
-            (item) ? $s.childScope.item = {name: item.name, section: item.section, unit: item.unit}
-                : $s.childScope.item = {name: $s.item.name, ean: $s.item.ean};
-        } else {
-            $s.childScope.getItemById(item.id);
-        }
-        $s.childElement.find('.form-control').focus();
+    $s.addEditItem = (item) => {
+        return itemFactory.addEditItem(item, $s.addEditScope);
     };
 
     ctrlr.setItem = $s.setItem = item => {
@@ -320,7 +306,7 @@ let itemCntrlr = ($s, paneFactory, httpService, elem, ctrlr) => {
     $s.blankSearchAndGetItemsBy = () => {
         $s.setItem(null);
         $s.canChange = true;
-        paneFactory.changeElementState(document.getElementById('item-input'), ['focus']);
+        paneFactory.changeElementState(document.getElementById($s.inputId), ['focus']);
     };
 
     $s.checkItem = () => {
@@ -340,11 +326,12 @@ let itemCntrlr = ($s, paneFactory, httpService, elem, ctrlr) => {
 };
 
 let addEditItemCtrlr = ($s, httpService, paneFactory) => {
-    $s.itemsModalHidden = true;
+    $s.modalHidden = true;
     $s.item = {};
+    $s.inputId = paneFactory.generateUuid();
 
     $s.closeModal = () => {
-        $s.itemsModalHidden = true;
+        $s.modalHidden = true;
     };
 
     $s.appendData = () => {
@@ -383,15 +370,16 @@ let addEditItemCtrlr = ($s, httpService, paneFactory) => {
     };
 };
 
-let sectionCntrlr = ($s, httpService, paneFactory, elem, ctrlr) => {
+let sectionCntrlr = ($s, httpService, paneFactory, itemFactory, ctrlr) => {
 
-    $s.sections = [];
-    $s.section = {name:""};
+    $s.inputId = paneFactory.generateUuid();
+    $s.items = [];
+    $s.item = {name:""};
     $s.warning = true;
     $s.canChange = false;
 
-    ctrlr.setSection = $s.setSection = section => {
-        $s.section = (section == null || (!section)) ? {name:""} : section;
+    ctrlr.setSection = $s.setSection = item => {
+        $s.item = (item == null || (!item)) ? {name:""} : item;
         $s.canChange = false;
         $s.checkSection();
     };
@@ -399,12 +387,12 @@ let sectionCntrlr = ($s, httpService, paneFactory, elem, ctrlr) => {
     $s.blankSearchAndGetItemsBy = () => {
         $s.setSection(null);
         $s.canChange = true;
-        paneFactory.changeElementState(document.getElementById('section-ipnut'), ['focus']);
+        paneFactory.changeElementState(document.getElementById($s.inputId), ['focus']);
     };
 
     $s.checkSection = () => {
         $s.getItems();
-        if ("id" in $s.section) {
+        if ("id" in $s.item) {
             $s.warning = false;
             $s.canChange = false;
         } else {
@@ -412,36 +400,26 @@ let sectionCntrlr = ($s, httpService, paneFactory, elem, ctrlr) => {
         }
     };
 
-    $s.$watch('section.name', (nv, ov) => {
-        // && 'id' in nv
+    $s.$watch('item.name', (nv, ov) => {
         if ((ov) || (nv))
             $s.checkSection();
     }, true);
 
-    ctrlr.getAddEditData = (scope, elem) => {
+    ctrlr.getAddEditData = (scope) => {
         $s.addEditScope = scope;
-        $s.addEditElement = elem;
     };
 
     $s.getItems = () => {
 
-        $s.sections=[];
-        httpService.getItems({filter: $s['section'].name}, 'getSections').then(
-            (value) => {$s.sections = value;},
-            (value) => {$s.section.name = value;}
+        $s.items=[];
+        httpService.getItems({filter: $s['item'].name}, 'getSections').then(
+            (value) => {$s.items = value;},
+            (value) => {$s.item.name = value;}
         );
     };
 
-    $s.addEditSection = function (newItem) {
-        let section = this.x;
-        $s.addEditScope.sectionModalHidden = false;
-        if (newItem) {
-            (section) ? $s.addEditScope.section = {name: section.name}
-                : $s.addEditScope.section = {};
-        } else {
-            $s.addEditScope.getItemById(section.id);
-        }
-        $s.addEditElement.find('.form-control').focus();
+    $s.addEditItem = (item) => {
+        return itemFactory.addEditItem(item, $s.addEditScope);
     };
 
     $s.selectSection = function() {
@@ -489,61 +467,52 @@ let stockCntrlr = ($s, httpService) => {
 
 };
 
-let supplierInputCntrlr = ($s, $http, paneFactory, elem, ctrlr) => {
+let supplierInputCntrlr = ($s, $http, paneFactory, itemFactory, ctrlr) => {
 
-    $s.suppliers = [];
-    $s.supplier = { name: ""};
+    $s.inputId = paneFactory.generateUuid();
+    $s.items = [];
+    $s.item = { name: ""};
     $s.warning = true;
     $s.canChange = false;
 
-    $s.$watch('supplier', () => {
-        $s.warning = (!(($s.supplier) && ("id" in $s.supplier)));
+    $s.$watch('item', () => {
+        $s.warning = (!(($s.item) && ("id" in $s.item)));
     });
 
-    ctrlr.getChildScope = (scope, elem) => {
-        $s.childScope = scope;
-        $s.childElem = elem;
+    ctrlr.getChildScope = (scope) => {
+        $s.addEditScope = scope;
     };
 
     $s.checkItem = () => {
         $s.getItems();
-        $s.warning = (!("id" in $s.supplier));
+        $s.warning = (!("id" in $s.item));
     };
 
     ctrlr.getItems = $s.getItems = () => {
         $http.get('/getSuppliers', {
-            params: { filter: $s.supplier.name }
+            params: { filter: $s.item.name }
         }).then(
-            resp => { $s.suppliers = resp.data; },
+            resp => { $s.items = resp.data; },
             () => { console.log('список поставщиков пуст!'); }
         );
     };
 
     $s.selectSupplier = function() {
-        $s.supplier = this.x;
+        $s.item = this.x;
         $s.canChange = false;
         $s.checkItem();
     };
 
-    $s.addEditSupplier = function (newSupplier) {
-        let supplier = this.x;
-        $s.childScope.modalHidden = false;
-        if (newSupplier) {
-            (supplier) ?  $s.childScope.supplier = {
-                    name: supplier.name
-                }
-                : $s.childScope.supplier = {};
-        } else {
-            $s.childScope.getSupplierById(supplier.id);
-        }
-        $s.childElem.find('.form-control').focus();
+
+    $s.addEditItem = (item) => {
+        return itemFactory.addEditItem(item, $s.addEditScope);
     };
 
     $s.blankSearchAndGetItemsBy = function() {
-        $s.supplier = { name:"" };
+        $s.item = { name:"" };
         $s.canChange = true;
         $s.checkItem();
-        paneFactory.changeElementState(document.getElementById('supplier-input'), ['focus']);
+        paneFactory.changeElementState(document.getElementById($s.inputId), ['focus']);
     };
 };
 
@@ -556,8 +525,8 @@ angular.module('inputs', [])
             scope: { item:'=bank' },
             template: bankInputTpl,
             // templateUrl: '/scripts/modules/inputs/bank-input.html',
-            controller: function ($scope, httpService, paneFactory, $element) {
-                return bankInputCtrlr($scope, httpService, paneFactory, $element, this);
+            controller: function ($scope, httpService, paneFactory, itemFactory) {
+                return bankInputCtrlr($scope, httpService, paneFactory, itemFactory, this);
             },
             link: (scope, elem) => {}
         }
@@ -569,7 +538,9 @@ angular.module('inputs', [])
             scope: {},
             template: addEditBankTpl,
             // templateUrl: '/scripts/modules/inputs/add-edit-bank.html',
-            controller:($scope, httpService) => { return addEditBankCntrlr($scope, httpService); },
+            controller:($scope, httpService, paneFactory) => {
+                return addEditBankCntrlr($scope, httpService, paneFactory);
+            },
             link: (scope, elem, attrs, itemInputCtrl) => {
                 itemInputCtrl.getAddEditData(scope, elem);
                 scope.setItem = itemInputCtrl.setItem;
@@ -582,9 +553,8 @@ angular.module('inputs', [])
             transclude: true,
             scope: { buyer: '=', buyers: '=?'},
             template: buyerInputTpl,
-            // templateUrl: '/scripts/modules/inputs/buyer-input.html',
-            controller: ($scope, httpService, paneFactory, $element) => {
-                return buyerInputCntrlr($scope, httpService, paneFactory, $element)
+            controller: ($scope, httpService, paneFactory) => {
+                return buyerInputCntrlr($scope, httpService, paneFactory)
             },
             link: () => {}
         }
@@ -615,10 +585,6 @@ angular.module('inputs', [])
                     };
                 }
             ])
-            ,
-            link: (scope, elem) => {
-                // $(elem).find('.trans-layer').on('click', event => {scope.modalVisible = false;});
-            }
         }
     })
     .directive( "commentInput", () => {
@@ -630,8 +596,8 @@ angular.module('inputs', [])
             template:
             "<div class='comment-container'>" +
             "<textarea class='form-control comment-on-selling-pane' type='text' " +
-            "placeholder='Комментарий' id='comment-input'" +
-            "ng-model='comment'>" +
+                "placeholder='Комментарий' id='comment-input'" +
+                "ng-model='comment'>" +
             "</textarea>" +
             "<eraser style='margin-top: 5px;' data='comment'></eraser>" +
             "</div>",
@@ -662,8 +628,8 @@ angular.module('inputs', [])
             scope: { item:'=', stock:'<?' },
             template: itemInputTpl,
             // templateUrl: '/scripts/modules/inputs/item-input.html',
-            controller: function ($scope, paneFactory, httpService , $element) {
-                return itemCntrlr($scope, paneFactory, httpService, $element, this);
+            controller: function ($scope, paneFactory, httpService , itemFactory) {
+                return itemCntrlr($scope, paneFactory, httpService, itemFactory, this);
             },
             link: () => {}
         }
@@ -674,7 +640,6 @@ angular.module('inputs', [])
             require: '^^itemInput',
             scope: {},
             template: addEditItemTpl,
-            // templateUrl: '/scripts/modules/inputs/add-edit-item.html',
             controller: ($scope, httpService, paneFactory) => {
                 return addEditItemCtrlr($scope, httpService, paneFactory);
             },
@@ -688,11 +653,10 @@ angular.module('inputs', [])
         return {
             restrict: 'E',
             transclude: true,
-            scope: { section:'=', sections:'=?'},
+            scope: { item:'=section', items:'=?sections'},
             template: itemSectionInputTpl,
-            // templateUrl: '/scripts/modules/inputs/item-section-input.html',
-            controller: function ($scope, httpService, paneFactory, $element) {
-                return sectionCntrlr($scope, httpService, paneFactory, $element, this);
+            controller: function ($scope, httpService, paneFactory, itemFactory) {
+                return sectionCntrlr($scope, httpService, paneFactory, itemFactory, this);
             }
         }
     })
@@ -702,17 +666,17 @@ angular.module('inputs', [])
             require: '^^itemSectionInput',
             scope: {},
             template: addEditItemSectionTpl,
-            // templateUrl: '/scripts/modules/inputs/add-edit-item-section.html',
-            controller: ($scope, httpService) => {
-                $scope.sectionModalHidden = true;
-                $scope.section = {};
+            controller: ($scope, httpService, paneFactory) => {
+                $scope.modalHidden = true;
+                $scope.item = {};
+                $scope.inputId = paneFactory.generateUuid();
 
                 $scope.closeModal = () => {
-                    $scope.sectionModalHidden = true;
+                    $scope.modalHidden = true;
                 };
 
                 $scope.appendData = () => {
-                    httpService.addItem($scope.section, 'addSection').then(
+                    httpService.addItem($scope.item, 'addSection').then(
                         resp => {
                             $scope.closeModal();
                             (resp.item == null) ?
@@ -724,7 +688,7 @@ angular.module('inputs', [])
 
                 $scope.getItemById = (id) => {
                     httpService.getItemById(id, 'getSectionById').then(
-                        value => {$scope.section = value;}
+                        value => {$scope.item = value;}
                     );
                 };
 
@@ -815,13 +779,12 @@ angular.module('inputs', [])
             restrict: 'E',
             transclude: true,
             scope: {
-                supplier: '=',
-                suppliers: '=?'
+                item: '=supplier',
+                items: '=?suppliers'
             },
             template: supplierInputTpl,
-            // templateUrl: '/scripts/modules/inputs/supplier-input.html',
-            controller: function ($scope, $http, paneFactory, $element ) {
-                return supplierInputCntrlr($scope, $http, paneFactory, $element, this);
+            controller: function ($scope, $http, paneFactory, itemFactory ) {
+                return supplierInputCntrlr($scope, $http, paneFactory, itemFactory, this);
             }
         }
     })
@@ -835,21 +798,22 @@ angular.module('inputs', [])
             "<div ng-hide='modalHidden' class='trans-layer'></div>" +
             "<div class='modal-container-addeditsupplier' ng-class='{modalactive: !modalHidden}'>" +
             "<div class='wrapper' ng-keyup='handleKeyup($event)'>" +
-            "<span>Id:</span><span>{{supplier.id}}</span>" +
+            "<span>Id:</span><span>{{item.id}}</span>" +
             "<span title='Применить' class='glyphicon glyphicon-ok item-add' style='float: left;'" +
             "ng-click='appendData()'></span>" +
             "<span title='Закрыть' class='glyphicon glyphicon-remove item-blank' style='float: right;'" +
             "ng-click='closeModal()'></span>" +
             "<div>" +
             "<span>Наименование</span>" +
-            "<input type='text' class='form-control' ng-model='supplier.name' placeholder=''/>" +
+                "<input type='text' class='form-control' " +
+                    "id='{{inputId}}' ng-model='item.name' placeholder=''/>" +
             "</div>" +
             "</div>",
-            // templateUrl: 'html/supplier/add-edit-supplier.html',
-            controller: ($scope, $http) => {
+            controller: ($scope, $http, paneFactory) => {
 
+                $scope.inputId = paneFactory.generateUuid();
                 $scope.modalHidden = true;
-                $scope.supplier = {};
+                $scope.item = {};
 
                 $scope.closeModal =  () => { $scope.modalHidden = true; };
 
@@ -859,7 +823,7 @@ angular.module('inputs', [])
                 };
 
                 $scope.appendData = () => {
-                    $http.post('/addSupplier', $scope.supplier)
+                    $http.post('/addSupplier', $scope.item)
                         .then(
                             resp => {
                                 if (resp.data.success) {
@@ -871,29 +835,21 @@ angular.module('inputs', [])
                         );
                 };
 
-                $scope.getSupplierById = id => {
-                    $http.get('/getSupplierById', {
-                        params: {
-                            id: id
-                        }
-                    }).then(
-                        resp => {
-                            $scope.supplier = resp.data;
+                $scope.getItemById = id => {
+                    $http.get('/getSupplierById', { params: { id: id }})
+                        .then(resp => {
+                            $scope.item = resp.data;
                         }
                     );
                 };
             },
             link: (scope, elem, attrs, supplierInputCtrlr) => {
-                supplierInputCtrlr.getChildScope(scope, elem);
+                supplierInputCtrlr.getChildScope(scope);
                 scope.parentScope = supplierInputCtrlr.getItems;
-                // $( elem ).find( '.trans-layer' ).on( 'click', event => {
-                //     scope.modalHidden = true;
-                //     scope.$apply();
-                // });
             }
         }
     })
-        .directive( "userPicker", () => {
+    .directive( "userPicker", () => {
             return {
                 restrict: 'E',
                 transclude: true,
@@ -910,8 +866,22 @@ angular.module('inputs', [])
                 link: (scope, elem, attrs) => {}
             }
         })
-        .component( "itemInputTotal", {
+    .component( "itemInputTotal", {
                 bindings: {total: '<'},
                 template:"<span ng-show='$ctrl.total > 1'>{{$ctrl.total}}</span>",
                 controller: function() {}
-        });
+        })
+    .factory('itemFactory',[
+        function () {
+            return {
+                addEditItem: (item, childScope) => {
+                    childScope.modalHidden = false;
+                    if (typeof item === 'object')
+                        childScope.item = item;
+                    if(typeof item === 'number' && item > 0)
+                        childScope.getItemById(item);
+                    document.getElementById(childScope.inputId).focus();
+                }
+            };
+        }
+    ]);

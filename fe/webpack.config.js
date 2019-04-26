@@ -30,9 +30,9 @@ module.exports = {
     // watchOptions : {
     //     aggregateTimeout: 100
     // },
-   mode: 'production',
-    // mode: 'development',
-   //  mode: NODE_ENV == 'development' ? 'development' : 'production',
+   // mode: 'production',
+   //  mode: 'development',
+    mode: NODE_ENV == 'development' ? 'development' : 'production',
     devtool: NODE_ENV == 'development' ? 'source-map' : false,
     module: {
         rules: [

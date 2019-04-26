@@ -12,7 +12,9 @@
                 <div>
                     <span>Наименование:</span>
                     <span class="warning-item-input" ng-hide="item.name.length > 0">Введите наименование</span>
-                    <input type="text" class="form-control"  placeholder="Наименование"
+                    <input type="text" class="form-control"
+                           id="{{inputId}}"
+                           placeholder="Наименование"
                            ng-model="item.name"/>
                 </div>
                 <div>

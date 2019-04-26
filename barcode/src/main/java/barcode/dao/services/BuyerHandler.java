@@ -56,4 +56,10 @@ public class BuyerHandler {
         }
         return null;
     }
+
+    public Buyer getBuyerById(Long id) {
+        if(id > 0)
+            return buyerRepository.findOne(id);
+        else return null;
+    }
 }

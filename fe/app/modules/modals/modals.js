@@ -1,7 +1,4 @@
-/**
- * Created by xlinux on 22.02.19.
- */
-// define(['angular'], angular => {
+
     import sellingModalTpl from './selling-modal.html';
     import movingModalTpl from './moving-modal.html';
     import invoiceModalTpl from './invoice-modal.html';
@@ -15,6 +12,7 @@
     let quantityChangerModalCtrlr = function($scope, paneFactory, elem) {
 
         let vm = this;
+        vm.cmpUuid = paneFactory.generateUuid();
 
         $scope.$watch(() => vm.modalData.row.quantity, (nv) => {
             if (angular.isDefined(nv) && nv.valueOf() >= 0) {
@@ -31,7 +29,8 @@
 
         $scope.$watch(() => vm.modalData.hidden, (nv, ov) => {
             if(!nv || ov) {
-                paneFactory.changeElementState(document.getElementById('quantity-changer'), ['focus', 'select']);
+                paneFactory.changeElementState(document.getElementById(vm.cmpUuid), ['focus', 'select']);
+
             }
         });
 
@@ -44,6 +43,7 @@
     let textEditModalCtrlr = function($scope, paneFactory, elem) {
 
         let vm = this;
+        vm.cmpUuid = paneFactory.generateUuid();
 
         let causes = [{id: '1', name: 'Другое'},{id: '2', name: 'Причина списания'}];
 
@@ -68,7 +68,9 @@
 
         $scope.$watch(() => vm.modalData.hidden, (nv, ov) => {
             if(!nv || ov) {
-                paneFactory.changeElementState(document.getElementById('comment-input'), ['focus', 'select']);
+                let textInput = document.getElementById(vm.cmpUuid) || undefined;
+                if(angular.isDefined(textInput))
+                    paneFactory.changeElementState(textInput.querySelector('#comment-input'), ['focus', 'select']);
                 vm.commentCause.selectedOption = selectCommentCause(vm.modalData.row.commentCause);
             }
         });
@@ -279,7 +281,7 @@
                         "</div>" +
                         "<input type='number' class='form-control quantity-changer-input'" +
                             "min='0' max='$ctrl.modalData.row.currentQuantity'" +
-                            "id ='quantity-changer'" +
+                            "id = '{{$ctrl.cmpUuid}}'" +
                             "ng-model='$ctrl.modalData.row.quantity'/>" +
                         "<span class='item-input-toolbox current-quantity-on-changer-modal' " +
                             "ng-show='$ctrl.modalData.row.currentQuantity > 0'>" +
@@ -310,7 +312,7 @@
                     "ng-options='option.name for option in $ctrl.commentCause.causes track by option.id'" +
                     "ng-model='$ctrl.commentCause.selectedOption'></select></div>" +
             "</div>" +
-            "<div class='comment-input-on-text-modal'>" +
+            "<div class='comment-input-on-text-modal' id = '{{$ctrl.cmpUuid}}'>" +
                 "<comment-input ng-model='$ctrl.modalData.row.comment'></comment-input>" +
             "</div>" +
             "<div>" +
