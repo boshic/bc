@@ -79,7 +79,8 @@ let sellingPaneCntrlr = ($s, $http, paneFactory, elem, printFactory, modalFactor
         $s.setReportData = () => {
             let data = { stock: $s.stock, buyer: $s.buyer, comment: $s.comment, rows: $s.rows};
             printFactory.setReportsByParams([{type: 'invoiceWithContract', data: data, method: 'addInvoice'},
-                {type: 'invoice', data: data, method: 'addInvoice'}], $s.reports);
+                {type: 'invoice', data: data, method: 'addInvoice'},
+                {type: 'salesReceipt', data: data, method: 'addInvoice'}], $s.reports);
         };
 
         $s.checkRows = () => {

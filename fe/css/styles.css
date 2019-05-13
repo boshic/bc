@@ -1321,6 +1321,11 @@ input.warning-input {
     border: 3px solid coral;
 }
 
+td.warning-input {
+    background: coral;
+}
+
+
 .stock-icon {
     font-size: 24px;
     margin-right: 3px;
@@ -1975,8 +1980,20 @@ td.quick-filter {
 .quantity-changer-input {
     font-size: 100px;
     height: 150px;
-    text-align: center;
+    text-align: right;
     color: black;
+    border: none;
+    border-radius: unset;
+    box-shadow: none;
+
+}
+
+.quantity-rest-container {
+    background: white;
+    width: 40%;
+    font-size: 70px;
+    line-height: 2.1;
+    color: coral;
 }
 
 .quantity-changer-btn {
@@ -1988,6 +2005,7 @@ td.quick-filter {
 }
 
 .change-quantity-btn {
+    min-height: 35px;
     width: 100%;
     font-size: 25px;
     background: inherit;

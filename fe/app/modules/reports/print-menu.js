@@ -79,11 +79,13 @@
         })
         .factory('printFactory',[
             function () {
+                // salesReceipt.html
                 let reports =   [
                     {id:1, allowNoId: true, name:'Счет', group: 'common',type: 'invoice'},
                     {id:2, allowNoId: true, name:'Счет-договор', group: 'common', type: 'invoiceWithContract'},
                     {id:3, allowNoId: true, name:'Акт на списание', group: 'common', type: 'writeOffAct'},
-                    {id:4, allowNoId: true, name:'Ценники', group: 'common', type: 'prices'}
+                    {id:4, allowNoId: true, name:'Товарный чек', group: 'common', type: 'salesReceipt'},
+                    {id:5, allowNoId: true, name:'Ценники', group: 'common', type: 'prices'}
                 ];
                 return {
                     getReports: () => {

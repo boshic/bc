@@ -15,21 +15,29 @@
                    id = "{{inputId}}"
                    ng-model="item.name" placeholder=""/>
             <div>
-                <div>
-                    <span>Еденица измерения</span>
+                <div style="display: flex;">
+                    <span style="width: 50%;">Единица измерения</span>
+                    <span style="width: 50%;">Количество для подбора</span>
+                </div>
+                <div style="display: flex;margin-bottom: 10px;">
                     <span class="warning-item-input" ng-hide="item.unit.length > 0">Введите единицу измерения</span>
-                    <input type="text" class="form-control" ng-model="item.unit" list="measure-units" placeholder=""/>
+                    <input style = "width: 50%; text-align: center;" type="text"
+                           class="form-control"
+                           ng-model="item.unit" list="measure-units" placeholder=""/>
                     <datalist id="measure-units" >
-                        <option >шт</option>
-                        <option >л</option>
-                        <option >кг</option>
-                        <option >м</option>
-                        <option >к-т</option>
+                        <option>шт</option>
+                        <option>л</option>
+                        <option>кг</option>
+                        <option>м</option>
+                        <option>к-т</option>
                     </datalist>
+                    <input style = "width: 50%; text-align: center;" type="number"
+                           class="form-control" min="0"
+                           ng-model="item.predefinedQuantity" placeholder=""/>
                 </div>
                 <div style="display: flex;">
-                    <span style="width: 40%;">Штрих-код</span>
-                    <span style="width: 60%;">Секция</span>
+                    <span style="width: 50%;">Штрих-код</span>
+                    <span style="width: 50%;">Штрих-код синоним</span>
                 </div>
                 <div style="display: flex;margin-bottom: 10px;">
                     <span class="warning-item-input"
@@ -40,13 +48,19 @@
                                 ng-disabled="item.ean.length === 13"
                                 ng-click="getNextId()"></button>
                     <eraser style="margin-top: 6px;" data="item.ean"></eraser>
-                    <input  style="width: 37%;"
+                    <input  style="width: 47%;"
                             type="text" class="form-control" maxlength="13" placeholder=""
                             ng-keydown="setEanPrefix($event)"
                             ng-model="item.ean"/>
-                    <div style="width: 60%;">
-                        <item-section-input section="item.section"></item-section-input>
+                    <div style="width: 50%;">
+                        <input type="text" class="form-control" maxlength="13" placeholder=""
+                                ng-keydown="setEanPrefix($event)"
+                                ng-model="item.eanSynonym"/>
                     </div>
+                </div>
+                <div>
+                    <span>Секция</span>
+                    <item-section-input section="item.section"></item-section-input>
                 </div>
             </div>
         </div>

@@ -15,6 +15,7 @@ public class MainController {
 
     @GetMapping("/home")
     public String redirectHome() {
+
         return "home";
     }
 
@@ -23,9 +24,16 @@ public class MainController {
         return "mainPage";
     }
 
+//    @GetMapping("/public")
+//    public String redirectPublic() {
+//
+//        return "public";
+//    }
+
+
     @GetMapping("/")
     public String redirectRoot() {
-        return "redirect:/mainPage";
+        return "redirect:/public/";
     }
 
 }

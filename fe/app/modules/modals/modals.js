@@ -15,12 +15,14 @@
         vm.cmpUuid = paneFactory.generateUuid();
 
         $scope.$watch(() => vm.modalData.row.quantity, (nv) => {
-            if (angular.isDefined(nv) && nv.valueOf() >= 0) {
-                vm.modalData.row.quantity = paneFactory.checkNumberLimit(vm.modalData.row.quantity,
-                    vm.modalData.row.currentQuantity);
-                if(vm.checkInput)
-                    vm.checkInput();
+            if (nv >= 0) {
+                vm.modalData.row.quantity =
+                    paneFactory.checkNumberLimit(vm.modalData.row.quantity, vm.modalData.row.currentQuantity);
             }
+
+            if(vm.checkInput)
+                vm.checkInput();
+
         });
 
         vm.closeModal = () => {
@@ -279,16 +281,20 @@
                         "<div style='font-size: 18px;' ng-show='$ctrl.modalData.row.commentCause.length'>" +
                             "<comment-input ng-model='$ctrl.modalData.row.comment'></comment-input>" +
                         "</div>" +
-                        "<input type='number' class='form-control quantity-changer-input'" +
-                            "min='0' max='$ctrl.modalData.row.currentQuantity'" +
-                            "id = '{{$ctrl.cmpUuid}}'" +
-                            "ng-model='$ctrl.modalData.row.quantity'/>" +
-                        "<span class='item-input-toolbox current-quantity-on-changer-modal' " +
-                            "ng-show='$ctrl.modalData.row.currentQuantity > 0'>" +
-                            "<span>Доступно:</span>" +
-                            "<span>{{' ' + $ctrl.modalData.row.currentQuantity + $ctrl.modalData.row.coming.item.unit || 'ед.'}}</span>" +
-                        "</span>" +
-
+                        "<div style='display: flex;'>" +
+                            "<div style='width: 60%;'>" +
+                                "<input type='number' class='form-control quantity-changer-input'" +
+                                    "min='0' max='$ctrl.modalData.row.currentQuantity'" +
+                                    "id = '{{$ctrl.cmpUuid}}'" +
+                                    "ng-model='$ctrl.modalData.row.quantity'/>" +
+                            "</div>"+
+                            "<div class='quantity-rest-container'>" +
+                                "<span ng-show='$ctrl.modalData.row.currentQuantity > 0'>" +
+                                    "<span>из:</span>" +
+                                    "<span>{{' ' + $ctrl.modalData.row.currentQuantity + $ctrl.modalData.row.coming.item.unit || 'ед.'}}</span>" +
+                                "</span>" +
+                            "</div>" +
+                        "</div>"+
             "</div>" +
                 "</div>" +
                 "<div>" +

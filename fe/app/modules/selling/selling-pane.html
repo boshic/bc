@@ -105,7 +105,9 @@
                     <input type="number" class="form-control selling-quantity"
                            ng-model="x.vat" min="0"/>
                 </td>
-                <td class="hoverable for-sale" title="К продаже">
+                <td class="hoverable for-sale"
+                    ng-class="{'warning-input': x.quantity === 0|| x.quantity === null}"
+                    title="К продаже">
                     <div>
                         <button class='change-quantity-btn'
                                 ng-click='openQuantityChangerModal($index)'>

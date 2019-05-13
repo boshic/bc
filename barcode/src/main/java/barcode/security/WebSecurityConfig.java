@@ -45,9 +45,17 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
             http.csrf().disable();
             http
                 .authorizeRequests()
-                .antMatchers("/findComingItemByFilter","/tools/getHashedPass",
-                        "/tools/pdfreport", "/makeAutoMovings",
-                            "/addAutoSellings", "/addComings", "/home", "/getInvoicesFor1c").permitAll()
+                .antMatchers("/findComingItemByFilter",
+                        "/tools/getHashedPass",
+                        "/tools/pdfreport",
+                        "/makeAutoMovings",
+                        "/public/**",
+                        "/webjars/fe/0.1.0/css/public**/**",
+                        "/",
+                        "/addAutoSellings",
+                        "/addComings",
+                        "/home",
+                        "/getInvoicesFor1c").permitAll()
 //                .antMatchers("/addComings").hasRole("ADMIN")
 //                    .access("hasRole('ADMIN')")
                 .anyRequest().authenticated()

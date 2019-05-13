@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link rel="stylesheet" href="/webjars/fe/0.1.0/css/invoice.css"/>
+<head>
+    <title>Счет-фактура</title>
+</head>
+<body ng-controller="invoiceCtrl">
+
+    <div style="margin-left: 3%; margin-right: 1%; font-family: Times; ">
+         <div style="font-size: 24px; border-bottom: 1px solid black; text-align: center;">
+             {{reportData.stock.organization.name + ', ' + reportData.stock.organization.regNum}}
+         </div>
+
+        <div style="text-align: center; line-height: 1.3;">
+            (наименование организации, УНН)
+        </div>
+
+        <div style="font-size: 24px; text-align: center;">
+            <span>Товарный чек от </span>
+            <span>{{reportData.date | date:'dd.MM.yyyy HH:mm' }}</span>
+        </div>
+
+        <div>
+            <table class="table table-bordered"
+                   style="width: 98%; margin-left: 1%;">
+                <thead>
+                <tr style="font-weight: bold; text-align: center;">
+                    <td style="width: 5%;">№ п/п</td>
+                    <td>Номенклатура</td>
+                    <td style="width: 5%;">Ед. изм.</td>
+                    <td style="width: 7%;">Количество</td>
+                    <td style="width: 7%;">Цена, бел.руб.</td>
+                    <td style="width: 8%;">Сумма, бел.руб.</td>
+                </tr>
+                </thead>
+                <tbody>
+                <tr ng-repeat="row in reportData.rows track by $index">
+                    <td style="text-align: center;">{{$index + 1}}</td>
+                    <td>{{row.item.name + '('+ row.item.ean + ')'}}</td>
+                    <td style="text-align: center;">{{row.item.unit}}</td>
+                    <td style="text-align: center;">{{row.quantity}}</td>
+                    <td style="text-align: center;">{{row.price}}</td>
+                    <td style="text-align: center;">{{(row.quantity*row.price).toFixed(2)}}</td>
+                </tr>
+                </tbody>
+                <tfoot>
+                <tr style="font-weight: bold;">
+                    <td colspan="3" style="text-align: right;">ИТОГО:</td>
+                    <td style="text-align: center;">{{reportData.totals.quantity}}</td>
+                    <td style="text-align: center;"></td>
+                    <td style="text-align: center;">{{(reportData.totals.sum).toFixed(2)}}</td>
+                </tr>
+                </tfoot>
+            </table>
+        </div>
+
+        <div style="font-weight: bold;">
+            <span>Всего отпущено на сумму:</span>
+            <span>{{(reportData.totals.sum).toFixed(2) | num2phrase}}</span>
+        </div>
+
+        <div style="margin-top: 10px; font-weight: normal;">
+            <div style="display: flex;  height: 22px;">
+                <div style="width: 20%">{{'Выдал ' + reportData.user.position}}</div>
+                <div style="width: 10%; text-align: center;">_______________</div>
+                <div style="text-decoration:underline; width: 20%; text-align: center;">{{reportData.user.fullName}}</div>
+            </div>
+            <div style="display: flex; line-height: 0.6;">
+                <div style="width: 20%;"></div>
+                <div style="width: 10%; text-align: center;">(подпись)</div>
+                <div style="width: 20%; text-align: center;">(расшифровка)</div>
+            </div>
+        </div>
+
+
+    </div>
+
+    <script src="/webjars/fe/0.1.0/invoice.js"></script>
+</body>
+</html>

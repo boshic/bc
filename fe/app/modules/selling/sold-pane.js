@@ -25,6 +25,7 @@ import soldPaneTpl from './sold-pane.html';
             if($s.filter.buyer.id > 0)
                 printFactory.setReportsByParams(
                     [{type: 'writeOffAct', data: $s.filter, method: 'addWriteOffAct'},
+                        {type: 'salesReceipt', data: $s.filter, method: 'addInvoiceByFilter'},
                         {type: 'invoice', data: $s.filter, method: 'addInvoiceByFilter'}], $s.reports);
         };
 

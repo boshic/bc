@@ -36,7 +36,9 @@ import newComingDocPaneTpl from './new-coming-doc.html';
             if(angular.isDefined($s.doc.id))
                 printFactory.setReportsByParams([{type: 'prices', data, method: 'addComingReport'}], $s.reports);
             if(angular.isDefined($s.buyer.id))
-                printFactory.setReportsByParams([{type: 'invoiceWithContract', data, method: 'addInvoice'},
+                printFactory.setReportsByParams([
+                    {type: 'salesReceipt', data, method: 'addInvoice'},
+                    {type: 'invoiceWithContract', data, method: 'addInvoice'},
                         {type: 'invoice', data, method: 'addInvoice'}], $s.reports);
         };
 

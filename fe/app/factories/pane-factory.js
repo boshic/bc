@@ -221,15 +221,23 @@ import snd from '../../media/audio/sell.mp3';
                         $s.totals = calcTotals($s.rows, $s.buyer.discount);
                         $s.reports = [];
                         if (angular.isDefined($s.buyer.id) && ($s.rows.length)) {
-                            $s.rows.forEach(row => {
-                                  if (!row.quantity || !row.price) {
-                                        return $s.canRelease = false;
-                                    }
-                                    row.user = user;
-                                    row.buyer = $s.buyer;
-                                    row.comment = $s.comment;
-                                }
-                            );
+                            // $s.rows.forEach(row => {
+                            //       if (!row.quantity || !row.price) {
+                            //             return $s.canRelease = false;
+                            //         }
+                            //         row.user = user;
+                            //         row.buyer = $s.buyer;
+                            //         row.comment = $s.comment;
+                            //     }
+                            // );
+                            for(let row of $s.rows) {
+                                      if (!row.quantity > 0 || !row.price) {
+                                            return $s.canRelease = false;
+                                        }
+                                        row.user = user;
+                                        row.buyer = $s.buyer;
+                                        row.comment = $s.comment;
+                            };
                             $s.canRelease = true;
                             $s.setReportData();
                         }

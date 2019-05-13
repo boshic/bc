@@ -16,6 +16,7 @@ module.exports = {
     // context: __dirname,
     entry: {
         main:'./app/index.js',
+        public:'./public/public.js',
         prices: './app/modules/reports/common/prices.js',
         invoice: './app/modules/reports/common/invoice.js',
         writeOffAct: './app/modules/reports/common/writeOffAct.js'
@@ -64,9 +65,23 @@ module.exports = {
                 }
             },
             {
+                test: /\.(jpe?g|png|gif|svg)$/i,
+                include: [
+                    path.resolve(__dirname, "css/public")
+                ],
+                loader: 'file-loader',
+                options: {
+                    limit: 30000,
+                    name:'./css/public_img/[name].[ext]'
+                }
+            },
+            {
                 // test: /\.css$/,
                 // use: [MiniCssExtractPlugin.loader, 'css-loader'],
                 test: /\.css$/,
+                // exclude: [
+                //     path.resolve(__dirname, "css/public")
+                // ],
                 use: [
                     {
                         loader: MiniCssExtractPlugin.loader,
