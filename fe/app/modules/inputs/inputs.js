@@ -357,10 +357,10 @@ let addEditItemCtrlr = ($s, httpService, paneFactory) => {
             );
     };
 
-    $s.setEanPrefix = e => {
+    $s.setEanPrefix = (e, field) => {
         // if (e.ctrlKey && e.keyCode === panFactory.eanPrefix.keyCode)
         //     $s.item.ean = paneFactory.generateEan($s.item.name);
-        $s.item.ean = paneFactory.generateEanByKey(e, $s.item.ean);
+        $s.item[field] = paneFactory.generateEanByKey(e, $s.item[field]);
     };
 
     $s.getItemById = (id) => {

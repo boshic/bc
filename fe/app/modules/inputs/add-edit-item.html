@@ -4,6 +4,8 @@
         <span>Id:</span><span>{{item.id}}</span>
         <span title="Применить" class="glyphicon glyphicon-ok item-add" style="float: left;"
               ng-show="item.name.length>0 && item.unit.length > 0 && item.ean > 0
+                        && (item.eanSynonym.length == 13 || item.eanSynonym.length == 0)
+                        && item.predefinedQuantity >= 0
                         && item.ean.length == 13 && item.section.id > 0"
               ng-click="appendData()"></span>
         <span title="Закрыть" class="glyphicon glyphicon-remove item-blank" style="float: right;"
@@ -31,6 +33,8 @@
                         <option>м</option>
                         <option>к-т</option>
                     </datalist>
+                    <span style="    margin-left: 50%;" class="warning-item-input"
+                          ng-hide="item.predefinedQuantity >= 0">Неверное количество для подбора</span>
                     <input style = "width: 50%; text-align: center;" type="number"
                            class="form-control" min="0"
                            ng-model="item.predefinedQuantity" placeholder=""/>
@@ -48,15 +52,20 @@
                                 ng-disabled="item.ean.length === 13"
                                 ng-click="getNextId()"></button>
                     <eraser style="margin-top: 6px;" data="item.ean"></eraser>
-                    <input  style="width: 47%;"
+                    <input  style="width: 45%;"
                             type="text" class="form-control" maxlength="13" placeholder=""
-                            ng-keydown="setEanPrefix($event)"
+                            ng-keydown="setEanPrefix($event, 'ean')"
                             ng-model="item.ean"/>
-                    <div style="width: 50%;">
-                        <input type="text" class="form-control" maxlength="13" placeholder=""
-                                ng-keydown="setEanPrefix($event)"
-                                ng-model="item.eanSynonym"/>
-                    </div>
+
+                    <span style="right: 80px;" class="warning-item-input"
+                          ng-hide="item.eanSynonym.length == 13 || item.eanSynonym.length == 0">
+                        Неверно указан штрих-код синоним
+                    </span>
+                    <input style="width: 49%;" type="text"
+                           class="form-control" maxlength="13" placeholder=""
+                           ng-keydown="setEanPrefix($event, 'eanSynonym')"
+                           ng-model="item.eanSynonym"/>
+                    <eraser style="margin-top: 6px;" data="item.eanSynonym"></eraser>
                 </div>
                 <div>
                     <span>Секция</span>

@@ -191,9 +191,10 @@ public class ComingItemHandler extends EntityHandlerImpl {
 //        return comingItemRepository.findAll(spec);
     }
 
+
     public ResponseItem<ComingItem> getComingForSell(String ean, Long stockId) {
 
-        Item item = itemHandler.getItemByEan(ean);
+        Item item = itemHandler.getItemByEanSynonim(ean);
 
         if (item == null)
             return new ResponseItem<ComingItem>("не найден товар с заданным ШК: " + ean, false);
@@ -209,7 +210,7 @@ public class ComingItemHandler extends EntityHandlerImpl {
         List<ComingItem> comings = getComingItemByIdAndStockId(item.getId(), stockId);
 
         if ( comings.size() > 0 ) {
-            comingItem.setQuantity(BigDecimal.ONE);
+            comingItem.setQuantity(item.getPredefinedQuantity());
 
             for (ComingItem c : comings) {
 
@@ -417,10 +418,13 @@ public class ComingItemHandler extends EntityHandlerImpl {
 
     public DtoItemForNewComing getItemForNewComing(String ean) {
 
-        ComingItem coming = comingItemRepository.findTopPriceOutByItemEanOrderByIdDesc(ean);
+        Item item = itemHandler.getItemByEanSynonim(ean);
+
+        ComingItem coming
+                = comingItemRepository.findTopPriceOutByItemEanOrderByIdDesc(item.getEan());
 
         if(coming == null)
-            return new DtoItemForNewComing(itemHandler.getItemByEan(ean), BigDecimal.ZERO, BigDecimal.ZERO);
+            return new DtoItemForNewComing(item, BigDecimal.ZERO, BigDecimal.ZERO);
 
         return new DtoItemForNewComing(coming.getItem(), coming.getPriceIn(), coming.getPriceOut());
     }

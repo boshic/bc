@@ -125,7 +125,8 @@ import newComingDocPaneTpl from './new-coming-doc.html';
                                 }
                                 if(key === 'sum') {
                                     nv[i].sum = (nv[i].sum < 0)? 0 : nv[i].sum;
-                                    nv[i].price = (nv[i].sum/nv[i].quantity).toFixed(4);
+                                    if(nv[i].quantity > 0)
+                                        nv[i].price = (nv[i].sum/nv[i].quantity).toFixed(4);
                                 }
                                 $s.checkRows();
                             }

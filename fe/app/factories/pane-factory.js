@@ -183,17 +183,23 @@ import snd from '../../media/audio/sell.mp3';
                                     row.vat = $s.stock.organization.vatValue;
 
                                     let index = checkDuplicateRows(row, $s.rows);
+                                    let isFractional = fractionalUnits.indexOf(row.item.unit) >= 0;
+                                    let quantity = row.quantity;
+
                                     if (index < 0) {
-                                        $s.rows.splice(0, 0, row);
+                                        $s.rows.splice(0, 0, angular.extend({}, row));
                                         index = 0;
-                                    } else {
-                                        $s.rows[index].quantity += 1;
+                                        isFractional ? $s.rows[index].quantity = quantity :
+                                            $s.rows[index].quantity = quantity || 1;
                                     }
+                                    else
+                                        isFractional ? $s.rows[index].quantity += quantity :
+                                            $s.rows[index].quantity += quantity || 1;
 
                                     $s.checkRows();
 
-                                    if(fractionalUnits.indexOf(row.item.unit) >= 0) {
-                                        $s.rows[index].quantity = 0;
+                                    if(isFractional && !quantity) {
+                                        // $s.rows[index].quantity = 0;
                                         $s.openQuantityChangerModal(index);
                                     }
                                 } else {
@@ -209,7 +215,6 @@ import snd from '../../media/audio/sell.mp3';
                         let f = first.getTime ? first.getTime() : first;
                         let s = second.getTime ? second.getTime() : second;
 
-                        // (typeof first == 'object') && (typeof second == 'object')
                         if(angular.isObject(f, s))
                             return (('id' in f) && ('id' in s)) ? f.id === s.id :
                                 !(('id' in f) || ('id' in s));
@@ -221,15 +226,6 @@ import snd from '../../media/audio/sell.mp3';
                         $s.totals = calcTotals($s.rows, $s.buyer.discount);
                         $s.reports = [];
                         if (angular.isDefined($s.buyer.id) && ($s.rows.length)) {
-                            // $s.rows.forEach(row => {
-                            //       if (!row.quantity || !row.price) {
-                            //             return $s.canRelease = false;
-                            //         }
-                            //         row.user = user;
-                            //         row.buyer = $s.buyer;
-                            //         row.comment = $s.comment;
-                            //     }
-                            // );
                             for(let row of $s.rows) {
                                       if (!row.quantity > 0 || !row.price) {
                                             return $s.canRelease = false;

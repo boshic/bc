@@ -3,6 +3,7 @@ package barcode.dao.entities;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
+import java.math.BigDecimal;
 import java.util.Set;
 
 @Entity // This tells Hibernate to make a table out of this class
@@ -14,6 +15,12 @@ public class Item {
     private String name;
 //    private BigDecimal price;
     private String ean;
+
+    @Column(name = "ean_synonym", columnDefinition="varchar(13) COLLATE utf8_general_ci default ''")
+    private String eanSynonym;
+
+    @Column(name = "predefined_quantity", columnDefinition="Decimal(9,2) default '0.00'")
+    private BigDecimal predefinedQuantity;
 
     @Column(name = "unit", nullable = false)
     private String unit;
@@ -70,6 +77,22 @@ public class Item {
 
     public void setSection(ItemSection section) {
         this.section = section;
+    }
+
+    public String getEanSynonym() {
+        return eanSynonym;
+    }
+
+    public void setEanSynonym(String eanSynonym) {
+        this.eanSynonym = eanSynonym;
+    }
+
+    public BigDecimal getPredefinedQuantity() {
+        return predefinedQuantity;
+    }
+
+    public void setPredefinedQuantity(BigDecimal predefinedQuantity) {
+        this.predefinedQuantity = predefinedQuantity;
     }
 
     @Override

@@ -5,6 +5,7 @@ import barcode.dao.repositories.ItemRepository;
 import barcode.dto.ResponseItem;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 @Service
@@ -25,6 +26,10 @@ public class ItemHandler {
         item.setUnit(newItem.getUnit());
 
         item.setEan(newItem.getEan());
+
+        item.setEanSynonym(newItem.getEanSynonym());
+
+        item.setPredefinedQuantity(newItem.getPredefinedQuantity());
 
         if(newItem.getSection()!= null)
             item.setSection(newItem.getSection());
@@ -98,11 +103,23 @@ public class ItemHandler {
         return itemRepository.findTopByOrderByIdDesc().getId().toString();
     }
 
-    public Item getItemByEan (String ean) {
+    Item getItemByEan (String ean) {
 
         System.out.println(ean);
         return  itemRepository.findOneByEan(ean);
 //        return itemRepository.findOneByEan(ean);
+    }
+
+    Item getItemByEanSynonim (String ean) {
+        Item item = itemRepository.findOneByEan(ean);
+
+        if(item != null && item.getEanSynonym().length() == 13) {
+            BigDecimal predefinedQuantity = item.getPredefinedQuantity();
+            item = itemRepository.findOneByEan(item.getEanSynonym());
+            item.setPredefinedQuantity(predefinedQuantity);
+        }
+
+        return item;
     }
 
 }
