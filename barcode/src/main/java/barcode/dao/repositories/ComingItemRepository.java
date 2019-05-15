@@ -24,4 +24,5 @@ public interface ComingItemRepository extends CrudRepository<ComingItem, Long>,
     Page<ComingItem> findAll(Predicate predicate, Pageable pageable);
 
     ComingItem findTopPriceOutByItemEanOrderByIdDesc(String ean);
+    List<ComingItem> findByItemEan(String ean);
 }

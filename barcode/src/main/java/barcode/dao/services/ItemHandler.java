@@ -1,6 +1,8 @@
 package barcode.dao.services;
 
+import barcode.dao.entities.ComingItem;
 import barcode.dao.entities.Item;
+import barcode.dao.repositories.ComingItemRepository;
 import barcode.dao.repositories.ItemRepository;
 import barcode.dto.ResponseItem;
 import org.springframework.stereotype.Service;
@@ -11,9 +13,17 @@ import java.util.List;
 @Service
 public class ItemHandler {
 
+    private static Integer EAN_LENGTH = 13;
+    private static String BAD_EAN_SYNONYM = "Товар имеет приходы, или указанный ШК уже имеет синоним!";
+    private static String ITEM_ALREADY_EXIST = "С заданным ШК товар уже существует, добавление не состоится";
+
     private ItemRepository itemRepository;
 
-    public ItemHandler(ItemRepository itemRepository) {
+    private ComingItemRepository comingItemRepository;
+
+    public ItemHandler(ItemRepository itemRepository, ComingItemRepository comingItemRepository) {
+
+        this.comingItemRepository = comingItemRepository;
 
         this.itemRepository = itemRepository;
 
@@ -27,9 +37,15 @@ public class ItemHandler {
 
         item.setEan(newItem.getEan());
 
-        item.setEanSynonym(newItem.getEanSynonym());
+        String eanSynonym = newItem.getEanSynonym() == null ? "" : newItem.getEanSynonym();
+        if(isAllowedEanSynonym(newItem.getEan(), eanSynonym))
+           item.setEanSynonym(eanSynonym);
+        else {
+            newItem.setEanSynonym(BAD_EAN_SYNONYM);
+            return new ResponseItem<Item>(BAD_EAN_SYNONYM + " " + newItem.getName(), false, newItem);
+        }
 
-        item.setPredefinedQuantity(newItem.getPredefinedQuantity());
+        item.setPredefinedQuantity(newItem.getPredefinedQuantity() == null ? BigDecimal.ZERO : newItem.getPredefinedQuantity());
 
         if(newItem.getSection()!= null)
             item.setSection(newItem.getSection());
@@ -39,13 +55,27 @@ public class ItemHandler {
         return new ResponseItem<Item>("Создание нового товара " + item.getName(), true, item);
     }
 
+    private boolean isAllowedEanSynonym(String ean, String eanSynonym) {
+
+        return eanSynonym.length() != EAN_LENGTH ||
+                (comingItemRepository.findByItemEan(ean).size() == 0
+                && itemRepository.findOneByEan(eanSynonym).getEanSynonym().length() != EAN_LENGTH);
+    };
+
+    private ResponseItem<Item> duplicateEanError(Item item) {
+        item.setEan(ITEM_ALREADY_EXIST);
+        return new ResponseItem<Item>(ITEM_ALREADY_EXIST, false, item);
+    }
+
     public ResponseItem<Item> addItem(Item model) {
 
         if (itemRepository.findByEanOrderByNameDesc(model.getEan()).size() == 0)
             return update(model, new Item());
 
         else
-            return new ResponseItem<Item>("Для " + model.getName() + " уже существует товар с таким ШК!");
+            return duplicateEanError(model);
+
+
     }
 
     public ResponseItem<Item> updateItem(Item newItem) {
@@ -56,9 +86,9 @@ public class ItemHandler {
                 ((items.size() == 1) && (items.get(0).getId().equals(newItem.getId()))))
             return update(newItem, getItemById(newItem.getId()));
 
-         else
-            return new ResponseItem<Item>("Для " + newItem.getName() +
-                    " уже существует товар с таким ШК!");
+        else
+            return duplicateEanError(newItem);
+
     }
 
     public List<Item> getItems(String filter) {
@@ -113,7 +143,7 @@ public class ItemHandler {
     Item getItemByEanSynonim (String ean) {
         Item item = itemRepository.findOneByEan(ean);
 
-        if(item != null && item.getEanSynonym().length() == 13) {
+        if(item != null && item.getEanSynonym().length() == EAN_LENGTH) {
             BigDecimal predefinedQuantity = item.getPredefinedQuantity();
             item = itemRepository.findOneByEan(item.getEanSynonym());
             item.setPredefinedQuantity(predefinedQuantity);

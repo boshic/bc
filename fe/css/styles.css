@@ -1,4 +1,21 @@
-/* #barcodecanvas, #barcodecanvasg hoverable focus container*/
+:root {
+    /*#ed5944*/
+    /*#288236*/
+    /*#1fad35*/
+    /*#25d140*/
+    /*#3025d1*/
+    /*#d1252d*/
+    /*#d14725*/
+    /*#d16425*/
+    /*#2572d1, #0661d1, #0664d1*/
+    --main-color: coral;
+    /*'Roboto', -apple-system, system-ui, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif*/
+    --main-font: Times;
+}
+
+/*.test {*/
+   /*font-family: Times  ;*/
+/*}*/
 
 @media print {
     .unprintable {
@@ -79,9 +96,6 @@ a.close-modal {
 
 div.items-table {
     overflow-x: unset;
-    /*border-bottom: coral 2px solid;*/
-    /*border-right: coral 2px solid;*/
-    /*border-left: coral 2px solid;*/
 }
 
 .filemanagertable {
@@ -209,14 +223,14 @@ tr.hoverable:hover {
 }
 
 td.hoverable:hover, span.hoverable:hover   {
-    background: coral;
+    background: var(--main-color);
     color: white;
     cursor: pointer;
 }
 
 div.hoverable:hover  {
     /*color: white;*/
-    background: coral;
+    background: var(--main-color);
     border-radius: 5px;
     cursor: cell;
 }
@@ -309,7 +323,7 @@ div.tab button.active {
     margin-left: -1px;
     /*margin-bottom: 5px;*/
     box-sizing: border-box;
-    /*border: 2px solid coral;*/
+    /*border: 2px solid var(--main-color);*/
     text-align: center;
     /*border-radius: 4px;*/
     font-size: 14px;
@@ -709,8 +723,8 @@ td.comingdetails {
 /*}*/
 .nav-tabs > li.active > a, .nav-tabs > li.active > a:focus {
     padding: 5px;
-    color: coral;
-    border: coral 4px solid;
+    color: var(--main-color);
+    border: var(--main-color) 4px solid;
 }
 
 span.item-add {
@@ -724,7 +738,7 @@ button.item-query {
     padding: 0px;
     border: none;
     background: none;
-    /*color: coral;*/
+    /*color: var(--main-color);*/
     /*position: absolute;*/
     /*font-size: 40px;*/
     /*right: 3px;*/
@@ -739,8 +753,9 @@ button.item-query:hover {
     position: absolute;
     right: 3px;
     font-size: 40px;
-    color: coral;
+    color: var(--main-color);
     top: -12px;
+    font-family: var(--main-font);
 }
 
 
@@ -780,7 +795,7 @@ span.item-edit:hover {
 
 span.filter-item {
     cursor: pointer;
-    color: coral;
+    color: var(--main-color);
     font-size: 36px;
 }
 
@@ -791,26 +806,26 @@ span.filter-item:hover {
 
 span.item-blank {
     cursor: pointer;
-    color: coral;
+    color: var(--main-color);
     font-size: 22px;
 }
 
 .eraser-icon {
     cursor: pointer;
-    color: coral;
+    color: var(--main-color);
 }
 
 span.item-blank.close-modal {
     position: absolute;
     left: 97%;
     font-size: 30px;
-    color: coral;
+    color: var(--main-color);
 }
 
 span.item-blank.close-selling-modal {
     left: 97%;
     font-size: 30px;
-    color: coral;
+    color: var(--main-color);
 }
 
 span.item-blank:hover {
@@ -820,7 +835,7 @@ span.item-blank:hover {
 
 span.item-blank.clear-search {
     vertical-align: middle;
-    color: coral;
+    color: var(--main-color);
 }
 
 ul.suppliers {
@@ -850,7 +865,7 @@ div.modal-container-addeditsupplier > input {
 }
 
 span.warning-item-input {
-    background: coral;
+    background: var(--main-color);
     color: white;
     position: absolute;
     margin-top: 30px;
@@ -888,7 +903,7 @@ button.sell-item-btn {
 }
 
 div.locked {
-    border: coral 10px solid;
+    border: var(--main-color) 10px solid;
     padding: 5px;
 }
 
@@ -897,10 +912,10 @@ input.selling-quantity {
     padding-top: 0px;
     padding-bottom: 0px;
     /*font-size: 14px;*/
-    font-weight: bold;
+    /*font-weight: bold;*/
     background: inherit;
     border: none;
-    font-size: 22px;
+    font-size: 25px;
 }
 
 div.total-sellings {
@@ -912,7 +927,7 @@ div.total-sellings {
     /*border-bottom-left-radius: 15px;*/
     text-align: center;
     font-size: 30px;
-    background: coral;
+    background: var(--main-color);
     color: yellow;
     /*font-weight: bold;*/
 }
@@ -928,7 +943,7 @@ div.total-sellings {
     border-top-left-radius: 15px;
     text-align: center;
     font-size: 30px;
-    background: coral;
+    background: var(--main-color);
     color: white;
 }
 
@@ -940,7 +955,7 @@ div.total-sellings {
     border-top-left-radius: 15px;
     text-align: center;
     font-size: 30px;
-    background: coral;
+    background: var(--main-color);
     color: white;
 }
 
@@ -952,7 +967,7 @@ div.total-sellings {
     /*border-top-left-radius: 15px;*/
     /*text-align: center;*/
     /*font-size: 30px;*/
-    /*background: coral;*/
+    /*background: var(--main-color);*/
     /*color: white;*/
 }
 
@@ -960,14 +975,14 @@ div.total-sellings {
     /*border-top-left-radius: 15px;*/
     /*text-align: center;*/
     /*font-size: 30px;*/
-    /*background: coral;*/
+    /*background: var(--main-color);*/
     /*color: white;*/
     /*margin: 1%;*/
 /*}*/
 
 span.selling-warning {
     font-size: 20px;
-    background: coral;
+    background: var(--main-color);
     color: white;
 }
 
@@ -976,7 +991,7 @@ td > span.selling-warning {
 }
 
 div.selectedpane {
-    /*border: coral 2px solid;*/
+    /*border: var(--main-color) 2px solid;*/
     background: lightgrey;
     box-shadow: 10px 10px 5px;
 }
@@ -990,24 +1005,24 @@ div.selectedpane {
 }
 
 .form-control:focus {
-    border-color: coral;
+    border-color: var(--main-color);
 }
 
 .form-control[disabled], .form-control[readonly], fieldset[disabled] .form-control {
     cursor: not-allowed;
     background-color: lightgray;
     opacity: 1;
-    color: coral;
+    color: var(--main-color);
     /*font-size: 16px;*/
     /*font-weight: bold;*/
-    border: coral 2px solid;
+    border: var(--main-color) 2px solid;
 }
 
 div.menu-panel {
     display: flex;
-    /*border-top: coral 2px solid;*/
-    /*border-left: coral 2px solid;*/
-    /*border-right: coral 2px solid;*/
+    /*border-top: var(--main-color) 2px solid;*/
+    /*border-left: var(--main-color) 2px solid;*/
+    /*border-right: var(--main-color) 2px solid;*/
     padding-top: 2px;
 }
 
@@ -1018,6 +1033,7 @@ div.menu-panel {
 .table {
     /*border: 2px solid #ddd;*/
     margin-bottom: 0px;
+    font-family: var(--main-font);
 }
 
 div.add-edit-panel {
@@ -1026,7 +1042,7 @@ div.add-edit-panel {
 }
 
 td.sold {
-    border-right: coral 8px solid !important;
+    border-right: var(--main-color) 8px solid !important;
 }
 
 .user-input-container-on-coming {
@@ -1043,14 +1059,14 @@ td.sold {
     width: 650px;
     font-weight: bold;
     background: silver;
-    color: coral;
-    /*border: coral 2px solid*/
+    color: var(--main-color);
+    /*border: var(--main-color) 2px solid*/
 }
 
 .code-container-on-coming {
     text-align: center;
     /*width: 300px;*/
-    color: coral;
+    color: var(--main-color);
     font-weight: bold;
     padding-top: 9px;
 }
@@ -1082,7 +1098,7 @@ td.sold {
 .doc-picker-container {
   display: inline-flex;
     border-radius: 4px;
-    border: 2px coral solid;
+    border: 2px var(--main-color) solid;
     height: 34px;
 }
 
@@ -1107,7 +1123,7 @@ td.sold {
     padding-top: 4px;
     width: 152px;
     background: lightgray;
-    color: coral;
+    color: var(--main-color);
     font-weight: bold;
 }
 
@@ -1193,7 +1209,7 @@ td.sold {
 .add-coming-button-on-new-coming {
     width: 100%;
     color: white;
-    background: coral;
+    background: var(--main-color);
     padding: 0;
     font-weight: bold;
     font-size: 30px;
@@ -1210,9 +1226,9 @@ td.sold {
     display: flex;
     background: white;
     border-top-left-radius: 5px;
-    border-left: 2px solid coral;
-    border-top: 2px solid coral;
-    border-right: 2px solid coral;
+    border-left: 2px solid var(--main-color);
+    border-top: 2px solid var(--main-color);
+    border-right: 2px solid var(--main-color);
 
 }
 
@@ -1270,7 +1286,7 @@ td.sold {
 .ok-btn-on-coming-filter {
     width: 100%;
     color: white;
-    background: coral;
+    background: var(--main-color);
     padding: 0px;
     font-size: 25px;
 }
@@ -1278,7 +1294,7 @@ td.sold {
 .ok-btn-on-selling-filter {
     width: 78%;
     color: white;
-    background: coral;
+    background: var(--main-color);
     padding: 0px;
     font-size: 25px;
 }
@@ -1286,7 +1302,7 @@ td.sold {
 .clear-btn-on-selling-filter {
     width: 10%;
     color: white;
-    background: coral;
+    background: var(--main-color);
     padding: 0px;
     font-size: 25px;
 }
@@ -1294,7 +1310,7 @@ td.sold {
 .ok-btn-on-coming-filter {
     width: 81%;
     color: white;
-    background: coral;
+    background: var(--main-color);
     padding: 0px;
     font-size: 25px;
 }
@@ -1302,7 +1318,7 @@ td.sold {
 .clear-btn-on-coming-filter {
     width: 9%;
     color: white;
-    background: coral;
+    background: var(--main-color);
     padding: 0px;
     font-size: 25px;
 }
@@ -1311,29 +1327,29 @@ td.sold {
 
 .cancel-btn-on-coming-filter {
     width: 49%;
-    color: coral;
+    color: var(--main-color);
     background: white;
     padding: 0px;
     font-size: 25px;
 }
 
 input.warning-input {
-    border: 3px solid coral;
+    border: 3px solid var(--main-color);
 }
 
 td.warning-input {
-    background: coral;
+    background: var(--main-color);
 }
 
 
 .stock-icon {
     font-size: 24px;
     margin-right: 3px;
-    color: coral;
+    color: var(--main-color);
     background: white;
     padding: 4px;
     cursor: pointer;
-    border: 2px solid coral;
+    border: 2px solid var(--main-color);
 }
 
 .stock-icon:hover {
@@ -1347,7 +1363,7 @@ td.warning-input {
     top: -16px;
     background: white;
     padding: 2px;
-    border: 2px solid coral;
+    border: 2px solid var(--main-color);
     z-index: 1;
 }
 
@@ -1358,7 +1374,7 @@ td.warning-input {
 
 .selected-stock {
     background: silver;
-    color: coral;
+    color: var(--main-color);
     font-weight: bold;
 }
 
@@ -1374,20 +1390,20 @@ button.user-select {
     border-radius: 5px;
     width: 120px;
     background: white;
-    border: coral 2px solid;
-    color: coral;
+    border: var(--main-color) 2px solid;
+    color: var(--main-color);
     font-weight: bold;
     cursor: pointer;
 }
 
 .logout-btn {
     background: white;
-    color: coral;
-    border: 4px solid coral;
+    color: var(--main-color);
+    border: 4px solid var(--main-color);
     width: 100%;
 }
 .user-select:hover, .logout-btn:hover {
-    background: coral;
+    background: var(--main-color);
     color: white;
 }
 
@@ -1455,7 +1471,7 @@ button.user-select {
     width: 25%;
     text-align: center;
     font-size: 39px;
-    background: coral;
+    background: var(--main-color);
     color: yellow;
     font-weight: bold;
 }
@@ -1463,13 +1479,13 @@ button.user-select {
     width: 45%;
     text-align: center;
     font-size: 39px;
-    background: coral;
+    background: var(--main-color);
     color: white;
     font-weight: bold;
 }
 
 .add-edit-buyer-warning {
-    background: coral;
+    background: var(--main-color);
     color: white;
     margin: 1%;
 }
@@ -1497,7 +1513,7 @@ button.user-select {
 }
 
 .page-control:hover {
-    color: coral;
+    color: var(--main-color);
 }
 
 .page-control-page-picker {
@@ -1511,7 +1527,7 @@ button.user-select {
 .totals-root-div {
     box-shadow: 5px 5px 5px 0px;
     display: flex;
-    background: coral;
+    background: var(--main-color);
     border-radius: 10px;
 }
 .totals-quantity {
@@ -1534,14 +1550,14 @@ button.user-select {
 }
 
 .pane-toggler {
-    color: coral;
+    color: var(--main-color);
     font-weight: bold;
     border: 2px solid white;
     padding: 6px;
 }
 
 .pane-toggler:hover {
-    background: coral!important;
+    background: var(--main-color)!important;
     color: white!important;
 }
 
@@ -1572,7 +1588,7 @@ button.user-select {
 
 .sell-icon {
     font-size: 57px;
-    color: coral;
+    color: var(--main-color);
     border: none;
     background: lightgray;
     width: 10%;
@@ -1625,7 +1641,7 @@ td.price-data {
 
 .comment-container {
     display: flex;
-    border: 2px solid coral;
+    border: 2px solid var(--main-color);
     border-radius: 4px;
     /*margin-left: 1%;*/
     background: snow;
@@ -1664,7 +1680,7 @@ td.price-data {
 
 .print-icon {
     font-size: 30px;
-    color: coral;
+    color: var(--main-color);
     position: absolute;
     cursor: pointer;
 }
@@ -1674,7 +1690,7 @@ td.price-data {
     margin-right: -5px;
     text-align: right;
     font-size: 30px;
-    color: coral;
+    color: var(--main-color);
     cursor: pointer;
 }
 
@@ -1703,7 +1719,7 @@ td.price-data {
     width: 35%;
     text-align: center;
     font-size: 32px;
-    background: coral;
+    background: var(--main-color);
     color: yellow;
     border-top-left-radius: 12px;
     margin-left: 1%;
@@ -1721,7 +1737,7 @@ td.price-data {
 }
 
 .enabled-button {
-    color: coral;
+    color: var(--main-color);
 }
 
 .enabled-button:hover {
@@ -1747,7 +1763,7 @@ td.price-data {
 }
 
 .clickable-filter-value:hover {
-    background: coral;
+    background: var(--main-color);
     color: black;
 }
 
@@ -1757,12 +1773,12 @@ td.price-data {
 }
 
 .comment-row:hover {
-    background: coral;
+    background: var(--main-color);
     color: white;
 }
 
 .btn-on-pane {
-    color: coral;
+    color: var(--main-color);
     padding: 2px;
     font-size: 15px;
     border-radius: 5px;
@@ -1772,13 +1788,13 @@ td.price-data {
 .comments-container {
     padding-left: 5px;
     padding-right: 5px;
-    top: 84%;
+    top: 50%;
     left: -3%;
     min-width: 0px;
 }
 
 ul.left-side {
-    left: -105px;
+    left: -110px;
 }
 
 .sip-date-changer {
@@ -1794,11 +1810,11 @@ ul.left-side {
     border-radius: 5px;
     width: 100%;
     height: 30px;
-    border: 1px solid coral;
+    border: 1px solid var(--main-color);
 }
 
 .sip-date-changer-ok-btn:hover {
-    background: coral;
+    background: var(--main-color);
     color: white;
 }
 
@@ -1813,7 +1829,7 @@ ul.left-side {
 
 .item-name-on-coming-item-pane:hover {
     border-radius: 5px;
-    background: coral;
+    background: var(--main-color);
     color: white;
     cursor: pointer;
 }
@@ -1833,19 +1849,19 @@ ul.left-side {
 span.close-invoice-modal {
     margin-top: -7px;
     font-size: 30px;
-    color: coral;
+    color: var(--main-color);
 }
 
 .print-icon-on-invoice-modal {
     font-size: 50px;
-    color: coral;
+    color: var(--main-color);
     cursor: pointer;
 }
 
 .coming-pane-right-menu-option {
     font-size: 30px;
     cursor: pointer;
-    color: coral;
+    color: var(--main-color);
     position: relative;
     /*width: 34%;*/
 
@@ -1861,7 +1877,7 @@ td.quick-filter {
 }
 
 .quick-filter-comment {
-    border: 2px coral dotted;
+    border: 2px var(--main-color) dotted;
     border-radius: 5px;
     display: inline-table;
 }
@@ -1875,7 +1891,7 @@ td.quick-filter {
 }
 
 .quick-filter-comment-delete:hover {
-    background: coral;
+    background: var(--main-color);
     color: white;
 }
 
@@ -1885,7 +1901,7 @@ td.quick-filter {
 }
 
 .word-from-phrase-eraser-title {
-    background: coral;
+    background: var(--main-color);
     color: white;
     font-size: 10px;
 }
@@ -1907,15 +1923,15 @@ td.quick-filter {
 
     background: white;
     margin-left: 5px;
-    border: 2px coral solid;
+    border: 2px var(--main-color) solid;
     border-top-left-radius: 10px;
     padding: 3px;
-    font-family: times;
+    font-family: var(--main-font);
     font-size: large;
 }
 
 .item-input-filter {
-    color: coral;
+    color: var(--main-color);
     top: 4px;
     left: 2px;
 }
@@ -1929,7 +1945,7 @@ td.quick-filter {
 .item-quick-filter-icon {
     position: absolute;
     margin-left: 3px;
-    color: coral;
+    color: var(--main-color);
 }
 
 .item-quick-filter-icon:hover {
@@ -1939,9 +1955,9 @@ td.quick-filter {
 
 .available-by-ean {
     background: white;
-    color: coral;
+    color: var(--main-color);
     font-weight: bold;
-    font-size: 22px!important;
+    font-size: 30px!important;
 }
 
 .inherited {
@@ -1957,7 +1973,7 @@ td.quick-filter {
 
 .pane-searchinput-btn {
     background: lightgrey;
-    color: coral;
+    color: var(--main-color);
     font-size: 30px;
     top: 2px;
     padding: 0px;
@@ -1970,7 +1986,7 @@ td.quick-filter {
     padding: 1px;
     font-size: 12px;
     position: absolute;
-    background: coral;
+    background: var(--main-color);
     font-weight: bold;
     color: white;
     margin-left: 2px;
@@ -1993,11 +2009,11 @@ td.quick-filter {
     width: 40%;
     font-size: 70px;
     line-height: 2.1;
-    color: coral;
+    color: var(--main-color);
 }
 
 .quantity-changer-btn {
-    background: coral;
+    background: var(--main-color);
     width: 100%;
     color: white;
     height: 110px;
@@ -2009,7 +2025,7 @@ td.quick-filter {
     width: 100%;
     font-size: 25px;
     background: inherit;
-    border-bottom: 2px solid coral;
+    border-bottom: 2px solid var(--main-color);
     box-shadow: 6px 8px 4px #888888;
 }
 
@@ -2049,7 +2065,7 @@ td.quick-filter {
 .send-item-name-to-section-btn {
     background: white;
     border: none;
-    color: coral;
+    color: var(--main-color);
     font-size: 22px;
 }
 
@@ -2067,13 +2083,13 @@ td.quick-filter {
 
 .sortable-thead-value:hover {
     cursor: pointer;
-    color: coral;
+    color: var(--main-color);
 }
 
 .sorting-row {
     background: none;
     border: none;
-    color: coral;
+    color: var(--main-color);
 }
 
 .sorting-row:hover {

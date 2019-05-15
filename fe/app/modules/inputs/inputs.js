@@ -326,6 +326,8 @@ let itemCntrlr = ($s, paneFactory, httpService, itemFactory, ctrlr) => {
 };
 
 let addEditItemCtrlr = ($s, httpService, paneFactory) => {
+
+    let emptyItem = (text) => { return {name: text, ean: ''}};
     $s.modalHidden = true;
     $s.item = {};
     $s.inputId = paneFactory.generateUuid();
@@ -337,11 +339,15 @@ let addEditItemCtrlr = ($s, httpService, paneFactory) => {
     $s.appendData = () => {
         httpService.addItem($s.item, 'addItem').then(
             resp => {
-                $s.closeModal();
-                (resp.item == null) ?
-                    $s.setItem({name: resp.text, ean: ""}) : $s.setItem(resp.item);
+                if(resp.success) {
+                    $s.closeModal();
+                    $s.setItem(resp.item || emptyItem(resp.text));
+                } else
+                    $s.item = resp.item || emptyItem(resp.text);
+
+                // resp.item != null ? $s.setItem(resp.item) : $s.setItem({name: resp.text, ean: ''});
             },
-            resp => { $s.item.name = resp; }
+            resp => { $s.item.name = resp.text;}
         );
     };
 
@@ -358,8 +364,6 @@ let addEditItemCtrlr = ($s, httpService, paneFactory) => {
     };
 
     $s.setEanPrefix = (e, field) => {
-        // if (e.ctrlKey && e.keyCode === panFactory.eanPrefix.keyCode)
-        //     $s.item.ean = paneFactory.generateEan($s.item.name);
         $s.item[field] = paneFactory.generateEanByKey(e, $s.item[field]);
     };
 
