@@ -76,12 +76,13 @@ import comingItemTpl from './coming-item.html';
         };
 
         $s.checkComing = () => {
+
             let coming = $s.coming;
-            if ((coming.quantity > 0) &&
-                (coming.item) && (coming.item.name.length>0) &&
-                (!(coming.item.ean === null) && (coming.item.ean.length == 13)) &&
-                ((coming.doc.name.length>0) && (coming.doc.date))
-            ) {
+            if ((coming.quantity > 0) && angular.isDefined(coming.item)
+                && (angular.isDefined(coming.item.id) && coming.item.id !== null)
+                && (angular.isDefined(coming.doc.id) && coming.doc.id !== null)
+                && (angular.isDefined(coming.doc.date)))
+            {
                 $s.canCome = true;
                 $s.canChange = ("id" in coming);
             } else {

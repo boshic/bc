@@ -1,5 +1,5 @@
 <div class="dropdown">
-    <span class="warning-item-input" ng-show = "warning">Не выбрана секция!</span>
+    <span class="warning-item-input" ng-hide = "item.id > 0">Не выбрана секция!</span>
     <div class="dropdown" style="position: absolute;"
          ng-show="item.name.length > 0">
         <span class="glyphicon glyphicon-filter item-input-filter"></span>
@@ -14,7 +14,7 @@
            id="{{inputId}}"
            ng-model="item.name"
            ng-change="getItems()"
-           ng-readonly="!canChange"/>
+           ng-readonly="item.id"/>
     <span class="item-input-toolbox">
         <item-input-total total="items.length"></item-input-total>
     </span>
@@ -53,7 +53,7 @@
                         </div>
                         </span>
                     </td>
-                    <td ng-click="selectSection()">
+                    <td ng-click="selectItem()">
                         <span class="hoverable" >{{ x.name }}</span>
                     </td>
                     <td style="width: 35px";>

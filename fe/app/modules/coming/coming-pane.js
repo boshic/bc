@@ -93,7 +93,6 @@ import comingPaneTpl from './coming-pane.html';
                 transclude: true,
                 scope: {},
                 template: comingPaneTpl,
-                // templateUrl: 'html/coming/coming-pane.html',
                 controller: ($scope, filterFactory, paneFactory, $element, printFactory ) => {
                     return comingPaneCtrlr($scope , filterFactory, paneFactory, $element, printFactory);
                 },

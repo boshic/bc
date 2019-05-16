@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class ItemHandler {
@@ -137,7 +138,6 @@ public class ItemHandler {
 
         System.out.println(ean);
         return  itemRepository.findOneByEan(ean);
-//        return itemRepository.findOneByEan(ean);
     }
 
     Item getItemByEanSynonim (String ean) {

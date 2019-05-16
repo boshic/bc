@@ -1,10 +1,9 @@
 <div class="dropdown">
-    <span class="warning-item-input" ng-show = "warning">Не выбран банк!</span>
+    <span class="warning-item-input" ng-hide = "item.id > 0">Не выбран банк!</span>
     <input title="{{item.name}}" type="text" class="form-control bank-ipnut" placeholder="Банк"
            id="{{inputId}}"
            ng-model="item.name"
-           ng-change="getItems()"
-           ng-readonly="!canChange"/>
+           ng-readonly="item.id"/>
     <span class="item-input-toolbox">
         <item-input-total total="items.length"></item-input-total>
     </span>

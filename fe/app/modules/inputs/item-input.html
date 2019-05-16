@@ -1,12 +1,11 @@
 <div class="dropdown">
-    <span class="warning-item-input" ng-show="warning">Не выбран товар!</span>
+    <span class="warning-item-input" ng-hide="item.id > 0">Не выбран товар!</span>
     <textarea title="Товар" rows="2" class="form-control coming-item-name"
               placeholder="Товар (введите >2 символов)"
               id="{{inputId}}"
               ng-keydown="setEanPrefix($event)"
               ng-model="item.name"
-              ng-change="checkItem()"
-              ng-readonly="!canChange">
+              ng-readonly="item.id">
     </textarea>
     <span class="item-input-toolbox" style="top: 0px;">
         <item-input-total total="items.length"></item-input-total>

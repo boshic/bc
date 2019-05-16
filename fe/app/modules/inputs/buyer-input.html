@@ -1,10 +1,10 @@
 <div class="dropdown">
-    <span class="warning-item-input" ng-show="warning">Не выбран покупатель!</span>
+    <span class="warning-item-input" ng-hide="buyer.id>0">Не выбран покупатель!</span>
     <textarea title="Покупатель"  rows="2" class="form-control buyer-name"
               id="{{inputId}}"
               placeholder="Выберите покупателя"
               ng-model="buyer.name"
-              ng-readonly="!canChange">
+              ng-readonly="buyer.id">
     </textarea>
     <span class="item-input-toolbox">
         <item-input-total total="buyers.length"></item-input-total>

@@ -1,10 +1,9 @@
 <div class="dropdown">
-    <span class="warning-item-input" ng-show="warning">Не выбран поставщик!</span>
+    <span class="warning-item-input" ng-hide="item.id>0">Не выбран поставщик!</span>
     <input title="{{item.name}}" type="text" class="form-control" placeholder="Поставщик"
            id="{{inputId}}"
            ng-model="item.name"
-           ng-change="getItems()"
-           ng-readonly="!canChange"/>
+           ng-readonly="item.id"/>
     <span class="item-input-toolbox">
         <item-input-total total="items.length"></item-input-total>
     </span>
@@ -29,8 +28,8 @@
                 </thead>
                 <tbody>
                 <tr class="hoverable" ng-repeat="x in items">
-                    <td class="hoverable" ng-click="selectSupplier()" title="Код">{{ x.id }}</td>
-                    <td class="hoverable" ng-click="selectSupplier()" title="Наименование">{{ x.name }}</td>
+                    <td class="hoverable" ng-click="selectItem()" title="Код">{{ x.id }}</td>
+                    <td class="hoverable" ng-click="selectItem()" title="Наименование">{{ x.name }}</td>
                     <td>
                         <a href="#" title="Редактировать строку" ng-click="addEditItem(x.id)">
                             <span class="glyphicon glyphicon-pencil item-edit"></span>
