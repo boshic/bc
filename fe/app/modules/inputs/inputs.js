@@ -16,11 +16,54 @@ let commonLinkFunction = (scope, elem, attrs, parentCtrl) => {
     scope.setItem = parentCtrl.setItem;
 };
 
-let commonItemCtrlr = ($s, httpService, paneFactory, itemFactory, ctrlr, url, minNameLengthForRequest) => {
+let bankInputCtrlr = ($s, httpService, paneFactory, itemFactory, ctrlr) => {
 
     $s.inputId = paneFactory.generateUuid();
     $s.items = [];
-    $s.item = {name:""};
+    let emptyItem = paneFactory.emptyBank;
+    $s.item = emptyItem;
+
+    $s.$watch('item.name', (nv, ov) => {
+        if ((nv) || (ov))
+            $s.getItems();
+    }, true);
+
+
+    ctrlr.getAddEditData = (scope) => {
+        $s.addEditScope = scope;
+    };
+
+    ctrlr.setItem = $s.setItem = item => {
+        $s.item = (!item || item === null ) ? angular.extend({}, emptyItem) : angular.extend({}, item);
+    };
+
+    $s.blankSearchAndGetItemsBy = () => {
+        if(angular.isDefined($s.item) || $s.item === null)
+            $s.setItem(null);
+        $s.item.name ==="" ? $s.getItems() : $s.setItem(null);
+        paneFactory.changeElementState(document.getElementById($s.inputId), ['focus']);
+    };
+
+    $s.getItems = () => {
+        itemFactory.getItems($s, 'getBanks');
+    };
+
+    $s.addEditItem = (item) => {
+        return itemFactory.addEditItem(item, $s.addEditScope);
+    };
+
+    $s.selectItem = function() {
+        $s.setItem(this.x);
+    };
+
+};
+
+let itemSectionCtrlr = ($s, httpService, paneFactory, itemFactory, ctrlr) => {
+
+    $s.inputId = paneFactory.generateUuid();
+    $s.items = [];
+    let emptyItem = paneFactory.emptySection;
+    $s.item = emptyItem;
 
 
     $s.$watch('item.name', (nv, ov) => {
@@ -34,21 +77,63 @@ let commonItemCtrlr = ($s, httpService, paneFactory, itemFactory, ctrlr, url, mi
     };
 
     ctrlr.setItem = $s.setItem = item => {
-        $s.item = (item == null || (!item)) ? {name:""} : item;
+        $s.item = (!item || item === null ) ? angular.extend({}, emptyItem) : angular.extend({}, item);
     };
 
     $s.blankSearchAndGetItemsBy = () => {
+        if(angular.isDefined($s.item) || $s.item === null)
+            $s.setItem(null);
+        $s.item.name ==="" ? $s.getItems() : $s.setItem(null);
+        paneFactory.changeElementState(document.getElementById($s.inputId), ['focus']);
+    };
+
+
+    $s.getItems = () => {
+        itemFactory.getItems($s, 'getSections');
+    };
+
+    $s.addEditItem = (item) => {
+        return itemFactory.addEditItem(item, $s.addEditScope);
+    };
+
+    $s.selectItem = function() {
+        $s.setItem(this.x);
+    };
+
+};
+
+let itemInputCtrlr = ($s, httpService, paneFactory, itemFactory, ctrlr) => {
+
+    $s.inputId = paneFactory.generateUuid();
+    $s.items = [];
+    let emptyItem = paneFactory.emptyItem;
+    $s.item = emptyItem;
+
+
+    $s.$watch('item.name', (nv, ov) => {
+        if ((nv) || (ov))
+            $s.getItems();
+    }, true);
+
+
+    ctrlr.getAddEditData = (scope) => {
+        $s.addEditScope = scope;
+    };
+
+    ctrlr.setItem = $s.setItem = item => {
+        $s.item = (!item || item === null ) ? angular.extend({}, emptyItem) : angular.extend({}, item);
+    };
+
+    $s.blankSearchAndGetItemsBy = () => {
+        if(angular.isDefined($s.item) || $s.item === null)
+            $s.setItem(null);
         $s.item.name ==="" ? $s.getItems() : $s.setItem(null);
         paneFactory.changeElementState(document.getElementById($s.inputId), ['focus']);
     };
 
     $s.getItems = () => {
-        $s.items=[];
-        if($s.item.name.length >= minNameLengthForRequest || 0)
-            httpService.getItems({filter: $s.item.name}, url).then(
-                (value) => {$s.items = value;},
-                (value) => {$s.item.name = value;}
-        );
+        if($s.item.name.length >= 2)
+            itemFactory.getItems($s, 'getItems');
     };
 
     $s.addEditItem = (item) => {
@@ -87,37 +172,37 @@ let addEditBankCntrlr = ($s, httpService, paneFactory) => {
     };
 };
 
-let buyerInputCntrlr = ($s, httpService, paneFactory) => {
+let buyerInputCntrlr = ($s, httpService, paneFactory, itemFactory) => {
 
     $s.inputId = paneFactory.generateUuid();
-    $s.buyers = [];
-    $s.buyer = {name:"", sellByComingPrices: false};
-    // $s.addEditModalVisible = false;
-
-    $s.$watch('buyer.name', (nv, ov) => {
-        if ((ov) || (nv))
-            $s.getItems();
-    }, true);
+    $s.items = [];
+    let emptyItem = paneFactory.emptyBuyer;
+    $s.item = emptyItem;
 
     $s.getItems = () => {
-        httpService.getItems({filter: $s.buyer.name}, 'getBuyers').then(
-            resp => { $s.buyers = resp; },
-            resp => { $s.buyer.name = resp; }
-        );
+        itemFactory.getItems($s, 'getBuyers');
     };
 
-    $s.selectItem = function() {
-        $s.buyer = this.x;
+    $s.selectItem = (id) => {
+        if(id)
+            httpService.getItemById(id, 'getBuyerById').then(
+                resp => {
+                    $s.item = resp;
+                    $s.getItems();
+                }
+            );
     };
 
-    $s.addEditItem = function () {
-        $s.editBuyer = this.x;
+    $s.addEditItem = (id) => {
+        id > 0 ? httpService.getItemById(id, 'getBuyerById').then(resp => $s.item = resp) :
+           $s.item = angular.extend({}, emptyItem);
         $s.addEditModalVisible = true;
         $s.user = paneFactory.user;
     };
 
-    $s.clearBuyer = () => {
-        $s.buyer.name ==="" ? $s.getItems() : $s.buyer = {name:"", sellByComingPrices: false};
+    $s.clearItem = () => {
+        $s.item = angular.extend({}, emptyItem);
+        $s.getItems();
         paneFactory.changeElementState(document.getElementById($s.inputId), ['focus']);
     };
 };
@@ -365,7 +450,7 @@ angular.module('inputs', [])
             scope: { item:'=bank' },
             template: bankInputTpl,
             controller: function ($scope, httpService, paneFactory, itemFactory) {
-                return commonItemCtrlr($scope, httpService, paneFactory, itemFactory, this, 'getBanks');
+                return bankInputCtrlr($scope, httpService, paneFactory, itemFactory, this);
             },
             link: (scope, elem) => {}
         }
@@ -388,10 +473,10 @@ angular.module('inputs', [])
         return {
             restrict: 'E',
             transclude: true,
-            scope: { buyer: '=', buyers: '=?'},
+            scope: { item: '=buyer', items: '=?buyers'},
             template: buyerInputTpl,
-            controller: ($scope, httpService, paneFactory) => {
-                return buyerInputCntrlr($scope, httpService, paneFactory)
+            controller: ($scope, httpService, paneFactory, itemFactory) => {
+                return buyerInputCntrlr($scope, httpService, paneFactory, itemFactory)
             },
             link: () => {}
         }
@@ -466,7 +551,7 @@ angular.module('inputs', [])
             template: itemInputTpl,
             // templateUrl: '/scripts/modules/inputs/item-input.html',
             controller: function ($scope, httpService, paneFactory, itemFactory) {
-                return commonItemCtrlr($scope, httpService, paneFactory, itemFactory, this, 'getItems', 2);
+                return itemInputCtrlr($scope, httpService, paneFactory, itemFactory, this);
             },
             link: () => {}
         }
@@ -492,7 +577,7 @@ angular.module('inputs', [])
             scope: { item:'=section', items:'=?sections'},
             template: itemSectionInputTpl,
             controller: function ($scope, httpService, paneFactory, itemFactory) {
-                return commonItemCtrlr($scope, httpService, paneFactory, itemFactory, this, 'getSections');
+                return itemSectionCtrlr($scope, httpService, paneFactory, itemFactory, this);
             }
         }
     })
@@ -706,8 +791,8 @@ angular.module('inputs', [])
                 template:"<span ng-show='$ctrl.total > 1'>{{$ctrl.total}}</span>",
                 controller: function() {}
         })
-    .factory('itemFactory',[
-        function () {
+    .factory('itemFactory',['httpService',
+        function (httpService) {
             return {
                 addEditItem: (item, childScope) => {
                     childScope.modalHidden = false;
@@ -716,7 +801,17 @@ angular.module('inputs', [])
                     if(typeof item === 'number' && item > 0)
                         childScope.getItemById(item);
                     document.getElementById(childScope.inputId).focus();
-                }
+                },
+                getItems: ($s, url) => {
+                    $s.items=[];
+                    httpService.getItems({filter: $s.item.name}, url).then(
+                        (value) => {
+                            $s.items = value;
+                        },
+                        (value) => {
+                            $s.item.name = value;
+                        }
+                    );                }
             };
         }
     ]);

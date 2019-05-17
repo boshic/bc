@@ -2,6 +2,7 @@ package barcode.controllers;
 
 import barcode.dao.entities.Buyer;
 import barcode.dao.services.BuyerHandler;
+import barcode.dto.DtoBuyer;
 import barcode.dto.ResponseItem;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -27,8 +28,8 @@ public class BuyerController {
     }
 
     @GetMapping(path="/getBuyers")
-    public @ResponseBody Iterable<Buyer> getBuyers(@RequestParam String filter) {
-        return this.buyerHandler.getBuyers(filter);
+    public @ResponseBody Iterable<DtoBuyer> getBuyers(@RequestParam String filter) {
+        return this.buyerHandler.getDtoBuyers(filter);
     }
 
     @GetMapping(path="/getBuyerById")

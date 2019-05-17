@@ -2,11 +2,14 @@ package barcode.dao.services;
 
 import barcode.dao.entities.Buyer;
 import barcode.dao.repositories.BuyerRepository;
+import barcode.dto.DtoBuyer;
 import barcode.dto.ResponseItem;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
 
 @Service
 public class BuyerHandler {
@@ -47,6 +50,14 @@ public class BuyerHandler {
     public List<Buyer> getBuyers(String filter) {
         return this.buyerRepository
                 .findByNameContainingIgnoreCaseOrderByIdAsc(filter);
+    }
+
+    public List<DtoBuyer> getDtoBuyers(String filter) {
+
+        return buyerRepository.findByNameContainingIgnoreCaseOrderByIdAsc(filter)
+                .stream()
+                .map(b -> new DtoBuyer(b.getId(), b.getName()))
+                .collect(Collectors.toList());
     }
 
     public Buyer getBuyerByName(String name) {

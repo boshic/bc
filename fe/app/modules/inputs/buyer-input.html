@@ -1,21 +1,22 @@
 <div class="dropdown">
-    <span class="warning-item-input" ng-hide="buyer.id>0">Не выбран покупатель!</span>
+    <span class="warning-item-input" ng-hide="item.id>0">Не выбран покупатель!</span>
     <textarea title="Покупатель"  rows="2" class="form-control buyer-name"
               id="{{inputId}}"
               placeholder="Выберите покупателя"
-              ng-model="buyer.name"
-              ng-readonly="buyer.id">
+              ng-model="item.name"
+              ng-change = 'getItems()'
+              ng-readonly="item.id">
     </textarea>
     <span class="item-input-toolbox">
-        <item-input-total total="buyers.length"></item-input-total>
+        <item-input-total total="items.length"></item-input-total>
     </span>
     <div class="buyer-debt" style="top: 0px;">
-        <span ng-show="buyer.debt">Долг:
-            <span>{{buyer.debt}}</span>
+        <span ng-show="item.debt">Долг:
+            <span>{{item.debt}}</span>
         </span>
     </div>
     <div class="buyer-debt" style="top: 40px;">
-        <span ng-show="buyer.sellByComingPrices">
+        <span ng-show="item.sellByComingPrices">
             этому покупателю списывается по учетным ценам!
         </span>
     </div>
@@ -26,27 +27,27 @@
                 <tr>
                     <td style="width: 5%;">
                         <a href="#" style="float: left;padding-left: 3%;" title="Добавить покупателя"
-                           ng-click="addEditItem()">
+                           ng-click="addEditItem(0)">
                             <span class="glyphicon glyphicon-plus item-add"></span>
                         </a>
                     </td>
                     <td style="width: 90%;"></td>
                     <td style="width: 5%;">
                         <span class="glyphicon glyphicon-remove item-blank"
-                              ng-click="clearBuyer()" title="Очистить поиск">
+                              ng-click="clearItem()" title="Очистить поиск">
                         </span>
                     </td>
                 </tr>
                 </thead>
                 <tbody>
-                <tr class="hoverable" ng-repeat="x in buyers">
+                <tr class="hoverable" ng-repeat="x in items">
                     <td class="hoverable"
-                        ng-click="selectItem()" title="Код">{{ x.id }}
+                        ng-click="selectItem(x.id)" title="Код">{{ x.id }}
                     </td>
-                    <td class="hoverable" ng-click="selectItem()" title="Наименование">{{ x.name }}</td>
+                    <td class="hoverable" ng-click="selectItem(x.id)" title="Наименование">{{ x.name }}</td>
                     <td>
                         <a href="#" title="Редактировать строку"
-                           ng-click="addEditItem()">
+                           ng-click="addEditItem(x.id)">
                             <span class="glyphicon glyphicon-pencil item-edit"></span>
                         </a>
                         <!--<a href="#" style="float: left;" title="Удалить строку" ng-click="deleteItem()">-->
@@ -59,4 +60,4 @@
         </li>
     </ul>
 </div>
-<add-edit-buyer buyer="editBuyer" modal-visible="addEditModalVisible" user="user"></add-edit-buyer>
+<add-edit-buyer buyer="item" modal-visible="addEditModalVisible" user="user"></add-edit-buyer>
