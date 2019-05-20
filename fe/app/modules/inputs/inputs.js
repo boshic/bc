@@ -16,46 +16,33 @@ let commonLinkFunction = (scope, elem, attrs, parentCtrl) => {
     scope.setItem = parentCtrl.setItem;
 };
 
-let bankInputCtrlr = ($s, httpService, paneFactory, itemFactory, ctrlr) => {
+let bankInputCtrlr = ($s, httpService, paneFactory, itemFactory) => {
 
     $s.inputId = paneFactory.generateUuid();
     $s.items = [];
-    let emptyItem = paneFactory.emptyBank;
-    $s.item = emptyItem;
+    $s.emptyItem = paneFactory.emptyBank;
+    $s.item = $s.emptyItem();
 
-    $s.$watch('item.name', (nv, ov) => {
-        if ((nv) || (ov))
+    $s.$watch('item.id', (nv) => {
+        if(nv)
             $s.getItems();
-    }, true);
-
-
-    ctrlr.getAddEditData = (scope) => {
-        $s.addEditScope = scope;
-    };
-
-    ctrlr.setItem = $s.setItem = item => {
-        $s.item = (!item || item === null ) ? angular.extend({}, emptyItem) : angular.extend({}, item);
-    };
-
-    $s.blankSearchAndGetItemsBy = () => {
-        if(angular.isDefined($s.item) || $s.item === null)
-            $s.setItem(null);
-        $s.item.name ==="" ? $s.getItems() : $s.setItem(null);
-        paneFactory.changeElementState(document.getElementById($s.inputId), ['focus']);
-    };
+    });
 
     $s.getItems = () => {
         itemFactory.getItems($s, 'getBanks');
     };
 
-    $s.addEditItem = (item) => {
-        return itemFactory.addEditItem(item, $s.addEditScope);
+    $s.selectItem = (id) => {
+        itemFactory.selectItem(id, 'getBankById', $s);
     };
 
-    $s.selectItem = function() {
-        $s.setItem(this.x);
+    $s.changeItem = (id) => {
+        itemFactory.changeItem(id, $s);
     };
 
+    $s.clearItem =  () => {
+        itemFactory.clearItem($s);
+    };
 };
 
 let itemSectionCtrlr = ($s, httpService, paneFactory, itemFactory, ctrlr) => {
@@ -63,7 +50,7 @@ let itemSectionCtrlr = ($s, httpService, paneFactory, itemFactory, ctrlr) => {
     $s.inputId = paneFactory.generateUuid();
     $s.items = [];
     let emptyItem = paneFactory.emptySection;
-    $s.item = emptyItem;
+    $s.item = emptyItem();
 
 
     $s.$watch('item.name', (nv, ov) => {
@@ -77,11 +64,11 @@ let itemSectionCtrlr = ($s, httpService, paneFactory, itemFactory, ctrlr) => {
     };
 
     ctrlr.setItem = $s.setItem = item => {
-        $s.item = (!item || item === null ) ? angular.extend({}, emptyItem) : angular.extend({}, item);
+        $s.item = (!item || item === null ) ? emptyItem() : angular.extend({}, item);
     };
 
     $s.blankSearchAndGetItemsBy = () => {
-        if(angular.isDefined($s.item) || $s.item === null)
+        if(!angular.isDefined($s.item) || $s.item === null)
             $s.setItem(null);
         $s.item.name ==="" ? $s.getItems() : $s.setItem(null);
         paneFactory.changeElementState(document.getElementById($s.inputId), ['focus']);
@@ -107,7 +94,7 @@ let itemInputCtrlr = ($s, httpService, paneFactory, itemFactory, ctrlr) => {
     $s.inputId = paneFactory.generateUuid();
     $s.items = [];
     let emptyItem = paneFactory.emptyItem;
-    $s.item = emptyItem;
+    $s.item = emptyItem();
 
 
     $s.$watch('item.name', (nv, ov) => {
@@ -121,11 +108,11 @@ let itemInputCtrlr = ($s, httpService, paneFactory, itemFactory, ctrlr) => {
     };
 
     ctrlr.setItem = $s.setItem = item => {
-        $s.item = (!item || item === null ) ? angular.extend({}, emptyItem) : angular.extend({}, item);
+        $s.item = (!item || item === null ) ? emptyItem() : angular.extend({}, item);
     };
 
     $s.blankSearchAndGetItemsBy = () => {
-        if(angular.isDefined($s.item) || $s.item === null)
+        if(!angular.isDefined($s.item) || $s.item === null)
             $s.setItem(null);
         $s.item.name ==="" ? $s.getItems() : $s.setItem(null);
         paneFactory.changeElementState(document.getElementById($s.inputId), ['focus']);
@@ -134,6 +121,10 @@ let itemInputCtrlr = ($s, httpService, paneFactory, itemFactory, ctrlr) => {
     $s.getItems = () => {
         if($s.item.name.length >= 2)
             itemFactory.getItems($s, 'getItems');
+    };
+
+    $s.setEanPrefix = e => {
+        $s.item.name = paneFactory.generateEanByKey(e, $s.item.name);
     };
 
     $s.addEditItem = (item) => {
@@ -146,84 +137,50 @@ let itemInputCtrlr = ($s, httpService, paneFactory, itemFactory, ctrlr) => {
 
 };
 
-let addEditBankCntrlr = ($s, httpService, paneFactory) => {
-    $s.modalHidden = true;
-    $s.item = {};
-    $s.inputId = paneFactory.generateUuid();
-
-    $s.closeModal = () => {
-        $s.modalHidden = true;
-    };
-
-    $s.appendData = () => {
-        httpService.addItem($s.item, 'addBank').then(
-            resp => {
-                $s.closeModal();
-                (resp.item == null) ? $s.setItem({name: resp.text}) : $s.setItem(resp.item);
-            },
-            resp => { $s.item.name = resp; }
-        );
-    };
-
-    $s.getItemById = (id) => {
-        httpService.getItemById(id, 'getBankById').then(
-            value => {$s.item = value;}
-        );
-    };
-};
-
 let buyerInputCntrlr = ($s, httpService, paneFactory, itemFactory) => {
 
     $s.inputId = paneFactory.generateUuid();
     $s.items = [];
-    let emptyItem = paneFactory.emptyBuyer;
-    $s.item = emptyItem;
+    $s.emptyItem = paneFactory.emptyBuyer;
+    $s.item = $s.emptyItem();
+
+    $s.$watch('item.id', (nv) => {
+        if(nv)
+            $s.getItems();
+    });
 
     $s.getItems = () => {
         itemFactory.getItems($s, 'getBuyers');
     };
 
     $s.selectItem = (id) => {
-        if(id)
-            httpService.getItemById(id, 'getBuyerById').then(
-                resp => {
-                    $s.item = resp;
-                    $s.getItems();
-                }
-            );
+        itemFactory.selectItem(id, 'getBuyerById', $s);
     };
 
-    $s.addEditItem = (id) => {
-        id > 0 ? httpService.getItemById(id, 'getBuyerById').then(resp => $s.item = resp) :
-           $s.item = angular.extend({}, emptyItem);
-        $s.addEditModalVisible = true;
-        $s.user = paneFactory.user;
+    $s.changeItem = (id) => {
+        itemFactory.changeItem(id, $s);
     };
 
-    $s.clearItem = () => {
-        $s.item = angular.extend({}, emptyItem);
-        $s.getItems();
-        paneFactory.changeElementState(document.getElementById($s.inputId), ['focus']);
+    $s.clearItem =  () => {
+        itemFactory.clearItem($s);
     };
 };
 
-let docCtrlr = ($s, httpService) => {
+let docCtrlr = ($s, httpService, paneFactory) => {
 
-    $s.dateFrom = new Date(0);
-    $s.dateTo=new Date();
+    $s.dateFrom = new Date(2015,0,1);
+    $s.dateTo = new Date();
     $s.docs = [];
-    $s.doc = {
-        name:"",
-        date: ""
-    };
+    // $s.doc = {
+    //     name:"",
+    //     date: ""
+    // };
+    $s.emptyItem = paneFactory.emptyDocument;
+    $s.doc = $s.emptyItem();
 
-    $s.newDoc = {
-        name:"",
-        date: new Date().toLocaleDateString(),
-        supplier : {
-            name:""
-        }
-    };
+    $s.newDoc = angular.extend($s.emptyItem(), {date: new Date().toLocaleDateString(), supplier : paneFactory.emptySupplier()});
+
+    // $s.newDoc = { name:"", date: new Date().toLocaleDateString(), supplier : { name:""}};
 
     $s.docsListVisible = false;
     $s.datePickerVisible = false;
@@ -292,19 +249,17 @@ let docCtrlr = ($s, httpService) => {
         if (this.$index >= 0)
             $s.newDoc = this.x;
         else
-            $s.newDoc = {
-                date: new Date(),
-                name: "",
-                supplier: {name:""}
-            };
+            $s.newDoc = angular.extend($s.emptyItem(), {date: new Date(), supplier : paneFactory.emptySupplier()});
+            // $s.newDoc = {
+            //     date: new Date(),
+            //     name: "",
+            //     supplier: {name:""}
+            // };
         $s.checkDoc();
     };
 
     $s.blankNameAndGetItemsBy = () => {
-        $s.doc = {
-            name: "",
-            date: ""
-        };
+        $s.doc = $s.emptyItem();
         $s.warning = true;
         $s.getDocs();
     };
@@ -408,7 +363,8 @@ let supplierInputCntrlr = ($s, $http, paneFactory, itemFactory, ctrlr) => {
 
     $s.inputId = paneFactory.generateUuid();
     $s.items = [];
-    $s.item = { name: ""};
+    let emptyItem = paneFactory.emptyItem;
+    $s.item = emptyItem();
 
     $s.$watch('item.name', (nv, ov) => {
         if ((ov) || (nv))
@@ -437,7 +393,7 @@ let supplierInputCntrlr = ($s, $http, paneFactory, itemFactory, ctrlr) => {
     };
 
     $s.blankSearchAndGetItemsBy = function() {
-        $s.item.name === "" ? $s.getItems() : $s.item = { name:"" };
+        $s.item.name === "" ? $s.getItems() : $s.item = emptyItem();
         paneFactory.changeElementState(document.getElementById($s.inputId), ['focus']);
     };
 };
@@ -450,24 +406,34 @@ angular.module('inputs', [])
             scope: { item:'=bank' },
             template: bankInputTpl,
             controller: function ($scope, httpService, paneFactory, itemFactory) {
-                return bankInputCtrlr($scope, httpService, paneFactory, itemFactory, this);
-            },
-            link: (scope, elem) => {}
+                return bankInputCtrlr($scope, httpService, paneFactory, itemFactory);
+            }
         }
     })
     .directive( "addEditBank", () => {
         return {
             restrict: 'E',
-            require: '^^bankInput',
-            scope: {},
+            scope: { item: "=bank", modalVisible: "="},
             template: addEditBankTpl,
-            controller:($scope, httpService, paneFactory) => {
-                return addEditBankCntrlr($scope, httpService, paneFactory);
-            },
-            link: (scope, elem, attrs, parentCtrl) => {
-                return commonLinkFunction (scope, elem, attrs, parentCtrl);
-            }
-        }
+            controller:([ '$scope', 'httpService',
+                function ($scope, httpService) {
+                    $scope.warning ="";
+
+                    $scope.closeModal = () => {
+                        $scope.modalVisible = false;
+                        $scope.warning ="";
+                    };
+
+                    $scope.appendData = () => {
+                        httpService.addItem($scope.item, 'addBank').then(
+                            resp => {
+                                (resp.success) ? $scope.closeModal() : $scope.warning = resp.text;
+                            },
+                            resp => { $scope.item.name = resp; }
+                        );
+                    };
+                }
+            ])        }
     })
     .directive( "buyerInput", () => {
         return {
@@ -486,7 +452,6 @@ angular.module('inputs', [])
             restrict: 'E',
             scope: { buyer: "=", user: "=?", modalVisible: "="},
             template: addEditBuyerTpl,
-            // templateUrl: '/scripts/modules/inputs/add-edit-buyer.html',
             controller:("ctrl", [ '$scope', 'httpService',
                 function ($scope, httpService) {
                     $scope.warning ="";
@@ -535,9 +500,9 @@ angular.module('inputs', [])
             scope: {doc:'='},
             template : docInputTpl,
             // templateUrl: '/scripts/modules/inputs/doc-input.html',
-            controller: ($scope, httpService) => {
+            controller: ($scope, httpService, paneFactory) => {
 
-                return docCtrlr($scope, httpService);
+                return docCtrlr($scope, httpService, paneFactory);
 
             },
             link: (scope, ele, attrs) => {}
@@ -791,8 +756,8 @@ angular.module('inputs', [])
                 template:"<span ng-show='$ctrl.total > 1'>{{$ctrl.total}}</span>",
                 controller: function() {}
         })
-    .factory('itemFactory',['httpService',
-        function (httpService) {
+    .factory('itemFactory',['httpService', 'paneFactory',
+        function (httpService, paneFactory) {
             return {
                 addEditItem: (item, childScope) => {
                     childScope.modalHidden = false;
@@ -811,7 +776,24 @@ angular.module('inputs', [])
                         (value) => {
                             $s.item.name = value;
                         }
-                    );                }
+                    );
+                },
+                selectItem: (id, url, $s) => {
+                    if(id)
+                        httpService.getItemById(id, url).then(
+                            resp => { $s.item = resp;}
+                        );
+                },
+                clearItem: ($s) => {
+                    $s.item = $s.emptyItem();
+                    $s.getItems();
+                    paneFactory.changeElementState(document.getElementById($s.inputId), ['focus']);
+                },
+                changeItem: (id, $s) => {
+                    id > 0 ? $s.selectItem(id) : $s.item = $s.emptyItem();
+                    $s.addEditModalVisible = true;
+                    $s.user = paneFactory.user;
+                }
             };
         }
     ]);

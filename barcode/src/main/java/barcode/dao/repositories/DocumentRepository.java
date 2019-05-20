@@ -23,6 +23,9 @@ public interface DocumentRepository extends CrudRepository<Document, Long>,
 
     List<Document> findByDateBetweenOrderByDateDesc(Date fromDate, Date toDate);
 
+    List<Document> findTop100ByNameContainingIgnoreCaseAndDateBetweenOrderByDateDesc(String name,
+                                                                               Date fromDate, Date toDate);
+
     List<Document> findByNameContainingIgnoreCaseAndDateBetweenOrderByDateDesc(String name,
                                                                                Date fromDate, Date toDate);
 }

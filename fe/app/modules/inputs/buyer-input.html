@@ -27,7 +27,7 @@
                 <tr>
                     <td style="width: 5%;">
                         <a href="#" style="float: left;padding-left: 3%;" title="Добавить покупателя"
-                           ng-click="addEditItem(0)">
+                           ng-click="changeItem(0)">
                             <span class="glyphicon glyphicon-plus item-add"></span>
                         </a>
                     </td>
@@ -47,7 +47,7 @@
                     <td class="hoverable" ng-click="selectItem(x.id)" title="Наименование">{{ x.name }}</td>
                     <td>
                         <a href="#" title="Редактировать строку"
-                           ng-click="addEditItem(x.id)">
+                           ng-click="changeItem(x.id)">
                             <span class="glyphicon glyphicon-pencil item-edit"></span>
                         </a>
                         <!--<a href="#" style="float: left;" title="Удалить строку" ng-click="deleteItem()">-->

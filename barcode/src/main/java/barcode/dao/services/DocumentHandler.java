@@ -18,6 +18,8 @@ public class DocumentHandler extends EntityHandlerImpl {
 
     private DocumentRepository documentRepository;
 
+    private final static Long DAYS_LIMIT = 30L;
+
     public static QDocument qDocument = QDocument.document;
 
     public DocumentHandler(DocumentRepository documentRepository) {
@@ -74,6 +76,15 @@ public class DocumentHandler extends EntityHandlerImpl {
     }
 
     public Iterable<Document> getItems(BasicFilter filter) {
+
+        if((filter.getToDate().getTime()-filter.getFromDate().getTime())/1000/60/60/24 > DAYS_LIMIT
+                && filter.getSearchString().equals(""))
+            return documentRepository
+                    .findTop100ByNameContainingIgnoreCaseAndDateBetweenOrderByDateDesc(
+                    filter.getSearchString(),
+                    getDateByTime(filter.getFromDate(), 0, 0),
+                    getDateByTime(filter.getToDate(), 23, 59)
+            );
 
         return getDocsByNameAndDateBetween(filter.getSearchString(), filter.getFromDate(), filter.getToDate()) ;
     }

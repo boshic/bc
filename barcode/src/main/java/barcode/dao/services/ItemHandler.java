@@ -14,9 +14,9 @@ import java.util.Optional;
 @Service
 public class ItemHandler {
 
-    private static Integer EAN_LENGTH = 13;
-    private static String BAD_EAN_SYNONYM = "Товар имеет приходы, или указанный ШК уже имеет синоним!";
-    private static String ITEM_ALREADY_EXIST = "С заданным ШК товар уже существует, добавление не состоится";
+    private static final Integer EAN_LENGTH = 13;
+    private static final String BAD_EAN_SYNONYM = "Товар имеет приходы, или указанный ШК уже имеет синоним!";
+    private static final String ITEM_ALREADY_EXIST = "С заданным ШК товар уже существует, добавление не состоится";
 
     private ItemRepository itemRepository;
 

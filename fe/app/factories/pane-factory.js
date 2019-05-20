@@ -80,12 +80,12 @@ import snd from '../../media/audio/sell.mp3';
                             return true;
                         }
                     },
-                    emptyItem : {name: '', ean: '', predefinedQuantity: 0, eanSynonym: '', section: {name: ''}},
-                    emptyBank : {name: ''},
-                    emptyBuyer : {name: '', bank: {name: ''}},
-                    emptyDoc : {name: ''},
-                    emptySection : {name: ''},
-                    emptySupplier : {name: ''},
+                    emptyItem : () => { return {name: '', ean: '', predefinedQuantity: 0, eanSynonym: '', section: {name: ''}}},
+                    emptyBank : () => { return {name: ''}},
+                    emptyBuyer : () => { return {name: '', bank: {name: ''}}},
+                    emptyDocument : () => { return {name: '', date: ''}},
+                    emptySection : () => { return {name: ''}},
+                    emptySupplier : () => { return {name: ''}},
                     eanPrefix : {value: "000000000", keyCode: generateEanKeyCode},
                     generateEanByKey: (e, ean) => {
                         if (e.ctrlKey && e.keyCode === generateEanKeyCode)

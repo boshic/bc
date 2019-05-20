@@ -4,7 +4,9 @@ let sellingPaneCntrlr = ($s, $http, paneFactory, elem, printFactory, modalFactor
 
         $s.rows=[];
 
-        $s.item = {name: ''};
+
+        let emptyItem = paneFactory.emptyItem;
+        $s.item = emptyItem();
 
         $s.allowAllStocks = false;
         $s.quantityChangerModalData = {hidden : true, row: {}};
@@ -105,7 +107,7 @@ let sellingPaneCntrlr = ($s, $http, paneFactory, elem, printFactory, modalFactor
 
         $s.blankSearch = () => {
             $s.barcode = "";
-            $s.item = {name:''};
+            $s.item = emptyItem();
             paneFactory.changeElementState(eanInputElement, ['focus']);
         };
 

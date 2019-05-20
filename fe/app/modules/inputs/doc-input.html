@@ -18,6 +18,9 @@
             <input title="{{doc.supplier.name}}" type="text" class="form-control"
                ng-model="doc.supplier.name"
                placeholder="Поставщик" readonly="true"/>
+            <span style="font-size: 38px; top: -10px;" class="item-input-toolbox">
+                <item-input-total total="docs.length"></item-input-total>
+            </span>
         </div>
     </div>
     <div class="docs-list"

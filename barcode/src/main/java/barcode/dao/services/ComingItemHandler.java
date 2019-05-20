@@ -419,6 +419,8 @@ public class ComingItemHandler extends EntityHandlerImpl {
     public DtoItemForNewComing getItemForNewComing(String ean) {
 
         Item item = itemHandler.getItemByEanSynonim(ean);
+        if(item == null)
+            return new DtoItemForNewComing(null, BigDecimal.ZERO, BigDecimal.ZERO);
 
         ComingItem coming
                 = comingItemRepository.findTopPriceOutByItemEanOrderByIdDesc(item.getEan());

@@ -42,7 +42,14 @@ import commonFilterTpl from './common-filter.html';
                 scope: {filter: '='},
                 template: quickFilterTpl,
                 // templateUrl: 'html/filter/quick-filter.html',
-                controller: ($scope) => {},
+                controller: ($scope, paneFactory) => {
+                    $scope.emptyBuyer = paneFactory.emptyBuyer;
+                    $scope.emptyItem = paneFactory.emptyItem;
+                    $scope.emptySection = paneFactory.emptySection;
+                    $scope.emptySupplier = paneFactory.emptySupplier;
+                    $scope.emptyDocument = paneFactory.emptyDocument;
+
+                },
                 link: (scope, elem, attrs) => {}
             }
         })

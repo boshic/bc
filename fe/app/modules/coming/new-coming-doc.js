@@ -6,7 +6,7 @@ import newComingDocPaneTpl from './new-coming-doc.html';
         $s.allowAllStocks = false;
 
         let emptyItem = paneFactory.emptyItem;
-        $s.item = emptyItem;
+        $s.item = emptyItem();
         $s.buyer = {name: ''};
         $s.quantityChangerModalData = {hidden : true, row: {}};
 
@@ -79,7 +79,7 @@ import newComingDocPaneTpl from './new-coming-doc.html';
 
                     } else {
                         $s.warning = "Такого товара нет, нужно добавить!";
-                        $s.item = emptyItem;
+                        $s.item = emptyItem();
                     }
                 },
                 reps => {
@@ -90,7 +90,7 @@ import newComingDocPaneTpl from './new-coming-doc.html';
         };
 
         $s.editItem = (name) => {
-            $s.item = angular.extend(emptyItem, {name: name});
+            $s.item = angular.extend(emptyItem(), {name: name, ean: name});
         };
 
         $s.$watch("item", (nv) => {
@@ -194,7 +194,7 @@ import newComingDocPaneTpl from './new-coming-doc.html';
 
         $s.blankSearch = () => {
             $s.barcode = "";
-            $s.item = emptyItem;
+            $s.item = emptyItem();
             $s.warning = "";
             paneFactory.changeElementState(document.getElementById('new-coming-doc'), ['focus']);
         };
