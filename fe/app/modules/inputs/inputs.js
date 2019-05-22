@@ -16,11 +16,12 @@ let commonLinkFunction = (scope, elem, attrs, parentCtrl) => {
     scope.setItem = parentCtrl.setItem;
 };
 
-let bankInputCtrlr = ($s, httpService, paneFactory, itemFactory) => {
+let commonInputCtrlr = ($s, itemFactory, itemConfig) => {
 
-    $s.inputId = paneFactory.generateUuid();
+    $s.inputId = itemFactory.generateUuid();
     $s.items = [];
-    $s.emptyItem = paneFactory.emptyBank;
+    let config = itemFactory[itemConfig]();
+    $s.emptyItem = config.getEmptyItem;
     $s.item = $s.emptyItem();
 
     $s.$watch('item.id', (nv) => {
@@ -29,11 +30,11 @@ let bankInputCtrlr = ($s, httpService, paneFactory, itemFactory) => {
     });
 
     $s.getItems = () => {
-        itemFactory.getItems($s, 'getBanks');
+        itemFactory.getItems($s, config.getItemsUrl);
     };
 
     $s.selectItem = (id) => {
-        itemFactory.selectItem(id, 'getBankById', $s);
+        itemFactory.selectItem(id, config.getItemByIdUrl, $s);
     };
 
     $s.changeItem = (id) => {
@@ -43,6 +44,16 @@ let bankInputCtrlr = ($s, httpService, paneFactory, itemFactory) => {
     $s.clearItem =  () => {
         itemFactory.clearItem($s);
     };
+};
+
+let bankInputCtrlr = ($s, itemFactory) => {
+
+    return commonInputCtrlr($s, itemFactory, 'bankConfig');
+};
+
+let buyerInputCntrlr = ($s, itemFactory) => {
+
+    return commonInputCtrlr($s, itemFactory, 'buyerConfig');
 };
 
 let itemSectionCtrlr = ($s, httpService, paneFactory, itemFactory, ctrlr) => {
@@ -137,50 +148,15 @@ let itemInputCtrlr = ($s, httpService, paneFactory, itemFactory, ctrlr) => {
 
 };
 
-let buyerInputCntrlr = ($s, httpService, paneFactory, itemFactory) => {
-
-    $s.inputId = paneFactory.generateUuid();
-    $s.items = [];
-    $s.emptyItem = paneFactory.emptyBuyer;
-    $s.item = $s.emptyItem();
-
-    $s.$watch('item.id', (nv) => {
-        if(nv)
-            $s.getItems();
-    });
-
-    $s.getItems = () => {
-        itemFactory.getItems($s, 'getBuyers');
-    };
-
-    $s.selectItem = (id) => {
-        itemFactory.selectItem(id, 'getBuyerById', $s);
-    };
-
-    $s.changeItem = (id) => {
-        itemFactory.changeItem(id, $s);
-    };
-
-    $s.clearItem =  () => {
-        itemFactory.clearItem($s);
-    };
-};
-
 let docCtrlr = ($s, httpService, paneFactory) => {
 
     $s.dateFrom = new Date(2015,0,1);
     $s.dateTo = new Date();
     $s.docs = [];
-    // $s.doc = {
-    //     name:"",
-    //     date: ""
-    // };
     $s.emptyItem = paneFactory.emptyDocument;
     $s.doc = $s.emptyItem();
 
     $s.newDoc = angular.extend($s.emptyItem(), {date: new Date().toLocaleDateString(), supplier : paneFactory.emptySupplier()});
-
-    // $s.newDoc = { name:"", date: new Date().toLocaleDateString(), supplier : { name:""}};
 
     $s.docsListVisible = false;
     $s.datePickerVisible = false;
@@ -250,11 +226,6 @@ let docCtrlr = ($s, httpService, paneFactory) => {
             $s.newDoc = this.x;
         else
             $s.newDoc = angular.extend($s.emptyItem(), {date: new Date(), supplier : paneFactory.emptySupplier()});
-            // $s.newDoc = {
-            //     date: new Date(),
-            //     name: "",
-            //     supplier: {name:""}
-            // };
         $s.checkDoc();
     };
 
@@ -405,8 +376,8 @@ angular.module('inputs', [])
             transclude: true,
             scope: { item:'=bank' },
             template: bankInputTpl,
-            controller: function ($scope, httpService, paneFactory, itemFactory) {
-                return bankInputCtrlr($scope, httpService, paneFactory, itemFactory);
+            controller: function ($scope, itemFactory) {
+                return bankInputCtrlr($scope, itemFactory);
             }
         }
     })
@@ -441,21 +412,20 @@ angular.module('inputs', [])
             transclude: true,
             scope: { item: '=buyer', items: '=?buyers'},
             template: buyerInputTpl,
-            controller: ($scope, httpService, paneFactory, itemFactory) => {
-                return buyerInputCntrlr($scope, httpService, paneFactory, itemFactory)
-            },
-            link: () => {}
+            controller: ($scope, itemFactory) => {
+                return buyerInputCntrlr($scope, itemFactory);
+            }
         }
     })
     .directive( "addEditBuyer", () => {
         return {
             restrict: 'E',
-            scope: { buyer: "=", user: "=?", modalVisible: "="},
+            scope: { item: "=buyer", user: "=?", modalVisible: "=", getItems: '&?'},
             template: addEditBuyerTpl,
-            controller:("ctrl", [ '$scope', 'httpService',
+            controller:([ '$scope', 'httpService',
                 function ($scope, httpService) {
                     $scope.warning ="";
-                    $scope.buyer = {};
+                    $scope.item = {};
 
                     $scope.closeModal = () => {
                         $scope.modalVisible = false;
@@ -463,11 +433,16 @@ angular.module('inputs', [])
                     };
 
                     $scope.appendData = () => {
-                        httpService.addItem($scope.buyer, 'addBuyer').then(
+                        httpService.addItem($scope.item, 'addBuyer').then(
                             resp => {
-                                (resp.success) ? $scope.closeModal() : $scope.warning = resp.text;
+                                if(resp.success) {
+                                    $scope.closeModal();
+                                    $scope.getItems();
+                                }
+                                else
+                                    $scope.warning = resp.text;
                             },
-                            resp => { $scope.buyer.name = resp; }
+                            resp => { $scope.item.name = resp; }
                         );
                     };
                 }
@@ -759,6 +734,28 @@ angular.module('inputs', [])
     .factory('itemFactory',['httpService', 'paneFactory',
         function (httpService, paneFactory) {
             return {
+                generateUuid : paneFactory.generateUuid,
+                bankConfig : () => {
+                    return {
+                        getEmptyItem: () => { return {name: ''}; },
+                        getItemsUrl: 'getBanks',
+                        getItemByIdUrl: 'getBankById'
+                    }
+                },
+                buyerConfig : () => {
+                    return {
+                        getEmptyItem: () => {return {name: '', bank: {name: ''}};},
+                        getItemsUrl: 'getBuyers',
+                        getItemByIdUrl: 'getBuyerById'
+                    }
+                },
+                documentConfig : () => {
+                    return {
+                        getEmptyItem: () => {return {name: '', date: ''};},
+                        getItemsUrl: 'getBuyers',
+                        getItemByIdUrl: 'getBuyerById'
+                    }
+                },
                 addEditItem: (item, childScope) => {
                     childScope.modalHidden = false;
                     if (typeof item === 'object')

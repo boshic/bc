@@ -24,7 +24,7 @@ angular.module('invoice-factory', [])
                             row.vatSum = +(row.sum * row.vat/100).toFixed(2);
                         } else {
                             row.sum = +(row.price * row.quantity).toFixed(2);
-                            row.woVatSum = +(row.sum * row.vat/(row.vat + 100)).toFixed(2);
+                            row.woVatSum = +(row.sum - row.sum * row.vat/(row.vat + 100)).toFixed(2);
                             row.woVatPrice = +(row.woVatSum/row.quantity).toFixed(2);
                             row.vatSum = +(row.sum - row.woVatSum).toFixed(2);
                         }

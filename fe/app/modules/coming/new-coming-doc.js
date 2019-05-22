@@ -79,7 +79,7 @@ import newComingDocPaneTpl from './new-coming-doc.html';
 
                     } else {
                         $s.warning = "Такого товара нет, нужно добавить!";
-                        $s.item = emptyItem();
+                        $s.item = angular.extend(emptyItem(), {name: ean, ean: ean});
                     }
                 },
                 reps => {

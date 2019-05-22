@@ -1,9 +1,9 @@
 <div ng-show='modalVisible' class='trans-layer'></div>
 <div class='modal-container-addeditsupplier' ng-class='{modalactive: modalVisible}'>
     <div class="wrapper">
-        <span>Id:</span><span>{{buyer.id}}</span>
+        <span>Id:</span><span>{{item.id}}</span>
         <span title="Применить" class="glyphicon glyphicon-ok item-add" style="float: left;"
-              ng-show="buyer.name.length>0 && buyer.address.length > 0"
+              ng-show="item.name.length>0 && item.address.length > 0"
               ng-click="appendData()"></span>
         <span class="add-edit-buyer-warning" ng-show="warning.length">{{warning}}</span>
         <span title="Закрыть" class="glyphicon glyphicon-remove item-blank" style="float: right;"
@@ -11,14 +11,17 @@
         <div>
             <div>
                 <span>Наименование:</span>
-                <span class="warning-item-input" ng-hide="buyer.name.length > 0">Введите наименование</span>
-                <input type="text" class="form-control" ng-model="buyer.name" placeholder=""/>
+                <span class="warning-item-input" ng-hide="item.name.length > 0">Введите наименование</span>
+                <input type="text" class="form-control" ng-model="item.name" placeholder=""/>
             </div>
 
             <div>
                 <span>Адрес:</span>
-                <span class="warning-item-input" ng-hide="buyer.address.length > 0">Введите адрес</span>
-                <input type="text" class="form-control" ng-model="buyer.address" placeholder=""/>
+                <span class="warning-item-input"
+                      ng-hide="item.address.length > 0">
+                    Введите адрес
+                </span>
+                <input type="text" class="form-control" ng-model="item.address" placeholder=""/>
             </div>
 
             <div style="display: flex;">
@@ -28,15 +31,15 @@
             </div>
             <div style="display: flex;">
                 <input style="width: 20%;" type="number" class="form-control" min="0" max="100"
-                        ng-model="buyer.debt"/>
+                        ng-model="item.debt"/>
                 <div style="width: 20%;">
                     <input type="number" class="form-control" min="0" max="100"
-                           ng-model="buyer.discount"
+                           ng-model="item.discount"
                     placeholder=""/>
                 </div>
                 <div style="width: 60%;">
                     <input type="text" class="form-control" maxlength="28"
-                           ng-model="buyer.account"
+                           ng-model="item.account"
                            placeholder="Расчетный счет"/>
                 </div>
             </div>
@@ -51,18 +54,18 @@
                 <!--Введите УНП (9 знаков)-->
             <!--</span>-->
             <input  style="width: 40%;" type="text" class="form-control" maxlength="9"
-                    ng-model="buyer.unp" placeholder="УНП"/>
+                    ng-model="item.unp" placeholder="УНП"/>
             <div style="width: 60%;">
-                <bank-input bank="buyer.bank"></bank-input>
+                <bank-input bank="item.bank"></bank-input>
             </div>
         </div>
         <div style="display: flex;"
              ng-show = "user.role == 'ROLE_ADMIN'">
             <input style="zoom: 1.5; position: absolute; margin: auto;"
                    type="checkbox"
-                   ng-model="buyer.sellByComingPrices"/>
+                   ng-model="item.sellByComingPrices"/>
             <label style="margin-left: 20px; color: coral;">
-                Продажа по ценам поступления: {{(buyer.sellByComingPrices) ? "Да" : "Нет"}}
+                Продажа по ценам поступления: {{(item.sellByComingPrices) ? "Да" : "Нет"}}
             </label>
         </div>
     </div>

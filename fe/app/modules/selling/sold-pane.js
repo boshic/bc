@@ -26,6 +26,7 @@ import soldPaneTpl from './sold-pane.html';
                 printFactory.setReportsByParams(
                     [{type: 'writeOffAct', data: $s.filter, method: 'addWriteOffAct'},
                         {type: 'salesReceipt', data: $s.filter, method: 'addInvoiceByFilter'},
+                        {type: 'invoiceWithContract', data: $s.filter, method: 'addInvoiceByFilter'},
                         {type: 'invoice', data: $s.filter, method: 'addInvoiceByFilter'}], $s.reports);
         };
 

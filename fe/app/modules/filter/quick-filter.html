@@ -46,7 +46,7 @@
             <span>{{filter.document.date | date:'dd.MM.yyyy'}}</span>
         </span>
         <ul class="dropdown-menu hoverable quick-filter-comment-delete">
-            <li ng-click="filter.document = emptyDocument">
+            <li ng-click="filter.document = emptyDocument()">
                 <span>Очистить документ</span>
                 <span class="glyphicon glyphicon-remove"></span>
             </li>

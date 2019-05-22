@@ -1,30 +1,3 @@
-// requirejs.config({
-//     baseUrl: '../../../scripts/libs',
-//     paths: {
-//         angular:'angular.min',
-//         domReady:'domReady',
-//         bootstrap: 'bootstrap.min',
-//         jquery : 'jquery-3.2.1.min'
-//     },
-//     shim: {
-//         bootstrap : ['jquery'],
-//         angular: { exports: 'angular'},
-//         barcode: { exports: 'barcode'},
-//         jquery: { exports: '$'}
-//     },
-//     waitSeconds: 60
-// });
-//
-// require(['bootstrap','css!../../css/bootstrap.css', 'css!../../css/writeOffAct.css']);
-//
-// require(['angular', 'domReady!',
-
-
-//     ],
-//
-//     function (angular, document) {
-//         'use strict';
-
 import angular from 'angular';
 
 import 'bootstrap/dist/css/bootstrap.css';
@@ -51,13 +24,6 @@ let openTextEditModal = ($s, index, modalFactory) => {
         if(!angular.isDefined(index))
             if (confirm("Подтвердите добавление причины списания для всех строк"))
                 $s.reportData.rows.map((r) => {r.comment = row.comment});
-
-        //     httpService.addItem({text: row.comment, action: row.commentCause},
-        //         'addSoldItemComment', {params: {id: row.id}}).then(
-        //         () => {findItemsByFilter();},
-        //         () => {console.log('comment has not been added!');}
-        //     );
-        // else findItemsByFilter();
     };
     modalFactory.openModal(undefined, [row], $s.modalData);
 };
@@ -93,7 +59,7 @@ let openTextEditModal = ($s, index, modalFactory) => {
                                 () => {
                                     $window.document.title = resp.buyer.name + " №" +
                                         resp.id + " от " + new Date(resp.date).toLocaleDateString();
-                                    // $window.print();
+                                    $window.print();
                                 }, 200);
                         },
                         resp => { console.log(resp); }

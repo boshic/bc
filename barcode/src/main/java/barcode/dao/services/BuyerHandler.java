@@ -24,7 +24,7 @@ public class BuyerHandler {
         newBuyer.setName(buyer.getName());
         newBuyer.setDebt(buyer.getDebt());
         newBuyer.setAccount(buyer.getAccount());
-        newBuyer.setBank(buyer.getBank());
+        newBuyer.setBank(buyer.getBank().getId() == null ? null : buyer.getBank());
         newBuyer.setUnp(buyer.getUnp());
         newBuyer.setAddress(buyer.getAddress());
         newBuyer.setDiscount(buyer.getDiscount());

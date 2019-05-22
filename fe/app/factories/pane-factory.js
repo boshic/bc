@@ -81,7 +81,7 @@ import snd from '../../media/audio/sell.mp3';
                         }
                     },
                     emptyItem : () => { return {name: '', ean: '', predefinedQuantity: 0, eanSynonym: '', section: {name: ''}}},
-                    emptyBank : () => { return {name: ''}},
+                    // emptyBank : () => { return {name: ''}},
                     emptyBuyer : () => { return {name: '', bank: {name: ''}}},
                     emptyDocument : () => { return {name: '', date: ''}},
                     emptySection : () => { return {name: ''}},
@@ -93,12 +93,6 @@ import snd from '../../media/audio/sell.mp3';
                         return ean;
                     },
                     user : { name:"emptyUser" },
-                    // paneToggler: (pane) => {
-                    //     pane.$$childTail.panes.map(p => {
-                    //         if(p.selected)
-                    //             return p.name;
-                    //     });
-                    // },
                     generateUuid: () => {
                         return Math.random().toString(36).substring(2, 15)
                             + Math.random().toString(36).substring(2, 15)
