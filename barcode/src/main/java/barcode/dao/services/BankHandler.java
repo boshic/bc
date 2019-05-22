@@ -1,8 +1,10 @@
 package barcode.dao.services;
 
 import barcode.dao.entities.Bank;
+import barcode.dao.entities.Buyer;
 import barcode.dao.repositories.BankRepository;
 import barcode.dto.ResponseItem;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -73,4 +75,14 @@ public class BankHandler {
 
         return update(newBank, this.getItemById(newBank.getId()));
     }
+
+    Bank getCheckedItem (Bank bank) {
+
+        return (bank == null
+                || bank.getId() == null
+                || bankRepository.findOne(bank.getId()) == null) ?
+                null : bank;
+
+    }
+
 }

@@ -1,12 +1,11 @@
 import sellingPaneTpl from './selling-pane.html';
 
-let sellingPaneCntrlr = ($s, $http, paneFactory, elem, printFactory, modalFactory) => {
+let sellingPaneCntrlr = ($s, $http, paneFactory, printFactory, modalFactory, itemFactory) => {
 
         $s.rows=[];
 
-
-        let emptyItem = paneFactory.emptyItem;
-        $s.item = emptyItem();
+        let getEmptyItem = itemFactory.itemConfig.getEmptyItem;
+        $s.item = getEmptyItem();
 
         $s.allowAllStocks = false;
         $s.quantityChangerModalData = {hidden : true, row: {}};
@@ -33,7 +32,11 @@ let sellingPaneCntrlr = ($s, $http, paneFactory, elem, printFactory, modalFactor
 
         };
 
-        $s.getDiscountedPrice = paneFactory.getDiscountedPrice;
+    $s.editItem = (barcode) => {
+        $s.item = angular.extend(getEmptyItem(), {name: barcode});
+    };
+
+    $s.getDiscountedPrice = paneFactory.getDiscountedPrice;
 
         $s.$watchCollection("[comment, rows, buyer, rows.length]", (nv, ov) => {
             if ((nv.indexOf(undefined) < 0)) {
@@ -107,7 +110,7 @@ let sellingPaneCntrlr = ($s, $http, paneFactory, elem, printFactory, modalFactor
 
         $s.blankSearch = () => {
             $s.barcode = "";
-            $s.item = emptyItem();
+            $s.item = getEmptyItem();
             paneFactory.changeElementState(eanInputElement, ['focus']);
         };
 
@@ -124,8 +127,8 @@ let sellingPaneCntrlr = ($s, $http, paneFactory, elem, printFactory, modalFactor
                 transclude: true,
                 scope: {},
                 template: sellingPaneTpl,
-                controller:  ($scope, $http, paneFactory, $element, printFactory, modalFactory) => {
-                    return sellingPaneCntrlr($scope, $http, paneFactory, $element, printFactory, modalFactory);
+                controller:  ($scope, $http, paneFactory, printFactory, modalFactory, itemFactory) => {
+                    return sellingPaneCntrlr($scope, $http, paneFactory, printFactory, modalFactory, itemFactory);
                 },
                 link: () => {}
             }

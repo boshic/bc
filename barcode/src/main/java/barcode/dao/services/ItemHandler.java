@@ -5,6 +5,7 @@ import barcode.dao.entities.Item;
 import barcode.dao.repositories.ComingItemRepository;
 import barcode.dao.repositories.ItemRepository;
 import barcode.dto.ResponseItem;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;

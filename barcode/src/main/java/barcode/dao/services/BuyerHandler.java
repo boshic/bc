@@ -15,8 +15,12 @@ import java.util.stream.Collectors;
 public class BuyerHandler {
 
     private BuyerRepository buyerRepository;
+    private BankHandler bankHandler;
 
-    public BuyerHandler(BuyerRepository buyerRepository) {
+    public BuyerHandler(BuyerRepository buyerRepository, BankHandler bankHandler) {
+
+        this.bankHandler = bankHandler;
+
         this.buyerRepository = buyerRepository;
     }
 
@@ -24,7 +28,7 @@ public class BuyerHandler {
         newBuyer.setName(buyer.getName());
         newBuyer.setDebt(buyer.getDebt());
         newBuyer.setAccount(buyer.getAccount());
-        newBuyer.setBank(buyer.getBank().getId() == null ? null : buyer.getBank());
+        newBuyer.setBank(bankHandler.getCheckedItem(buyer.getBank()));
         newBuyer.setUnp(buyer.getUnp());
         newBuyer.setAddress(buyer.getAddress());
         newBuyer.setDiscount(buyer.getDiscount());

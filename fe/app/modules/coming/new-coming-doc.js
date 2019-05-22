@@ -1,13 +1,13 @@
 import newComingDocPaneTpl from './new-coming-doc.html';
 
-    let newComingCtrlr = ($s, httpService, paneFactory, elem, printFactory, modalFactory) => {
+    let newComingCtrlr = ($s, httpService, paneFactory, elem, printFactory, modalFactory, itemFactory) => {
 
         $s.rows = [];
         $s.allowAllStocks = false;
 
-        let emptyItem = paneFactory.emptyItem;
-        $s.item = emptyItem();
-        $s.buyer = {name: ''};
+        let getEpmtyItem = itemFactory.itemConfig.getEmptyItem;
+        $s.item = getEpmtyItem();
+        $s.buyer = itemFactory.buyerConfig.getEmptyItem();
         $s.quantityChangerModalData = {hidden : true, row: {}};
 
         $s.barcode = "";
@@ -79,7 +79,7 @@ import newComingDocPaneTpl from './new-coming-doc.html';
 
                     } else {
                         $s.warning = "Такого товара нет, нужно добавить!";
-                        $s.item = angular.extend(emptyItem(), {name: ean, ean: ean});
+                        $s.item = angular.extend(getEpmtyItem(), {name: ean, ean: ean});
                     }
                 },
                 reps => {
@@ -90,7 +90,7 @@ import newComingDocPaneTpl from './new-coming-doc.html';
         };
 
         $s.editItem = (name) => {
-            $s.item = angular.extend(emptyItem(), {name: name, ean: name});
+            $s.item = angular.extend(getEpmtyItem(), {name: name, ean: name});
         };
 
         $s.$watch("item", (nv) => {
@@ -194,7 +194,7 @@ import newComingDocPaneTpl from './new-coming-doc.html';
 
         $s.blankSearch = () => {
             $s.barcode = "";
-            $s.item = emptyItem();
+            $s.item = getEpmtyItem();
             $s.warning = "";
             paneFactory.changeElementState(document.getElementById('new-coming-doc'), ['focus']);
         };
@@ -212,8 +212,8 @@ import newComingDocPaneTpl from './new-coming-doc.html';
                 scope: {},
                 template: newComingDocPaneTpl,
                 // templateUrl: 'html/coming/new-coming-doc.html',
-                controller: ($scope, httpService, paneFactory, $element, printFactory, modalFactory) => {
-                    return newComingCtrlr($scope, httpService, paneFactory, $element, printFactory, modalFactory);
+                controller: ($scope, httpService, paneFactory, $element, printFactory, modalFactory, itemFactory) => {
+                    return newComingCtrlr($scope, httpService, paneFactory, $element, printFactory, modalFactory, itemFactory);
                 },
                 link: (scope,elem,attrs) => {
                 }

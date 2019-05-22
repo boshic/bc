@@ -16,13 +16,13 @@ let commonLinkFunction = (scope, elem, attrs, parentCtrl) => {
     scope.setItem = parentCtrl.setItem;
 };
 
-let commonInputCtrlr = ($s, itemFactory, itemConfig) => {
+let commonItemCtrlr = ($s, itemFactory, itemConfig) => {
 
     $s.inputId = itemFactory.generateUuid();
     $s.items = [];
-    let config = itemFactory[itemConfig]();
-    $s.emptyItem = config.getEmptyItem;
-    $s.item = $s.emptyItem();
+    let config = itemFactory[itemConfig];
+    $s.getEmptyItem = config.getEmptyItem;
+    $s.item = $s.getEmptyItem();
 
     $s.$watch('item.id', (nv) => {
         if(nv)
@@ -46,22 +46,45 @@ let commonInputCtrlr = ($s, itemFactory, itemConfig) => {
     };
 };
 
+let commonAddEditCtrlr = ($s, itemFactory, itemConfig) => {
+        $s.warning ="";
+        let config = itemFactory[itemConfig];
+
+        $s.closeModal = () => {
+            itemFactory.closeModal($s);
+        };
+
+        $s.appendData = () => {
+            itemFactory.addItem($s, config.addItemUrl);
+        };
+    };
+
 let bankInputCtrlr = ($s, itemFactory) => {
 
-    return commonInputCtrlr($s, itemFactory, 'bankConfig');
+    return commonItemCtrlr($s, itemFactory, 'bankConfig');
+};
+
+let bankChangeCtrlr = ($s, itemFactory) => {
+
+    return commonAddEditCtrlr($s, itemFactory, 'bankConfig');
 };
 
 let buyerInputCntrlr = ($s, itemFactory) => {
 
-    return commonInputCtrlr($s, itemFactory, 'buyerConfig');
+    return commonItemCtrlr($s, itemFactory, 'buyerConfig');
+};
+
+let buyerChangeCtrlr = ($s, itemFactory) => {
+
+    return commonAddEditCtrlr($s, itemFactory, 'buyerConfig');
 };
 
 let itemSectionCtrlr = ($s, httpService, paneFactory, itemFactory, ctrlr) => {
 
-    $s.inputId = paneFactory.generateUuid();
+    $s.inputId = itemFactory.generateUuid();
     $s.items = [];
-    let emptyItem = paneFactory.emptySection;
-    $s.item = emptyItem();
+    let getEmptyItem = itemFactory.sectionConfig.getEmptyItem;
+    $s.item = getEmptyItem();
 
 
     $s.$watch('item.name', (nv, ov) => {
@@ -75,7 +98,7 @@ let itemSectionCtrlr = ($s, httpService, paneFactory, itemFactory, ctrlr) => {
     };
 
     ctrlr.setItem = $s.setItem = item => {
-        $s.item = (!item || item === null ) ? emptyItem() : angular.extend({}, item);
+        $s.item = (!item || item === null ) ? getEmptyItem() : angular.extend({}, item);
     };
 
     $s.blankSearchAndGetItemsBy = () => {
@@ -102,10 +125,10 @@ let itemSectionCtrlr = ($s, httpService, paneFactory, itemFactory, ctrlr) => {
 
 let itemInputCtrlr = ($s, httpService, paneFactory, itemFactory, ctrlr) => {
 
-    $s.inputId = paneFactory.generateUuid();
+    $s.inputId = itemFactory.generateUuid();
     $s.items = [];
-    let emptyItem = paneFactory.emptyItem;
-    $s.item = emptyItem();
+    let getEmptyItem = itemFactory.itemConfig.getEmptyItem;
+    $s.item = getEmptyItem();
 
 
     $s.$watch('item.name', (nv, ov) => {
@@ -119,7 +142,7 @@ let itemInputCtrlr = ($s, httpService, paneFactory, itemFactory, ctrlr) => {
     };
 
     ctrlr.setItem = $s.setItem = item => {
-        $s.item = (!item || item === null ) ? emptyItem() : angular.extend({}, item);
+        $s.item = (!item || item === null ) ? getEmptyItem() : angular.extend({}, item);
     };
 
     $s.blankSearchAndGetItemsBy = () => {
@@ -148,15 +171,15 @@ let itemInputCtrlr = ($s, httpService, paneFactory, itemFactory, ctrlr) => {
 
 };
 
-let docCtrlr = ($s, httpService, paneFactory) => {
+let docCtrlr = ($s, httpService, itemFactory) => {
 
     $s.dateFrom = new Date(2015,0,1);
     $s.dateTo = new Date();
     $s.docs = [];
-    $s.emptyItem = paneFactory.emptyDocument;
-    $s.doc = $s.emptyItem();
+    $s.getEmptyItem = itemFactory.documentConfig.getEmptyItem;
+    $s.doc = $s.getEmptyItem();
 
-    $s.newDoc = angular.extend($s.emptyItem(), {date: new Date().toLocaleDateString(), supplier : paneFactory.emptySupplier()});
+    $s.newDoc = angular.extend($s.getEmptyItem(), {date: new Date().toLocaleDateString()});
 
     $s.docsListVisible = false;
     $s.datePickerVisible = false;
@@ -225,12 +248,12 @@ let docCtrlr = ($s, httpService, paneFactory) => {
         if (this.$index >= 0)
             $s.newDoc = this.x;
         else
-            $s.newDoc = angular.extend($s.emptyItem(), {date: new Date(), supplier : paneFactory.emptySupplier()});
+            $s.newDoc = angular.extend($s.getEmptyItem(), {date: new Date()});
         $s.checkDoc();
     };
 
     $s.blankNameAndGetItemsBy = () => {
-        $s.doc = $s.emptyItem();
+        $s.doc = $s.getEmptyItem();
         $s.warning = true;
         $s.getDocs();
     };
@@ -332,10 +355,10 @@ let stockCntrlr = ($s, httpService) => {
 
 let supplierInputCntrlr = ($s, $http, paneFactory, itemFactory, ctrlr) => {
 
-    $s.inputId = paneFactory.generateUuid();
+    $s.inputId = itemFactory.generateUuid();
     $s.items = [];
-    let emptyItem = paneFactory.emptyItem;
-    $s.item = emptyItem();
+    let getEmptyItem = itemFactory.supplierConfig.getEmptyItem;
+    $s.item = getEmptyItem();
 
     $s.$watch('item.name', (nv, ov) => {
         if ((ov) || (nv))
@@ -364,7 +387,7 @@ let supplierInputCntrlr = ($s, $http, paneFactory, itemFactory, ctrlr) => {
     };
 
     $s.blankSearchAndGetItemsBy = function() {
-        $s.item.name === "" ? $s.getItems() : $s.item = emptyItem();
+        $s.item.name === "" ? $s.getItems() : $s.item = getEmptyItem();
         paneFactory.changeElementState(document.getElementById($s.inputId), ['focus']);
     };
 };
@@ -384,27 +407,12 @@ angular.module('inputs', [])
     .directive( "addEditBank", () => {
         return {
             restrict: 'E',
-            scope: { item: "=bank", modalVisible: "="},
+            scope: { item: "=bank", modalVisible: "=", getItems: '&?'},
             template: addEditBankTpl,
-            controller:([ '$scope', 'httpService',
-                function ($scope, httpService) {
-                    $scope.warning ="";
-
-                    $scope.closeModal = () => {
-                        $scope.modalVisible = false;
-                        $scope.warning ="";
-                    };
-
-                    $scope.appendData = () => {
-                        httpService.addItem($scope.item, 'addBank').then(
-                            resp => {
-                                (resp.success) ? $scope.closeModal() : $scope.warning = resp.text;
-                            },
-                            resp => { $scope.item.name = resp; }
-                        );
-                    };
-                }
-            ])        }
+            controller : ($scope, itemFactory) => {
+                return bankChangeCtrlr($scope, itemFactory);
+            }
+        }
     })
     .directive( "buyerInput", () => {
         return {
@@ -422,31 +430,9 @@ angular.module('inputs', [])
             restrict: 'E',
             scope: { item: "=buyer", user: "=?", modalVisible: "=", getItems: '&?'},
             template: addEditBuyerTpl,
-            controller:([ '$scope', 'httpService',
-                function ($scope, httpService) {
-                    $scope.warning ="";
-                    $scope.item = {};
-
-                    $scope.closeModal = () => {
-                        $scope.modalVisible = false;
-                        $scope.warning ="";
-                    };
-
-                    $scope.appendData = () => {
-                        httpService.addItem($scope.item, 'addBuyer').then(
-                            resp => {
-                                if(resp.success) {
-                                    $scope.closeModal();
-                                    $scope.getItems();
-                                }
-                                else
-                                    $scope.warning = resp.text;
-                            },
-                            resp => { $scope.item.name = resp; }
-                        );
-                    };
-                }
-            ])
+            controller : ($scope, itemFactory) => {
+                return buyerChangeCtrlr($scope, itemFactory);
+            }
         }
     })
     .directive( "commentInput", () => {
@@ -475,9 +461,8 @@ angular.module('inputs', [])
             scope: {doc:'='},
             template : docInputTpl,
             // templateUrl: '/scripts/modules/inputs/doc-input.html',
-            controller: ($scope, httpService, paneFactory) => {
-
-                return docCtrlr($scope, httpService, paneFactory);
+            controller: ($scope, httpService, itemFactory) => {
+                return docCtrlr($scope, httpService, itemFactory);
 
             },
             link: (scope, ele, attrs) => {}
@@ -492,8 +477,7 @@ angular.module('inputs', [])
             // templateUrl: '/scripts/modules/inputs/item-input.html',
             controller: function ($scope, httpService, paneFactory, itemFactory) {
                 return itemInputCtrlr($scope, httpService, paneFactory, itemFactory, this);
-            },
-            link: () => {}
+            }
         }
     })
     .directive( "addEditItem", () => {
@@ -688,7 +672,7 @@ angular.module('inputs', [])
                             resp => {
                                 if (resp.data.success) {
                                     $scope.closeModal();
-                                    $scope.parentScope.getItems();
+                                    $scope.getItems();
                                 }
                             },
                             () => {console.log("Ошибка при добавлении поставщика!");}
@@ -705,7 +689,7 @@ angular.module('inputs', [])
             },
             link: (scope, elem, attrs, supplierInputCtrlr) => {
                 supplierInputCtrlr.getChildScope(scope);
-                scope.parentScope = supplierInputCtrlr.getItems;
+                scope.getItems = supplierInputCtrlr.getItems;
             }
         }
     })
@@ -733,28 +717,50 @@ angular.module('inputs', [])
         })
     .factory('itemFactory',['httpService', 'paneFactory',
         function (httpService, paneFactory) {
+
+            let getNewBank = () => {return {name: ''};};
+            let getNewSupplier = () => { return {name: ''};};
+            let getNewBuyer = () => {return {name: '', bank: getNewBank()};};
+            let getNewDocument = () => { return {name: '', date: '', supplier : getNewSupplier()};};
+            let getNewSection = () => {return {name: ''};};
+            let getNewItem = () => {return {name: '', ean: '', predefinedQuantity: 0, eanSynonym: '', section: getNewSection()};};
+
             return {
                 generateUuid : paneFactory.generateUuid,
-                bankConfig : () => {
-                    return {
-                        getEmptyItem: () => { return {name: ''}; },
+                bankConfig :
+                    {
+                        getEmptyItem: getNewBank,
                         getItemsUrl: 'getBanks',
+                        addItemUrl: 'addBank',
                         getItemByIdUrl: 'getBankById'
-                    }
+
                 },
-                buyerConfig : () => {
-                    return {
-                        getEmptyItem: () => {return {name: '', bank: {name: ''}};},
+                buyerConfig :
+                    {
+                        getEmptyItem: getNewBuyer,
                         getItemsUrl: 'getBuyers',
+                        addItemUrl: 'addBuyer',
                         getItemByIdUrl: 'getBuyerById'
-                    }
                 },
-                documentConfig : () => {
-                    return {
-                        getEmptyItem: () => {return {name: '', date: ''};},
-                        getItemsUrl: 'getBuyers',
-                        getItemByIdUrl: 'getBuyerById'
-                    }
+                documentConfig :
+                    {
+                        getEmptyItem: getNewDocument,
+                        getItemsUrl: 'getDocs'
+                },
+                itemConfig :
+                    {
+                        getEmptyItem: getNewItem,
+                        getItemsUrl: 'getItems'
+                },
+                supplierConfig :
+                    {
+                        getEmptyItem: getNewSupplier,
+                        getItemsUrl: 'getSuppliers'
+                },
+                sectionConfig :
+                    {
+                        getEmptyItem: getNewSection,
+                        getItemsUrl: 'getSections'
                 },
                 addEditItem: (item, childScope) => {
                     childScope.modalHidden = false;
@@ -782,14 +788,31 @@ angular.module('inputs', [])
                         );
                 },
                 clearItem: ($s) => {
-                    $s.item = $s.emptyItem();
+                    $s.item = $s.getEmptyItem();
                     $s.getItems();
                     paneFactory.changeElementState(document.getElementById($s.inputId), ['focus']);
                 },
                 changeItem: (id, $s) => {
-                    id > 0 ? $s.selectItem(id) : $s.item = $s.emptyItem();
+                    id > 0 ? $s.selectItem(id) : $s.item = $s.getEmptyItem();
                     $s.addEditModalVisible = true;
                     $s.user = paneFactory.user;
+                },
+                addItem : ($s, url) => {
+                    httpService.addItem($s.item, url).then(
+                        resp => {
+                            if(resp.success) {
+                                $s.closeModal();
+                                $s.getItems();
+                            }
+                            else
+                                $s.warning = resp.text;
+                        },
+                        resp => { $s.item.name = resp; }
+                    );
+                },
+                closeModal : ($s) => {
+                    $s.modalVisible = false;
+                    $s.warning ="";
                 }
             };
         }
