@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link rel="stylesheet" href="/webjars/fe/0.1.0/css/invoice.css"/>
+<head>
+    <title>Акт вып. работ</title>
+</head>
+<body ng-controller="invoiceCtrl">
+
+<div style="margin-left: 3%;">
+    <invoice-header invoice-data="reportData"></invoice-header>
+    <invoice-body invoice-data="reportData"></invoice-body>
+    <invoice-footer invoice-data="reportData"></invoice-footer>
+</div>
+
+<script src="/webjars/fe/0.1.0/invoice.js"></script>
+</body>
+</html>

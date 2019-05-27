@@ -15,7 +15,7 @@
            ng-model="item.name"
            ng-change="getItems()"
            ng-readonly="item.id"/>
-    <span class="item-input-toolbox">
+    <span class="item-input-toolbox" ng-hide="item.id > 0">
         <item-input-total total="items.length"></item-input-total>
     </span>
     <ul class="dropdown-menu hoverable supplier-dropdown">
@@ -25,14 +25,14 @@
                 <tr>
                     <td>
                         <a href="#" style="float: left;padding-left: 3%;" title="Добавить секцию"
-                           ng-click="addEditItem({})">
+                           ng-click="changeItem(0)">
                             <span class="glyphicon glyphicon-plus item-add"></span>
                         </a>
                     </td>
                     <td></td>
                     <td>
                         <span style="float: right;" class="glyphicon glyphicon-remove item-blank"
-                              ng-click="blankSearchAndGetItemsBy()" title="Очистить поиск">
+                              ng-click="clearItem()" title="Очистить поиск">
                         </span>
                     </td>
                 </tr>
@@ -53,12 +53,12 @@
                         </div>
                         </span>
                     </td>
-                    <td ng-click="selectItem()">
+                    <td ng-click="selectItem(x.id)">
                         <span class="hoverable" >{{ x.name }}</span>
                     </td>
                     <td style="width: 35px";>
                         <a href="#" title="Редактировать строку"
-                           ng-click="addEditItem(x.id)">
+                           ng-click="changeItem(x.id)">
                             <span class="glyphicon glyphicon-pencil item-edit"></span>
                         </a>
                     </td>
@@ -68,4 +68,6 @@
         </li>
     </ul>
 </div>
-<add-edit-item-section></add-edit-item-section>
+<add-edit-item-section
+        section="item" modal-visible="addEditModalVisible" user="user" get-items="getItems()">
+</add-edit-item-section>

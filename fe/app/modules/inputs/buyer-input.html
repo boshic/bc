@@ -7,7 +7,7 @@
               ng-change = 'getItems()'
               ng-readonly="item.id">
     </textarea>
-    <span class="item-input-toolbox">
+    <span class="item-input-toolbox"  ng-hide="item.id > 0">
         <item-input-total total="items.length"></item-input-total>
     </span>
     <div class="buyer-debt" style="top: 0px;">
@@ -50,9 +50,6 @@
                            ng-click="changeItem(x.id)">
                             <span class="glyphicon glyphicon-pencil item-edit"></span>
                         </a>
-                        <!--<a href="#" style="float: left;" title="Удалить строку" ng-click="deleteItem()">-->
-                            <!--<span class="glyphicon glyphicon-minus item-delete"></span>-->
-                        <!--</a>-->
                     </td>
                 </tr>
                 </tbody>

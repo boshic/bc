@@ -1,6 +1,6 @@
 import comingItemTpl from './coming-item.html';
 
-    let comingItemCntrlr = ($s, paneFactory, httpService, elem) => {
+    let comingItemCntrlr = ($s, paneFactory, httpService, itemFactory) => {
 
         $s.coming = {};
         $s.canCome = false;
@@ -16,7 +16,11 @@ import comingItemTpl from './coming-item.html';
         $s.$watch('coming', () => { $s.checkComing(); }, true);
 
         $s.getComing = id => {
-            $s.coming = {date: new Date(),quantity:1, buyer:{name:""}, user: paneFactory.user};
+            $s.coming = {date: new Date(), quantity:1,
+                buyer: itemFactory.buyerConfig.getEmptyItem(),
+                item: itemFactory.itemConfig.getEmptyItem(),
+                user: paneFactory.user
+            };
             if (id) {
                 httpService.getItemById(id, 'getComingById').then(
                     resp => {
@@ -101,8 +105,8 @@ import comingItemTpl from './coming-item.html';
                 // templateUrl: 'html/coming/coming-item.html',
                 scope: { comingConfig: '<'},
                 transclude: true,
-                controller: ($scope, paneFactory, httpService, $element) => {
-                        return comingItemCntrlr($scope, paneFactory, httpService, $element);
+                controller: ($scope, paneFactory, httpService, itemFactory) => {
+                        return comingItemCntrlr($scope, paneFactory, httpService, itemFactory);
                     },
                 link: () => {}
             }

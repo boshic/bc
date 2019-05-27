@@ -1,5 +1,5 @@
-<div ng-hide='modalHidden' class='trans-layer'></div>
-<div class='modal-container-addeditsupplier' ng-class='{modalactive: !modalHidden}'>
+<div ng-show='modalVisible' class='trans-layer'></div>
+<div class='modal-container-addeditsupplier' ng-class='{modalactive: modalVisible}'>
     <div class="wrapper">
         <span>Id:</span><span>{{item.id}}</span>
         <span title="Применить" class="glyphicon glyphicon-ok item-add" style="float: left;"
@@ -23,6 +23,7 @@
                 </div>
                 <div style="display: flex;margin-bottom: 10px;">
                     <span class="warning-item-input" ng-hide="item.unit.length > 0">Введите единицу измерения</span>
+                    <eraser style="margin-top: 6px;" data="item.unit"></eraser>
                     <input style = "width: 50%; text-align: center;" type="text"
                            class="form-control"
                            ng-model="item.unit" list="measure-units" placeholder=""/>

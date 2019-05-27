@@ -11,11 +11,6 @@ import itemSectionInputTpl from './item-section-input.html';
 import addEditItemSectionTpl from './add-edit-item-section.html';
 import supplierInputTpl from './supplier-input.html';
 
-let commonLinkFunction = (scope, elem, attrs, parentCtrl) => {
-    parentCtrl.getAddEditData(scope, elem);
-    scope.setItem = parentCtrl.setItem;
-};
-
 let commonItemCtrlr = ($s, itemFactory, itemConfig) => {
 
     $s.inputId = itemFactory.generateUuid();
@@ -79,96 +74,49 @@ let buyerChangeCtrlr = ($s, itemFactory) => {
     return commonAddEditCtrlr($s, itemFactory, 'buyerConfig');
 };
 
-let itemSectionCtrlr = ($s, httpService, paneFactory, itemFactory, ctrlr) => {
+let sectionCtrlr = ($s, itemFactory) => {
 
-    $s.inputId = itemFactory.generateUuid();
-    $s.items = [];
-    let getEmptyItem = itemFactory.sectionConfig.getEmptyItem;
-    $s.item = getEmptyItem();
-
-
-    $s.$watch('item.name', (nv, ov) => {
-        if ((nv) || (ov))
-            $s.getItems();
-    }, true);
-
-
-    ctrlr.getAddEditData = (scope) => {
-        $s.addEditScope = scope;
-    };
-
-    ctrlr.setItem = $s.setItem = item => {
-        $s.item = (!item || item === null ) ? getEmptyItem() : angular.extend({}, item);
-    };
-
-    $s.blankSearchAndGetItemsBy = () => {
-        if(!angular.isDefined($s.item) || $s.item === null)
-            $s.setItem(null);
-        $s.item.name ==="" ? $s.getItems() : $s.setItem(null);
-        paneFactory.changeElementState(document.getElementById($s.inputId), ['focus']);
-    };
-
-
-    $s.getItems = () => {
-        itemFactory.getItems($s, 'getSections');
-    };
-
-    $s.addEditItem = (item) => {
-        return itemFactory.addEditItem(item, $s.addEditScope);
-    };
-
-    $s.selectItem = function() {
-        $s.setItem(this.x);
-    };
-
+    return commonItemCtrlr($s, itemFactory, 'sectionConfig');
 };
 
-let itemInputCtrlr = ($s, httpService, paneFactory, itemFactory, ctrlr) => {
+let sectionChangeCtrlr = ($s, itemFactory) => {
 
-    $s.inputId = itemFactory.generateUuid();
-    $s.items = [];
-    let getEmptyItem = itemFactory.itemConfig.getEmptyItem;
-    $s.item = getEmptyItem();
+    return commonAddEditCtrlr($s, itemFactory, 'sectionConfig');
+};
 
+let itemInputCtrlr = ($s, itemFactory, paneFactory) => {
 
     $s.$watch('item.name', (nv, ov) => {
         if ((nv) || (ov))
             $s.getItems();
     }, true);
-
-
-    ctrlr.getAddEditData = (scope) => {
-        $s.addEditScope = scope;
-    };
-
-    ctrlr.setItem = $s.setItem = item => {
-        $s.item = (!item || item === null ) ? getEmptyItem() : angular.extend({}, item);
-    };
-
-    $s.blankSearchAndGetItemsBy = () => {
-        if(!angular.isDefined($s.item) || $s.item === null)
-            $s.setItem(null);
-        $s.item.name ==="" ? $s.getItems() : $s.setItem(null);
-        paneFactory.changeElementState(document.getElementById($s.inputId), ['focus']);
-    };
-
-    $s.getItems = () => {
-        if($s.item.name.length >= 2)
-            itemFactory.getItems($s, 'getItems');
-    };
 
     $s.setEanPrefix = e => {
         $s.item.name = paneFactory.generateEanByKey(e, $s.item.name);
     };
 
-    $s.addEditItem = (item) => {
-        return itemFactory.addEditItem(item, $s.addEditScope);
+    return commonItemCtrlr($s, itemFactory, 'itemConfig');
+};
+
+let itemChangeCtrlr = ($s, itemFactory, paneFactory) => {
+
+    $s.getNextId = () => {
+        if('id' in $s.item)
+            $s.item.ean = paneFactory.generateEan($s.item.id.toString());
+        else
+            httpService.getItemById(null, 'getTopId').then(
+                resp => {
+                    $s.item.ean = paneFactory.generateEan((resp + 1).toString());
+                },
+                resp => {console.log(resp);}
+            );
     };
 
-    $s.selectItem = function() {
-        $s.setItem(this.x);
+    $s.setEanPrefix = (e, field) => {
+        $s.item[field] = paneFactory.generateEanByKey(e, $s.item[field]);
     };
 
+    return commonAddEditCtrlr($s, itemFactory, 'itemConfig');
 };
 
 let docCtrlr = ($s, httpService, itemFactory) => {
@@ -264,53 +212,6 @@ let docCtrlr = ($s, httpService, itemFactory) => {
         $s.showDocsList();
     };
 
-};
-
-let addEditItemCtrlr = ($s, httpService, paneFactory) => {
-
-    let emptyItem = (text) => { return {name: text, ean: ''}};
-    $s.modalHidden = true;
-    $s.item = {};
-    $s.inputId = paneFactory.generateUuid();
-
-    $s.closeModal = () => {
-        $s.modalHidden = true;
-    };
-
-    $s.appendData = () => {
-        httpService.addItem($s.item, 'addItem').then(
-            resp => {
-                if(resp.success) {
-                    $s.closeModal();
-                    $s.setItem(resp.item || emptyItem(resp.text));
-                } else
-                    $s.item = resp.item || emptyItem(resp.text);
-            },
-            resp => { $s.item.name = resp.text;}
-        );
-    };
-
-    $s.getNextId = () => {
-        if('id' in $s.item)
-            $s.item.ean = paneFactory.generateEan($s.item.id.toString());
-        else
-            httpService.getItemById(null, 'getTopId').then(
-                resp => {
-                    $s.item.ean = paneFactory.generateEan((resp + 1).toString());
-                },
-                resp => {console.log(resp);}
-            );
-    };
-
-    $s.setEanPrefix = (e, field) => {
-        $s.item[field] = paneFactory.generateEanByKey(e, $s.item[field]);
-    };
-
-    $s.getItemById = (id) => {
-        httpService.getItemById(id, 'getItemById').then(
-            value => {$s.item = value;}
-        );
-    };
 };
 
 let stockCntrlr = ($s, httpService) => {
@@ -474,23 +375,18 @@ angular.module('inputs', [])
             transclude: true,
             scope: { item:'=', stock:'<?' },
             template: itemInputTpl,
-            // templateUrl: '/scripts/modules/inputs/item-input.html',
-            controller: function ($scope, httpService, paneFactory, itemFactory) {
-                return itemInputCtrlr($scope, httpService, paneFactory, itemFactory, this);
+            controller: function ($scope, itemFactory, paneFactory) {
+                return itemInputCtrlr($scope, itemFactory, paneFactory);
             }
         }
     })
     .directive( "addEditItem", () => {
         return {
             restrict: 'E',
-            require: '^^itemInput',
-            scope: {},
+            scope: { item: "=", user: "=?", modalVisible: "=", getItems: '&?'},
             template: addEditItemTpl,
-            controller: ($scope, httpService, paneFactory) => {
-                return addEditItemCtrlr($scope, httpService, paneFactory);
-            },
-            link: (scope, elem, attrs, itemInputCtrl) => {
-                return commonLinkFunction(scope, elem, attrs, itemInputCtrl);
+            controller : ($scope, itemFactory, paneFactory) => {
+                return itemChangeCtrlr($scope, itemFactory, paneFactory);
             }
         }
     })
@@ -500,47 +396,20 @@ angular.module('inputs', [])
             transclude: true,
             scope: { item:'=section', items:'=?sections'},
             template: itemSectionInputTpl,
-            controller: function ($scope, httpService, paneFactory, itemFactory) {
-                return itemSectionCtrlr($scope, httpService, paneFactory, itemFactory, this);
+            controller: ($scope, itemFactory) => {
+                return sectionCtrlr($scope, itemFactory);
             }
         }
     })
     .directive( "addEditItemSection", () => {
         return {
             restrict: 'E',
-            require: '^^itemSectionInput',
-            scope: {},
+            scope: { item: "=section", user: "=?", modalVisible: "=", getItems: '&?'},
             template: addEditItemSectionTpl,
-            controller: ($scope, httpService, paneFactory) => {
-                $scope.modalHidden = true;
-                $scope.item = {};
-                $scope.inputId = paneFactory.generateUuid();
-
-                $scope.closeModal = () => {
-                    $scope.modalHidden = true;
-                };
-
-                $scope.appendData = () => {
-                    httpService.addItem($scope.item, 'addSection').then(
-                        resp => {
-                            $scope.closeModal();
-                            (resp.item == null) ?
-                                $scope.setItem({name: resp.text}) : $scope.setItem(resp.item);
-                        },
-                        resp => { $scope.item.name = resp; }
-                    );
-                };
-
-                $scope.getItemById = (id) => {
-                    httpService.getItemById(id, 'getSectionById').then(
-                        value => {$scope.item = value;}
-                    );
-                };
-
-            },
-            link: (scope, elem, attrs, sectionInputCtrl) => {
-                return commonLinkFunction(scope, elem, attrs, sectionInputCtrl);
+            controller : ($scope, itemFactory) => {
+                return sectionChangeCtrlr($scope, itemFactory);
             }
+
         }
     })
     .directive( "pagePicker", () => {
@@ -711,8 +580,8 @@ angular.module('inputs', [])
             }
         })
     .component( "itemInputTotal", {
-                bindings: {total: '<'},
-                template:"<span ng-show='$ctrl.total > 1'>{{$ctrl.total}}</span>",
+                bindings: {total: '<', },
+                template:"<span ng-show='$ctrl.total > 0'>{{$ctrl.total}}</span>",
                 controller: function() {}
         })
     .factory('itemFactory',['httpService', 'paneFactory',
@@ -750,7 +619,9 @@ angular.module('inputs', [])
                 itemConfig :
                     {
                         getEmptyItem: getNewItem,
-                        getItemsUrl: 'getItems'
+                        addItemUrl: 'addItem',
+                        getItemsUrl: 'getItems',
+                        getItemByIdUrl: 'getItemById'
                 },
                 supplierConfig :
                     {
@@ -760,7 +631,9 @@ angular.module('inputs', [])
                 sectionConfig :
                     {
                         getEmptyItem: getNewSection,
-                        getItemsUrl: 'getSections'
+                        addItemUrl: 'addSection',
+                        getItemsUrl: 'getSections',
+                        getItemByIdUrl: 'getSectionById'
                 },
                 addEditItem: (item, childScope) => {
                     childScope.modalHidden = false;

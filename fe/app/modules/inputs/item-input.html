@@ -8,7 +8,7 @@
               ng-readonly="item.id">
     </textarea>
     <span class="item-input-toolbox" style="top: 0px;">
-        <item-input-total total="items.length"></item-input-total>
+        <item-input-total total="items.length" ng-hide="item.id > 0"></item-input-total>
         <button class="glyphicon glyphicon-question-sign item-query"
                 title="остаток по складу"
                 ng-disabled="items.length>50 || items.length === 0"
@@ -22,14 +22,14 @@
                 <tr>
                     <td>
                         <a href="#" style="float: left;padding-left: 3%;" title="Добавить товар"
-                           ng-click="addEditItem({name: item.name, ean: item.ean, predefinedQuantity: 0, eanSynonym: '', section:item.section})">
+                           ng-click="changeItem(0)">
                             <span class="glyphicon glyphicon-plus item-add"></span>
                         </a>
                     </td>
                     <td></td>
                     <td>
                         <span style="float: right;" class="glyphicon glyphicon-remove item-blank"
-                              ng-click="blankSearchAndGetItemsBy()" title="Очистить поиск">
+                              ng-click="clearItem()" title="Очистить поиск">
                         </span>
                     </td>
                 </tr>
@@ -37,10 +37,10 @@
                 <tbody>
                 <tr class="hoverable" ng-repeat="x in items">
                     <td class="hoverable" style="width: 55px;"
-                        ng-click="selectItem()" title="Код">{{ x.id }}</td>
+                        ng-click="selectItem(x.id)" title="Код">{{ x.id }}</td>
                     <td style="display: flex;">
                         <div style="display: flex; width: 100%;">
-                            <div class="hoverable" style="width: 100%;"  ng-click="selectItem()">
+                            <div class="hoverable" style="width: 100%;"  ng-click="selectItem(x.id)">
                                 <span>{{ x.name }}</span>
                             </div>
                             <div style="width: 20px; font-size: 20px;">
@@ -58,18 +58,18 @@
                             </div>
                         </div>
                     </td>
-                    <td style="width: 100px;">
-                        <span class="glyphicon glyphicon-plus item-add"
-                              title="Добавить товар копированием"
-                              ng-click="addEditItem({name: x.name, ean: x.ean})">
-                        </span>
+                    <td>
+                        <!--<span class="glyphicon glyphicon-plus item-add"-->
+                              <!--title="Добавить товар копированием"-->
+                              <!--ng-click="addEditItem({name: x.name, ean: x.ean})">-->
+                        <!--</span>-->
                         <span class="glyphicon glyphicon-pencil item-edit"
                               title="Редактировать строку"
-                              ng-click="addEditItem(x.id)">
+                              ng-click="changeItem(x.id)">
                         </span>
-                        <span class="glyphicon glyphicon-minus item-delete"
-                              title="Удалить строку" ng-click="deleteItem(false)">
-                        </span>
+                        <!--<span class="glyphicon glyphicon-minus item-delete"-->
+                              <!--title="Удалить строку" ng-click="deleteItem(false)">-->
+                        <!--</span>-->
                     </td>
                 </tr>
                 </tbody>
@@ -77,4 +77,6 @@
         </li>
     </ul>
 </div>
-<add-edit-item></add-edit-item>
+<add-edit-item
+        item="item" modal-visible="addEditModalVisible" user="user" get-items="getItems()">
+</add-edit-item>

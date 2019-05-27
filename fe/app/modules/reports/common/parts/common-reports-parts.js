@@ -12,8 +12,7 @@ import invoiceContractHeaderTpl from './invoice-contract-header.html';
                 transclude: true,
                 scope: {data: '=invoiceData'},
                 template: contractFooterTpl,
-                controller: $scope => {},
-                link: (scope, elem, attrs) => {}
+                controller: $scope => {}
             }
         })
         .directive( "invoiceBody", () => {
@@ -22,8 +21,7 @@ import invoiceContractHeaderTpl from './invoice-contract-header.html';
                 transclude: true,
                 scope: {data: '=invoiceData'},
                 template: invoiceBodyTpl,
-                controller: $scope => {},
-                link: (scope, elem, attrs) => {}
+                controller: $scope => {}
             }
         })
         .directive( "invoiceContractBody", () => {
@@ -32,8 +30,7 @@ import invoiceContractHeaderTpl from './invoice-contract-header.html';
                 transclude: true,
                 scope: {data: '=invoiceData'},
                 template: invoiceContractBodyTpl,
-                controller: $scope => {},
-                link: (scope, elem, attrs) => {}
+                controller: $scope => {}
             }
         })
         .directive( "invoiceContractHeader", () => {
@@ -42,8 +39,7 @@ import invoiceContractHeaderTpl from './invoice-contract-header.html';
                 transclude: true,
                 scope: {data: '=invoiceData'},
                 template: invoiceContractHeaderTpl,
-                controller: $scope => {},
-                link: (scope, elem, attrs) => {}
+                controller: $scope => {}
             }
         })
         .directive( "invoiceFooter", () => {
@@ -52,8 +48,7 @@ import invoiceContractHeaderTpl from './invoice-contract-header.html';
                 transclude: true,
                 scope: {data: '=invoiceData'},
                 template: invoiceFooter,
-                controller: $scope => {},
-                link: (scope, elem, attrs) => {}
+                controller: $scope => {}
             }
         })
         .directive( "invoiceHeader", () => {
@@ -62,7 +57,6 @@ import invoiceContractHeaderTpl from './invoice-contract-header.html';
                 transclude: true,
                 scope: {data: '=invoiceData'},
                 template: invoiceHeader,
-                controller: $scope => {},
-                link: (scope, elem, attrs) => {}
+                controller: $scope => {}
             }
         });

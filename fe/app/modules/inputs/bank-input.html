@@ -5,7 +5,7 @@
            ng-model="item.name"
            ng-change = 'getItems()'
            ng-readonly="item.id"/>
-    <span class="item-input-toolbox">
+    <span class="item-input-toolbox" ng-hide="item.id > 0">
         <item-input-total total="items.length"></item-input-total>
     </span>
     <ul class="dropdown-menu hoverable supplier-dropdown">

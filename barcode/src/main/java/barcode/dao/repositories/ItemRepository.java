@@ -11,6 +11,8 @@ public interface ItemRepository extends CrudRepository<Item, Long> {
     Item findTopByOrderByIdDesc();
     List<Item> findAll();
     List<Item> findByNameContainingIgnoreCase(String name);
+    List<Item> findTop100ByNameContainingIgnoreCase(String name);
     List<Item> findByEanOrderByNameDesc(String filter);
     Item findOneByEan(String ean);
+
 }

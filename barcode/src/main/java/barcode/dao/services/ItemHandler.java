@@ -95,19 +95,18 @@ public class ItemHandler {
 
     public List<Item> getItems(String filter) {
 
-        List<Item> items;
+        List<Item> items = itemRepository.findByEanOrderByNameDesc(filter);
 
-        items = itemRepository.findByEanOrderByNameDesc(filter);
+        if(items.size() > 0)
+            return items;
 
-        if (items.size() == 0) {
-            switch (filter) {
+//        if(filter.equals("all"))
+//            return itemRepository.findAll();
 
-                case "all" : items = itemRepository.findAll(); break;
+        if(filter.length() >= 2)
+            return itemRepository.findByNameContainingIgnoreCase(filter);
 
-                default: items = itemRepository.findByNameContainingIgnoreCase(filter);
-            }
-        }
-        return items;
+        return itemRepository.findTop100ByNameContainingIgnoreCase(filter);
     }
 
     public Item getItemById(Long id) {
