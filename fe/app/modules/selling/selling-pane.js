@@ -49,18 +49,16 @@ let sellingPaneCntrlr = ($s, $http, paneFactory, printFactory, modalFactory, ite
             }
         }, true);
 
-        $s.$watch('barcode', (nv) => {
-            if(nv && paneFactory.getItemByBarcode($s.barcode, getItems))
-                $s.barcode ='';
-        });
+    $s.getItems = (ean) => {
+        if(paneFactory.getItemByBarcode(ean, getItems))
+            $s.blankSearch();
+        console.log('got items for parent');
+    };
 
-        $s.$watch("item", (nv) => {
-            if ((nv) && ("id" in nv)) {
-                getItems($s.item.ean);
-                $s.blankSearch();
-            }
-        }, true);
-
+    $s.$watch('barcode', (nv) => {
+        if(nv && paneFactory.getItemByBarcode($s.barcode, getItems))
+            $s.barcode ='';
+    });
 
         $s.sellThis = () => {
             if($s.canRelease) {

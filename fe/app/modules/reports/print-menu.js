@@ -85,7 +85,8 @@
                     {id:2, allowNoId: true, name:'Счет-договор', group: 'common', type: 'invoiceWithContract'},
                     {id:3, allowNoId: true, name:'Акт на списание', group: 'common', type: 'writeOffAct'},
                     {id:4, allowNoId: true, name:'Товарный чек', group: 'common', type: 'salesReceipt'},
-                    {id:5, allowNoId: true, name:'Ценники', group: 'common', type: 'prices'}
+                    {id:5, allowNoId: true, name:'Ценники', group: 'common', type: 'prices'},
+                    {id:6, allowNoId: true, name:'Акт вып.работ', group: 'common', type: 'workCompletionStatement'}
                 ];
                 return {
                     getReports: () => {

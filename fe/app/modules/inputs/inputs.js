@@ -28,8 +28,12 @@ let commonItemCtrlr = ($s, itemFactory, itemConfig) => {
         itemFactory.getItems($s, config.getItemsUrl);
     };
 
+    $s.getItemById = (id) => {
+        return itemFactory.getItemById(id, config.getItemByIdUrl);
+    };
+
     $s.selectItem = (id) => {
-        itemFactory.selectItem(id, config.getItemByIdUrl, $s);
+        itemFactory.selectItem(id, $s, config);
     };
 
     $s.changeItem = (id) => {
@@ -104,12 +108,7 @@ let itemChangeCtrlr = ($s, itemFactory, paneFactory) => {
         if('id' in $s.item)
             $s.item.ean = paneFactory.generateEan($s.item.id.toString());
         else
-            httpService.getItemById(null, 'getTopId').then(
-                resp => {
-                    $s.item.ean = paneFactory.generateEan((resp + 1).toString());
-                },
-                resp => {console.log(resp);}
-            );
+            itemFactory.setItemEanByTopId($s.item);
     };
 
     $s.setEanPrefix = (e, field) => {
@@ -373,7 +372,7 @@ angular.module('inputs', [])
         return {
             restrict: 'E',
             transclude: true,
-            scope: { item:'=', stock:'<?' },
+            scope: { item:'=', stock:'<?', getItemsForParent: '&?getItems' },
             template: itemInputTpl,
             controller: function ($scope, itemFactory, paneFactory) {
                 return itemInputCtrlr($scope, itemFactory, paneFactory);
@@ -594,7 +593,13 @@ angular.module('inputs', [])
             let getNewSection = () => {return {name: ''};};
             let getNewItem = () => {return {name: '', ean: '', predefinedQuantity: 0, eanSynonym: '', section: getNewSection()};};
 
+            let getItemById = (id, url) => {
+                if(id)
+                    return httpService.getItemById(id, url);
+            };
+
             return {
+                getItemById,
                 generateUuid : paneFactory.generateUuid,
                 bankConfig :
                     {
@@ -621,7 +626,13 @@ angular.module('inputs', [])
                         getEmptyItem: getNewItem,
                         addItemUrl: 'addItem',
                         getItemsUrl: 'getItems',
-                        getItemByIdUrl: 'getItemById'
+                        getItemByIdUrl: 'getItemById',
+                        selectItemForParent: ($s) => {
+                            if(typeof $s.getItemsForParent === 'function'
+                                && (angular.isDefined($s.item) && $s.item != null)
+                                && (angular.isDefined($s.item.ean) && $s.item.ean != null))
+                                $s.getItemsForParent()($s.item.ean);
+                        }
                 },
                 supplierConfig :
                     {
@@ -654,11 +665,14 @@ angular.module('inputs', [])
                         }
                     );
                 },
-                selectItem: (id, url, $s) => {
-                    if(id)
-                        httpService.getItemById(id, url).then(
-                            resp => { $s.item = resp;}
-                        );
+                selectItem: (id, $s, config) => {
+                    $s.getItemById(id).then(
+                        item => {
+                            $s.item = item;
+                            if(typeof config.selectItemForParent === 'function')
+                                config.selectItemForParent($s);
+                        }
+                    );
                 },
                 clearItem: ($s) => {
                     $s.item = $s.getEmptyItem();
@@ -666,7 +680,8 @@ angular.module('inputs', [])
                     paneFactory.changeElementState(document.getElementById($s.inputId), ['focus']);
                 },
                 changeItem: (id, $s) => {
-                    id > 0 ? $s.selectItem(id) : $s.item = $s.getEmptyItem();
+                    id > 0 ? $s.getItemById(id).then( item => { $s.item = item; }) :
+                        $s.item = (angular.isDefined($s.item) && $s.item != null) ? $s.item : $s.getEmptyItem();
                     $s.addEditModalVisible = true;
                     $s.user = paneFactory.user;
                 },
@@ -686,6 +701,14 @@ angular.module('inputs', [])
                 closeModal : ($s) => {
                     $s.modalVisible = false;
                     $s.warning ="";
+                },
+                setItemEanByTopId : (item) => {
+                    httpService.getItemById(null, 'getTopId').then(
+                        resp => {
+                            item.ean = paneFactory.generateEan((resp + 1).toString());
+                        },
+                        resp => {console.log(resp);}
+                    );
                 }
             };
         }

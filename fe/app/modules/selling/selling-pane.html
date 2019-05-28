@@ -1,7 +1,7 @@
 <div ng-transclude></div>
 <div class="item-input-on-panes"
         ng-show="item.name.length > 0">
-    <item-input item="item" stock="stock"></item-input>
+    <item-input item="item" stock="stock" get-items="getItems"></item-input>
 </div>
 <div>
     <quantity-changer-modal
@@ -17,7 +17,6 @@
                id="selling-pane"
                ng-model="barcode"
                ng-keydown="setEanPrefix($event)"/>
-               <!--ng-change="getItemsForSell()"-->
         <span style="margin-left: 5px;" class="selling-warning" ng-show="warning.length">{{warning}}</span>
     </div>
 

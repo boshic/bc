@@ -40,6 +40,7 @@ import newComingDocPaneTpl from './new-coming-doc.html';
                 printFactory.setReportsByParams([
                     {type: 'salesReceipt', data, method: 'addInvoice'},
                     {type: 'invoiceWithContract', data, method: 'addInvoice'},
+                    {type: 'workCompletionStatement', data, method: 'addInvoice'},
                         {type: 'invoice', data, method: 'addInvoice'}], $s.reports);
         };
 
@@ -93,13 +94,11 @@ import newComingDocPaneTpl from './new-coming-doc.html';
             $s.item = angular.extend(getEpmtyItem(), {name: name, ean: name});
         };
 
-        $s.$watch("item", (nv) => {
-            if ((nv) && ("id" in nv)) {
-                getItems($s.item.ean);
-                // $s.item = {name: ''};
+        $s.getItems = (ean) => {
+            if(paneFactory.getItemByBarcode(ean, getItems))
                 $s.blankSearch();
-            }
-        }, true);
+            console.log('got items for parent');
+        };
 
         $s.$watch('barcode', (nv) => {
             if(nv && paneFactory.getItemByBarcode($s.barcode, getItems))

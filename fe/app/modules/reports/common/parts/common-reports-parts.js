@@ -2,6 +2,8 @@ import contractFooterTpl from './contract-footer.html';
 import invoiceBodyTpl from './invoice-body.html';
 import invoiceFooter from './invoice-footer.html';
 import invoiceHeader from './invoice-header.html';
+import workCompletionActFooter from './work-completion-act-footer.html';
+import workCompletionActHeader from './work-completion-act-header.html';
 import invoiceContractBodyTpl from './invoice-contract-body.html';
 import invoiceContractHeaderTpl from './invoice-contract-header.html';
 
@@ -48,6 +50,24 @@ import invoiceContractHeaderTpl from './invoice-contract-header.html';
                 transclude: true,
                 scope: {data: '=invoiceData'},
                 template: invoiceFooter,
+                controller: $scope => {}
+            }
+        })
+        .directive( "workCompletionActFooter", () => {
+            return {
+                restrict: 'E',
+                transclude: true,
+                scope: {data: '='},
+                template: workCompletionActFooter,
+                controller: $scope => {}
+            }
+        })
+        .directive( "workCompletionActHeader", () => {
+            return {
+                restrict: 'E',
+                transclude: true,
+                scope: {data: '='},
+                template: workCompletionActHeader,
                 controller: $scope => {}
             }
         })
