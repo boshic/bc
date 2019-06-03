@@ -105,7 +105,7 @@
                            ng-model="x.vat" min="0"/>
                 </td>
                 <td class="hoverable for-sale"
-                    ng-class="{'warning-input': x.quantity === 0|| x.quantity === null}"
+                    ng-class="{'warning-input': x.quantity === 0 || x.quantity === null}"
                     title="К продаже">
                     <div>
                         <button class='change-quantity-btn'
@@ -121,7 +121,8 @@
                            ng-change="checkRows()"
                            ng-class="{'warning-input': x.price < 0||''}"/>
                 </td>
-                <td class="text-table-row" title="Сумма">{{ (x.quantity*x.price).toFixed(2) }}
+                <!--(x.quantity * x.price).toFixed(2)-->
+                <td class="text-table-row" title="Сумма">{{ x.sum }}
                     <div>
                         <span class="price-out-on-coming-pane" title="Сумма со скидкой" ng-if="buyer.discount > 0">
                             {{ (x.quantity*(getDiscountedPrice(x.price, buyer.discount))).toFixed(2) }}

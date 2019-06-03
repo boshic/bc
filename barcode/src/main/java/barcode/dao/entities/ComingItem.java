@@ -27,6 +27,9 @@ public class ComingItem {
     @Column(columnDefinition="Decimal(19,3)")
     private BigDecimal quantity;
 
+    @Column(name = "sum", columnDefinition="Decimal(12,2) default '0.00'")
+    private BigDecimal sum;
+
     @Column(columnDefinition="Decimal(19,3)")
     private BigDecimal currentQuantity;
     private Date factDate;
@@ -132,5 +135,13 @@ public class ComingItem {
 
     public void setComments(List<Comment> comments) {
         this.comments = comments;
+    }
+
+    public BigDecimal getSum() {
+        return sum;
+    }
+
+    public void setSum(BigDecimal sum) {
+        this.sum = sum;
     }
 }

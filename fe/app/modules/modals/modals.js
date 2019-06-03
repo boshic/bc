@@ -138,7 +138,8 @@
 
     $s.setReportData = () => {
         let data = { stock: $s.stock, buyer: $s.buyer, comment: $s.comment, rows: $s.rows};
-        printFactory.setReportsByParams([{type: 'invoiceWithContract', data: data, method: 'addInvoice'},
+        printFactory.setReportsByParams([
+            {type: 'invoiceWithContract', data: data, method: 'addInvoice'},
             {type: 'invoice', data: data, method: 'addInvoice'}], $s.reports);
     };
 
@@ -264,8 +265,11 @@
 
     $s.modalConfig = {hidden: true};
     let data = {};
-    printFactory.setReportsByParams([{type: 'invoiceWithContract', data, method: 'addInvoice'},
-        {type: 'invoice', data, method: 'addInvoice'}], $s.reports = []);
+    printFactory.setReportsByParams([
+        {type: 'invoiceWithContract', data, method: 'addInvoice'},
+        {type: 'workCompletionStatement', data, method: 'addInvoice'},
+        {type: 'invoice', data, method: 'addInvoice'}],
+        $s.reports = []);
 };
 
     angular.module('modals', [])

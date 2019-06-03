@@ -30,6 +30,9 @@ public class SoldItem {
     @JoinColumn(name = "buyer_id")
     private Buyer buyer;
 
+    @Column(name = "sum", columnDefinition="Decimal(12,2) default '0.00'")
+    private BigDecimal sum;
+
     @Column(name = "comment", nullable = false, columnDefinition="varchar(2500) COLLATE utf8_general_ci")
     private String comment;
 
@@ -124,5 +127,13 @@ public class SoldItem {
 
     public void setVat(BigDecimal vat) {
         this.vat = vat;
+    }
+
+    public BigDecimal getSum() {
+        return sum;
+    }
+
+    public void setSum(BigDecimal sum) {
+        this.sum = sum;
     }
 }

@@ -36,8 +36,10 @@ public class ResponseBySoldItems extends ResponseItemExt<SoldItem> {
             suppliers.add(soldItem.getComing().getDoc().getSupplier());
 
             quantity = quantity.add(soldItem.getQuantity());
-            sum = sum.add(soldItem.getPrice().multiply(soldItem.getQuantity()))
-                    .setScale(2, BigDecimal.ROUND_HALF_UP);
+            sum = sum.add(soldItem.getSum());
+//            sumByComing = sumByComing.add(soldItem.getComing().getSum());
+//            sum = sum.add(soldItem.getPrice().multiply(soldItem.getQuantity()))
+//                    .setScale(2, BigDecimal.ROUND_HALF_UP);
             sumByComing = sumByComing.add(soldItem.getComing().getPriceIn().multiply(soldItem.getQuantity()))
                     .setScale(2, BigDecimal.ROUND_HALF_UP);
         }

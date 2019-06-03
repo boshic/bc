@@ -55,10 +55,12 @@ import snd from '../../media/audio/sell.mp3';
                     let totals = {quantity: 0, sum: 0};
                     rows.forEach(row =>  {
                         row.quantity = checkNumberLimit(row.quantity, row.currentQuantity);
-                        // totals.sum += +(row.quantity * getDiscountedPrice(row.price, discount));
-                        (angular.isDefined(row.sum)) ? totals.sum += +(row.sum) :
-                            totals.sum += +(row.quantity * getDiscountedPrice(row.price, discount));
 
+                        row.sum = +(row.quantity * getDiscountedPrice(row.price, discount));
+                        totals.sum += +(row.sum);
+
+                        // (angular.isDefined(row.sum) && row.sum != null) ? totals.sum += +(row.sum) :
+                        //     totals.sum += +(row.quantity * getDiscountedPrice(row.price, discount));
                         totals.quantity += +row.quantity;
                     });
                     return totals
@@ -224,6 +226,7 @@ import snd from '../../media/audio/sell.mp3';
                                       if (!row.quantity > 0 || !row.price) {
                                             return $s.canRelease = false;
                                         }
+                                        // row.sum = (row.quantity * row.price).toFixed(2);
                                         row.user = user;
                                         row.buyer = $s.buyer;
                                         row.comment = $s.comment;

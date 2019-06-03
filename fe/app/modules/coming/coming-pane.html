@@ -133,7 +133,14 @@
                 </sorting-row>
             </span>
         </td>
-        <td style="width: 6%;">Сумма</td>
+        <td style="width: 6%;">
+            <span class="sortable-thead-value" ng-click="filter.sortField='sum'">Сумма</span>
+            <span>
+                <sorting-row listening-field="'sum'" field="filter.sortField"
+                             sort-direction="filter.sortDirection">
+                </sorting-row>
+            </span>
+        </td>
         <td class="unprintable" style="width: 11%;">Автор, комментарий</td>
         </thead>
         <tbody ng-show="rows.length">
@@ -215,7 +222,8 @@
                         {{'/ ' + x.priceOut}}
                     </span>
                 </td>
-                <td class="price-data" title="Сумма">{{ (x.price*x.currentQuantity).toFixed(2) }}</td>
+                <!--<td class="price-data" title="Сумма">{{ (x.price * x.currentQuantity).toFixed(2) }}</td>-->
+                <td class="price-data" title="Сумма">{{ x.sum }}</td>
                 <td class="unprintable">
                         <div>
                             <button class="glyphicon glyphicon-shopping-cart btn-on-pane

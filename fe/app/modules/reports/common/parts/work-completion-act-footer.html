@@ -1,10 +1,47 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
+<div>
+    <div class="invoice-row-for-printing">
+        <span style="font-weight: bold">{{"Всего оказано услуг: " + data.totals.quantity}}</span>
+    </div>
 
-</body>
-</html>
+    <div class="invoice-row-for-printing" ng-if="data.totals.vatSum > 0">
+        <span>Сумма НДС: </span>
+        <span style="font-weight: bold;">{{(data.totals.vatSum).toFixed(2) | num2phrase}}</span>
+    </div>
+    <div class="invoice-row-for-printing" ng-if="data.totals.vatSum == 0">
+        <span>{{"Сумма НДС: Без НДС."}}</span>
+    </div>
+    <div class="invoice-row-for-printing">
+        <span>Всего к оплате на сумму с НДС:</span>
+        <span style="font-weight: bold;">{{(data.totals.sum).toFixed(2) | num2phrase}}</span>
+    </div>
+    <div class="invoice-row-for-printing">
+        <span>Вышеперечисленные услуги выполнены полностью и в срок.
+            Заказчик претензий по объему, качеству и срокам оказания услуг не имеет.
+        </span>
+    </div>
+
+    <div>
+        <div  style="display: flex; margin-top: 22px;">
+            <div style="width: 50%; display: flex;  padding-right: 1%;">
+                <div>
+                    <span style="font-weight: bold;">Исполнитель:</span>
+                </div>
+                <div style="text-align: right;">
+                    <span>{{" ________________ " + data.stock.organization.bossPosition + " " + data.stock.organization.bossName }}</span>
+                </div>
+                <img style="position: absolute; left: 95px; margin-top: -24px;"
+                     ng-if = "data.showStamp"
+                     ng-src="data:image/JPEG;base64,{{data.user.stamp}}"/>
+            </div>
+
+            <div style="width: 50%; display: flex;  padding-left: 1%;">
+                <div>
+                    <span style="font-weight: bold;">Заказчик:</span>
+                </div>
+                <div>
+                    <span> ________________ </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

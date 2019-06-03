@@ -690,7 +690,7 @@ angular.module('inputs', [])
                         resp => {
                             if(resp.success) {
                                 $s.closeModal();
-                                $s.getItems();
+                                ($s.item.id > 0) ? $s.getItems() : $s.item = resp.item;
                             }
                             else
                                 $s.warning = resp.text;

@@ -25,8 +25,14 @@ import newComingDocPaneTpl from './new-coming-doc.html';
         let getRowsByPriceOut =() => {
                 let rows = [];
                 $s.rows.forEach((row) => {
-                    rows.push({item: row.item, quantity: row.quantity, doc: $s.doc,
-                        price: row.priceOut, vat: $s.stock.organization.vatValue});
+                    rows.push({
+                        item: row.item,
+                        quantity: row.quantity,
+                        // sum: row.sum,
+                        doc: $s.doc,
+                        price: row.priceOut,
+                        vat: $s.stock.organization.vatValue
+                    });
                 });
                 return rows;
         };

@@ -23,7 +23,8 @@ import '../../../../css/invoice.css';
                     setTimeout(
                         () => {
                             $window.document.title = resp.buyer.name + " №" +
-                                resp.id + " от " + new Date(resp.date).toLocaleDateString();
+                                resp.id + " от " + new Date(resp.date).toLocaleDateString() +
+                                ", " +resp.stock.name;
                             $window.print();
                         }, 200);
                 },

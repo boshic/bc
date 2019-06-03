@@ -118,6 +118,12 @@ public class MovingHandler extends EntityHandlerImpl {
 
                     }
 
+                    coming.setSum(coming.getPriceIn().multiply(coming.getCurrentQuantity())
+                            .setScale(2, BigDecimal.ROUND_HALF_UP));
+
+                    newComing.setSum(newComing.getPriceIn().multiply(newComing.getCurrentQuantity())
+                                    .setScale(2, BigDecimal.ROUND_HALF_UP));
+
                     if(coming.getQuantity().compareTo(BigDecimal.ZERO) == 0) {
 
                         coming.setComment(
@@ -136,6 +142,8 @@ public class MovingHandler extends EntityHandlerImpl {
                         coming.setUser(newComing.getUser());
 
                         coming.setPriceOut(newComing.getPriceOut());
+
+                        coming.setSum(newComing.getSum());
 
                         comingItemHandler.saveComingItem(coming);
 
@@ -256,6 +264,9 @@ public class MovingHandler extends EntityHandlerImpl {
 
             coming.setPriceOut(moving.getPrice());
 
+            coming.setSum(coming.getPriceIn().multiply(coming.getCurrentQuantity())
+                    .setScale(2, BigDecimal.ROUND_HALF_UP));
+
             comingItemHandler.saveComingItem(coming);
 
         } else {
@@ -296,6 +307,12 @@ public class MovingHandler extends EntityHandlerImpl {
             coming.setCurrentQuantity(coming.getCurrentQuantity().subtract(moving.getQuantity()));
 
             coming.setLastChangeDate(new Date());
+
+            coming.setSum(coming.getPriceIn().multiply(coming.getCurrentQuantity())
+                    .setScale(2, BigDecimal.ROUND_HALF_UP));
+
+            newComing.setSum(newComing.getPriceIn().multiply(newComing.getCurrentQuantity())
+                    .setScale(2, BigDecimal.ROUND_HALF_UP));
 
             comingItemHandler.saveComingItem(newComing);
 

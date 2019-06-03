@@ -72,11 +72,11 @@ import comingItemTpl from './coming-item.html';
         };
 
         $s.getPriceIn =  () => {
-            $s.coming.price = ($s.coming.sumIn/$s.coming.quantity).toFixed(4);
+            $s.coming.price = ($s.coming.sum/$s.coming.quantity).toFixed(4);
         };
 
         $s.changeQuantity = () => {
-            $s.coming.sumIn = ($s.coming.price*$s.coming.quantity).toFixed(2);
+            $s.coming.sum = ($s.coming.price*$s.coming.quantity).toFixed(2);
         };
 
         $s.checkComing = () => {

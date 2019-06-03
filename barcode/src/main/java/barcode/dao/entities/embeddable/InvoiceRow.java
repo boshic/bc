@@ -29,6 +29,9 @@ public class InvoiceRow {
     @Column(columnDefinition="Decimal(19,2)")
     private BigDecimal vat;
 
+    @Column(name = "sum", columnDefinition="Decimal(12,2) default '0.00'")
+    private BigDecimal sum;
+
     @Column(name = "comment", columnDefinition="varchar(2000) COLLATE utf8_general_ci default ''")
     private String comment;
 
@@ -42,11 +45,15 @@ public class InvoiceRow {
 
         this.vat = soldItem.getVat();
 
+        this.sum = soldItem.getSum();
+
     }
 
     public InvoiceRow(SoldItem soldItem, String comment, BigDecimal price) {
 
         this(soldItem);
+
+        this.sum = price.multiply(soldItem.getQuantity()).setScale(2, BigDecimal.ROUND_HALF_UP);
 
         this.price = price;
 
@@ -93,4 +100,11 @@ public class InvoiceRow {
         this.comment = comment;
     }
 
+    public BigDecimal getSum() {
+        return sum;
+    }
+
+    public void setSum(BigDecimal sum) {
+        this.sum = sum;
+    }
 }

@@ -78,6 +78,10 @@ public class ComingItemHandler extends EntityHandlerImpl {
 
         coming.setQuantity(newComing.getQuantity());
 
+        coming.setSum(newComing.getSum() == null ?
+                (newComing.getPriceIn().multiply(newComing.getQuantity()))
+                        .setScale(2, BigDecimal.ROUND_HALF_UP) : newComing.getSum());
+
         coming.setCurrentQuantity(coming.getQuantity());
 
         coming.setLastChangeDate(new Date());
@@ -173,6 +177,8 @@ public class ComingItemHandler extends EntityHandlerImpl {
             comingItem.setCurrentQuantity(BigDecimal.ZERO);
 
             comingItem.setQuantity(BigDecimal.ZERO);
+
+            comingItem.setSum(BigDecimal.ZERO);
 
             comingItemRepository.save(comingItem);
 

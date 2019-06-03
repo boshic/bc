@@ -37,9 +37,10 @@ public class ResponseByComingItems extends ResponseItemExt<ComingItem> {
 
             currentQuantity = currentQuantity.add(comingItem.getCurrentQuantity());
 
-            currentSum = currentSum
-                    .add(comingItem.getPriceIn().multiply(comingItem.getCurrentQuantity()))
-                    .setScale(2, BigDecimal.ROUND_HALF_UP);
+//            currentSum = currentSum
+//                    .add(comingItem.getPriceIn().multiply(comingItem.getCurrentQuantity()))
+//                    .setScale(2, BigDecimal.ROUND_HALF_UP);
+            currentSum = currentSum.add(comingItem.getSum());
 
             currentSumOut = currentSumOut
                     .add(comingItem.getPriceOut().multiply(comingItem.getCurrentQuantity()))

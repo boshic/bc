@@ -138,7 +138,15 @@
                     </sorting-row>
                 </span>
             </td>
-            <td style="width: 6%;" ng-show="!filter.groupByItems">Сумма</td>
+            <!--<td style="width: 6%;" ng-show="!filter.groupByItems">Сумма</td>-->
+            <td style="width: 11%;" ng-show="!filter.groupByItems">
+                <span class="sortable-thead-value" ng-click="filter.sortField='sum'">Сумма</span>
+                <span>
+                    <sorting-row listening-field="'sum'" field="filter.sortField"
+                                 sort-direction="filter.sortDirection">
+                    </sorting-row>
+                </span>
+            </td>
             <td style="width: 11%;" ng-show="!filter.groupByItems">
                 <span class="sortable-thead-value" ng-click="filter.sortField='buyer.name'">Покупатель</span>
                 <span>
@@ -253,7 +261,7 @@
                 <td class="price-data" style="font-size: 30px; font-style: italic;" title="Цена">{{ x.price }}</td>
                 <td class="price-data" style="text-decoration: underline; font-style: italic;"
                     title="Сумма" ng-show="!filter.groupByItems">
-                    {{ (x.price * x.quantity).toFixed(2) }}
+                    {{ x.sum }}
                 </td>
                 <td style="text-align: end;"  ng-show="!filter.groupByItems">
                     <!--<div class="dropdown hoverable" style=" position: absolute;">-->

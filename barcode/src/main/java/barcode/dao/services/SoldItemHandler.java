@@ -229,11 +229,19 @@ public class SoldItemHandler extends EntityHandlerImpl {
                             reqForSell = BigDecimal.ZERO;
                         }
 
+
+                        coming.setSum(coming.getPriceIn().multiply(coming.getCurrentQuantity())
+                                    .setScale(2, BigDecimal.ROUND_HALF_UP));
+
                         coming.setLastChangeDate(newSoldItem.getDate());
 
                         newSoldItem.setComing(coming); // - добавляем ссылку на приход новой продажи
 
                         newSoldItem.setPrice(getPriceOfSoldItem(soldItem, coming.getPriceIn()));
+
+                        newSoldItem.setSum(newSoldItem.getPrice()
+                                .multiply(newSoldItem.getQuantity())
+                                    .setScale(2, BigDecimal.ROUND_HALF_UP));
 
                         newSoldItem.setVat(soldItem.getVat());
 
@@ -369,7 +377,13 @@ public class SoldItemHandler extends EntityHandlerImpl {
 
         comingItem.setCurrentQuantity(comingItem.getCurrentQuantity().add(soldItem.getQuantity()));
 
+        comingItem.setSum(comingItem.getPriceIn().multiply(comingItem.getCurrentQuantity())
+                .setScale(2, BigDecimal.ROUND_HALF_UP));
+
         newSoldItem.setQuantity(newSoldItem.getQuantity().subtract(soldItem.getQuantity()));
+
+        newSoldItem.setSum(newSoldItem.getPrice().multiply(newSoldItem.getQuantity())
+                        .setScale(2, BigDecimal.ROUND_HALF_UP));
 
         newSoldItem.setAvailQuantityByEan(newSoldItem.getAvailQuantityByEan().add(soldItem.getQuantity()));
 
@@ -378,7 +392,6 @@ public class SoldItemHandler extends EntityHandlerImpl {
                         userHandler.checkUser(soldItem.getUser(), null ).getFullName(),
                         "Возврат")
         );
-
 
         soldItemsRepository.save(newSoldItem);
 
@@ -415,6 +428,11 @@ public class SoldItemHandler extends EntityHandlerImpl {
 
         soldItem.setPrice(getPriceOfSoldItem(soldItem, comingItem.getPriceIn()));
 
+        comingItem.setSum(comingItem.getPriceIn().multiply(comingItem.getCurrentQuantity())
+                .setScale(2, BigDecimal.ROUND_HALF_UP));
+
+        soldItem.setSum(soldItem.getPrice().multiply(soldItem.getQuantity())
+                .setScale(2, BigDecimal.ROUND_HALF_UP));
 
         soldItemsRepository.save(soldItem);
 
