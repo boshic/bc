@@ -79,8 +79,13 @@ let sellingPaneCntrlr = ($s, $http, paneFactory, printFactory, modalFactory, ite
             $s.blankSearch();
         };
 
+        let getRowsForReports =() => {
+            return printFactory.getRowsForReports($s, 'price');
+
+        };
+
         $s.setReportData = () => {
-            let data = { stock: $s.stock, buyer: $s.buyer, comment: $s.comment, rows: $s.rows};
+            let data = { stock: $s.stock, buyer: $s.buyer, comment: $s.comment, rows: getRowsForReports()};
             printFactory.setReportsByParams([{type: 'invoiceWithContract', data: data, method: 'addInvoice'},
                 {type: 'invoice', data: data, method: 'addInvoice'},
                 {type: 'salesReceipt', data: data, method: 'addInvoice'}], $s.reports);

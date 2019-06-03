@@ -29,7 +29,7 @@ public class BuyerHandler {
         newBuyer.setDebt(buyer.getDebt());
         newBuyer.setAccount(buyer.getAccount());
         newBuyer.setBank(bankHandler.getCheckedItem(buyer.getBank()));
-        newBuyer.setUnp(buyer.getUnp());
+        newBuyer.setUnp(buyer.getUnp() == null ? "" : buyer.getUnp());
         newBuyer.setAddress(buyer.getAddress());
         newBuyer.setDiscount(buyer.getDiscount());
         newBuyer.setSellByComingPrices(buyer.getSellByComingPrices() == null ? false : buyer.getSellByComingPrices());

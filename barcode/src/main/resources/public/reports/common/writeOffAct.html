@@ -89,7 +89,8 @@
                         <td style="text-align: center;">{{row.item.unit}}</td>
                         <td style="text-align: center;">{{row.quantity}}</td>
                         <td style="text-align: center;">{{row.price}}</td>
-                        <td style="text-align: center;">{{(row.quantity*row.price).toFixed(2)}}</td>
+                        <td style="text-align: center;">{{row.sum}}</td>
+                        <!--<td style="text-align: center;">{{(row.quantity*row.price).toFixed(2)}}</td>-->
                         <td>
                             <button class="glyphicon glyphicon-pencil edit-comment unprintable"
                                 ng-click="openCommentModal($index)">

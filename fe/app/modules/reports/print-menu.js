@@ -88,9 +88,25 @@
                     {id:5, allowNoId: true, name:'Ценники', group: 'common', type: 'prices'},
                     {id:6, allowNoId: true, name:'Акт вып.работ', group: 'common', type: 'workCompletionStatement'}
                 ];
+
                 return {
                     getReports: () => {
                         return reports;
+                    },
+                    getRowsForReports: ($s, priceField) => {
+                        let rows = [];
+                        $s.rows.forEach((row) => {
+                            rows.push({
+                                item: row.item,
+                                comment: '',
+                                quantity: row.quantity,
+                                sum: (row[priceField] * row.quantity).toFixed(2),
+                                doc: $s.doc,
+                                price: row[priceField],
+                                vat: $s.stock.organization.vatValue
+                            });
+                        });
+                        return rows;
                     },
                     setReportsByParams: (params, reps) => {
                         // let arr = reports;

@@ -53,7 +53,9 @@ public class InvoiceRow {
 
         this(soldItem);
 
-        this.sum = price.multiply(soldItem.getQuantity()).setScale(2, BigDecimal.ROUND_HALF_UP);
+//        this.sum = price.multiply(soldItem.getQuantity()).setScale(2, BigDecimal.ROUND_HALF_UP);
+
+        this.sum = price.multiply(this.quantity).setScale(2, BigDecimal.ROUND_HALF_UP);
 
         this.price = price;
 

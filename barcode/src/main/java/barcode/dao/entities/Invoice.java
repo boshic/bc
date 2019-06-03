@@ -42,6 +42,9 @@ public class Invoice {
     @JsonProperty("comments")
     private List<Comment> comments;
 
+    @Column(name = "sum", columnDefinition="Decimal(12,2) default '0.00'")
+    private BigDecimal sum;
+
 
 //    @Column(name = "comment", nullable = false)
 //    @Column(name = "comment", columnDefinition="varchar(2000) COLLATE utf8_general_ci default ''")
@@ -56,7 +59,8 @@ public class Invoice {
         BigDecimal sum = BigDecimal.ZERO;
 
         for (InvoiceRow invoiceRow: getInvoiceRows())
-            sum = sum.add(invoiceRow.getQuantity().multiply(invoiceRow.getPrice())).setScale(2, BigDecimal.ROUND_HALF_UP);
+            sum = sum.add(invoiceRow.getSum());
+//            sum = sum.add(invoiceRow.getQuantity().multiply(invoiceRow.getPrice())).setScale(2, BigDecimal.ROUND_HALF_UP);
 
         return sum;
     }
@@ -139,4 +143,11 @@ public class Invoice {
         this.comments = comments;
     }
 
+    public BigDecimal getSum() {
+        return sum;
+    }
+
+    public void setSum(BigDecimal sum) {
+        this.sum = sum;
+    }
 }

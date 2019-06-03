@@ -56,11 +56,12 @@ import snd from '../../media/audio/sell.mp3';
                     rows.forEach(row =>  {
                         row.quantity = checkNumberLimit(row.quantity, row.currentQuantity);
 
-                        row.sum = +(row.quantity * getDiscountedPrice(row.price, discount));
-                        totals.sum += +(row.sum);
+                        // if(!angular.isDefined(row.sum) || row.sum == null)
+                        //     row.sum = +(row.quantity * getDiscountedPrice(row.price, discount));
+                        // totals.sum += +(row.sum);
 
-                        // (angular.isDefined(row.sum) && row.sum != null) ? totals.sum += +(row.sum) :
-                        //     totals.sum += +(row.quantity * getDiscountedPrice(row.price, discount));
+                        (angular.isDefined(row.sum) && row.sum != null) ? totals.sum += +(row.sum) :
+                            totals.sum += +(row.quantity * getDiscountedPrice(row.price, discount));
                         totals.quantity += +row.quantity;
                     });
                     return totals

@@ -57,6 +57,8 @@ public class InvoiceHandler extends EntityHandlerImpl {
 
         newInvoice.setInvoiceRows(invoice.getInvoiceRows());
 
+        newInvoice.setSum(invoice.getSumOfRows());
+
         if(invoice.getComments() != null)
             newInvoice.getComments().addAll(invoice.getComments());
         else

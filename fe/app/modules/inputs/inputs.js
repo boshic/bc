@@ -105,7 +105,7 @@ let itemInputCtrlr = ($s, itemFactory, paneFactory) => {
 let itemChangeCtrlr = ($s, itemFactory, paneFactory) => {
 
     $s.getNextId = () => {
-        if('id' in $s.item)
+        if($s.item.id > 0)
             $s.item.ean = paneFactory.generateEan($s.item.id.toString());
         else
             itemFactory.setItemEanByTopId($s.item);
@@ -681,7 +681,9 @@ angular.module('inputs', [])
                 },
                 changeItem: (id, $s) => {
                     id > 0 ? $s.getItemById(id).then( item => { $s.item = item; }) :
-                        $s.item = (angular.isDefined($s.item) && $s.item != null) ? $s.item : $s.getEmptyItem();
+                        $s.item = (angular.isDefined($s.item) && $s.item != null) ?
+                            angular.extend({}, $s.item, {id: null})
+                            : $s.getEmptyItem();
                     $s.addEditModalVisible = true;
                     $s.user = paneFactory.user;
                 },

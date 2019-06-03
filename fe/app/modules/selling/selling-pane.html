@@ -122,7 +122,7 @@
                            ng-class="{'warning-input': x.price < 0||''}"/>
                 </td>
                 <!--(x.quantity * x.price).toFixed(2)-->
-                <td class="text-table-row" title="Сумма">{{ x.sum }}
+                <td class="text-table-row" title="Сумма">{{ (x.quantity * x.price).toFixed(2) }}
                     <div>
                         <span class="price-out-on-coming-pane" title="Сумма со скидкой" ng-if="buyer.discount > 0">
                             {{ (x.quantity*(getDiscountedPrice(x.price, buyer.discount))).toFixed(2) }}

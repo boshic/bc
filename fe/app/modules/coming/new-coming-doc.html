@@ -67,7 +67,9 @@
         </thead>
         <thead class="pane-thead">
             <td style="width: 60px;">Номер</td>
-            <td>Наименование</td>
+            <td>
+                Наименование
+            </td>
             <td style="width: 100px;">Количество</td>
             <td style="width: 115px;">Приходная</td>
             <td style="width: 160px;">Сумма</td>
@@ -87,6 +89,7 @@
                               ng-click="editItem(x.item.name)">
                             {{ x.item.name}}
                         </span>
+                        <span class="stock-name-on-header">{{'(склад: ' + stock.name + ')'}}</span>
                     </a>
                 </td>
                 <td class="hoverable for-sale" title="Пришло">

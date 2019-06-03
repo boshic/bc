@@ -19,11 +19,11 @@ angular.module('invoice-factory', [])
                             row.vat = data.stock.organization.vatValue;
                         if(data.stock.retail) {
                             row.woVatPrice = row.price;
-                            row.sum = +(row.quantity * row.price).toFixed(2);
+                            // row.sum = +(row.quantity * row.price).toFixed(2); //redunant
                             row.woVatSum = row.sum;
                             row.vatSum = +(row.sum * row.vat/100).toFixed(2);
                         } else {
-                            row.sum = +(row.price * row.quantity).toFixed(2);
+                            // row.sum = +(row.price * row.quantity).toFixed(2); //redunant
                             row.woVatSum = +(row.sum - row.sum * row.vat/(row.vat + 100)).toFixed(2);
                             row.woVatPrice = +(row.woVatSum/row.quantity).toFixed(2);
                             row.vatSum = +(row.sum - row.woVatSum).toFixed(2);

@@ -9,6 +9,7 @@
     /*#d16425*/
     /*#2572d1, #0661d1, #0664d1*/
     --main-color: coral;
+    --white-color: white;
     /*'Roboto', -apple-system, system-ui, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif*/
     --main-font: Times;
 }
@@ -2102,4 +2103,9 @@ td.quick-filter {
     /* font-weight: bold; */
     font-size: 45px;
     border-radius: 5px;
+}
+
+.stock-name-on-header {
+    color: var(--white-color);
+    font-weight: bold;
 }

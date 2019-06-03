@@ -22,23 +22,12 @@ import newComingDocPaneTpl from './new-coming-doc.html';
             return {quantity: 1, sum:0, price: 0, priceOut: 0};
         };
 
-        let getRowsByPriceOut =() => {
-                let rows = [];
-                $s.rows.forEach((row) => {
-                    rows.push({
-                        item: row.item,
-                        quantity: row.quantity,
-                        // sum: row.sum,
-                        doc: $s.doc,
-                        price: row.priceOut,
-                        vat: $s.stock.organization.vatValue
-                    });
-                });
-                return rows;
+        let getRowsForReports =() => {
+            return printFactory.getRowsForReports($s, 'priceOut');
         };
 
         let setReportData = () => {
-            let data = { stock: $s.stock, buyer: $s.buyer, id: undefined, rows: getRowsByPriceOut()};
+            let data = { stock: $s.stock, buyer: $s.buyer, id: undefined, rows: getRowsForReports()};
             $s.reports = [];
             if(angular.isDefined($s.doc.id))
                 printFactory.setReportsByParams([{type: 'prices', data, method: 'addComingReport'}], $s.reports);
@@ -173,8 +162,9 @@ import newComingDocPaneTpl from './new-coming-doc.html';
             if(this.$index >= 0) {
                 $s.rows.splice(this.$index,1)
             }else {
-                $s.rows=[];
-                $s.doc={name:""};
+                $s.rows = [];
+                // $s.doc={name:""};
+                $s.doc = itemFactory.documentConfig.getEmptyItem();
             }
             $s.blankSearch();
         };
