@@ -6,6 +6,7 @@ import barcode.dao.entities.embeddable.Comment;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 
@@ -38,6 +39,7 @@ public class EntityHandlerImpl implements EntityHandler {
         if(user.length() > 0)
             comments.add(new Comment((text == null? "": text), user, action, new Date()));
         String comment = "";
+        comments.sort(Comparator.comparing(Comment::getDate));
         for (Comment c: comments)
             comment += c.getAction() + SPACE + c.getText() + SPACE + c.getUserName() +
                     SPACE + DATE_FORMAT_WITH_TIME.format(c.getDate())+SEPARATOR;

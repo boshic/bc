@@ -47,7 +47,8 @@
                 },
                 template:
                 "<li style='border-bottom: 1px lightgray solid;'" +
-                "ng-repeat=\"cmnt in comment.split('; ') | orderBy:'+':'true' track by $index\">" +
+                    // "ng-repeat=\"cmnt in comment.split('; ') | orderBy:'+':'true' track by $index\">" +
+                "ng-repeat=\"cmnt in comment.split('; ') track by $index\">" +
                 "<span class=\"price-out-on-coming-pane comment-row\""+
                 "ng-repeat=\"word in cmnt.split(' ') track by $index\" " +
                 "ng-click=\"setFilter()\"> " +

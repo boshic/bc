@@ -18,6 +18,8 @@ public class MovingHandler extends EntityHandlerImpl {
 
     private static final String AUTO_MOVING_MAKER = "Автоперемещение";
 
+    private static final String MOVING_ACTION  = "Перемещение";
+
     private ComingItemHandler comingItemHandler;
 
     private StockHandler stockHandler;
@@ -65,14 +67,24 @@ public class MovingHandler extends EntityHandlerImpl {
 
                     ComingItem newComing = new ComingItem();
 
-                    newComing.setComments(new ArrayList<>(coming.getComments()));
+//                    newComing.setComments(new ArrayList<>(coming.getComments()));
+                    newComing.setComments(new ArrayList<>());
+//
+//                    newComing.setComment(
+//                            this.buildComment(newComing.getComments(),
+//                                    "на " + this.stockHandler.getStockById(stockId).getName() + " "
+//                                            + moving.getQuantity() + " ед., " + moving.getComment(),
+//                                    getCheckedUserName(moving.getUser()),
+//                                    MOVING_ACTION));
+
 
                     newComing.setComment(
                             this.buildComment(newComing.getComments(),
-                                    this.stockHandler.getStockById(stockId).getName() + " "
+                                    "c " + coming.getStock().getName() +
+                                            " на " + this.stockHandler.getStockById(stockId).getName() + " "
                                             + moving.getQuantity() + " ед., " + moving.getComment(),
                                     getCheckedUserName(moving.getUser()),
-                                    "Перемещение"));
+                                    MOVING_ACTION));
 
                     newComing.setUser(moving.getUser());
 
@@ -128,10 +140,18 @@ public class MovingHandler extends EntityHandlerImpl {
 
                         coming.setComment(
                                 this.buildComment(coming.getComments(),
-                                        this.stockHandler.getStockById(stockId).getName() + " "
+                                        "c " + coming.getStock().getName() +
+                                                " на " + this.stockHandler.getStockById(stockId).getName() + " "
                                                 + moving.getQuantity() + " ед., " + moving.getComment(),
                                         getCheckedUserName(moving.getUser()),
-                                        "Перемещение"));
+                                        MOVING_ACTION));
+//
+//                        coming.setComment(
+//                                this.buildComment(coming.getComments(),
+//                                        "на " + this.stockHandler.getStockById(stockId).getName() + " "
+//                                                + moving.getQuantity() + " ед., " + moving.getComment(),
+//                                        getCheckedUserName(moving.getUser()),
+//                                        MOVING_ACTION));
 
                         coming.setStock(this.stockHandler.getStockById(stockId));
 
@@ -147,13 +167,22 @@ public class MovingHandler extends EntityHandlerImpl {
 
                         comingItemHandler.saveComingItem(coming);
 
-                    } else
+                    } else {
+
+                        coming.setComment(
+                                this.buildComment(coming.getComments(),
+                                        "c " + coming.getStock().getName() +
+                                                " на " + this.stockHandler.getStockById(stockId).getName() + " "
+                                                + moving.getQuantity() + " ед., " + moving.getComment(),
+                                        getCheckedUserName(moving.getUser()),
+                                        MOVING_ACTION));
+
                         comingItemHandler.saveComingItem(newComing);
+                    }
 
                     if (reqForMove.compareTo(BigDecimal.ZERO) == 0) break;
 
                 }
-
             }
 
             if(reqForMove.compareTo(BigDecimal.ZERO) > 0)
@@ -249,10 +278,11 @@ public class MovingHandler extends EntityHandlerImpl {
 
             coming.setComment(
                     this.buildComment(coming.getComments(),
-                            this.stockHandler.getStockById(stockId).getName() + " "
+                            "c " + coming.getStock().getName() +
+                            " на " + this.stockHandler.getStockById(stockId).getName() + " "
                                     + moving.getQuantity() + " ед., " + moving.getComment(),
                             getCheckedUserName(moving.getUser()),
-                            "Перемещение"));
+                            MOVING_ACTION));
 
             coming.setStock(this.stockHandler.getStockById(stockId));
 
@@ -273,14 +303,24 @@ public class MovingHandler extends EntityHandlerImpl {
 
             ComingItem newComing = new ComingItem();
 
-            newComing.setComments(new ArrayList<>(coming.getComments()));
+//            newComing.setComments(new ArrayList<>(coming.getComments()));
+
+            newComing.setComments(new ArrayList<>());
+            coming.setComment(
+                    this.buildComment(coming.getComments(),
+                            "c " + coming.getStock().getName() +
+                                    " на " + this.stockHandler.getStockById(stockId).getName() + " "
+                                    + moving.getQuantity() + " ед., " + moving.getComment(),
+                            getCheckedUserName(moving.getUser()),
+                            MOVING_ACTION));
 
             newComing.setComment(
                     this.buildComment(newComing.getComments(),
-                            this.stockHandler.getStockById(stockId).getName() + " "
+                            "c " + coming.getStock().getName() +
+                            " на " + this.stockHandler.getStockById(stockId).getName() + " "
                                     + moving.getQuantity() + " ед., " + moving.getComment(),
                             getCheckedUserName(moving.getUser()),
-                            "Перемещение"));
+                            MOVING_ACTION));
 
             newComing.setStock(this.stockHandler.getStockById(stockId));
 

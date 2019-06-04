@@ -1,14 +1,20 @@
 package barcode.dao.predicates;
 
+import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import barcode.dao.services.SoldItemHandler;
 import barcode.dao.utils.SoldItemFilter;
 
 public class SoldItemPredicatesBuilder {
 
-//    QSoldItem qSoldItem = QSoldItem.soldItem;
+    private CommentPredicateBuilder commentPredicateBuilder = (comment -> {
+        BooleanBuilder builder = new BooleanBuilder();
 
-//    QComingItem qComingItem = QComingItem.comingItem;
+        for (String word : comment.split(" "))
+            builder = builder.and(SoldItemHandler.qSoldItem.comment.containsIgnoreCase(word));
+
+        return builder;
+    });
 
     public BooleanExpression buildByFilter(SoldItemFilter filter) {
 
@@ -18,7 +24,8 @@ public class SoldItemPredicatesBuilder {
             predicate = predicate.and(SoldItemHandler.qSoldItem.coming.stock.id.eq(filter.getStock().getId()));
 
         if(filter.getComment() != null)
-            predicate = predicate.and(SoldItemHandler.qSoldItem.comment.containsIgnoreCase(filter.getComment()));
+            predicate = predicate.and(commentPredicateBuilder.build(filter.getComment()));
+//            predicate = predicate.and(SoldItemHandler.qSoldItem.comment.containsIgnoreCase(filter.getComment()));
 
 //        if(filter.getComment() != null) {
 //            predicate = predicate.and(SoldItemHandler.qSoldItem.comments.any().text.containsIgnoreCase(filter.getComment()));
