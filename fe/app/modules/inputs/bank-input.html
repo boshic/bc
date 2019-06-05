@@ -1,10 +1,13 @@
 <div class="dropdown">
-    <span class="warning-item-input" ng-hide = "item.id > 0">Не выбран банк!</span>
-    <input title="{{item.name}}" type="text" class="form-control bank-ipnut" placeholder="Банк"
-           id="{{inputId}}"
-           ng-model="item.name"
-           ng-change = 'getItems()'
-           ng-readonly="item.id"/>
+    <!--<span class="warning-item-input" ng-hide = "item.id > 0">Не выбран банк!</span>-->
+    <!--<input title="{{item.name}}" type="text" class="form-control bank-ipnut" placeholder="Банк"-->
+           <!--id="{{inputId}}"-->
+           <!--ng-model="item.name"-->
+           <!--ng-change = 'getItems()'-->
+           <!--ng-readonly="item.id"/>-->
+    <item-input-name input-id='inputId' item="item" input-name="Банк"
+                     get-items="getItems()">
+    </item-input-name>
     <span class="item-input-toolbox" ng-hide="item.id > 0">
         <item-input-total total="items.length"></item-input-total>
     </span>

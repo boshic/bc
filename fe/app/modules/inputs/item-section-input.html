@@ -1,20 +1,24 @@
 <div class="dropdown">
-    <span class="warning-item-input" ng-hide = "item.id > 0">Не выбрана секция!</span>
-    <div class="dropdown" style="position: absolute;"
-         ng-show="item.name.length > 0">
-        <span class="glyphicon glyphicon-filter item-input-filter"></span>
-        <ul class="dropdown-menu hoverable quick-filter-comment-delete background-white">
-            <word-from-phrase-eraser
-                    phrase="item.name"
-                    title="наименование секции">
-            </word-from-phrase-eraser>
-        </ul>
-    </div>
-    <input title="{{item.name}}" type="text" class="form-control section-ipnut" placeholder="Секция"
-           id="{{inputId}}"
-           ng-model="item.name"
-           ng-change="getItems()"
-           ng-readonly="item.id"/>
+    <!--<div class="dropdown" style="position: absolute;"-->
+         <!--ng-show="item.name.length > 0">-->
+        <!--<span class="glyphicon glyphicon-filter item-input-filter"></span>-->
+        <!--<ul class="dropdown-menu hoverable quick-filter-comment-delete background-white">-->
+            <!--<word-from-phrase-eraser-->
+                    <!--phrase="item.name"-->
+                    <!--title="наименование секции">-->
+            <!--</word-from-phrase-eraser>-->
+        <!--</ul>-->
+    <!--</div>-->
+
+    <!--<span class="warning-item-input" ng-hide = "item.id > 0">Не выбрана секция!</span>-->
+    <!--<input title="{{item.name}}" type="text" class="form-control section-ipnut" placeholder="Секция"-->
+           <!--id="{{inputId}}"-->
+           <!--ng-model="item.name"-->
+           <!--ng-change="getItems()"-->
+           <!--ng-readonly="item.id"/>-->
+    <item-input-name input-id='inputId' item="item" input-name="Секция"
+                     get-items="getItems()">
+    </item-input-name>
     <span class="item-input-toolbox" ng-hide="item.id > 0">
         <item-input-total total="items.length"></item-input-total>
     </span>

@@ -19,10 +19,16 @@ let commonItemCtrlr = ($s, itemFactory, itemConfig) => {
     $s.getEmptyItem = config.getEmptyItem;
     $s.item = $s.getEmptyItem();
 
-    $s.$watch('item.id', (nv) => {
-        if(nv)
+    // $s.$watchCollection("[modalConfig.hidden, buyer]"
+    // $s.$watch('item.id', (nv) => {
+    //     if(nv)
+    //         $s.getItems();
+    // });
+
+    $s.$watch('item.name', (nv, ov) => {
+        if ((nv) || (ov))
             $s.getItems();
-    });
+    }, true);
 
     $s.getItems = () => {
         itemFactory.getItems($s, config.getItemsUrl);
@@ -88,12 +94,22 @@ let sectionChangeCtrlr = ($s, itemFactory) => {
     return commonAddEditCtrlr($s, itemFactory, 'sectionConfig');
 };
 
+let supplierInputCntrlr = ($s, itemFactory) => {
+
+    return commonItemCtrlr($s, itemFactory, 'supplierConfig');
+};
+
+let supplierChangeCtrlr = ($s, itemFactory) => {
+
+    return commonAddEditCtrlr($s, itemFactory, 'supplierConfig');
+};
+
 let itemInputCtrlr = ($s, itemFactory, paneFactory) => {
 
-    $s.$watch('item.name', (nv, ov) => {
-        if ((nv) || (ov))
-            $s.getItems();
-    }, true);
+    // $s.$watch('item.name', (nv, ov) => {
+    //     if ((nv) || (ov))
+    //         $s.getItems();
+    // }, true);
 
     $s.setEanPrefix = e => {
         $s.item.name = paneFactory.generateEanByKey(e, $s.item.name);
@@ -253,45 +269,6 @@ let stockCntrlr = ($s, httpService) => {
 
 };
 
-let supplierInputCntrlr = ($s, $http, paneFactory, itemFactory, ctrlr) => {
-
-    $s.inputId = itemFactory.generateUuid();
-    $s.items = [];
-    let getEmptyItem = itemFactory.supplierConfig.getEmptyItem;
-    $s.item = getEmptyItem();
-
-    $s.$watch('item.name', (nv, ov) => {
-        if ((ov) || (nv))
-            $s.getItems();
-    }, true);
-
-    ctrlr.getChildScope = (scope) => {
-        $s.addEditScope = scope;
-    };
-
-    ctrlr.getItems = $s.getItems = () => {
-        $http.get('/getSuppliers', {
-            params: { filter: $s.item.name }
-        }).then(
-            resp => { $s.items = resp.data; },
-            () => { console.log('список поставщиков пуст!'); }
-        );
-    };
-
-    $s.selectItem = function() {
-        $s.item = this.x;
-    };
-
-    $s.addEditItem = (item) => {
-        return itemFactory.addEditItem(item, $s.addEditScope);
-    };
-
-    $s.blankSearchAndGetItemsBy = function() {
-        $s.item.name === "" ? $s.getItems() : $s.item = getEmptyItem();
-        paneFactory.changeElementState(document.getElementById($s.inputId), ['focus']);
-    };
-};
-
 angular.module('inputs', [])
     .directive( "bankInput", () => {
         return {
@@ -417,7 +394,6 @@ angular.module('inputs', [])
             transclude: true,
             scope: { page: '=', pages: '='},
             template: pagePickerTpl,
-            // templateUrl: '/scripts/modules/inputs/page-picker.html',
             controller: $scope => {
                 $scope.pagePickerVisible = false;
 
@@ -446,8 +422,7 @@ angular.module('inputs', [])
                     $scope.page = this.x;
                     $scope.togglePagePicker();
                 }
-            },
-            link: (scope, elem, attrs) => {}
+            }
         }
     })
     .directive( "stockPicker", () => {
@@ -495,94 +470,71 @@ angular.module('inputs', [])
                 items: '=?suppliers'
             },
             template: supplierInputTpl,
-            controller: function ($scope, $http, paneFactory, itemFactory ) {
-                return supplierInputCntrlr($scope, $http, paneFactory, itemFactory, this);
+            controller: function ($scope, itemFactory ) {
+                return supplierInputCntrlr($scope, itemFactory);
             }
         }
     })
     .directive( "addEditSupplier", () => {
         return {
             restrict: 'E',
-            scope: true,
-            require: '^^supplierInput',
+            scope: { item: "=supplier", modalVisible: "=", getItems: '&?'},
             transclude: true,
             template:
-            "<div ng-hide='modalHidden' class='trans-layer'></div>" +
-            "<div class='modal-container-addeditsupplier' ng-class='{modalactive: !modalHidden}'>" +
+            "<div ng-show='modalVisible' class='trans-layer'></div>" +
+            "<div class='modal-container-addeditsupplier' ng-class='{modalactive: modalVisible}'>" +
             "<div class='wrapper' ng-keyup='handleKeyup($event)'>" +
-            "<span>Id:</span><span>{{item.id}}</span>" +
+            "<item-add-edit-id item-id='item.id'></item-add-edit-id>" +
             "<span title='Применить' class='glyphicon glyphicon-ok item-add' style='float: left;'" +
             "ng-click='appendData()'></span>" +
             "<span title='Закрыть' class='glyphicon glyphicon-remove item-blank' style='float: right;'" +
             "ng-click='closeModal()'></span>" +
             "<div>" +
             "<span>Наименование</span>" +
+            "<span class='warning-item-input' ng-hide='item.name.length > 0'>Введите наименование</span>"+
                 "<input type='text' class='form-control' " +
                     "id='{{inputId}}' ng-model='item.name' placeholder=''/>" +
-            "</div>" +
+                "</div>" +
             "</div>",
-            controller: ($scope, $http, paneFactory) => {
-
-                $scope.inputId = paneFactory.generateUuid();
-                $scope.modalHidden = true;
-                $scope.item = {};
-
-                $scope.closeModal =  () => { $scope.modalHidden = true; };
-
-                $scope.handleKeyup = e => {
-                    if (e.keyCode == 13)
-                        $scope.appendData();
-                };
-
-                $scope.appendData = () => {
-                    $http.post('/addSupplier', $scope.item)
-                        .then(
-                            resp => {
-                                if (resp.data.success) {
-                                    $scope.closeModal();
-                                    $scope.getItems();
-                                }
-                            },
-                            () => {console.log("Ошибка при добавлении поставщика!");}
-                        );
-                };
-
-                $scope.getItemById = id => {
-                    $http.get('/getSupplierById', { params: { id: id }})
-                        .then(resp => {
-                            $scope.item = resp.data;
-                        }
-                    );
-                };
-            },
-            link: (scope, elem, attrs, supplierInputCtrlr) => {
-                supplierInputCtrlr.getChildScope(scope);
-                scope.getItems = supplierInputCtrlr.getItems;
+            controller : ($scope, itemFactory) => {
+                return supplierChangeCtrlr($scope, itemFactory);
             }
         }
     })
-    .directive( "userPicker", () => {
-            return {
-                restrict: 'E',
-                transclude: true,
-                scope: true,
-                template: userPickerTpl,
-                controller: ($scope, userService) => {
-                    $scope.user = { name: "Tes" };
-
-                    userService.getUser().then(
-                        resp => {$scope.user = resp;},
-                        resp => {$scope.user.name = resp;}
-                    );
-                },
-                link: (scope, elem, attrs) => {}
-            }
-        })
     .component( "itemInputTotal", {
                 bindings: {total: '<', },
                 template:"<span ng-show='$ctrl.total > 0'>{{$ctrl.total}}</span>",
                 controller: function() {}
         })
+    .component( "itemAddEditId", {
+        bindings: {id: '<itemId', },
+        template:"<span style='margin-left: 20%;"+
+                    "font-size: 20px;'>" +
+                "<span ng-show='$ctrl.id > 0'>Id:</span><span>{{$ctrl.id}}</span>" +
+                "<span class='add-edit-item-warning' ng-hide='$ctrl.id > 0'>Ввод нового</span>" +
+                "<span class='add-edit-item-warning' ng-show='$ctrl.id > 0'>Редактирование</span>" +
+            "</span>",
+        controller: function() {}
+    })
+    .component( "itemInputName", {
+        bindings: { item: '<', title: '@inputName', getItems: '&', inputId: '<' },
+        template:
+        "<div class='dropdown' style='position: absolute;'" +
+            "ng-show='$ctrl.item.name.length>0'>" +
+            "<span class='glyphicon glyphicon-filter item-input-filter'></span>" +
+            "<ul class='dropdown-menu hoverable quick-filter-comment-delete background-white'>" +
+                "<word-from-phrase-eraser phrase='$ctrl.item.name' title={{$ctrl.title}}>" +
+                "</word-from-phrase-eraser>" +
+            "</ul>" +
+        "</div>" +
+        "<span class='warning-item-input' ng-hide='$ctrl.item.id>0'>" +
+            "{{'Не выбран ' + $ctrl.title + '!'}}</span>" +
+        "<textarea rows='2' title='{{$ctrl.item.name}}' type='text' " +
+            "class='form-control' placeholder={{$ctrl.title}} id={{$ctrl.inputId}} " +
+                "ng-model='$ctrl.item.name'" +
+                "ng-readonly='$ctrl.item.id'><textarea/>",
+        controller: function() {}
+    })
     .factory('itemFactory',['httpService', 'paneFactory',
         function (httpService, paneFactory) {
 
@@ -637,7 +589,9 @@ angular.module('inputs', [])
                 supplierConfig :
                     {
                         getEmptyItem: getNewSupplier,
-                        getItemsUrl: 'getSuppliers'
+                        getItemsUrl: 'getSuppliers',
+                        addItemUrl: 'addSupplier',
+                        getItemByIdUrl: 'getSupplierById'
                 },
                 sectionConfig :
                     {
@@ -675,8 +629,9 @@ angular.module('inputs', [])
                     );
                 },
                 clearItem: ($s) => {
+                    if($s.item.name === '')
+                        $s.getItems();
                     $s.item = $s.getEmptyItem();
-                    $s.getItems();
                     paneFactory.changeElementState(document.getElementById($s.inputId), ['focus']);
                 },
                 changeItem: (id, $s) => {

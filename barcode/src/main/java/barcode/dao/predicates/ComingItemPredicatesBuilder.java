@@ -1,17 +1,10 @@
 package barcode.dao.predicates;
 
-import barcode.dao.entities.ComingItem;
 import com.querydsl.core.BooleanBuilder;
-import com.querydsl.core.types.Predicate;
-import com.querydsl.core.types.Visitor;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import barcode.dao.entities.Stock;
 import barcode.dao.services.ComingItemHandler;
 import barcode.dao.utils.ComingItemFilter;
-
-import javax.annotation.Nullable;
-import java.util.ArrayList;
-import java.util.List;
 
 public class ComingItemPredicatesBuilder {
 
@@ -47,10 +40,10 @@ public class ComingItemPredicatesBuilder {
 //            predicate = predicate.and(getCommentPredicate(filter.getComment()));
 //            predicate = predicate.and(ComingItemHandler.qComingItem.comment.containsIgnoreCase(filter.getComment()));
 
-        if (filter.getEan() != null && filter.getEan().length() == 13)
+        if(filter.getEan() != null && filter.getEan().length() == 13)
             predicate = predicate.and(ComingItemHandler.qComingItem.item.ean.eq(filter.getEan()));
 
-        if (filter.getItem() != null && filter.getItem().getId() != null)
+        if(filter.getItem() != null && filter.getItem().getId() != null)
             predicate = predicate.and(ComingItemHandler.qComingItem.item.id.eq(filter.getItem().getId()));
 
         if (filter.getSection() != null && filter.getSection().getId() != null)
@@ -79,14 +72,4 @@ public class ComingItemPredicatesBuilder {
 
         return predicate;
     }
-
-//    private Predicate getCommentPredicate(String comment) {
-//
-//        BooleanBuilder builder = new BooleanBuilder();
-//
-//        for (String word : comment.split(" "))
-//            builder = builder.and(ComingItemHandler.qComingItem.comment.containsIgnoreCase(word));
-//
-//        return builder;
-//    }
 }

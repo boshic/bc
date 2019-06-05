@@ -11,7 +11,7 @@
             return {
                 restrict: 'E',
                 transclude: true,
-                scope: { totals: '=totals'},
+                scope: { totals: '='},
                 template:
                 "<div ng-repeat='x in totals' ng-click='switchTotalsView()'>" +
                 "<div class='totals-root-div' ng-show='$index == selected'>" +
@@ -25,7 +25,6 @@
                 "</div>" +
                 "</div>" +
                 "</div>",
-                // templateUrl: 'html/totals/totals.html',
                 controller: ($scope, paneFactory) => {
 
                     $scope.selected = 0;
@@ -36,15 +35,13 @@
                             $scope.selected = ($scope.selected === $scope.totals.length - 1) ? 0: $scope.selected +=1;
                         }
                     };
-                },
-                link: (scope, elem, attrs) => {}
+                }
             }
         })
         .directive('myTabs', () => {
             return {
                 restrict: 'E',
                 transclude: true,
-                //     scope: {},
                 controller: ['$scope', '$http', function MyTabsController($scope) {
                     let panes = $scope.panes = [];
 
@@ -102,11 +99,11 @@
                 },
                 template:
                 "<button class='glyphicon glyphicon-arrow-up sorting-row' " +
-                "ng-show='$ctrl.sortDirection===\"ASC\" && $ctrl.field === $ctrl.listeningField'" +
-                "ng-click = '$ctrl.sortDirection=\"DESC\"'/>" +
+                    "ng-show='$ctrl.sortDirection===\"ASC\" && $ctrl.field === $ctrl.listeningField'" +
+                    "ng-click = '$ctrl.sortDirection=\"DESC\"'/>" +
                 "<button class='glyphicon glyphicon-arrow-down sorting-row' " +
-                "       ng-show='$ctrl.sortDirection===\"DESC\" && $ctrl.field === $ctrl.listeningField' " +
-                "ng-click = '$ctrl.sortDirection=\"ASC\"'/>",
+                    "ng-show='$ctrl.sortDirection===\"DESC\" && $ctrl.field === $ctrl.listeningField' " +
+                    "ng-click = '$ctrl.sortDirection=\"ASC\"'/>",
                 controller: function() {}
             });
 // });

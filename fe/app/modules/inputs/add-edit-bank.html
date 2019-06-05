@@ -1,7 +1,7 @@
 <div ng-show='modalVisible' class='trans-layer'></div>
 <div class='modal-container-addeditsupplier' ng-class='{modalactive: modalVisible}'>
     <div class="wrapper">
-        <span>Id:</span><span>{{item.id}}</span>
+        <item-add-edit-id item-id="item.id"></item-add-edit-id>
         <span title="Применить" class="glyphicon glyphicon-ok item-add" style="float: left;"
               ng-show="item.name.length > 0 && item.address.length>0 && item.code.length>4"
               ng-click="appendData()"></span>

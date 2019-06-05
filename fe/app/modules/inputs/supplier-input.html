@@ -1,9 +1,13 @@
 <div class="dropdown">
-    <span class="warning-item-input" ng-hide="item.id>0">Не выбран поставщик!</span>
-    <input title="{{item.name}}" type="text" class="form-control" placeholder="Поставщик"
-           id="{{inputId}}"
-           ng-model="item.name"
-           ng-readonly="item.id"/>
+    <!--<span class="warning-item-input" ng-hide="item.id>0">Не выбран поставщик!</span>-->
+    <!--<input title="{{item.name}}" type="text" class="form-control" placeholder="Поставщик"-->
+           <!--id="{{inputId}}"-->
+           <!--ng-change="getItems()"-->
+           <!--ng-model="item.name"-->
+           <!--ng-readonly="item.id"/>-->
+    <item-input-name input-id='inputId' item="item" input-name="Поставщик"
+                     get-items="getItems()">
+    </item-input-name>
     <span class="item-input-toolbox" ng-hide="item.id > 0">
         <item-input-total total="items.length"></item-input-total>
     </span>
@@ -14,29 +18,26 @@
                 <tr>
                     <td style="width: 5%;">
                         <a href="#" style="float: left;padding-left: 3%;"
-                           title="Добавить поставщика" ng-click="addEditItem({})">
+                           title="Добавить поставщика" ng-click="changeItem(0)">
                             <span class="glyphicon glyphicon-plus item-add"></span>
                         </a>
                     </td>
                     <td style="width: 90%;">
                     <td style="width: 5%;">
                         <span style="float: right;" class="glyphicon glyphicon-remove item-blank"
-                              ng-click="blankSearchAndGetItemsBy()" title="Очистить поиск">
+                              ng-click="clearItem()" title="Очистить поиск">
                         </span>
                     </td>
                 </tr>
                 </thead>
                 <tbody>
                 <tr class="hoverable" ng-repeat="x in items">
-                    <td class="hoverable" ng-click="selectItem()" title="Код">{{ x.id }}</td>
-                    <td class="hoverable" ng-click="selectItem()" title="Наименование">{{ x.name }}</td>
+                    <td class="hoverable" ng-click="selectItem(x.id)" title="Код">{{ x.id }}</td>
+                    <td class="hoverable" ng-click="selectItem(x.id)" title="Наименование">{{ x.name }}</td>
                     <td>
-                        <a href="#" title="Редактировать строку" ng-click="addEditItem(x.id)">
+                        <a href="#" title="Редактировать строку" ng-click="changeItem(x.id)">
                             <span class="glyphicon glyphicon-pencil item-edit"></span>
                         </a>
-                        <!--<a href="#" style="float: left;" title="Удалить строку">-->
-                            <!--<span class="glyphicon glyphicon-minus item-delete"></span>-->
-                        <!--</a>-->
                     </td>
                 </tr>
                 </tbody>
@@ -44,4 +45,6 @@
         </li>
     </ul>
 </div>
-<add-edit-supplier></add-edit-supplier>
+<add-edit-supplier
+        supplier="item" modal-visible="addEditModalVisible" get-items="getItems()">
+</add-edit-supplier>

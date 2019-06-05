@@ -1,7 +1,7 @@
 <div ng-show='modalVisible' class='trans-layer'></div>
 <div class='modal-container-addeditsupplier' ng-class='{modalactive: modalVisible}'>
     <div class="wrapper">
-        <span>Id:</span><span>{{item.id}}</span>
+        <item-add-edit-id item-id="item.id"></item-add-edit-id>
         <span title="Применить" class="glyphicon glyphicon-ok item-add" style="float: left;"
               ng-show="item.name.length>0 && item.unit.length > 0 && item.ean > 0
                         && (item.eanSynonym.length == 13 || item.eanSynonym.length == 0)

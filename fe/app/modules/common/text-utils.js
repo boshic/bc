@@ -27,7 +27,7 @@
             return {
                 restrict: 'E',
                 transclude: true,
-                scope: {data: '=data'},
+                scope: {data: '='},
                 template:"<span class='glyphicon glyphicon-remove eraser-icon' ng-click='erase()'></span>",
                 // templateUrl: '/html/common/eraser.html',
                 controller: $scope => {
@@ -42,31 +42,29 @@
             return {
                 restrict: 'E',
                 scope: {
-                    comment:'=comment',
-                    filter: '=filter'
+                    comment:'=',
+                    filter: '='
                 },
                 template:
                 "<li style='border-bottom: 1px lightgray solid;'" +
-                    // "ng-repeat=\"cmnt in comment.split('; ') | orderBy:'+':'true' track by $index\">" +
-                "ng-repeat=\"cmnt in comment.split('; ') track by $index\">" +
-                "<span class=\"price-out-on-coming-pane comment-row\""+
-                "ng-repeat=\"word in cmnt.split(' ') track by $index\" " +
-                "ng-click=\"setFilter()\"> " +
-                "{{word}}" +
-                "</span>" +
+                    "ng-repeat=\"cmnt in comment.split('; ') track by $index\">" +
+                        "<span class=\"price-out-on-coming-pane comment-row\""+
+                            "ng-repeat=\"word in cmnt.split(' ') track by $index\" " +
+                                "ng-click=\"setFilter()\"> " +
+                                    "{{word}}" +
+                        "</span>" +
                 "</li>",
                 controller: ($scope) => {
                     return phraseByWordToFilterCtrlr($scope);
-                },
-                link: (scope, elem, attrs) => {}
+                }
             }
         })
         .directive( "wordFromPhraseEraser", () => {
             return {
                 restrict: 'E',
                 scope: {
-                    phrase:'=phrase',
-                    title: '@?title'
+                    phrase:'=',
+                    title: '@?'
                 },
                 template:
                 "<li style='border-bottom: 1px lightgray solid;'>" +
@@ -129,7 +127,7 @@
         .directive("unitSensitive", () => {
             return {
                 restrict: 'A',
-                scope : { unit: '=unit', quantity: '=quantity'},
+                scope : { unit: '=', quantity: '='},
                 template: "{{ checkUnits(unit) ? quantity.toFixed(0) : quantity.toFixed(3)}}",
                 controller: ($scope, paneFactory) => {
                     $scope.checkUnits = (value) => {
