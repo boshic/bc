@@ -43,7 +43,8 @@ public class BuyerHandler {
             Buyer newBuyer = new Buyer();
             return update(newBuyer, buyer);
         }
-        return new ResponseItem<Buyer>("Не создадим такого покупателя, уже есть в справочнике!", false);
+        buyer.setName("");
+        return new ResponseItem<Buyer>("Не создадим такого покупателя, уже есть в справочнике!", false, buyer);
     }
 
     public ResponseItem updateItem(Buyer buyer) {

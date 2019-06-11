@@ -6,11 +6,11 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ApplicationListener;
+import org.springframework.context.annotation.ImportResource;
 import org.springframework.context.event.ContextRefreshedEvent;
-import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
-//@EnableWebMvc
 @SpringBootApplication
+//@ImportResource({"classpath:context.xml"})
 public class App implements ApplicationListener<ContextRefreshedEvent> {
 
     private static final Logger LOG = LoggerFactory.getLogger(App.class);

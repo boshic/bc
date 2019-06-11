@@ -1,0 +1,32 @@
+    <li>
+        <table class="table">
+            <thead>
+            <tr>
+                <td>
+                    <a href="#" style="float: left;padding-left: 3%;" title="Добавить"
+                       ng-click="$ctrl.changeItem()(0)">
+                        <span class="glyphicon glyphicon-plus item-add"></span>
+                    </a>
+                </td>
+                <td></td>
+                <td>
+                    <span style="float: right;" class="glyphicon glyphicon-remove item-blank"
+                          ng-click="$ctrl.clearItem()" title="Очистить поиск">
+                    </span>
+                </td>
+            </tr>
+            </thead>
+            <tbody>
+            <tr class="hoverable" ng-repeat="x in $ctrl.items">
+                <td class="hoverable" title="Код" ng-click="$ctrl.selectItem()(x.id)">{{ x.code || x.id}}</td>
+                <td class="hoverable" title="Наименование" ng-click="$ctrl.selectItem()(x.id)">{{ x.name }}</td>
+                <td>
+                    <a href="#" title="Редактировать" style="float: right;"
+                       ng-click="$ctrl.changeItem()(x.id)">
+                        <span class="glyphicon glyphicon-pencil item-edit"></span>
+                    </a>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </li>

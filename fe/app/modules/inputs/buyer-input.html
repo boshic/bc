@@ -14,50 +14,53 @@
         <item-input-total total="items.length"></item-input-total>
     </span>
     <div class="buyer-debt" style="top: 0px; right: 0px;">
-        <span ng-show="item.debt">Долг:
-            <span>{{item.debt}}</span>
-        </span>
+        <span ng-show="item.debt">Долг:<span>{{item.debt}}</span></span>
     </div>
     <div class="buyer-debt" style="top: 40px;">
         <span ng-show="item.sellByComingPrices">
             этому покупателю списывается по учетным ценам!
         </span>
     </div>
-    <ul class="dropdown-menu hoverable buyer-dropdown">
-        <li>
-            <table class="table">
-                <thead>
-                <tr>
-                    <td style="width: 5%;">
-                        <a href="#" style="float: left;padding-left: 3%;" title="Добавить покупателя"
-                           ng-click="changeItem(0)">
-                            <span class="glyphicon glyphicon-plus item-add"></span>
-                        </a>
-                    </td>
-                    <td style="width: 90%;"></td>
-                    <td style="width: 5%;">
-                        <span class="glyphicon glyphicon-remove item-blank"
-                              ng-click="clearItem()" title="Очистить поиск">
-                        </span>
-                    </td>
-                </tr>
-                </thead>
-                <tbody>
-                <tr class="hoverable" ng-repeat="x in items">
-                    <td class="hoverable"
-                        ng-click="selectItem(x.id)" title="Код">{{ x.id }}
-                    </td>
-                    <td class="hoverable" ng-click="selectItem(x.id)" title="Наименование">{{ x.name }}</td>
-                    <td>
-                        <a href="#" title="Редактировать строку"
-                           ng-click="changeItem(x.id)">
-                            <span class="glyphicon glyphicon-pencil item-edit"></span>
-                        </a>
-                    </td>
-                </tr>
-                </tbody>
-            </table>
-        </li>
+    <ul class="dropdown-menu hoverable item-input-dropdown">
+        <item-input-items
+                items="items" clear-item="clearItem()"
+                select-item="selectItem" change-item="changeItem">
+        </item-input-items>
+        <!--<ul class="dropdown-menu hoverable buyer-dropdown">-->
+        <!--<li>-->
+            <!--<table class="table">-->
+                <!--<thead>-->
+                <!--<tr>-->
+                    <!--<td style="width: 5%;">-->
+                        <!--<a href="#" style="float: left;padding-left: 3%;" title="Добавить покупателя"-->
+                           <!--ng-click="changeItem(0)">-->
+                            <!--<span class="glyphicon glyphicon-plus item-add"></span>-->
+                        <!--</a>-->
+                    <!--</td>-->
+                    <!--<td style="width: 90%;"></td>-->
+                    <!--<td style="width: 5%;">-->
+                        <!--<span class="glyphicon glyphicon-remove item-blank"-->
+                              <!--ng-click="clearItem()" title="Очистить поиск">-->
+                        <!--</span>-->
+                    <!--</td>-->
+                <!--</tr>-->
+                <!--</thead>-->
+                <!--<tbody>-->
+                <!--<tr class="hoverable" ng-repeat="x in items">-->
+                    <!--<td class="hoverable"-->
+                        <!--ng-click="selectItem(x.id)" title="Код">{{ x.id }}-->
+                    <!--</td>-->
+                    <!--<td class="hoverable" ng-click="selectItem(x.id)" title="Наименование">{{ x.name }}</td>-->
+                    <!--<td>-->
+                        <!--<a href="#" title="Редактировать строку"-->
+                           <!--ng-click="changeItem(x.id)">-->
+                            <!--<span class="glyphicon glyphicon-pencil item-edit"></span>-->
+                        <!--</a>-->
+                    <!--</td>-->
+                <!--</tr>-->
+                <!--</tbody>-->
+            <!--</table>-->
+        <!--</li>-->
     </ul>
 </div>
 <add-edit-buyer

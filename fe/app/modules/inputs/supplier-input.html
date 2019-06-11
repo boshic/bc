@@ -11,38 +11,42 @@
     <span class="item-input-toolbox" ng-hide="item.id > 0">
         <item-input-total total="items.length"></item-input-total>
     </span>
-    <ul class="dropdown-menu hoverable supplier-dropdown">
-        <li>
-            <table class="table">
-                <thead>
-                <tr>
-                    <td style="width: 5%;">
-                        <a href="#" style="float: left;padding-left: 3%;"
-                           title="Добавить поставщика" ng-click="changeItem(0)">
-                            <span class="glyphicon glyphicon-plus item-add"></span>
-                        </a>
-                    </td>
-                    <td style="width: 90%;">
-                    <td style="width: 5%;">
-                        <span style="float: right;" class="glyphicon glyphicon-remove item-blank"
-                              ng-click="clearItem()" title="Очистить поиск">
-                        </span>
-                    </td>
-                </tr>
-                </thead>
-                <tbody>
-                <tr class="hoverable" ng-repeat="x in items">
-                    <td class="hoverable" ng-click="selectItem(x.id)" title="Код">{{ x.id }}</td>
-                    <td class="hoverable" ng-click="selectItem(x.id)" title="Наименование">{{ x.name }}</td>
-                    <td>
-                        <a href="#" title="Редактировать строку" ng-click="changeItem(x.id)">
-                            <span class="glyphicon glyphicon-pencil item-edit"></span>
-                        </a>
-                    </td>
-                </tr>
-                </tbody>
-            </table>
-        </li>
+    <ul class="dropdown-menu hoverable item-input-dropdown">
+        <item-input-items
+                items="items" clear-item="clearItem()"
+                select-item="selectItem" change-item="changeItem">
+        </item-input-items>
+        <!--<li>-->
+            <!--<table class="table">-->
+                <!--<thead>-->
+                <!--<tr>-->
+                    <!--<td style="width: 5%;">-->
+                        <!--<a href="#" style="float: left;padding-left: 3%;"-->
+                           <!--title="Добавить поставщика" ng-click="changeItem(0)">-->
+                            <!--<span class="glyphicon glyphicon-plus item-add"></span>-->
+                        <!--</a>-->
+                    <!--</td>-->
+                    <!--<td style="width: 90%;">-->
+                    <!--<td style="width: 5%;">-->
+                        <!--<span style="float: right;" class="glyphicon glyphicon-remove item-blank"-->
+                              <!--ng-click="clearItem()" title="Очистить поиск">-->
+                        <!--</span>-->
+                    <!--</td>-->
+                <!--</tr>-->
+                <!--</thead>-->
+                <!--<tbody>-->
+                <!--<tr class="hoverable" ng-repeat="x in items">-->
+                    <!--<td class="hoverable" ng-click="selectItem(x.id)" title="Код">{{ x.id }}</td>-->
+                    <!--<td class="hoverable" ng-click="selectItem(x.id)" title="Наименование">{{ x.name }}</td>-->
+                    <!--<td>-->
+                        <!--<a href="#" title="Редактировать строку" ng-click="changeItem(x.id)">-->
+                            <!--<span class="glyphicon glyphicon-pencil item-edit"></span>-->
+                        <!--</a>-->
+                    <!--</td>-->
+                <!--</tr>-->
+                <!--</tbody>-->
+            <!--</table>-->
+        <!--</li>-->
     </ul>
 </div>
 <add-edit-supplier

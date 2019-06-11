@@ -38,13 +38,20 @@ public class InvoiceHandler extends EntityHandlerImpl {
 
     private UserHandler userHandler;
 
-    public InvoiceHandler(InvoiceRepository invoiceRepository, UserHandler userHandler, SoldItemHandler soldItemHandler) {
+    private AbstractEntityManager abstractEntityManager;
+
+
+    public InvoiceHandler(InvoiceRepository invoiceRepository, UserHandler userHandler, SoldItemHandler soldItemHandler
+            , AbstractEntityManager abstractEntityManager) {
 
         this.soldItemHandler = soldItemHandler;
 
         this.userHandler = userHandler;
 
         this.invoiceRepository = invoiceRepository;
+
+        this.abstractEntityManager = abstractEntityManager;
+
     }
 
     private ResponseItem<Invoice> update(Invoice newInvoice, Invoice invoice) {
@@ -148,7 +155,7 @@ public class InvoiceHandler extends EntityHandlerImpl {
 
         PageRequest pageRequest = new PageRequest(filter.getPage() - 1, filter.getRowsOnPage(), sort);
 
-        Page<Invoice> page =  invoiceRepository.findAll(ipb.buildByFilter(filter), pageRequest);
+        Page<Invoice> page =  invoiceRepository.findAll(ipb.buildByFilter(filter, abstractEntityManager), pageRequest);
 
         List<Invoice> result = page.getContent();
 
@@ -159,7 +166,7 @@ public class InvoiceHandler extends EntityHandlerImpl {
                             ELEMENTS_FOUND, result, true, page.getTotalPages());
 
             if(filter.getCalcTotal())
-                ribyi.calcTotals(invoiceRepository.findAll(ipb.buildByFilter(filter)));
+                ribyi.calcTotals(invoiceRepository.findAll(ipb.buildByFilter(filter, abstractEntityManager)));
 
             return ribyi;
         }
@@ -170,6 +177,8 @@ public class InvoiceHandler extends EntityHandlerImpl {
     }
 
     public ResponseItem<InvoiceHeader> getInvoiceHeaders(SoldItemFilter filter) {
+
+//        abstractEntityManager.test();
 
         ResponseByInvoices<Invoice> responseByInvoices = getInvoicesByFilter(filter);
 

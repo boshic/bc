@@ -1,3 +1,4 @@
+import itemInputItemsTpl from './item-input-items.html';
 import userPickerTpl from './user-picker.html';
 import pagePickerTpl from './page-picker.html';
 import bankInputTpl from './bank-input.html';
@@ -26,7 +27,8 @@ let commonItemCtrlr = ($s, itemFactory, itemConfig) => {
     // });
 
     $s.$watch('item.name', (nv, ov) => {
-        if ((nv) || (ov))
+        // if ((nv) || (ov))
+        if(nv && !$s.addEditModalVisible)
             $s.getItems();
     }, true);
 
@@ -54,6 +56,8 @@ let commonItemCtrlr = ($s, itemFactory, itemConfig) => {
 let commonAddEditCtrlr = ($s, itemFactory, itemConfig) => {
         $s.warning ="";
         let config = itemFactory[itemConfig];
+
+        $s.getEmptyItem = config.getEmptyItem;
 
         $s.closeModal = () => {
             itemFactory.closeModal($s);
@@ -461,6 +465,22 @@ angular.module('inputs', [])
         };
 
     })
+    .directive( "userPicker", () => {
+        return {
+            restrict: 'E',
+            transclude: true,
+            scope: true,
+            template: userPickerTpl,
+            controller: ($scope, userService) => {
+                $scope.user = { name: "Tes" };
+
+                userService.getUser().then(
+                    resp => {$scope.user = resp;},
+                    resp => {$scope.user.name = resp;}
+                );
+            }
+        }
+    })
     .directive( "supplierInput", () => {
         return {
             restrict: 'E',
@@ -517,22 +537,28 @@ angular.module('inputs', [])
         controller: function() {}
     })
     .component( "itemInputName", {
-        bindings: { item: '<', title: '@inputName', getItems: '&', inputId: '<' },
+        bindings: { item: '<', title: '@inputName', getItems: '&', inputId: '<', keypressHandler: '&?' },
         template:
-        "<div class='dropdown' style='position: absolute;'" +
-            "ng-show='$ctrl.item.name.length>0'>" +
-            "<span class='glyphicon glyphicon-filter item-input-filter'></span>" +
-            "<ul class='dropdown-menu hoverable quick-filter-comment-delete background-white'>" +
-                "<word-from-phrase-eraser phrase='$ctrl.item.name' title={{$ctrl.title}}>" +
-                "</word-from-phrase-eraser>" +
-            "</ul>" +
-        "</div>" +
+        // "<div class='dropdown' style='position: absolute;'" +
+        //     "ng-show='$ctrl.item.name.length>0'>" +
+        //     "<span class='glyphicon glyphicon-filter item-input-filter'></span>" +
+        //     "<ul class='dropdown-menu hoverable quick-filter-comment-delete background-white'>" +
+        //         "<word-from-phrase-eraser phrase='$ctrl.item.name' title={{$ctrl.title}}>" +
+        //         "</word-from-phrase-eraser>" +
+        //     "</ul>" +
+        // "</div>" +
         "<span class='warning-item-input' ng-hide='$ctrl.item.id>0'>" +
-            "{{'Не выбран ' + $ctrl.title + '!'}}</span>" +
+            "{{'Не выбран(а) ' + $ctrl.title + '!'}}</span>" +
         "<textarea rows='2' title='{{$ctrl.item.name}}' type='text' " +
             "class='form-control' placeholder={{$ctrl.title}} id={{$ctrl.inputId}} " +
+                "ng-keydown='$ctrl.keypressHandler()($event)'" +
                 "ng-model='$ctrl.item.name'" +
-                "ng-readonly='$ctrl.item.id'><textarea/>",
+                "ng-readonly='$ctrl.item.id || $ctrl.item === null'><textarea/>",
+        controller: function() {}
+    })
+    .component( "itemInputItems", {
+        bindings: { items: '<', clearItem: '&',  selectItem: '&', changeItem: '&'},
+        template: itemInputItemsTpl,
         controller: function() {}
     })
     .factory('itemFactory',['httpService', 'paneFactory',
@@ -610,7 +636,7 @@ angular.module('inputs', [])
                 },
                 getItems: ($s, url) => {
                     $s.items=[];
-                    httpService.getItems({filter: $s.item.name}, url).then(
+                    httpService.getItems({filter: $s.item.name || ''}, url).then(
                         (value) => {
                             $s.items = value;
                         },
@@ -629,9 +655,16 @@ angular.module('inputs', [])
                     );
                 },
                 clearItem: ($s) => {
-                    if($s.item.name === '')
-                        $s.getItems();
+                    // if(!angular.isDefined($s.item) || $s.item === null
+                    //     || !angular.isDefined($s.item.name) || $s.item.name === null
+                    //     || $s.item.name === '')
+                    //     $s.getItems();
+                    // let name = (!angular.isDefined($s.item) || $s.item === null
+                    //     || !angular.isDefined($s.item.name) || $s.item.name === null
+                    //     || $s.item.name === '') ? 0 : 1;
                     $s.item = $s.getEmptyItem();
+                    // if(!name)
+                    $s.getItems();
                     paneFactory.changeElementState(document.getElementById($s.inputId), ['focus']);
                 },
                 changeItem: (id, $s) => {
@@ -645,12 +678,12 @@ angular.module('inputs', [])
                 addItem : ($s, url) => {
                     httpService.addItem($s.item, url).then(
                         resp => {
+                            $s.item = resp.item;
                             if(resp.success) {
+                                $s.getItems();
                                 $s.closeModal();
-                                ($s.item.id > 0) ? $s.getItems() : $s.item = resp.item;
+                                // ($s.item.id > 0) ? $s.getItems() : $s.item = resp.item;
                             }
-                            else
-                                $s.warning = resp.text;
                         },
                         resp => { $s.item.name = resp; }
                     );

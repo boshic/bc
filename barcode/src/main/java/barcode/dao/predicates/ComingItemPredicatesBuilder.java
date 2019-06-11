@@ -1,10 +1,15 @@
 package barcode.dao.predicates;
 
+import barcode.dao.entities.ComingItem;
+import barcode.dao.entities.embeddable.Comment;
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import barcode.dao.entities.Stock;
 import barcode.dao.services.ComingItemHandler;
 import barcode.dao.utils.ComingItemFilter;
+import com.querydsl.jpa.JPAExpressions;
+
+import java.util.ArrayList;
 
 public class ComingItemPredicatesBuilder {
 
@@ -19,6 +24,24 @@ public class ComingItemPredicatesBuilder {
         return builder;
     });
 
+    private CommentPredicateBuilder searchStringPredicateBuilder = (comment -> {
+        BooleanBuilder builder = new BooleanBuilder();
+
+        for (String word : comment.split(" "))
+            builder = builder.and(ComingItemHandler.qComingItem.item.name.containsIgnoreCase(word));
+
+        return builder;
+    });
+
+//    private BooleanExpression testCmnt() {
+//        BooleanExpression namesFilter = JPAExpressions.select()
+//                .from(ComingItemHandler.qComingItem.comments)
+//                .where(languageToName.offer.eq(QOffer.offer)
+//                        .and(languageToName.name.eq("Esperanto")))
+//               .exists();
+//        return namesFilter;
+//    }
+
     public BooleanExpression buildByFilter(ComingItemFilter filter) {
 
         predicate = ComingItemHandler.qComingItem.doc.date.between(filter.getFromDate(), filter.getToDate());
@@ -27,7 +50,8 @@ public class ComingItemPredicatesBuilder {
             predicate = predicate.and(ComingItemHandler.qComingItem.stock.id.eq(filter.getStock().getId()));
 
         if(filter.getSearchString() != null)
-            predicate = predicate.and(ComingItemHandler.qComingItem.item.name.containsIgnoreCase(filter.getSearchString()));
+            predicate = predicate.and(searchStringPredicateBuilder.build(filter.getSearchString()));
+//            predicate = predicate.and(ComingItemHandler.qComingItem.item.name.containsIgnoreCase(filter.getSearchString()));
 
         if(filter.getSectionPart() != null)
             predicate =
@@ -35,7 +59,11 @@ public class ComingItemPredicatesBuilder {
 
         if(filter.getComment() != null) {
             predicate = predicate.and(commentPredicateBuilder.build(filter.getComment()));
-//            predicate = predicate.and(ComingItemHandler.qComingItem.comments.any().action.containsIgnoreCase("Перемещение"));
+//            predicate = predicate.and(
+//                    ComingItemHandler.qComingItem.comments.any().action.containsIgnoreCase("Перемещение")
+//
+//            );
+
         }
 //            predicate = predicate.and(getCommentPredicate(filter.getComment()));
 //            predicate = predicate.and(ComingItemHandler.qComingItem.comment.containsIgnoreCase(filter.getComment()));

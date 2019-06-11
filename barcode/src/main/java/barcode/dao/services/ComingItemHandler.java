@@ -47,9 +47,12 @@ public class ComingItemHandler extends EntityHandlerImpl {
 
     private SupplierHandler supplierHandler;
 
+    private AbstractEntityManager abstractEntityManager;
+
     public ComingItemHandler(ComingItemRepository comingItemRepository, DocumentHandler documentHandler,
                              ItemHandler itemHandler, UserHandler userHandler, StockHandler stockHandler,
-                             SupplierHandler supplierHandler, ItemSectionHandler itemSectionHandler ) {
+                             SupplierHandler supplierHandler, ItemSectionHandler itemSectionHandler,
+                             AbstractEntityManager abstractEntityManager) {
 
         this.comingItemRepository = comingItemRepository;
 
@@ -64,6 +67,8 @@ public class ComingItemHandler extends EntityHandlerImpl {
         this.stockHandler = stockHandler;
 
         this.supplierHandler = supplierHandler;
+
+        this.abstractEntityManager = abstractEntityManager;
     }
 
     public void saveComingItem(ComingItem comingItem) { comingItemRepository.save(comingItem);}
@@ -393,6 +398,8 @@ public class ComingItemHandler extends EntityHandlerImpl {
     public ResponseByComingItems findByFilter(ComingItemFilter filter) {
 
 //        Sort sort = new Sort(Sort.Direction.DESC, "doc.date");
+
+        abstractEntityManager.test();
 
         Sort sort = new Sort(Sort.Direction.fromStringOrNull(filter.getSortDirection()), filter.getSortField());
 

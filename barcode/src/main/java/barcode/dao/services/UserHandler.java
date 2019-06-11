@@ -24,6 +24,7 @@ public class UserHandler {
     }
 
     public User getUserByName(String name) {
+
         return  userRepository.findByName(name);
     }
 

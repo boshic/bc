@@ -181,12 +181,12 @@ div.items-table {
     display: block;
 }
 
-.supplier-dropdown {
+.item-input-dropdown {
     right: 0px;
     overflow-y: auto;
     max-height: 200px;
     margin-top: -5px;
-    width: 85%;
+    width: 95%;
 }
 
 .item-dropdown {

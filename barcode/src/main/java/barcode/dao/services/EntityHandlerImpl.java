@@ -3,7 +3,10 @@ package barcode.dao.services;
 
 import barcode.api.EntityHandler;
 import barcode.dao.entities.embeddable.Comment;
+import barcode.dao.repositories.AbstractRepositoryImpl;
+import org.springframework.beans.factory.annotation.Autowired;
 
+import javax.persistence.EntityManager;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Comparator;
@@ -13,7 +16,7 @@ import java.util.List;
 /**
  * Created by xlinux on 30.07.18.
  */
-public class EntityHandlerImpl implements EntityHandler {
+public class EntityHandlerImpl implements EntityHandler{
 
     static final String ELEMENTS_FOUND = "найдены элементы";
     static final String NOTHING_FOUND = "ничего не найдено";

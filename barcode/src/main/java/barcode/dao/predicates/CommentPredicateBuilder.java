@@ -8,4 +8,5 @@ import com.querydsl.core.types.Predicate;
 public interface CommentPredicateBuilder {
 
     Predicate build(String comment);
+
 }

@@ -1,18 +1,88 @@
 package barcode.dao.predicates;
 
+import barcode.dao.entities.QInvoice;
+
+import barcode.dao.entities.embeddable.QInvoiceRow;
+import barcode.dao.services.AbstractEntityManager;
+import barcode.dao.services.AbstractEntityManagerImpl;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import barcode.dao.services.InvoiceHandler;
 import barcode.dao.utils.SoldItemFilter;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import javax.persistence.EntityManager;
 
 /**
  * Created by xlinux on 20.11.18.
  */
+
 public class InvoicesPredicatesBuilder {
 
-    public BooleanExpression buildByFilter(SoldItemFilter filter) {
+//    private AbstractEntityManager abstractEntityManager;
+//
+//    public InvoicesPredicatesBuilder() {}
+//
+//    public InvoicesPredicatesBuilder(AbstractEntityManager abstractEntityManager) {
+//        this.abstractEntityManager = abstractEntityManager;
+//    }
+
+    public BooleanExpression buildByFilter(SoldItemFilter filter, AbstractEntityManager abstractEntityManager) {
+
+        QInvoiceRow qInvoiceRow = QInvoiceRow.invoiceRow;
+        QInvoice invoice = InvoiceHandler.qInvoice;
+
+        abstractEntityManager.test();
+
+        EntityManager em = abstractEntityManager.getEntityManager();
 
         BooleanExpression predicate
-                = InvoiceHandler.qInvoice.date.between(filter.getFromDate(), filter.getToDate());
+                = (InvoiceHandler.qInvoice.date.between(filter.getFromDate(), filter.getToDate()));
+
+//        List<Invoice> rows = new JPAQuery<Invoice>()
+//                .select(invoice)
+//                .from(invoice)
+//                .where(invoice.buyer.name.containsIgnoreCase("гонь"))
+//                .fetch();
+
+
+        return predicate;
+
+//        JPAExpressions
+//                .select(InvoiceHandler.qInvoice)
+//                .from(invoice)
+//                .where(invoice.sum.goe(20))
+
+
+//        BooleanExpression predicate
+//                =(InvoiceHandler.qInvoice.date.between(filter.getFromDate(), filter.getToDate()));
+
+//        return predicate;
+
+//        JPAQuery<Invoice> query = new JPAQuery<Invoice>(em);
+
+//        List<Invoice> inv = query
+//                .from(invoice)
+////                .where(invoice.date.after(filter.getFromDate()))
+//                .fetch();
+
+//        List<Invoice> rows = new JPAQuery<Invoice>()
+//                .select(invoice)
+//                .from(invoice)
+////                .innerJoin(invoice.invoiceRows, qInvoiceRow)
+////                .where(qInvoiceRow.quantity.gt(2))
+//                .fetch();
+
+//        List<InvoiceRow> rows = new JPAQuery<InvoiceRow>()
+//                .from(InvoiceHandler.qInvoice)
+////                .innerJoin(InvoiceHandler.qInvoice.invoiceRows, qInvoiceRow)
+////                .where(qInvoiceRow.quantity.gt(2))
+////                .select(qInvoiceRow)
+//                .fetch();
+
+//        BooleanExpression subq = InvoiceHandler.qInvoice.invoiceRows.any().in(rows);
 
 //        if (filter.getStock() != null && !filter.getStock().isAllowAll())
 //            predicate = predicate.and(SoldItemHandler.qSoldItem.coming.stock.id.eq(filter.getStock().getId()));
@@ -29,9 +99,8 @@ public class InvoicesPredicatesBuilder {
 //        if (filter.getItem() != null && filter.getItem().getId() != null)
 //            predicate = predicate.and(SoldItemHandler.qSoldItem.coming.item.id.eq(filter.getItem().getId()));
 
-        if (filter.getBuyer().getId() != null)
-            predicate = predicate.and(InvoiceHandler.qInvoice.buyer.id.eq(filter.getBuyer().getId()));
+//        if (filter.getBuyer().getId() != null)
+//            predicate = predicate.and(InvoiceHandler.qInvoice.buyer.id.eq(filter.getBuyer().getId()));
 
-        return predicate;
     }
 }
