@@ -1,19 +1,23 @@
 package barcode.dao.predicates;
 
+import barcode.dao.entities.Invoice;
 import barcode.dao.entities.QInvoice;
 
+import barcode.dao.entities.embeddable.InvoiceRow;
 import barcode.dao.entities.embeddable.QInvoiceRow;
 import barcode.dao.services.AbstractEntityManager;
 import barcode.dao.services.AbstractEntityManagerImpl;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import barcode.dao.services.InvoiceHandler;
 import barcode.dao.utils.SoldItemFilter;
+import com.querydsl.jpa.impl.JPAQuery;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
+import java.util.List;
 
 /**
  * Created by xlinux on 20.11.18.
@@ -41,11 +45,43 @@ public class InvoicesPredicatesBuilder {
         BooleanExpression predicate
                 = (InvoiceHandler.qInvoice.date.between(filter.getFromDate(), filter.getToDate()));
 
-//        List<Invoice> rows = new JPAQuery<Invoice>()
+
+        ///!!!! Yes
+//        List<Invoice> invoiceRows = new JPAQuery<Invoice>(
+//                abstractEntityManager.getEntityManager())
 //                .select(invoice)
 //                .from(invoice)
-//                .where(invoice.buyer.name.containsIgnoreCase("гонь"))
+//                .innerJoin(invoice.invoiceRows, qInvoiceRow)
+//                .where(qInvoiceRow.quantity.gt(100).and(qInvoiceRow.price.gt(5)))
 //                .fetch();
+
+        List<Invoice> rows = new JPAQuery<Invoice>(
+                abstractEntityManager.getEntityManager())
+                .select(invoice)
+                .from(invoice)
+                .innerJoin(invoice.invoiceRows, qInvoiceRow)
+                .where(qInvoiceRow.quantity.gt(3)
+                        .and(qInvoiceRow.price.gt(10)))
+                .fetch();
+
+        predicate = predicate.and(invoice.in(rows));
+
+//        predicate = predicate.and(invoice.invoiceRows.any()
+//                .in(
+//                        new JPAQuery<InvoiceRow>(abstractEntityManager.getEntityManager())
+//                .select(qInvoiceRow)
+//                .from(invoice)
+////                .innerJoin(invoice.invoiceRows, qInvoiceRow)
+//                                .where(qInvoiceRow.quantity.gt(2))
+//                ));
+
+//                (
+//                new JPAQuery<>(abstractEntityManager.getEntityManager())
+//                .select(invoice)
+//                .from(invoice)
+//                .innerJoin(invoice.invoiceRows, qInvoiceRow)
+//                .where(qInvoiceRow.quantity.gt(2)).fetch()
+//        ));
 
 
         return predicate;

@@ -20,12 +20,6 @@ let commonItemCtrlr = ($s, itemFactory, itemConfig) => {
     $s.getEmptyItem = config.getEmptyItem;
     $s.item = $s.getEmptyItem();
 
-    // $s.$watchCollection("[modalConfig.hidden, buyer]"
-    // $s.$watch('item.id', (nv) => {
-    //     if(nv)
-    //         $s.getItems();
-    // });
-
     $s.$watch('item.name', (nv, ov) => {
         // if ((nv) || (ov))
         if(nv && !$s.addEditModalVisible)
@@ -109,11 +103,6 @@ let supplierChangeCtrlr = ($s, itemFactory) => {
 };
 
 let itemInputCtrlr = ($s, itemFactory, paneFactory) => {
-
-    // $s.$watch('item.name', (nv, ov) => {
-    //     if ((nv) || (ov))
-    //         $s.getItems();
-    // }, true);
 
     $s.setEanPrefix = e => {
         $s.item.name = paneFactory.generateEanByKey(e, $s.item.name);
@@ -655,15 +644,7 @@ angular.module('inputs', [])
                     );
                 },
                 clearItem: ($s) => {
-                    // if(!angular.isDefined($s.item) || $s.item === null
-                    //     || !angular.isDefined($s.item.name) || $s.item.name === null
-                    //     || $s.item.name === '')
-                    //     $s.getItems();
-                    // let name = (!angular.isDefined($s.item) || $s.item === null
-                    //     || !angular.isDefined($s.item.name) || $s.item.name === null
-                    //     || $s.item.name === '') ? 0 : 1;
                     $s.item = $s.getEmptyItem();
-                    // if(!name)
                     $s.getItems();
                     paneFactory.changeElementState(document.getElementById($s.inputId), ['focus']);
                 },
@@ -682,7 +663,6 @@ angular.module('inputs', [])
                             if(resp.success) {
                                 $s.getItems();
                                 $s.closeModal();
-                                // ($s.item.id > 0) ? $s.getItems() : $s.item = resp.item;
                             }
                         },
                         resp => { $s.item.name = resp; }

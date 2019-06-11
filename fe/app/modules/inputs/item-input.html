@@ -1,12 +1,5 @@
 <div class="dropdown">
-    <!--<span class="warning-item-input" ng-hide="item.id > 0">Не выбран товар!</span>-->
-    <!--<textarea title="Товар" rows="2" class="form-control coming-item-name"-->
-              <!--placeholder="Товар (введите >2 символов)"-->
-              <!--id="{{inputId}}"-->
-              <!--ng-keydown="setEanPrefix($event)"-->
-              <!--ng-model="item.name"-->
-              <!--ng-readonly="item.id">-->
-    <!--</textarea>-->
+
     <item-input-name input-id='inputId' item="item" input-name="Товар"
                      get-items="getItems()" keypress-handler='setEanPrefix'>
     </item-input-name>
@@ -23,66 +16,6 @@
                 items="items" clear-item="clearItem()"
                 select-item="selectItem" change-item="changeItem">
         </item-input-items>
-        <!--<li>-->
-            <!--<table class="table">-->
-                <!--<thead>-->
-                <!--<tr>-->
-                    <!--<td>-->
-                        <!--<a href="#" style="float: left;padding-left: 3%;" title="Добавить товар"-->
-                           <!--ng-click="changeItem(0)">-->
-                            <!--<span class="glyphicon glyphicon-plus item-add"></span>-->
-                        <!--</a>-->
-                    <!--</td>-->
-                    <!--<td></td>-->
-                    <!--<td>-->
-                        <!--<span style="float: right;" class="glyphicon glyphicon-remove item-blank"-->
-                              <!--ng-click="clearItem()" title="Очистить поиск">-->
-                        <!--</span>-->
-                    <!--</td>-->
-                <!--</tr>-->
-                <!--</thead>-->
-                <!--<tbody>-->
-                <!--<tr class="hoverable" ng-repeat="x in items">-->
-                    <!--<td class="hoverable" style="width: 55px;"-->
-                        <!--ng-click="selectItem(x.id)" title="Код">{{ x.id }}</td>-->
-                    <!--<td style="display: flex;">-->
-                        <!--<div style="display: flex; width: 100%;">-->
-                            <!--<div class="hoverable" style="width: 100%;"-->
-                                 <!--ng-click="selectItem(x.id)">-->
-                                <!--<span>{{ x.name }}</span>-->
-                            <!--</div>-->
-                            <!--<div style="width: 20px; font-size: 20px;">-->
-                                <!--<span>-->
-                                    <!--<div class="dropdown">-->
-                                        <!--<span class="glyphicon glyphicon-info-sign"></span>-->
-                                        <!--<ul class="dropdown-menu hoverable comments-container item-title left-side"-->
-                                            <!--style="    left: -105px;">-->
-                                            <!--<li class="clickable-filter-value">-->
-                                                <!--{{x.ean + ', ' + x.section.name}}-->
-                                            <!--</li>-->
-                                        <!--</ul>-->
-                                    <!--</div>-->
-                                <!--</span>-->
-                            <!--</div>-->
-                        <!--</div>-->
-                    <!--</td>-->
-                    <!--<td>-->
-                        <!--&lt;!&ndash;<span class="glyphicon glyphicon-plus item-add"&ndash;&gt;-->
-                              <!--&lt;!&ndash;title="Добавить товар копированием"&ndash;&gt;-->
-                              <!--&lt;!&ndash;ng-click="addEditItem({name: x.name, ean: x.ean})">&ndash;&gt;-->
-                        <!--&lt;!&ndash;</span>&ndash;&gt;-->
-                        <!--<span class="glyphicon glyphicon-pencil item-edit"-->
-                              <!--title="Редактировать строку"-->
-                              <!--ng-click="changeItem(x.id)">-->
-                        <!--</span>-->
-                        <!--&lt;!&ndash;<span class="glyphicon glyphicon-minus item-delete"&ndash;&gt;-->
-                              <!--&lt;!&ndash;title="Удалить строку" ng-click="deleteItem(false)">&ndash;&gt;-->
-                        <!--&lt;!&ndash;</span>&ndash;&gt;-->
-                    <!--</td>-->
-                <!--</tr>-->
-                <!--</tbody>-->
-            <!--</table>-->
-        <!--</li>-->
     </ul>
 </div>
 <add-edit-item

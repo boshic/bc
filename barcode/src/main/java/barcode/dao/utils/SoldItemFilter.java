@@ -73,18 +73,6 @@ public class SoldItemFilter extends BasicFilter {
     private Supplier supplier;
     private Document document;
 
-//    public SoldItemFilter() {}
-//    public SoldItemFilter(SoldItemFilter filter) {
-//        super(filter);
-//        this.page = filter.getPage();
-//        this.buyer = filter.getBuyer();
-//        this.user = filter.getUser();
-//        this.comment = filter.getComment();
-//        this.item = filter.getItem();
-//        this.ean = filter.getEan();
-//        this.calcTotal = filter.getCalcTotal();
-//    }
-
     public Integer getPage() {
         return page;
     }

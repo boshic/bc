@@ -1,21 +1,4 @@
 <div class="dropdown">
-    <!--<div class="dropdown" style="position: absolute;"-->
-         <!--ng-show="item.name.length > 0">-->
-        <!--<span class="glyphicon glyphicon-filter item-input-filter"></span>-->
-        <!--<ul class="dropdown-menu hoverable quick-filter-comment-delete background-white">-->
-            <!--<word-from-phrase-eraser-->
-                    <!--phrase="item.name"-->
-                    <!--title="наименование секции">-->
-            <!--</word-from-phrase-eraser>-->
-        <!--</ul>-->
-    <!--</div>-->
-
-    <!--<span class="warning-item-input" ng-hide = "item.id > 0">Не выбрана секция!</span>-->
-    <!--<input title="{{item.name}}" type="text" class="form-control section-ipnut" placeholder="Секция"-->
-           <!--id="{{inputId}}"-->
-           <!--ng-model="item.name"-->
-           <!--ng-change="getItems()"-->
-           <!--ng-readonly="item.id"/>-->
     <item-input-name input-id='inputId' item="item" input-name="Секция"
                      get-items="getItems()">
     </item-input-name>
@@ -27,53 +10,6 @@
                 items="items" clear-item="clearItem()"
                 select-item="selectItem" change-item="changeItem">
         </item-input-items>
-        <!--<li>-->
-            <!--<table class="table">-->
-                <!--<thead>-->
-                <!--<tr>-->
-                    <!--<td>-->
-                        <!--<a href="#" style="float: left;padding-left: 3%;" title="Добавить секцию"-->
-                           <!--ng-click="changeItem(0)">-->
-                            <!--<span class="glyphicon glyphicon-plus item-add"></span>-->
-                        <!--</a>-->
-                    <!--</td>-->
-                    <!--<td></td>-->
-                    <!--<td>-->
-                        <!--<span style="float: right;" class="glyphicon glyphicon-remove item-blank"-->
-                              <!--ng-click="clearItem()" title="Очистить поиск">-->
-                        <!--</span>-->
-                    <!--</td>-->
-                <!--</tr>-->
-                <!--</thead>-->
-                <!--<tbody>-->
-                <!--<tr class="hoverable" style="text-align: right;" ng-repeat="x in items">-->
-                    <!--<td style="width: 50px;">-->
-                        <!--<span>{{ x.id }}</span>-->
-                        <!--<span class="item-quick-filter-icon" style="font-size: 22px;">-->
-                        <!--<div class="dropdown">-->
-                            <!--<span class="glyphicon glyphicon-filter"></span>-->
-                            <!--<ul class="dropdown-menu hoverable item-quick-filter-ul">-->
-                                <!--<phrase-by-word-to-filter-->
-                                        <!--filter="item.name"-->
-                                        <!--comment="x.name">-->
-                                <!--</phrase-by-word-to-filter>-->
-                            <!--</ul>-->
-                        <!--</div>-->
-                        <!--</span>-->
-                    <!--</td>-->
-                    <!--<td ng-click="selectItem(x.id)">-->
-                        <!--<span class="hoverable" >{{ x.name }}</span>-->
-                    <!--</td>-->
-                    <!--<td style="width: 35px";>-->
-                        <!--<a href="#" title="Редактировать строку"-->
-                           <!--ng-click="changeItem(x.id)">-->
-                            <!--<span class="glyphicon glyphicon-pencil item-edit"></span>-->
-                        <!--</a>-->
-                    <!--</td>-->
-                <!--</tr>-->
-                <!--</tbody>-->
-            <!--</table>-->
-        <!--</li>-->
     </ul>
 </div>
 <add-edit-item-section
