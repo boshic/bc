@@ -22,7 +22,7 @@ import java.util.stream.Collectors;
 @Service
 public class SoldItemHandler extends EntityHandlerImpl {
 
-    public static QSoldItem qSoldItem = QSoldItem.soldItem;
+//    public static QSoldItem qSoldItem = QSoldItem.soldItem;
 
     public static SoldItemPredicatesBuilder sipb = new SoldItemPredicatesBuilder();
 
@@ -129,6 +129,8 @@ public class SoldItemHandler extends EntityHandlerImpl {
         selling.setBuyer(buyer);
 
         responseItem.getItems().add(responseByBuyer);
+
+        QSoldItem qSoldItem = QSoldItem.soldItem;
 
         Predicate predicate = qSoldItem.comment.eq(selling.getComment()).and(qSoldItem.price.eq(selling.getPrice()))
                 .and(qSoldItem.quantity.eq(selling.getQuantity()))

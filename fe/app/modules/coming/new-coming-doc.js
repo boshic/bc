@@ -161,9 +161,8 @@ import newComingDocPaneTpl from './new-coming-doc.html';
         $s.deleteRows = function () {
             if(this.$index >= 0) {
                 $s.rows.splice(this.$index,1)
-            }else {
+            } else {
                 $s.rows = [];
-                // $s.doc={name:""};
                 $s.doc = itemFactory.documentConfig.getEmptyItem();
             }
             $s.blankSearch();
@@ -171,6 +170,7 @@ import newComingDocPaneTpl from './new-coming-doc.html';
 
         $s.makeComing = () => {
             if($s.canRelease) {
+                $s.canRelease = false;
                 httpService.addItem($s.rows, 'addComings').then(
                     resp => {
                         $s.deleteRows();

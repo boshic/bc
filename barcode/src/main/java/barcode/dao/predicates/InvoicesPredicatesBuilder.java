@@ -3,18 +3,12 @@ package barcode.dao.predicates;
 import barcode.dao.entities.Invoice;
 import barcode.dao.entities.QInvoice;
 
-import barcode.dao.entities.embeddable.InvoiceRow;
 import barcode.dao.entities.embeddable.QInvoiceRow;
 import barcode.dao.services.AbstractEntityManager;
-import barcode.dao.services.AbstractEntityManagerImpl;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import barcode.dao.services.InvoiceHandler;
 import barcode.dao.utils.SoldItemFilter;
 import com.querydsl.jpa.impl.JPAQuery;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Repository;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
 import java.util.List;
@@ -25,72 +19,34 @@ import java.util.List;
 
 public class InvoicesPredicatesBuilder {
 
-//    private AbstractEntityManager abstractEntityManager;
-//
-//    public InvoicesPredicatesBuilder() {}
-//
-//    public InvoicesPredicatesBuilder(AbstractEntityManager abstractEntityManager) {
-//        this.abstractEntityManager = abstractEntityManager;
-//    }
-
     public BooleanExpression buildByFilter(SoldItemFilter filter, AbstractEntityManager abstractEntityManager) {
 
         QInvoiceRow qInvoiceRow = QInvoiceRow.invoiceRow;
         QInvoice invoice = InvoiceHandler.qInvoice;
 
-        abstractEntityManager.test();
-
-        EntityManager em = abstractEntityManager.getEntityManager();
-
         BooleanExpression predicate
-                = (InvoiceHandler.qInvoice.date.between(filter.getFromDate(), filter.getToDate()));
+                = (invoice.date.between(filter.getFromDate(), filter.getToDate()));
 
 
         ///!!!! Yes
-//        List<Invoice> invoiceRows = new JPAQuery<Invoice>(
+//
+//        List<Invoice> rows = new JPAQuery<Invoice>(
 //                abstractEntityManager.getEntityManager())
 //                .select(invoice)
 //                .from(invoice)
 //                .innerJoin(invoice.invoiceRows, qInvoiceRow)
-//                .where(qInvoiceRow.quantity.gt(100).and(qInvoiceRow.price.gt(5)))
+//                .where(invoice.date.between(filter.getFromDate(), filter.getToDate())
+//                        .and(qInvoiceRow.quantity.gt(2))
+//                        .and(qInvoiceRow.price.gt(5)))
 //                .fetch();
+//
+//        predicate = predicate.and(invoice.in(rows));
 
-        List<Invoice> rows = new JPAQuery<Invoice>(
-                abstractEntityManager.getEntityManager())
-                .select(invoice)
-                .from(invoice)
-                .innerJoin(invoice.invoiceRows, qInvoiceRow)
-                .where(qInvoiceRow.quantity.gt(3)
-                        .and(qInvoiceRow.price.gt(10)))
-                .fetch();
-
-        predicate = predicate.and(invoice.in(rows));
-
-//        predicate = predicate.and(invoice.invoiceRows.any()
-//                .in(
-//                        new JPAQuery<InvoiceRow>(abstractEntityManager.getEntityManager())
-//                .select(qInvoiceRow)
-//                .from(invoice)
-////                .innerJoin(invoice.invoiceRows, qInvoiceRow)
-//                                .where(qInvoiceRow.quantity.gt(2))
-//                ));
-
-//                (
-//                new JPAQuery<>(abstractEntityManager.getEntityManager())
-//                .select(invoice)
-//                .from(invoice)
-//                .innerJoin(invoice.invoiceRows, qInvoiceRow)
-//                .where(qInvoiceRow.quantity.gt(2)).fetch()
-//        ));
+        if (filter.getBuyer().getId() != null)
+            predicate = predicate.and(invoice.buyer.id.eq(filter.getBuyer().getId()));
 
 
         return predicate;
-
-//        JPAExpressions
-//                .select(InvoiceHandler.qInvoice)
-//                .from(invoice)
-//                .where(invoice.sum.goe(20))
-
 
 //        BooleanExpression predicate
 //                =(InvoiceHandler.qInvoice.date.between(filter.getFromDate(), filter.getToDate()));
@@ -117,8 +73,6 @@ public class InvoicesPredicatesBuilder {
 ////                .where(qInvoiceRow.quantity.gt(2))
 ////                .select(qInvoiceRow)
 //                .fetch();
-
-//        BooleanExpression subq = InvoiceHandler.qInvoice.invoiceRows.any().in(rows);
 
 //        if (filter.getStock() != null && !filter.getStock().isAllowAll())
 //            predicate = predicate.and(SoldItemHandler.qSoldItem.coming.stock.id.eq(filter.getStock().getId()));

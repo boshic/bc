@@ -3,10 +3,6 @@ package barcode.dao.services;
 
 import barcode.api.EntityHandler;
 import barcode.dao.entities.embeddable.Comment;
-import barcode.dao.repositories.AbstractRepositoryImpl;
-import org.springframework.beans.factory.annotation.Autowired;
-
-import javax.persistence.EntityManager;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Comparator;
@@ -82,12 +78,4 @@ public class EntityHandlerImpl implements EntityHandler{
         return cal.getTime();
     }
 
-//    public void prepareEntityForTransfer(Object o) {
-//
-//        if (o instanceof ComingItem)
-//            ((ComingItem) o).getUser().setStamp(null);
-//
-//        if (o instanceof Invoice)
-//            ((Invoice) o).getUser().setStamp(null);
-//    }
 }

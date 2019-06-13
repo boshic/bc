@@ -2,7 +2,6 @@ package barcode.api;
 
 
 import barcode.dao.entities.embeddable.Comment;
-import barcode.dao.repositories.AbstractRepositoryImpl;
 
 import java.util.List;
 

@@ -29,7 +29,7 @@ public class ComingItemHandler extends EntityHandlerImpl {
 
     public static ComingItemPredicatesBuilder cipb = new ComingItemPredicatesBuilder();
 
-    public static QComingItem qComingItem = QComingItem.comingItem;
+//    public static QComingItem qComingItem = QComingItem.comingItem;
 
     private BasicFilter filter;
 
@@ -374,13 +374,12 @@ public class ComingItemHandler extends EntityHandlerImpl {
 
         responseItem.getItems().add(responseBydoc);
 
-//        System.out.println(coming.getItem().getName());
-//        System.out.println(coming.getPriceIn());
+        QComingItem qComingItem = QComingItem.comingItem;
 
         Predicate predicate = qComingItem.doc.eq(coming.getDoc())
                                             .and(qComingItem.quantity.gt(0))
-                                                    .and(qComingItem.item.eq(coming.getItem()))
-                                                            .and(qComingItem.priceIn.eq(coming.getPriceIn()));
+                                            .and(qComingItem.item.eq(coming.getItem()))
+                                            .and(qComingItem.priceIn.eq(coming.getPriceIn()));
 
         if (comingItemRepository.findAll(predicate).size() > 0) {
 

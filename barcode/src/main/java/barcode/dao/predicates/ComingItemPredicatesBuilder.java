@@ -1,102 +1,65 @@
 package barcode.dao.predicates;
 
-import barcode.dao.entities.ComingItem;
-import barcode.dao.entities.embeddable.Comment;
-import com.querydsl.core.BooleanBuilder;
+import barcode.dao.entities.QComingItem;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import barcode.dao.entities.Stock;
-import barcode.dao.services.ComingItemHandler;
 import barcode.dao.utils.ComingItemFilter;
-import com.querydsl.jpa.JPAExpressions;
-
-import java.util.ArrayList;
 
 public class ComingItemPredicatesBuilder {
 
-    private BooleanExpression predicate;
+    private QComingItem comingItem = QComingItem.comingItem;
 
-    private CommentPredicateBuilder commentPredicateBuilder = (comment -> {
-        BooleanBuilder builder = new BooleanBuilder();
-
-        for (String word : comment.split(" "))
-            builder = builder.and(ComingItemHandler.qComingItem.comment.containsIgnoreCase(word));
-
-        return builder;
-    });
-
-    private CommentPredicateBuilder searchStringPredicateBuilder = (comment -> {
-        BooleanBuilder builder = new BooleanBuilder();
-
-        for (String word : comment.split(" "))
-            builder = builder.and(ComingItemHandler.qComingItem.item.name.containsIgnoreCase(word));
-
-        return builder;
-    });
-
-//    private BooleanExpression testCmnt() {
-//        BooleanExpression namesFilter = JPAExpressions.select()
-//                .from(ComingItemHandler.qComingItem.comments)
-//                .where(languageToName.offer.eq(QOffer.offer)
-//                        .and(languageToName.name.eq("Esperanto")))
-//               .exists();
-//        return namesFilter;
-//    }
+    private PredicateBuilder phraseByWordPredicateBuilder = new PredicateBuilderImpl();
 
     public BooleanExpression buildByFilter(ComingItemFilter filter) {
 
-        predicate = ComingItemHandler.qComingItem.doc.date.between(filter.getFromDate(), filter.getToDate());
+        BooleanExpression predicate = comingItem.doc.date.between(filter.getFromDate(), filter.getToDate());
 
         if (filter.getStock() != null && !filter.getStock().isAllowAll())
-            predicate = predicate.and(ComingItemHandler.qComingItem.stock.id.eq(filter.getStock().getId()));
+            predicate = predicate.and(comingItem.stock.id.eq(filter.getStock().getId()));
 
         if(filter.getSearchString() != null)
-            predicate = predicate.and(searchStringPredicateBuilder.build(filter.getSearchString()));
-//            predicate = predicate.and(ComingItemHandler.qComingItem.item.name.containsIgnoreCase(filter.getSearchString()));
+            predicate = predicate.and(phraseByWordPredicateBuilder
+                    .buildByPhraseAndMethod(filter.getSearchString(), comingItem.item.name::containsIgnoreCase));
 
         if(filter.getSectionPart() != null)
             predicate =
-                    predicate.and(ComingItemHandler.qComingItem.item.section.name.containsIgnoreCase(filter.getSectionPart()));
+                    predicate.and(comingItem.item.section.name.containsIgnoreCase(filter.getSectionPart()));
 
         if(filter.getComment() != null) {
-            predicate = predicate.and(commentPredicateBuilder.build(filter.getComment()));
-//            predicate = predicate.and(
-//                    ComingItemHandler.qComingItem.comments.any().action.containsIgnoreCase("Перемещение")
-//
-//            );
-
+            predicate = predicate.and(phraseByWordPredicateBuilder
+                    .buildByPhraseAndMethod(filter.getComment(), comingItem.comment::containsIgnoreCase));
         }
-//            predicate = predicate.and(getCommentPredicate(filter.getComment()));
-//            predicate = predicate.and(ComingItemHandler.qComingItem.comment.containsIgnoreCase(filter.getComment()));
 
         if(filter.getEan() != null && filter.getEan().length() == 13)
-            predicate = predicate.and(ComingItemHandler.qComingItem.item.ean.eq(filter.getEan()));
+            predicate = predicate.and(comingItem.item.ean.eq(filter.getEan()));
 
         if(filter.getItem() != null && filter.getItem().getId() != null)
-            predicate = predicate.and(ComingItemHandler.qComingItem.item.id.eq(filter.getItem().getId()));
+            predicate = predicate.and(comingItem.item.id.eq(filter.getItem().getId()));
 
         if (filter.getSection() != null && filter.getSection().getId() != null)
             predicate =
-                    predicate.and(ComingItemHandler.qComingItem.item.section.id.eq(filter.getSection().getId()));
+                    predicate.and(comingItem.item.section.id.eq(filter.getSection().getId()));
 
         if (filter.getSupplier() != null && filter.getSupplier().getId() != null)
-            predicate = predicate.and(ComingItemHandler.qComingItem.doc.supplier.id.eq(filter.getSupplier().getId()));
+            predicate = predicate.and(comingItem.doc.supplier.id.eq(filter.getSupplier().getId()));
 
         if (filter.getDocument() != null && filter.getDocument().getId() != null)
-            predicate = predicate.and(ComingItemHandler.qComingItem.doc.id.eq(filter.getDocument().getId()));
+            predicate = predicate.and(comingItem.doc.id.eq(filter.getDocument().getId()));
 
         if(filter.getHideNullQuantity())
-            predicate = predicate.and(ComingItemHandler.qComingItem.currentQuantity.gt(0));
+            predicate = predicate.and(comingItem.currentQuantity.gt(0));
 
         return predicate;
     }
 
     public BooleanExpression getAvailableItemsByStock(Long itemId, Stock stock) {
 
-        predicate = ComingItemHandler.qComingItem.stock.id.eq(stock.getId())
-                .and(ComingItemHandler.qComingItem.item.id.eq(itemId));
+        BooleanExpression predicate = comingItem.stock.id.eq(stock.getId())
+                .and(comingItem.item.id.eq(itemId));
 
         if(stock.isPriceByAvailable())
-            predicate = predicate.and(ComingItemHandler.qComingItem.currentQuantity.gt(0));
+            predicate = predicate.and(comingItem.currentQuantity.gt(0));
 
         return predicate;
     }
