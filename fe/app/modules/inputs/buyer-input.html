@@ -1,11 +1,9 @@
 <div class="dropdown">
 
     <item-input-name input-id='inputId' item="item" input-name="Покупатель"
+                     requests-in-progress="requestsInProgress" items="items"
                      get-items="getItems()">
     </item-input-name>
-    <span class="item-input-toolbox"  ng-hide="item.id > 0">
-        <item-input-total total="items.length"></item-input-total>
-    </span>
     <div class="buyer-debt" style="top: 0px; right: 0px;">
         <span ng-show="item.debt">Долг:<span>{{item.debt}}</span></span>
     </div>

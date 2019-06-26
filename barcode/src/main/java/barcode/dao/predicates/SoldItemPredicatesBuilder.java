@@ -1,5 +1,8 @@
 package barcode.dao.predicates;
 
+import barcode.dao.entities.QComingItem;
+import barcode.dao.entities.QDocument;
+import barcode.dao.entities.QItem;
 import barcode.dao.entities.QSoldItem;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import barcode.dao.utils.SoldItemFilter;
@@ -7,46 +10,49 @@ import barcode.dao.utils.SoldItemFilter;
 public class SoldItemPredicatesBuilder {
 
     private QSoldItem soldItem = QSoldItem.soldItem;
+    private QComingItem comingItem = soldItem.coming;
+    private QItem item = comingItem.item;
+    private QDocument doc = comingItem.doc;
 
-    private PredicateBuilder phraseByWordPredicateBuilder = new PredicateBuilderImpl();
+    private PredicateBuilder predicateBuilder = new PredicateBuilderImpl();
 
     public BooleanExpression buildByFilter(SoldItemFilter filter) {
 
         BooleanExpression predicate = soldItem.date.between(filter.getFromDate(), filter.getToDate());
 
         if (filter.getStock() != null && !filter.getStock().isAllowAll())
-            predicate = predicate.and(soldItem.coming.stock.id.eq(filter.getStock().getId()));
+            predicate = predicate.and(comingItem.stock.id.eq(filter.getStock().getId()));
 
         if(filter.getComment() != null)
-            predicate = predicate.and(phraseByWordPredicateBuilder
-                    .buildByPhraseAndMethod(filter.getSearchString(), soldItem.comment::containsIgnoreCase));
+            predicate = predicate.and(predicateBuilder
+                    .buildByPhraseAndMethod(filter.getComment(), soldItem.comment::containsIgnoreCase));
 
         if(filter.getSearchString() != null)
-            predicate = predicate.and(phraseByWordPredicateBuilder
-                    .buildByPhraseAndMethod(filter.getSearchString(), soldItem.coming.item.name::containsIgnoreCase));
+            predicate = predicate.and(predicateBuilder
+                    .buildByPhraseAndMethod(filter.getSearchString(), item.name::containsIgnoreCase));
 
         if (filter.getEan() != null && filter.getEan().length() == 13)
-            predicate = predicate.and(soldItem.coming.item.ean.eq(filter.getEan()));
+            predicate = predicate.and(item.ean.eq(filter.getEan()));
 
         if (filter.getItem() != null && filter.getItem().getId() != null)
-            predicate = predicate.and(soldItem.coming.item.id.eq(filter.getItem().getId()));
+            predicate = predicate.and(item.id.eq(filter.getItem().getId()));
 
         if (filter.getBuyer().getId() != null)
             predicate = predicate.and(soldItem.buyer.id.eq(filter.getBuyer().getId()));
 
         if(filter.getSectionPart() != null)
-            predicate =
-                    predicate.and(soldItem.coming.item.section.name.containsIgnoreCase(filter.getSectionPart()));
+            predicate = predicate.and(predicateBuilder
+                    .buildByPhraseAndMethod(filter.getSectionPart(), item.section.name::containsIgnoreCase));
 
         if (filter.getSection() != null && filter.getSection().getId() != null)
             predicate =
-                    predicate.and(soldItem.coming.item.section.id.eq(filter.getSection().getId()));
+                    predicate.and(item.section.id.eq(filter.getSection().getId()));
 
         if (filter.getSupplier() != null && filter.getSupplier().getId() != null)
-            predicate = predicate.and(soldItem.coming.doc.supplier.id.eq(filter.getSupplier().getId()));
+            predicate = predicate.and(doc.supplier.id.eq(filter.getSupplier().getId()));
 
         if (filter.getDocument() != null && filter.getDocument().getId() != null)
-            predicate = predicate.and(soldItem.coming.doc.id.eq(filter.getDocument().getId()));
+            predicate = predicate.and(doc.id.eq(filter.getDocument().getId()));
 
 
         return predicate;

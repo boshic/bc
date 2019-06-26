@@ -16,6 +16,7 @@ let commonItemCtrlr = ($s, itemFactory, itemConfig) => {
 
     $s.inputId = itemFactory.generateUuid();
     $s.items = [];
+    $s.requestsInProgress = 0;
     let config = itemFactory[itemConfig];
     $s.getEmptyItem = config.getEmptyItem;
     $s.item = $s.getEmptyItem();
@@ -132,6 +133,7 @@ let docCtrlr = ($s, httpService, itemFactory) => {
     $s.dateFrom = new Date(2015,0,1);
     $s.dateTo = new Date();
     $s.docs = [];
+    $s.requestsInProgress = 0;
     $s.getEmptyItem = itemFactory.documentConfig.getEmptyItem;
     $s.doc = $s.getEmptyItem();
 
@@ -330,7 +332,6 @@ angular.module('inputs', [])
             transclude: true,
             scope: {doc:'='},
             template : docInputTpl,
-            // templateUrl: '/scripts/modules/inputs/doc-input.html',
             controller: ($scope, httpService, itemFactory) => {
                 return docCtrlr($scope, httpService, itemFactory);
 
@@ -511,8 +512,11 @@ angular.module('inputs', [])
         }
     })
     .component( "itemInputTotal", {
-                bindings: {total: '<', },
-                template:"<span ng-show='$ctrl.total > 0'>{{$ctrl.total}}</span>",
+                bindings: {total: '<', requestsInProgress: '<'},
+                template:"<span ng-show='$ctrl.total > 0 && $ctrl.requestsInProgress === 0'>" +
+                    "{{$ctrl.total}}</span>" +
+                "<span class='glyphicon glyphicon-warning-sign' " +
+                        "ng-hide='$ctrl.requestsInProgress === 0'></span>",
                 controller: function() {}
         })
     .component( "itemAddEditId", {
@@ -526,7 +530,15 @@ angular.module('inputs', [])
         controller: function() {}
     })
     .component( "itemInputName", {
-        bindings: { item: '<', title: '@inputName', getItems: '&', inputId: '<', keypressHandler: '&?' },
+        bindings: {
+            item: '<',
+            items: '<',
+            requestsInProgress: '<',
+            title: '@inputName',
+            getItems: '&',
+            inputId: '<',
+            keypressHandler: '&?'
+        },
         template:
         // "<div class='dropdown' style='position: absolute;'" +
         //     "ng-show='$ctrl.item.name.length>0'>" +
@@ -542,7 +554,11 @@ angular.module('inputs', [])
             "class='form-control' placeholder={{$ctrl.title}} id={{$ctrl.inputId}} " +
                 "ng-keydown='$ctrl.keypressHandler()($event)'" +
                 "ng-model='$ctrl.item.name'" +
-                "ng-readonly='$ctrl.item.id || $ctrl.item === null'><textarea/>",
+                "ng-readonly='$ctrl.item.id || $ctrl.item === null'></textarea>" +
+        "<span class='item-input-toolbox' ng-hide='$ctrl.item.id > 0'>" +
+            "<item-input-total requests-in-progress='$ctrl.requestsInProgress'" +
+                "total='$ctrl.items.length'></item-input-total>" +
+        "</span>",
         controller: function() {}
     })
     .component( "itemInputItems", {
@@ -625,16 +641,20 @@ angular.module('inputs', [])
                 },
                 getItems: ($s, url) => {
                     $s.items=[];
+                    $s.requestsInProgress += 1;
                     httpService.getItems({filter: $s.item.name || ''}, url).then(
                         (value) => {
                             $s.items = value;
+                            $s.requestsInProgress -= 1;
                         },
                         (value) => {
                             $s.item.name = value;
+                            $s.requestsInProgress -= 1;
                         }
                     );
                 },
                 selectItem: (id, $s, config) => {
+                    $s.items=[];
                     $s.getItemById(id).then(
                         item => {
                             $s.item = item;
@@ -649,6 +669,7 @@ angular.module('inputs', [])
                     paneFactory.changeElementState(document.getElementById($s.inputId), ['focus']);
                 },
                 changeItem: (id, $s) => {
+                    $s.items=[];
                     id > 0 ? $s.getItemById(id).then( item => { $s.item = item; }) :
                         $s.item = (angular.isDefined($s.item) && $s.item != null) ?
                             angular.extend({}, $s.item, {id: null})
@@ -661,7 +682,6 @@ angular.module('inputs', [])
                         resp => {
                             $s.item = resp.item;
                             if(resp.success) {
-                                $s.getItems();
                                 $s.closeModal();
                             }
                         },
@@ -669,6 +689,7 @@ angular.module('inputs', [])
                     );
                 },
                 closeModal : ($s) => {
+                    $s.getItems();
                     $s.modalVisible = false;
                     $s.warning ="";
                 },

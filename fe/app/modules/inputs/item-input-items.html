@@ -18,9 +18,11 @@
             </thead>
             <tbody>
             <tr class="hoverable" ng-repeat="x in $ctrl.items">
-                <td class="hoverable" title="Код" ng-click="$ctrl.selectItem()(x.id)">{{ x.code || x.id}}</td>
+                <td class="hoverable" style="width: 45px;"
+                    title="Код" ng-click="$ctrl.selectItem()(x.id)">{{ x.code || x.id}}
+                </td>
                 <td class="hoverable" title="Наименование" ng-click="$ctrl.selectItem()(x.id)">{{ x.name }}</td>
-                <td>
+                <td style="width: 25px;">
                     <a href="#" title="Редактировать" style="float: right;"
                        ng-click="$ctrl.changeItem()(x.id)">
                         <span class="glyphicon glyphicon-pencil item-edit"></span>

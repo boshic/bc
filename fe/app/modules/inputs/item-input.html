@@ -1,16 +1,16 @@
 <div class="dropdown">
 
     <item-input-name input-id='inputId' item="item" input-name="Товар"
+                     requests-in-progress="requestsInProgress" items="items"
                      get-items="getItems()" keypress-handler='setEanPrefix'>
     </item-input-name>
-    <span class="item-input-toolbox" style="top: 0px;">
-        <item-input-total total="items.length" ng-hide="item.id > 0"></item-input-total>
-        <button class="glyphicon glyphicon-question-sign item-query"
-                title="остаток по складу"
-                ng-disabled="items.length>50 || items.length === 0"
-                ng-hide="stock === undefined">
-        </button>
-    </span>
+
+        <!--<button class="glyphicon glyphicon-question-sign item-query"-->
+                <!--title="остаток по складу"-->
+                <!--ng-disabled="items.length>50 || items.length === 0"-->
+                <!--ng-hide="stock === undefined">-->
+        <!--</button>-->
+
     <ul class="dropdown-menu hoverable item-input-dropdown">
         <item-input-items
                 items="items" clear-item="clearItem()"
