@@ -1,9 +1,12 @@
 package barcode.dao.entities;
 
+import barcode.dao.entities.embeddable.ItemComponent;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
+import java.util.List;
 import java.util.Set;
 
 @Entity // This tells Hibernate to make a table out of this class
@@ -32,6 +35,13 @@ public class Item {
     @OneToMany(mappedBy = "item", cascade = CascadeType.ALL)
     @JsonIgnore
     private Set<ComingItem> comings;
+
+    @ElementCollection
+    @JsonProperty("components")
+    private List<ItemComponent> components;
+
+    @Column(name = "can_be_composite", columnDefinition="tinyint(1) default 1")
+    private Boolean canBeComposite;
 
     public Item () {
     }
@@ -93,6 +103,22 @@ public class Item {
 
     public void setPredefinedQuantity(BigDecimal predefinedQuantity) {
         this.predefinedQuantity = predefinedQuantity;
+    }
+
+    public List<ItemComponent> getComponents() {
+        return components;
+    }
+
+    public void setComponents(List<ItemComponent> components) {
+        this.components = components;
+    }
+
+    public Boolean getCanBeComposite() {
+        return canBeComposite;
+    }
+
+    public void setCanBeComposite(Boolean canBeComposite) {
+        this.canBeComposite = canBeComposite;
     }
 
     @Override

@@ -9,6 +9,7 @@ import javax.persistence.*;
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
+import java.util.UUID;
 
 //@Config(entityAccessors=true)
 @Entity
@@ -35,6 +36,13 @@ public class SoldItem {
 
     @Column(name = "comment", nullable = false, columnDefinition="varchar(2500) COLLATE utf8_general_ci")
     private String comment;
+
+//    @Column(name = "uuid", columnDefinition="BIGINT(20) default '0'")
+
+
+
+//        String uniqueID = UUID.randomUUID().toString();
+//    private Long uuid;
 
     @ElementCollection
     @JsonIgnore
@@ -136,4 +144,5 @@ public class SoldItem {
     public void setSum(BigDecimal sum) {
         this.sum = sum;
     }
+
 }

@@ -161,6 +161,8 @@ public class SoldItemHandler extends EntityHandlerImpl {
         ResponseItem<SoldItem> responseItem = new ResponseItem<SoldItem>("",
                 new ArrayList<SoldItem>(),false);
 
+        Long uuid = new Random().nextLong();
+
         for (SoldItem soldItem : soldItems) {
 
             List<ComingItem> comings = this.comingItemHandler.getComingItemByIdAndStockId(
@@ -247,6 +249,8 @@ public class SoldItemHandler extends EntityHandlerImpl {
 
                         newSoldItem.setVat(soldItem.getVat());
 
+//                        newSoldItem.setUuid(uuid);
+
                         soldItemsRepository.save(newSoldItem);
 
                         responseItem.getItems().add(newSoldItem);
@@ -279,8 +283,7 @@ public class SoldItemHandler extends EntityHandlerImpl {
 
         Map<Item, List<SoldItem>> groupedSoldItems =
                 soldItems.stream()
-                        .collect(Collectors
-                                .groupingBy(n -> n.getComing().getItem()));
+                        .collect(Collectors.groupingBy(n -> n.getComing().getItem()));
 
         List<SoldItem> result = new ArrayList<SoldItem>();
 

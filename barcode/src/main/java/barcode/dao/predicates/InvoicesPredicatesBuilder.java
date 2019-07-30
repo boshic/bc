@@ -29,11 +29,11 @@ public class InvoicesPredicatesBuilder {
 
 
         ///!!!! Yes
-//
+
 //        List<Invoice> rows = new JPAQuery<Invoice>(
 //                abstractEntityManager.getEntityManager())
 //                .select(invoice)
-//                .from(invoice)
+//                .from(invoice).
 //                .innerJoin(invoice.invoiceRows, qInvoiceRow)
 //                .where(invoice.date.between(filter.getFromDate(), filter.getToDate())
 //                        .and(qInvoiceRow.quantity.gt(2))
@@ -41,6 +41,8 @@ public class InvoicesPredicatesBuilder {
 //                .fetch();
 //
 //        predicate = predicate.and(invoice.in(rows));
+
+//        predicate = predicate.and(invoice.invoiceRows.size().gt(4));
 
         if (filter.getBuyer().getId() != null)
             predicate = predicate.and(invoice.buyer.id.eq(filter.getBuyer().getId()));

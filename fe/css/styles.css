@@ -2110,3 +2110,21 @@ td.quick-filter {
     color: var(--white-color);
     font-weight: bold;
 }
+
+.item-components-table-container {
+    width: 100%;
+    text-align: left;
+    margin-left: 1px;
+}
+
+.item-components-table-quantity-td{
+    width: 110px;
+    text-align: center;
+    padding: 0px!important;
+}
+
+.item-components-table-quantity-input {
+    text-align: center;
+    width: 90px;
+    font-size: 32px;
+}

@@ -1,16 +1,23 @@
 <div ng-show='modalVisible' class='trans-layer'></div>
 <div class='modal-container-addeditsupplier' ng-class='{modalactive: modalVisible}'>
     <div class="wrapper">
-        <item-add-edit-id item-id="item.id"></item-add-edit-id>
-        <span title="Применить" class="glyphicon glyphicon-ok item-add" style="float: left;"
-              ng-show="item.name.length>0 && item.unit.length > 0 && item.ean > 0
+        <div style="display: flex;">
+            <div style="text-align:left; width: 10%; margin-top: 2px;">
+                <span title="Применить" class="glyphicon glyphicon-ok item-add"
+                    ng-show="item.name.length>0 && item.unit.length > 0 && item.ean > 0
                         && (item.eanSynonym.length == 13 || item.eanSynonym.length == 0)
                         && item.predefinedQuantity >= 0
                         && item.ean.length == 13 && item.section.id > 0"
-              ng-click="appendData()"></span>
-        <span title="Закрыть" class="glyphicon glyphicon-remove item-blank" style="float: right;"
-              ng-click="closeModal()"></span>
-        <div>
+                      ng-click="appendData()"></span>
+            </div>
+            <div style="width: 90%">
+                <item-add-edit-id item-id="item.id"></item-add-edit-id>
+                <span title="Закрыть" class="glyphicon glyphicon-remove item-blank"
+                      style="float: right;"
+                      ng-click="closeModal()"></span>
+            </div>
+        </div>
+        <div style="max-height: 400px; overflow-y: auto;">
             <span>Наименование</span>
             <span class="warning-item-input" ng-hide="item.name.length > 0">Введите наименование</span>
             <input type="text" class="form-control"
@@ -68,10 +75,39 @@
                            ng-model="item.eanSynonym"/>
                     <eraser style="margin-top: 6px;" data="item.eanSynonym"></eraser>
                 </div>
-                <div>
-                    <span>Секция</span>
-                    <item-section-input section="item.section"></item-section-input>
-                </div>
+                <div style="display: flex;">
+                    <div style="width:49%;">
+                        <span>Секция</span>
+                        <item-section-input section="item.section"></item-section-input>
+                    </div>
+                    <div style="width:50%; margin-top: 23px;">
+                        <!--<div>-->
+                            <!--<input style="zoom: 1.5;" type="checkbox" ng-model="item.canBeComposite"/>-->
+                            <!--<label style="color: coral; vertical-align: bottom; margin-bottom: 1px;">-->
+                                <!--Составной: {{(item.canBeComposite) ? "Да" : "Нет"}}-->
+                            <!--</label>-->
+                        <!--</div>-->
+                        <!--<span class="glyphicon glyphicon-plus item-add"></span>-->
+                        <!--<span>Добавить компонент</span>-->
+                        <div class="item-components-table-container"
+                            ng-show="item.canBeComposite">
+                            <!--<span>Компоненты</span>-->
+                            <table class="table table-responsive">
+                                <tr>
+                                    <td>Добавить компонент</td>
+                                    <td class="item-components-table-quantity-td">
+                                        <input class="item-components-table-quantity-input"
+                                               type="number"
+                                               placeholder="кол"/>
+                                    </td>
+                                </tr>
+                                <tr ng-repeat="x in item.components">
+                                    <td>{{x.item.name}}</td>
+                                    <td>{{x.quantity}}</td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
             </div>
         </div>
     </div>

@@ -21,8 +21,7 @@ let commonItemCtrlr = ($s, itemFactory, itemConfig) => {
     $s.getEmptyItem = config.getEmptyItem;
     $s.item = $s.getEmptyItem();
 
-    $s.$watch('item.name', (nv, ov) => {
-        // if ((nv) || (ov))
+    $s.$watch('item.name', (nv) => {
         if(nv && !$s.addEditModalVisible)
             $s.getItems();
     }, true);
@@ -43,7 +42,7 @@ let commonItemCtrlr = ($s, itemFactory, itemConfig) => {
         itemFactory.changeItem(id, $s);
     };
 
-    $s.clearItem =  () => {
+    $s.clearItem = () => {
         itemFactory.clearItem($s);
     };
 };
@@ -574,7 +573,13 @@ angular.module('inputs', [])
             let getNewBuyer = () => {return {name: '', bank: getNewBank()};};
             let getNewDocument = () => { return {name: '', date: '', supplier : getNewSupplier()};};
             let getNewSection = () => {return {name: ''};};
-            let getNewItem = () => {return {name: '', ean: '', predefinedQuantity: 0, eanSynonym: '', section: getNewSection()};};
+            let getNewItem = () => {
+                return {
+                    name: '', ean: '',
+                    predefinedQuantity: 0, eanSynonym: '',
+                    section: getNewSection(),
+                    canBeComposite:true, components:[] };
+            };
 
             let getItemById = (id, url) => {
                 if(id)
