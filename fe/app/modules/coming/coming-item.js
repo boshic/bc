@@ -7,13 +7,23 @@ import comingItemTpl from './coming-item.html';
         $s.canChange = false;
         $s.hasSellings = false;
         $s.allowAllStocks = false;
+        $s.requestParams = {requestsQuantity: 0};
+
+        let setPermissions = (canCome, canChange) => {
+            if(angular.isDefined(canCome))
+                $s.canCome = canCome;
+            if(angular.isDefined(canChange))
+                $s.canChange = canChange;
+        };
 
         $s.$watch('comingConfig', () => {
-            if (($s.comingConfig.id))
+            if ($s.comingConfig.id)
                 $s.getComing($s.comingConfig.id);
         });
 
-        $s.$watch('coming', () => { $s.checkComing(); }, true);
+        $s.$watch('coming', () => {
+            $s.checkComing();
+        }, true);
 
         $s.getComing = id => {
             $s.coming = {date: new Date(), quantity:1,
@@ -25,7 +35,7 @@ import comingItemTpl from './coming-item.html';
                 httpService.getItemById(id, 'getComingById').then(
                     resp => {
                         if (!(resp.item === null)) {
-                            $s.canCome = true;
+                            setPermissions(true);
                             $s.coming = resp.item;
                             $s.hasSellings = !($s.coming.quantity == $s.coming.currentQuantity);
                             paneFactory.changeElementState(document.getElementById('coming-item-start-pos'), ['focus']);
@@ -33,7 +43,7 @@ import comingItemTpl from './coming-item.html';
                     },
                     resp => {console.log(resp);}
                 );
-                $s.canChange = $s.canCome = false;
+                setPermissions(false, false);
             } else {
                 $s.hasSellings = false;
                 $s.checkComing();
@@ -46,7 +56,8 @@ import comingItemTpl from './coming-item.html';
         };
 
         $s.updateComing = () => {
-            httpService.addItem($s.coming, 'updateComing').then(
+            httpService.addItemWithRequestCount($s.coming, 'updateComing', $s.requestParams)
+                .then(
                 () => { $s.comingConfig.refresh(); },
                 (resp) => {console.log(resp);}
             );
@@ -54,7 +65,8 @@ import comingItemTpl from './coming-item.html';
 
         $s.addComing = () => {
             $s.coming.user = paneFactory.user;
-            httpService.addItem($s.coming, 'addComing').then(
+            httpService.addItemWithRequestCount($s.coming, 'addComing', $s.requestParams )
+                .then(
                 resp => {
                     $s.coming = resp.item;
                     $s.checkComing();
@@ -65,9 +77,14 @@ import comingItemTpl from './coming-item.html';
         };
 
         $s.deleteComing = () => {
-            httpService.getItemById($s.coming.id, 'deleteComing').then(
-                () => {$s.comingConfig.refresh(); },
-                resp => { console.log(resp); }
+            httpService.getItemByIdWithRequestCount($s.coming.id, 'deleteComing', $s.requestParams)
+                .then(
+                () => {
+                    $s.comingConfig.refresh();
+                },
+                resp => {
+                    console.log(resp);
+                }
             );
         };
 
@@ -83,16 +100,14 @@ import comingItemTpl from './coming-item.html';
 
             let coming = $s.coming;
             if ((coming.quantity > 0) && angular.isDefined(coming.item)
+                && (coming.price != null && coming.priceOut != null)
+                && (coming.price >= 0 && coming.priceOut >= 0)
                 && (angular.isDefined(coming.item.id) && coming.item.id !== null)
                 && (angular.isDefined(coming.doc.id) && coming.doc.id !== null)
                 && (angular.isDefined(coming.doc.date)))
-            {
-                $s.canCome = true;
-                $s.canChange = ("id" in coming);
-            } else {
-                $s.canCome= false;
-                $s.canChange = false;
-            }
+                    setPermissions(true, coming.id > 0 && $s.hasSellings === false);
+             else
+                setPermissions(false, false);
         };
 
     };

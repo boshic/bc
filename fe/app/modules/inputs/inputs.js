@@ -7,6 +7,8 @@ import buyerInputTpl from './buyer-input.html';
 import addEditBuyerTpl from './add-edit-buyer.html';
 import docInputTpl from './doc-input.html';
 import itemInputTpl from './item-input.html';
+import itemComponentInputTpl from './item-component-input.html';
+import itemComponentsPickerTpl from './item-components-picker.html';
 import addEditItemTpl from './add-edit-item.html';
 import itemSectionInputTpl from './item-section-input.html';
 import addEditItemSectionTpl from './add-edit-item-section.html';
@@ -45,6 +47,10 @@ let commonItemCtrlr = ($s, itemFactory, itemConfig) => {
     $s.clearItem = () => {
         itemFactory.clearItem($s);
     };
+
+    $s.setEanPrefix = (e, field) => {
+        itemFactory.setEanPrefix($s, e, field);
+    };
 };
 
 let commonAddEditCtrlr = ($s, itemFactory, itemConfig) => {
@@ -59,6 +65,10 @@ let commonAddEditCtrlr = ($s, itemFactory, itemConfig) => {
 
         $s.appendData = () => {
             itemFactory.addItem($s, config.addItemUrl);
+        };
+
+        $s.setEanPrefix = (e, field) => {
+            itemFactory.setEanPrefix($s, e, field);
         };
     };
 
@@ -102,16 +112,19 @@ let supplierChangeCtrlr = ($s, itemFactory) => {
     return commonAddEditCtrlr($s, itemFactory, 'supplierConfig');
 };
 
-let itemInputCtrlr = ($s, itemFactory, paneFactory) => {
-
-    $s.setEanPrefix = e => {
-        $s.item.name = paneFactory.generateEanByKey(e, $s.item.name);
-    };
+let itemInputCtrlr = ($s, itemFactory) => {
 
     return commonItemCtrlr($s, itemFactory, 'itemConfig');
 };
 
+let itemComponentInputCtrlr = ($s, itemFactory) => {
+
+    return commonItemCtrlr($s, itemFactory, 'itemComponentConfig');
+};
+
 let itemChangeCtrlr = ($s, itemFactory, paneFactory) => {
+
+    $s.eanInputId = itemFactory.generateUuid();
 
     $s.getNextId = () => {
         if($s.item.id > 0)
@@ -120,8 +133,8 @@ let itemChangeCtrlr = ($s, itemFactory, paneFactory) => {
             itemFactory.setItemEanByTopId($s.item);
     };
 
-    $s.setEanPrefix = (e, field) => {
-        $s.item[field] = paneFactory.generateEanByKey(e, $s.item[field]);
+    $s.focusOnEan = () => {
+        paneFactory.changeElementState(document.getElementById($s.eanInputId), ['focus']);
     };
 
     return commonAddEditCtrlr($s, itemFactory, 'itemConfig');
@@ -344,8 +357,19 @@ angular.module('inputs', [])
             transclude: true,
             scope: { item:'=', stock:'<?', getItemsForParent: '&?getItems' },
             template: itemInputTpl,
-            controller: function ($scope, itemFactory, paneFactory) {
-                return itemInputCtrlr($scope, itemFactory, paneFactory);
+            controller: function ($scope, itemFactory) {
+                return itemInputCtrlr($scope, itemFactory);
+            }
+        }
+    })
+    .directive( "itemComponentInput", () => {
+        return {
+            restrict: 'E',
+            transclude: true,
+            scope: { item:'=', stock:'<?', getItemsForParent: '&?getItems' },
+            template: itemComponentInputTpl,
+            controller: function ($scope, itemFactory) {
+                return itemComponentInputCtrlr($scope, itemFactory);
             }
         }
     })
@@ -551,7 +575,7 @@ angular.module('inputs', [])
             "{{'Не выбран(а) ' + $ctrl.title + '!'}}</span>" +
         "<textarea rows='2' title='{{$ctrl.item.name}}' type='text' " +
             "class='form-control' placeholder={{$ctrl.title}} id={{$ctrl.inputId}} " +
-                "ng-keydown='$ctrl.keypressHandler()($event)'" +
+                "ng-keydown='$ctrl.keypressHandler()($event, \"name\")'" +
                 "ng-model='$ctrl.item.name'" +
                 "ng-readonly='$ctrl.item.id || $ctrl.item === null'></textarea>" +
         "<span class='item-input-toolbox' ng-hide='$ctrl.item.id > 0'>" +
@@ -563,6 +587,11 @@ angular.module('inputs', [])
     .component( "itemInputItems", {
         bindings: { items: '<', clearItem: '&',  selectItem: '&', changeItem: '&'},
         template: itemInputItemsTpl,
+        controller: function() {}
+    })
+    .component( "itemComponentsPicker", {
+        bindings: { components: '=', modalVisible: '='},
+        template: itemComponentsPickerTpl,
         controller: function() {}
     })
     .factory('itemFactory',['httpService', 'paneFactory',
@@ -578,6 +607,8 @@ angular.module('inputs', [])
                     name: '', ean: '',
                     predefinedQuantity: 0, eanSynonym: '',
                     section: getNewSection(),
+                    component: {},
+                    componentQuantity: 0,
                     canBeComposite:true, components:[] };
             };
 
@@ -621,6 +652,13 @@ angular.module('inputs', [])
                                 && (angular.isDefined($s.item.ean) && $s.item.ean != null))
                                 $s.getItemsForParent()($s.item.ean);
                         }
+                },
+                itemComponentConfig :
+                    {
+                        getEmptyItem: getNewItem,
+                        getItemsUrl: 'getItems',
+                        // getComponentsForCompositeItem
+                        getItemByIdUrl: 'getItemById'
                 },
                 supplierConfig :
                     {
@@ -705,6 +743,9 @@ angular.module('inputs', [])
                         },
                         resp => {console.log(resp);}
                     );
+                },
+                setEanPrefix : ($s, e, field) => {
+                    $s.item[field] = paneFactory.generateEanByKey(e, $s.item[field]);
                 }
             };
         }

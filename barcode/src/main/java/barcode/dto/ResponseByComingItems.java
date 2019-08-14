@@ -57,6 +57,9 @@ public class ResponseByComingItems extends ResponseItemExt<ComingItem> {
         }
 
         super.getTotals().add(new ResultRowByItemsCollection<BigDecimal, BigDecimal>
+                ("кол-во по факту (отп.цена)", currentQuantity, "сумма по факту" , currentSumOut));
+
+        super.getTotals().add(new ResultRowByItemsCollection<BigDecimal, BigDecimal>
                 ("кол-во по выборке (уч.цена)", quantity, "сумма по выборке" , sum));
 
         super.getTotals().add(new ResultRowByItemsCollection<BigDecimal, BigDecimal>
@@ -68,9 +71,6 @@ public class ResponseByComingItems extends ResponseItemExt<ComingItem> {
 
         super.getTotals().add(new ResultRowByItemsCollection<BigDecimal, BigDecimal>
                 ("кол-во по выборке (отп.цена)", quantity, "сумма по выборке" , sumOut));
-
-        super.getTotals().add(new ResultRowByItemsCollection<BigDecimal, BigDecimal>
-                ("кол-во по факту (отп.цена)", currentQuantity, "сумма по факту" , currentSumOut));
 
         super.getTotals().add(new ResultRowByItemsCollection<BigDecimal, BigDecimal>
                 ("выбыло по отп.цене", quantity.subtract(currentQuantity),

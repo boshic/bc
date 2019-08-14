@@ -1,6 +1,5 @@
 package barcode.dao.predicates;
 
-import barcode.dao.entities.Invoice;
 import barcode.dao.entities.QInvoice;
 
 import barcode.dao.entities.embeddable.QInvoiceRow;
@@ -8,10 +7,6 @@ import barcode.dao.services.AbstractEntityManager;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import barcode.dao.services.InvoiceHandler;
 import barcode.dao.utils.SoldItemFilter;
-import com.querydsl.jpa.impl.JPAQuery;
-
-import javax.persistence.EntityManager;
-import java.util.List;
 
 /**
  * Created by xlinux on 20.11.18.

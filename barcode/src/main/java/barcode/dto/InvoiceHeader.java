@@ -33,7 +33,8 @@ public class InvoiceHeader {
     @JsonProperty("sum")
     private BigDecimal sum;
 
-
+    @JsonProperty("deleted")
+    private Boolean isDeleted;
 
     public InvoiceHeader() {};
 
@@ -53,6 +54,10 @@ public class InvoiceHeader {
 
 //        this.setSum(invoice.getSumOfRows());
         this.setSum(invoice.getSum());
+
+        this.setDeleted(invoice.getDeleted());
+
+
 
     }
 
@@ -110,5 +115,13 @@ public class InvoiceHeader {
 
     public void setSum(BigDecimal sum) {
         this.sum = sum;
+    }
+
+    public Boolean getDeleted() {
+        return isDeleted;
+    }
+
+    public void setDeleted(Boolean deleted) {
+        isDeleted = deleted;
     }
 }

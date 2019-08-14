@@ -1,0 +1,37 @@
+<div ng-show='$ctrl.modalVisible' class='trans-layer'></div>
+<div class='modal-container-addeditsupplier'
+     ng-class='{modalactive: $ctrl.modalVisible}'>
+    <div class="wrapper" style="min-height: 310px;">
+        <div style="display: flex;">
+            <!--<div style="text-align:left; width: 10%; margin-top: 2px;">-->
+                <!--<span title="Применить" class="glyphicon glyphicon-ok item-add"></span>-->
+            <!--</div>-->
+            <div style="text-align: right; width: 100%;">
+                <span title="Закрыть" class="glyphicon glyphicon-remove item-blank"
+                      ng-click="$ctrl.modalVisible = false"></span>
+            </div>
+        </div>
+        <div class="item-components-table-container">
+            <!--<span>Компоненты</span>-->
+            <table class="table table-responsive">
+                <tr>
+                    <td style="padding: 0px;">
+                        <item-component-input
+                                item="$ctrl.component">
+                        </item-component-input>
+                    </td>
+                    <td class="item-components-table-quantity-td">
+                        <input class="item-components-table-quantity-input"
+                               ng-model="$ctrl.componentQuantity"
+                               type="number"
+                               placeholder="кол"/>
+                    </td>
+                </tr>
+                <tr ng-repeat="x in $ctrl.components">
+                    <td>{{x.item.name}}</td>
+                    <td>{{x.quantity}}</td>
+                </tr>
+            </table>
+        </div>
+    </div>
+</div>

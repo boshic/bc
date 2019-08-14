@@ -261,16 +261,22 @@
     };
 };
 
-    let invoiceModalCtrlr = ($s, printFactory ) => {
+    let invoiceModalCtrlr = ($s, printFactory, $http ) => {
 
-    $s.modalConfig = {hidden: true};
-    let data = {};
-    printFactory.setReportsByParams([
-        {type: 'invoiceWithContract', data, method: 'addInvoice'},
-        {type: 'workCompletionStatement', data, method: 'addInvoice'},
-        {type: 'invoice', data, method: 'addInvoice'}],
-        $s.reports = []);
-};
+        $s.modalConfig = {hidden: true};
+        let data = {};
+        printFactory.setReportsByParams([
+            {type: 'invoiceWithContract', data, method: 'addInvoice'},
+            {type: 'workCompletionStatement', data, method: 'addInvoice'},
+            {type: 'invoice', data, method: 'addInvoice'}],
+            $s.reports = []);
+
+        $s.deleteInvoice = () => {
+            if(confirm("Подтвердите удаление"))
+                $http.get('/deleteInvoice', { params: { id: $s.invoice.id }})
+                     .then(closeModal($s.refresh, $s.modalConfig));
+        };
+    };
 
     angular.module('modals', [])
         .component( "quantityChangerModal", {
@@ -282,6 +288,9 @@
                     "ng-transclude>" +
                 "<div>" +
                     "<div>" +
+                        "<div class='item-name-on-qty-changer-modal' ng-show='$ctrl.modalData.row.item.name.length'>" +
+                            "<span>{{$ctrl.modalData.row.item.name}}</span>" +
+                        "</div>" +
                         "<div style='font-size: 18px;' ng-show='$ctrl.modalData.row.commentCause.length'>" +
                             "<comment-input ng-model='$ctrl.modalData.row.comment'></comment-input>" +
                         "</div>" +
@@ -365,13 +374,12 @@
                 restrict: 'E',
                 transclude: true,
                 scope: {
-                    modalConfig: '=', invoice: '='
+                    modalConfig: '=', invoice: '=', refresh : '&'
                 },
                 template: invoiceModalTpl,
-                controller: ($scope, printFactory) => {
-                    return invoiceModalCtrlr($scope, printFactory);
-                },
-                link: (scope, elem, attrs) => {}
+                controller: ($scope, printFactory, $http) => {
+                    return invoiceModalCtrlr($scope, printFactory, $http);
+                }
             }
         })
         .factory('modalFactory',[

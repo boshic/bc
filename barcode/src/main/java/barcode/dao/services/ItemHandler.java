@@ -2,6 +2,7 @@ package barcode.dao.services;
 
 import barcode.dao.entities.ComingItem;
 import barcode.dao.entities.Item;
+import barcode.dao.predicates.ItemPredicateBuilder;
 import barcode.dao.repositories.ComingItemRepository;
 import barcode.dao.repositories.ItemRepository;
 import barcode.dto.ResponseItem;
@@ -49,6 +50,9 @@ public class ItemHandler {
 
         item.setPredefinedQuantity(newItem.getPredefinedQuantity() == null ? BigDecimal.ZERO : newItem.getPredefinedQuantity());
 
+        if (item.getCanBeComposite() == null)
+            item.setCanBeComposite(true);
+
         if(newItem.getSection()!= null)
             item.setSection(newItem.getSection());
 
@@ -76,8 +80,6 @@ public class ItemHandler {
 
         else
             return duplicateEanError(model);
-
-
     }
 
     public ResponseItem<Item> updateItem(Item newItem) {
@@ -100,11 +102,9 @@ public class ItemHandler {
         if(items.size() > 0)
             return items;
 
-//        if(filter.equals("all"))
-//            return itemRepository.findAll();
-
-        if(filter.length() >= 2)
-            return itemRepository.findByNameContainingIgnoreCase(filter);
+        if(filter != null && filter.length() >= 2)
+            return itemRepository.findAll(new ItemPredicateBuilder().buildByFilter(filter));
+//            return itemRepository.findByNameContainingIgnoreCase(filter);
 
         return itemRepository.findTop100ByNameContainingIgnoreCase(filter);
     }

@@ -17,7 +17,7 @@
                       ng-click="closeModal()"></span>
             </div>
         </div>
-        <div style="max-height: 400px; overflow-y: auto;">
+        <div>
             <span>Наименование</span>
             <span class="warning-item-input" ng-hide="item.name.length > 0">Введите наименование</span>
             <input type="text" class="form-control"
@@ -59,8 +59,9 @@
                                             'enabled-button': item.ean.length != 13}"
                                 ng-disabled="item.ean.length === 13"
                                 ng-click="getNextId()"></button>
-                    <eraser style="margin-top: 6px;" data="item.ean"></eraser>
-                    <input  style="width: 45%;"
+                    <eraser style="margin-top: 6px;" data="item.ean" ng-click="focusOnEan()">
+                    </eraser>
+                    <input  style="width: 45%;" id="{{eanInputId}}"
                             type="text" class="form-control" maxlength="13" placeholder=""
                             ng-keydown="setEanPrefix($event, 'ean')"
                             ng-model="item.ean"/>
@@ -76,39 +77,27 @@
                     <eraser style="margin-top: 6px;" data="item.eanSynonym"></eraser>
                 </div>
                 <div style="display: flex;">
-                    <div style="width:49%;">
+                    <div style="width:69%;">
                         <span>Секция</span>
                         <item-section-input section="item.section"></item-section-input>
                     </div>
-                    <div style="width:50%; margin-top: 23px;">
-                        <!--<div>-->
-                            <!--<input style="zoom: 1.5;" type="checkbox" ng-model="item.canBeComposite"/>-->
-                            <!--<label style="color: coral; vertical-align: bottom; margin-bottom: 1px;">-->
-                                <!--Составной: {{(item.canBeComposite) ? "Да" : "Нет"}}-->
-                            <!--</label>-->
-                        <!--</div>-->
-                        <!--<span class="glyphicon glyphicon-plus item-add"></span>-->
-                        <!--<span>Добавить компонент</span>-->
-                        <div class="item-components-table-container"
-                            ng-show="item.canBeComposite">
-                            <!--<span>Компоненты</span>-->
-                            <table class="table table-responsive">
-                                <tr>
-                                    <td>Добавить компонент</td>
-                                    <td class="item-components-table-quantity-td">
-                                        <input class="item-components-table-quantity-input"
-                                               type="number"
-                                               placeholder="кол"/>
-                                    </td>
-                                </tr>
-                                <tr ng-repeat="x in item.components">
-                                    <td>{{x.item.name}}</td>
-                                    <td>{{x.quantity}}</td>
-                                </tr>
-                            </table>
-                        </div>
-                    </div>
+                    <span style="width:30%; margin-top: 21px;">
+                        <button class="item-component-modal-open-btn"
+                                ng-click="itemComponentsModalVisible = true"
+                            ng-disabled = '!item.canBeComposite'>
+                            <span ng-show="item.canBeComposite">
+                                Добавить/просмотреть компоненты товара
+                            </span>
+                            <span ng-hide="item.canBeComposite">
+                                Товар не может быть компонентным
+                            </span>
+                        </button>
+                    </span>
             </div>
         </div>
     </div>
 </div>
+</div>
+<item-components-picker components="item.components"
+                        modal-visible="itemComponentsModalVisible">
+</item-components-picker>

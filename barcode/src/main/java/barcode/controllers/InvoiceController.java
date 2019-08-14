@@ -73,6 +73,9 @@ public class InvoiceController {
         return this.invoiceHandler.getItemById(id);
     }
 
-
+    @GetMapping(value = "/deleteInvoice")
+    public @ResponseBody void deleteInvoice (@RequestParam Long id) {
+        invoiceHandler.deleteItem(id);
+    }
 
 }

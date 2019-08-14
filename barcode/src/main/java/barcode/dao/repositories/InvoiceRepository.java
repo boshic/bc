@@ -21,5 +21,6 @@ public interface InvoiceRepository extends CrudRepository<Invoice, Long>,
     List<Invoice> findAll(Predicate predicate);
     Page<Invoice> findAll(Predicate predicate, Pageable pageable);
     List<Invoice> findByDateBetweenOrderByDateDesc(Date fromDate, Date toDate);
+    List<Invoice> findByDateBetweenAndIsDeletedOrderByDateDesc(Date fromDate, Date toDate, Boolean isDeleted);
 //    List<Invoice> findByInvoiceRowsSizeGreaterThan(Integer size);
 }

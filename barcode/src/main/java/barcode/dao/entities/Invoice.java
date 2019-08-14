@@ -45,6 +45,9 @@ public class Invoice {
     @Column(name = "sum", columnDefinition="Decimal(12,2) default '0.00'")
     private BigDecimal sum;
 
+    @Column(name = "is_deleted", columnDefinition="tinyint(1) default 0")
+    private Boolean isDeleted;
+
 
 //    @Column(name = "comment", nullable = false)
 //    @Column(name = "comment", columnDefinition="varchar(2000) COLLATE utf8_general_ci default ''")
@@ -149,5 +152,13 @@ public class Invoice {
 
     public void setSum(BigDecimal sum) {
         this.sum = sum;
+    }
+
+    public Boolean getDeleted() {
+        return isDeleted;
+    }
+
+    public void setDeleted(Boolean deleted) {
+        isDeleted = deleted;
     }
 }

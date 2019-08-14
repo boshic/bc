@@ -10,6 +10,7 @@
     /*#2572d1, #0661d1, #0664d1*/
     --main-color: coral;
     --white-color: white;
+    --gray-color: lightgray;
     /*'Roboto', -apple-system, system-ui, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif*/
     --main-font: Times;
 }
@@ -645,6 +646,8 @@ textarea.command {
 div.items-modal {
     text-align: center;
     font-size: 16px;
+    background: white;
+    padding: 3px;
 }
 
 div.items-modal > input, textarea{
@@ -1011,7 +1014,7 @@ div.selectedpane {
 
 .form-control[disabled], .form-control[readonly], fieldset[disabled] .form-control {
     cursor: not-allowed;
-    background-color: lightgray;
+    background-color: var(--gray-color);
     opacity: 1;
     color: var(--main-color);
     /*font-size: 16px;*/
@@ -1038,7 +1041,8 @@ div.menu-panel {
 }
 
 div.add-edit-panel {
-    display: table;
+    font-size: 30px;
+    display: flex;
     margin-left: auto;
 }
 
@@ -1123,7 +1127,7 @@ td.sold {
 .doc-date {
     padding-top: 4px;
     width: 152px;
-    background: lightgray;
+    background: var(--gray-color);
     color: var(--main-color);
     font-weight: bold;
 }
@@ -1592,7 +1596,7 @@ button.user-select {
     font-size: 57px;
     color: var(--main-color);
     border: none;
-    background: lightgray;
+    background: var(--gray-color);
     width: 10%;
 }
 
@@ -1626,7 +1630,7 @@ td.price-data {
 }
 
 .selling-modal-table {
-    background: lightgray;
+    background: var(--gray-color);
 }
 
 .invoice-body {
@@ -1807,7 +1811,7 @@ ul.left-side {
     background: var(--white-color);
     font-weight: bold;
     color: green;
-    /*border: 1px solid lightgray;*/
+    /*border: 1px solid var(--gray-color);*/
     top: 0px;
     border-radius: 5px;
     width: 100%;
@@ -2059,7 +2063,7 @@ td.quick-filter {
 }
 
 .comment-cause {
-    background: lightgray;
+    background: var(--gray-color);
     text-align: center;
     padding: 10px;
 }
@@ -2095,11 +2099,11 @@ td.quick-filter {
 }
 
 .sorting-row:hover {
-    color: lightgray;
+    color: var(--gray-color);
 }
 
 .current-quantity-on-changer-modal {
-    background: lightgray;
+    background: var(--gray-color);
     top: 5px;
     /* font-weight: bold; */
     font-size: 45px;
@@ -2127,4 +2131,56 @@ td.quick-filter {
     text-align: center;
     width: 90px;
     font-size: 32px;
+}
+
+.item-component-modal-open-btn {
+    border-bottom: 2px solid var(--main-color);
+    width: 98%;
+    height: 99%;
+}
+
+.request-in-progress-on-pane {
+    width: 34px;
+    height: 32px;
+    padding-left: 3px;
+    font-size: 28px;
+    top: 7px;
+    background: var(--main-color);
+    border-radius: 3px;
+    color: var(--white-color);
+}
+
+.delete-invoice-btn {
+    background: var(--white-color);
+    color: brown;
+    border-radius: 10px;
+}
+
+.item-name-on-qty-changer-modal {
+    font-size: 18px;
+    background: var(--main-color);
+    color: var(--white-color);
+    text-align: center;
+}
+
+.coming-item-btn {
+    background: var(--white-color);
+    border-radius: 5px;
+    border: 1px var(--gray-color) solid;
+}
+
+button.add {
+    color: green;
+}
+
+button.edit {
+    color: var(--main-color);
+}
+
+button.delete {
+    color: brown;
+}
+
+button.disabled {
+    color: var(--gray-color);
 }

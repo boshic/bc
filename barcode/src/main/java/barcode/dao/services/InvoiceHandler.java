@@ -66,6 +66,9 @@ public class InvoiceHandler extends EntityHandlerImpl {
 
         newInvoice.setSum(invoice.getSumOfRows());
 
+        if(newInvoice.getDeleted() == null)
+            newInvoice.setDeleted(false);
+
         if(invoice.getComments() != null)
             newInvoice.getComments().addAll(invoice.getComments());
         else
@@ -124,7 +127,8 @@ public class InvoiceHandler extends EntityHandlerImpl {
     public List<DtoInvoice> getInvoicesFor1c(BasicFilter filter) {
 
         List<Invoice> invoices = invoiceRepository
-                .findByDateBetweenOrderByDateDesc(filter.getFromDate(), filter.getToDate());
+                .findByDateBetweenAndIsDeletedOrderByDateDesc(
+                        filter.getFromDate(), filter.getToDate(), false);
 
         if(invoices.size() > 0) {
 
@@ -145,6 +149,13 @@ public class InvoiceHandler extends EntityHandlerImpl {
         }
 
         return null;
+    }
+
+    public synchronized void deleteItem(long id) {
+
+        Invoice invoice = invoiceRepository.findOne(id);
+        invoice.setDeleted(true);
+        invoiceRepository.save(invoice);
     }
 
     public ResponseByInvoices<Invoice> getInvoicesByFilter(SoldItemFilter filter) {

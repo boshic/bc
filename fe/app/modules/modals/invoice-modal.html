@@ -16,6 +16,14 @@
                     report-id="invoice.id"
                     reports = "reports">
             </print-menu>
+            <button class="glyphicon glyphicon-remove-sign delete-invoice-btn"
+                    ng-click="deleteInvoice()"
+                    ng-hide="invoice.deleted"
+                    title="Удалить">
+            </button>
         </div>
+        <!--<div>-->
+            <!--<span class="glyphicon glyphicon-remove"></span>-->
+        <!--</div>-->
     </div>
 </div>

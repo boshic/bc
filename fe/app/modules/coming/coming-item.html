@@ -1,23 +1,34 @@
-<div class="wrapper items-modal" ng-class='{locked: hasSellings}' ng-keyup="handleKeyup($event)">
+<div class="items-modal"
+     ng-class='{locked: hasSellings}'
+     ng-keyup="handleKeyup($event)">
     <div class="header-controls">
         <div class="code-container-on-coming">
             <span>Приход товара. Код:</span>
-            <span style="color: black;" ng-bind="coming.id"></span>
+            <span style="color: black;"
+                  ng-hide="requestParams.requestsQuantity > 0"
+                  ng-bind="coming.id">
+            </span>
         </div>
         <div class="add-edit-panel">
-                <span class="glyphicon glyphicon-plus item-add" title="Оприходовать/Скопировать"
+                <button class="glyphicon glyphicon-plus coming-item-btn add"
+                        title="Оприходовать/Скопировать"
                       ng-click="addComing()"
-                      ng-show="canCome">
-                </span>
-            <div style="display: inline-flex;" ng-show="!hasSellings">
-                <span class="glyphicon glyphicon-pencil item-edit" title="Записать изменения"
+                        ng-class="{disabled: !canCome || requestParams.requestsQuantity > 0}"
+                      ng-disabled="!canCome || requestParams.requestsQuantity > 0">
+                </button>
+            <div style="display: inline-flex;">
+                <button class="glyphicon glyphicon-pencil coming-item-btn edit"
+                        title="Записать изменения"
                       ng-click="updateComing()"
-                      ng-show="canChange">
-                </span>
-                <span class="glyphicon glyphicon-minus item-delete" title="Удалить приход"
+                        ng-class="{disabled: !canChange || requestParams.requestsQuantity > 0}"
+                      ng-disabled="!canChange || requestParams.requestsQuantity > 0 ">
+                </button>
+                <button class="glyphicon glyphicon-remove-sign coming-item-btn delete"
+                        title="Удалить приход"
                       ng-click="deleteComing()"
-                      ng-show="canChange">
-                </span>
+                        ng-class="{disabled: !canChange || requestParams.requestsQuantity > 0}"
+                      ng-disabled="!canChange  || requestParams.requestsQuantity > 0">
+                </button>
             </div>
         </div>
     </div>
@@ -61,7 +72,9 @@
             </tr>
             <tr>
                 <td title="цена прихода" class="comingdetails">{{ coming.price }}</td>
-                <td title="сумма по продажной цене" class="comingdetails">{{(coming.quantity*coming.priceOut).toFixed(2)}}</td>
+                <td title="сумма по продажной цене" class="comingdetails">
+                    {{(coming.quantity*coming.priceOut).toFixed(2)}}
+                </td>
                 <td class="comingdetails">Всего</td>
             </tr>
             </tbody>
