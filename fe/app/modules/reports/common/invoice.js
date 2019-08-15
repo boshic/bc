@@ -14,9 +14,9 @@ import '../../../../css/invoice.css';
 
             $s.reportData = {};
 
-            httpService.getItemById($location.search().id, 'getInvoiceById').then(
+            httpService.getItemById({id:$location.search().id, url:'getInvoiceById'}).then(
                 resp => {
-                    $s.reportData  = resp;
+                    $s.reportData = resp;
                     $s.reportData.totals = invoiceFactory.getTotals(resp);
                     $s.reportData.showStamp = JSON.parse($location.search().stamp);
 

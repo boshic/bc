@@ -49,7 +49,7 @@ let openTextEditModal = ($s, index, modalFactory) => {
                         openTextEditModal($scope, index, modalFactory);
                     };
 
-                    httpService.getItemById($location.search().id, 'getWriteOffActById').then(
+                    httpService.getItemById({id:$location.search().id, url:'getWriteOffActById'}).then(
                         resp => {
                             $scope.reportData  = resp;
                             $scope.reportData.totals = invoiceFactory.getTotals(resp);

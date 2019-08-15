@@ -13,6 +13,7 @@ let sellingPaneCntrlr = ($s, $http, paneFactory, printFactory, modalFactory, ite
         $s.warning = "";
         $s.comment = "";
         $s.requestsInProgress = 0;
+        $s.requestParams = {requestsQuantity: 0};
         $s.canRelease = false;
         $s.totals = {
             date: new Date,

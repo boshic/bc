@@ -19,7 +19,8 @@
             <tbody>
             <tr class="hoverable" ng-repeat="x in $ctrl.items">
                 <td class="hoverable" style="width: 45px;"
-                    title="Код" ng-click="$ctrl.selectItem()(x.id)">{{ x.code || x.id}}
+                    title="Код" ng-click="$ctrl.selectItem()(x.id)">
+                    {{ x.code || x.id}}
                 </td>
                 <td class="hoverable" title="Наименование" ng-click="$ctrl.selectItem()(x.id)">{{ x.name }}</td>
                 <td style="width: 25px;">

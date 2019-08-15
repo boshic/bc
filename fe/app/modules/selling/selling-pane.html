@@ -18,7 +18,7 @@
                ng-model="barcode"
                ng-keydown="setEanPrefix($event)"/>
         <span class='glyphicon glyphicon-warning-sign request-in-progress-on-pane'
-              ng-hide='requestsInProgress === 0'>
+              ng-hide='requestParams.requestsQuantity === 0'>
         </span>
         <span style="margin-left: 5px;"
               class="selling-warning" ng-show="warning.length">

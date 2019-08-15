@@ -120,7 +120,8 @@ import snd from '../../media/audio/sell.mp3';
                     },
                     findItemsByFilter: ($s, url)=> {
                         setTimeout(() => {
-                            httpService.getItemsByFilter($s.filter, url).then(
+                            httpService.getItemsByFilter({filter: $s.filter, url, requestParams:$s.requestParams})
+                                .then(
                                 resp => {
                                     $s.rows = resp.items;
                                     $s.pages = getPages(resp.numberOfPages);
@@ -143,30 +144,26 @@ import snd from '../../media/audio/sell.mp3';
                         }, 100);
                     },
                     releaseItems: ($s, url, params) => {
-                        $s.requestsInProgress += 1;
                         if($s.canRelease) {
                             $s.checkRows();
                             let rows =   $s.rows;
                             $s.deleteRows();
-                            httpService.addItem(rows, url, params)
+                            httpService.addItem({data: rows, url, params, requestParams:$s.requestParams})
                                 .then(
                                     resp => {
                                         (resp.success) ? successSound.play() : $s.warning = resp.text;
                                         $s.warning = "Продано " + rows.length + " позиций.";
-                                        $s.requestsInProgress -= 1;
                                     },
                                     (resp) => {
                                         $s.warning = "ошибка при проведении операции! Позиций - "
                                             + rows.length + ', время: ' + new Date().toLocaleTimeString();
                                         $s.rows = rows;
-                                        $s.requestsInProgress -= 1;
                                     }
                                 );
                         }
                     },
                     getItemsForRelease: (params, url, $s) => {
-                        $s.requestsInProgress += 1;
-                        httpService.getItems(params, url).then(
+                        httpService.getItems({params, url, requestParams:$s.requestParams}).then(
                             resp => {
                                 if (resp.success) {
                                     $s.warning ="";
@@ -201,12 +198,10 @@ import snd from '../../media/audio/sell.mp3';
                                 } else {
                                     $s.warning =resp.text + "-" + params.filter;
                                 }
-                                $s.requestsInProgress -= 1;
                             },
                             resp => {
                                 console.log("ошибка получения остатка товара!");
                                 console.log(resp);
-                                $s.requestsInProgress -= 1;
                             });
                     },
                     compareValues: function(first, second) {

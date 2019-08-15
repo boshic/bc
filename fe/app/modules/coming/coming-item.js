@@ -32,7 +32,8 @@ import comingItemTpl from './coming-item.html';
                 user: paneFactory.user
             };
             if (id) {
-                httpService.getItemById(id, 'getComingById').then(
+                httpService.getItemById({id: id, url: 'getComingById', requestParams: $s.requestParams})
+                    .then(
                     resp => {
                         if (!(resp.item === null)) {
                             setPermissions(true);
@@ -56,16 +57,19 @@ import comingItemTpl from './coming-item.html';
         };
 
         $s.updateComing = () => {
-            httpService.addItemWithRequestCount($s.coming, 'updateComing', $s.requestParams)
+            if(confirm("Подтвердите изменение"))
+                httpService.addItem({data: $s.coming, url:'updateComing',
+                    requestParams: $s.requestParams})
                 .then(
-                () => { $s.comingConfig.refresh(); },
-                (resp) => {console.log(resp);}
-            );
+                    () => { $s.comingConfig.refresh(); },
+                    (resp) => {console.log(resp);}
+                );
         };
 
         $s.addComing = () => {
             $s.coming.user = paneFactory.user;
-            httpService.addItemWithRequestCount($s.coming, 'addComing', $s.requestParams )
+            httpService.addItem({data: $s.coming, url:'addComing',
+                requestParams: $s.requestParams})
                 .then(
                 resp => {
                     $s.coming = resp.item;
@@ -77,14 +81,16 @@ import comingItemTpl from './coming-item.html';
         };
 
         $s.deleteComing = () => {
-            httpService.getItemByIdWithRequestCount($s.coming.id, 'deleteComing', $s.requestParams)
-                .then(
-                () => {
-                    $s.comingConfig.refresh();
-                },
-                resp => {
-                    console.log(resp);
-                }
+            if(confirm("Подтвердите удаление"))
+                httpService.getItemById({id: $s.coming.id, url: 'deleteComing',
+                    requestParams: $s.requestParams})
+                    .then(
+                        () => {
+                            $s.comingConfig.refresh();
+                        },
+                        resp => {
+                            console.log(resp);
+                        }
             );
         };
 

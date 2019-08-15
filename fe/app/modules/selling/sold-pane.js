@@ -57,10 +57,13 @@ import soldPaneTpl from './sold-pane.html';
             let row = angular.extend($s.rows[index], {comment: '', commentCause:''});
             $s.textEditModalClose = () => {
                 if(confirm("Подтвердите добавление комментария"))
-                    httpService.addItem({text: row.comment, action: row.commentCause},
-                        'addSoldItemComment', {params: {id: row.id}}).then(
-                        () => {findItemsByFilter();},
-                        () => {console.log('comment has not been added!');}
+                    httpService.addItem({
+                        data: {text: row.comment, action: row.commentCause},
+                        url: 'addSoldItemComment',
+                        params: {params: {id: row.id}}})
+                        .then(
+                            () => {findItemsByFilter();},
+                            () => {console.log('comment has not been added!');}
                     );
                 else findItemsByFilter();
             };
@@ -72,7 +75,7 @@ import soldPaneTpl from './sold-pane.html';
                 currentQuantity: $s.rows[index].quantity});
             $s.quantityChangerModalClose = () => {
                 if(confirm("Подтвердите возврат"))
-                    httpService.addItem(row, 'returnSoldItem').then(
+                    httpService.addItem({data: row, url: 'returnSoldItem'}).then(
                         () => {calcTotalsAndRefresh();},
                         () => {console.log('return failed');}
                     );
@@ -82,7 +85,8 @@ import soldPaneTpl from './sold-pane.html';
         };
 
         $s.changeSoldItemDate = function () {
-            httpService.addItem(this.x, 'changeSoldItemDate').then(
+            httpService.addItem({data: this.x, url: 'changeSoldItemDate'})
+                .then(
                 () => {
                     calcTotalsAndRefresh();
                 },

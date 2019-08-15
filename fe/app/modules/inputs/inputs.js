@@ -185,7 +185,7 @@ let docCtrlr = ($s, httpService, itemFactory) => {
 
     $s.appendData = () => {
         $s.addingVisible = false;
-        httpService.addItem( $s.newDoc, 'addDocument')
+        httpService.addItem({data: $s.newDoc, url: 'addDocument'})
             .then(
                 resp => {
                     (resp.item == null) ? $s.doc.name = resp.text : $s.doc = resp.item;
@@ -199,11 +199,9 @@ let docCtrlr = ($s, httpService, itemFactory) => {
 
     $s.getDocs = () => {
         httpService.getItemsByFilter({
-                searchString: $s.doc.name,
-                fromDate: $s.dateFrom,
-                toDate: $s.dateTo
-            }, 'getDocs'
-        ).then(
+            filter: { searchString: $s.doc.name, fromDate: $s.dateFrom, toDate: $s.dateTo },
+            url: 'getDocs'
+        }).then(
             resp => {
                 $s.docs = resp;
             },
@@ -258,7 +256,7 @@ let stockCntrlr = ($s, httpService) => {
 
     $s.getStocks = () => {
 
-        httpService.getItems({allowAll: $s.allowAll}, 'getStocks').then(
+        httpService.getItems({params: {allowAll: $s.allowAll}, url: 'getStocks'}).then(
             resp => {
                 $s.stocks = resp;
                 for (let stock of $s.stocks)
@@ -573,7 +571,7 @@ angular.module('inputs', [])
         // "</div>" +
         "<span class='warning-item-input' ng-hide='$ctrl.item.id>0'>" +
             "{{'Не выбран(а) ' + $ctrl.title + '!'}}</span>" +
-        "<textarea rows='2' title='{{$ctrl.item.name}}' type='text' " +
+        "<textarea rows='2' title='{{$ctrl.item.ean + \"  \" + $ctrl.item.name}}' type='text' " +
             "class='form-control' placeholder={{$ctrl.title}} id={{$ctrl.inputId}} " +
                 "ng-keydown='$ctrl.keypressHandler()($event, \"name\")'" +
                 "ng-model='$ctrl.item.name'" +
@@ -614,7 +612,7 @@ angular.module('inputs', [])
 
             let getItemById = (id, url) => {
                 if(id)
-                    return httpService.getItemById(id, url);
+                    return httpService.getItemById({id, url});
             };
 
             return {
@@ -685,7 +683,7 @@ angular.module('inputs', [])
                 getItems: ($s, url) => {
                     $s.items=[];
                     $s.requestsInProgress += 1;
-                    httpService.getItems({filter: $s.item.name || ''}, url).then(
+                    httpService.getItems({params: {filter: $s.item.name || ''}, url}).then(
                         (value) => {
                             $s.items = value;
                             $s.requestsInProgress -= 1;
@@ -721,7 +719,7 @@ angular.module('inputs', [])
                     $s.user = paneFactory.user;
                 },
                 addItem : ($s, url) => {
-                    httpService.addItem($s.item, url).then(
+                    httpService.addItem({data: $s.item, url}).then(
                         resp => {
                             $s.item = resp.item;
                             if(resp.success) {
@@ -736,8 +734,17 @@ angular.module('inputs', [])
                     $s.modalVisible = false;
                     $s.warning ="";
                 },
+                // setItemEanByTopId : (item) => {
+                //     httpService.getItemById(null, 'getTopId').then(
+                //         resp => {
+                //             item.ean = paneFactory.generateEan((resp + 1).toString());
+                //         },
+                //         resp => {console.log(resp);}
+                //     );
+                // },
                 setItemEanByTopId : (item) => {
-                    httpService.getItemById(null, 'getTopId').then(
+                    httpService.getItemById({id: null, url: 'getTopId'})
+                        .then(
                         resp => {
                             item.ean = paneFactory.generateEan((resp + 1).toString());
                         },

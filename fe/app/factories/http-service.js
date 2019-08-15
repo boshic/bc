@@ -1,83 +1,91 @@
-
     angular.module('common-http-service', [])
         .factory('httpService',['$http', '$q',
             function ($http, $q) {
 
-                return {
-                    addItem: (data, url, params) => {
-                        let defer = $q.defer();
-                        $http.post('/'+url, data, params)
-                            .then(
-                                resp => {defer.resolve(resp.data);},
-                                resp => {defer.reject(resp);}
-                            );
-                        return defer.promise;
-                    },
-                    addItemWithRequestCount: (data, url, requestParams, params) => {
-                        let defer = $q.defer();
+                let checkRequestParams = (requestParams) => {
+                    return angular.isObject(requestParams);
+                };
+
+                let checkRequestsQuantity = (requestParams) => {
+                    return (checkRequestParams(requestParams)
+                        && angular.isDefined(requestParams.requestsQuantity)
+                        && requestParams.requestsQuantity != null
+                        && typeof requestParams.requestsQuantity === 'number')
+                };
+
+                let addRequestsQuantity = (requestParams) => {
+                    if(checkRequestsQuantity(requestParams))
                         requestParams.requestsQuantity += 1;
-                        $http.post('/'+url, data, params)
+                };
+
+                let decreaseRequestsQuantity = (requestParams) => {
+                    if(checkRequestsQuantity(requestParams))
+                        requestParams.requestsQuantity -= 1;
+                };
+
+                let successHandle = (defer, resp, opts) => {
+                    defer.resolve(resp.data);
+                    decreaseRequestsQuantity(opts.requestParams);
+                };
+
+                let errorHandle = (defer, resp, opts) => {
+                    defer.reject(resp.data);
+                    decreaseRequestsQuantity(opts.requestParams);
+                };
+
+                return {
+                    addItem: (opts) => {
+                        let defer = $q.defer();
+                        addRequestsQuantity(opts.requestParams);
+                        $http.post('/'+ opts.url, opts.data, opts.params)
                             .then(
                                 resp => {
-                                    defer.resolve(resp.data);
-                                    requestParams.requestsQuantity -= 1;
+                                    successHandle(defer, resp, opts);
                                 },
                                 resp => {
-                                    defer.reject(resp);
-                                    requestParams.requestsQuantity -= 1;
+                                    errorHandle(defer, resp, opts);
                                 }
                             );
                         return defer.promise;
                     },
-                    deleteItemById : (id, url) => {
+                    getItems: (opts) => {
                         let defer = $q.defer();
-                        $http.get('/'+url, { params: { id: id }})
+                        addRequestsQuantity(opts.requestParams);
+                        $http.get('/'+ opts.url, {params: opts.params})
                             .then(
-                                resp => {defer.resolve(resp.data);},
-                                resp => {defer.reject(resp);}
-                            );
-                        return defer.promise;
-                    },
-                    getItems: (params, url) => {
-                        let defer = $q.defer();
-                        $http.get('/'+url, {params: params})
-                            .then(
-                                resp => {defer.resolve(resp.data);},
-                                resp => {defer.reject(resp);}
+                                resp => {
+                                    successHandle(defer, resp, opts);
+                                },
+                                resp => {
+                                    errorHandle(defer, resp, opts);
+                                }
                             );
                         return defer.promise;
                     },
 
-                    getItemsByFilter : (filter, url) => {
+                    getItemsByFilter: (opts) => {
                         let defer = $q.defer();
-                        $http.post('/'+url, filter)
-                            .then(
-                                resp => {defer.resolve(resp.data);},
-                                resp => {defer.reject(resp);}
-                            );
-                        return defer.promise;
-                    },
-                    getItemById : (id, url) => {
-                        let defer = $q.defer();
-                        $http.get('/'+url, {params: {id: id}})
-                            .then(
-                                resp => {defer.resolve(resp.data);},
-                                resp => {defer.reject(resp);}
-                            );
-                        return defer.promise;
-                    },
-                    getItemByIdWithRequestCount : (id, url, requestParams) => {
-                        let defer = $q.defer();
-                        requestParams.requestsQuantity += 1;
-                        $http.get('/'+url, {params: {id: id}})
+                        addRequestsQuantity(opts.requestParams);
+                        $http.post('/'+opts.url, opts.filter)
                             .then(
                                 resp => {
-                                    defer.resolve(resp.data);
-                                    requestParams.requestsQuantity -= 1;
+                                    successHandle(defer, resp, opts);
                                 },
                                 resp => {
-                                    defer.reject(resp);
-                                    requestParams.requestsQuantity -= 1;
+                                    errorHandle(defer, resp, opts);
+                                }
+                            );
+                        return defer.promise;
+                    },
+                    getItemById : (opts) => {
+                        let defer = $q.defer();
+                        addRequestsQuantity(opts.requestParams);
+                        $http.get('/'+opts.url, {params: {id: opts.id}}).then(
+                                resp => {
+                                    successHandle(defer, resp, opts);
+                                },
+                                resp => {
+                                    errorHandle(defer, resp, opts);
                                 }
                             );
                         return defer.promise;

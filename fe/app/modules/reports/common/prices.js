@@ -37,7 +37,7 @@ let pricesCtrlr = ($location, $window, httpService, $s, $timeout) => {
                 $timeout(() => {drawBarcodes($s.prices);}, drawBarcodesTimeout);
             };
 
-            httpService.getItemById($location.search().id, 'getReportById').then(
+            httpService.getItemById({id: $location.search().id, url:'getReportById'}).then(
                 resp => {
                     resp.rows.forEach((row) => {
                         row.rub = Math.trunc(row.price);

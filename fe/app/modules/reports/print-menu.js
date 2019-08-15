@@ -23,7 +23,7 @@
             if(vm.reportId) {
                 openReport(report.group, report.type, vm.reportId);
             } else {
-                httpService.addItem(report.data, report.method).then(
+                httpService.addItem({data: report.data, url: report.method}).then(
                     resp => {
                         openReport(report.group, report.type, resp);
                     },

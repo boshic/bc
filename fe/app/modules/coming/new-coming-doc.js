@@ -42,7 +42,7 @@ import newComingDocPaneTpl from './new-coming-doc.html';
         let getItems = ean => {
             $s.warning="";
 
-            httpService.getItems({filter: ean}, 'getItemForNewComing').then(
+            httpService.getItems({params: {filter: ean}, url: 'getItemForNewComing'}).then(
                 resp => {
                     $s.canRelease = false;
                     let item = resp.item;
@@ -171,7 +171,7 @@ import newComingDocPaneTpl from './new-coming-doc.html';
         $s.makeComing = () => {
             if($s.canRelease) {
                 $s.canRelease = false;
-                httpService.addItem($s.rows, 'addComings').then(
+                httpService.addItem({data: $s.rows, url: 'addComings'}).then(
                     resp => {
                         $s.deleteRows();
                     },
