@@ -1,15 +1,9 @@
 <div class="dropdown">
 
     <item-input-name input-id='inputId' item="item" input-name="Товар"
-                     requests-in-progress="requestsInProgress" items="items"
+                     requests-quantity="requestParams.requestsQuantity" items="items"
                      get-items="getItems()" keypress-handler='setEanPrefix'>
     </item-input-name>
-
-        <!--<button class="glyphicon glyphicon-question-sign item-query"-->
-                <!--title="остаток по складу"-->
-                <!--ng-disabled="items.length>50 || items.length === 0"-->
-                <!--ng-hide="stock === undefined">-->
-        <!--</button>-->
 
     <ul class="dropdown-menu hoverable item-input-dropdown">
         <item-input-items
@@ -19,5 +13,7 @@
     </ul>
 </div>
 <add-edit-item
-        item="item" modal-visible="addEditModalVisible" user="user" get-items="getItems()">
+        request-params="requestParams"
+        item="item" modal-visible="addEditModalVisible"
+        user="user" get-items="getItems()">
 </add-edit-item>

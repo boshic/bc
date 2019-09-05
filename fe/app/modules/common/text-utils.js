@@ -1,8 +1,3 @@
-/**
- * Created by xlinux on 05.02.19.
- */
-// define(['angular'], angular => {
-
     let phraseByWordToFilterCtrlr = ($s) => {
 
         $s.setFilter = function () {
@@ -136,5 +131,3 @@
                 }
             };
         });
-
-// });

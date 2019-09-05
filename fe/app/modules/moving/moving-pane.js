@@ -8,7 +8,8 @@ import movingPaneTpl from './moving-pane.html';
         $s.allowAllStocks = false;
         $s.barcode = "";
         $s.warning = "";
-        $s.requestsInProgress = 0;
+
+        $s.requestParams = {requestsQuantity: 0};
         $s.canRelease = false;
         $s.quantityChangerModalData = {hidden : true, row: {}};
         $s.totals = { date: new Date, sum: 0, quantity: 0 };

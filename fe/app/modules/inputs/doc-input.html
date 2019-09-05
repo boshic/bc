@@ -19,7 +19,7 @@
                ng-model="doc.supplier.name"
                placeholder="Поставщик" readonly="true"/>
             <span style="font-size: 38px; top: -10px;" class="item-input-toolbox" ng-hide="doc.id > 0">
-                <item-input-total requests-in-progress="requestsInProgress"
+                <item-input-total requests-quantity="requestParams.requestsQuantity"
                                             total="docs.length"></item-input-total>
 
             </span>

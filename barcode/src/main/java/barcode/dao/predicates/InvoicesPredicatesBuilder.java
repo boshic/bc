@@ -42,6 +42,10 @@ public class InvoicesPredicatesBuilder {
         if (filter.getBuyer().getId() != null)
             predicate = predicate.and(invoice.buyer.id.eq(filter.getBuyer().getId()));
 
+        if (filter.getStock() != null && !filter.getStock().isAllowAll())
+            predicate = predicate.and(invoice.stock.id.eq(filter.getStock().getId()));
+
+
 
         return predicate;
 
@@ -71,9 +75,6 @@ public class InvoicesPredicatesBuilder {
 ////                .select(qInvoiceRow)
 //                .fetch();
 
-//        if (filter.getStock() != null && !filter.getStock().isAllowAll())
-//            predicate = predicate.and(SoldItemHandler.qSoldItem.coming.stock.id.eq(filter.getStock().getId()));
-//
 //        if(filter.getComment() != null)
 //            predicate = predicate.and(SoldItemHandler.qSoldItem.comment.containsIgnoreCase(filter.getComment()));
 //
@@ -85,9 +86,6 @@ public class InvoicesPredicatesBuilder {
 //
 //        if (filter.getItem() != null && filter.getItem().getId() != null)
 //            predicate = predicate.and(SoldItemHandler.qSoldItem.coming.item.id.eq(filter.getItem().getId()));
-
-//        if (filter.getBuyer().getId() != null)
-//            predicate = predicate.and(InvoiceHandler.qInvoice.buyer.id.eq(filter.getBuyer().getId()));
 
     }
 }

@@ -10,20 +10,20 @@
             </span>
         </div>
         <div class="add-edit-panel">
-            <button class="glyphicon glyphicon-plus coming-item-btn add"
+            <button class="glyphicon glyphicon-plus common-ok-btn add"
                     title="Оприходовать/Скопировать"
                     ng-click="addComing()"
-                    ng-class="{disabled: !canCome || requestParams.requestsQuantity > 0}"
+                    ng-class='{disabled: !canCome || requestParams.requestsQuantity > 0}'
                     ng-disabled="!canCome || requestParams.requestsQuantity > 0">
             </button>
             <div style="display: inline-flex;">
-                <button class="glyphicon glyphicon-remove-sign coming-item-btn delete"
+                <button class="glyphicon glyphicon-remove-sign common-ok-btn delete"
                         title="Удалить приход"
                         ng-click="deleteComing()"
                         ng-class="{disabled: !canChange || requestParams.requestsQuantity > 0}"
                         ng-disabled="!canChange  || requestParams.requestsQuantity > 0">
                 </button>
-                <button class="glyphicon glyphicon-pencil coming-item-btn edit"
+                <button class="glyphicon glyphicon-pencil common-ok-btn edit"
                         title="Записать изменения"
                       ng-click="updateComing()"
                         ng-class="{disabled: !canChange || requestParams.requestsQuantity > 0}"

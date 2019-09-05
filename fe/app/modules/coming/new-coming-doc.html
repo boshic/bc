@@ -18,11 +18,17 @@
 <div class="menu-panel unprintable" ng-keyup="handleKeyup($event)">
 
     <div class = "blank-search-row hoverable" ng-click="blankSearch()">
-        <input class="searchinput" name="search" placeholder="Введите штрих-код..." type="text"
+        <input class="searchinput" name="search"
+               placeholder="Введите штрих-код..." type="text"
                id="new-coming-doc"
                ng-model="barcode"
                ng-keydown="setEanPrefix($event)"/>
-        <span style="margin-left: 5px;" class="selling-warning" ng-show="warning.length">{{warning}}</span>
+        <pane-request-indicator
+                requests-quantity="requestParams.requestsQuantity">
+        </pane-request-indicator>
+        <span style="margin-left: 5px;" class="selling-warning" ng-show="warning.length">
+            {{warning}}
+        </span>
     </div>
 
     <button class='glyphicon glyphicon-arrow-up pane-searchinput-btn'

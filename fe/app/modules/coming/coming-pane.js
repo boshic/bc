@@ -3,9 +3,9 @@ import comingPaneTpl from './coming-pane.html';
     let comingPaneCtrlr = ($s, filterFactory, paneFactory, elem, printFactory) => {
 
         $s.rows=[];
-        // $s.reports=[];
+        $s.requestParams = {requestsQuantity: 0};
         $s.filter = {visible: false};
-        $s.hideModal = true;
+        // $s.hideModal = true;
         $s.modalConfig = {};
         $s.sellingModalConfig = {};
         $s.movingModalConfig = {};
@@ -22,8 +22,7 @@ import comingPaneTpl from './coming-pane.html';
         };
 
         let calcTotalsAndRefresh = () => {
-            $s.filter.calcTotal = true;
-            ($s.filter.page && $s.filter.page === 1) ? findItemsByFilter() : ($s.filter.page = 1);
+            return paneFactory.calcTotalsAndRefresh($s.filter, findItemsByFilter);
         };
 
         $s.handleKeyup = e => {
@@ -51,9 +50,8 @@ import comingPaneTpl from './coming-pane.html';
         }, true);
 
         $s.sellingModalConfig.refresh = $s.movingModalConfig.refresh = $s.modalConfig.refresh = () => {
-                $s.filter.calcTotal = true;
-                findItemsByFilter();
-            };
+                calcTotalsAndRefresh()
+        };
 
         $s.openComingModal = function() {
             if(this.x.quantity !=0) {

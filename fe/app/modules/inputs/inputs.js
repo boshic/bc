@@ -18,7 +18,7 @@ let commonItemCtrlr = ($s, itemFactory, itemConfig) => {
 
     $s.inputId = itemFactory.generateUuid();
     $s.items = [];
-    $s.requestsInProgress = 0;
+    $s.requestParams = { requestsQuantity: 0 };
     let config = itemFactory[itemConfig];
     $s.getEmptyItem = config.getEmptyItem;
     $s.item = $s.getEmptyItem();
@@ -33,7 +33,7 @@ let commonItemCtrlr = ($s, itemFactory, itemConfig) => {
     };
 
     $s.getItemById = (id) => {
-        return itemFactory.getItemById(id, config.getItemByIdUrl);
+        return itemFactory.getItemById(id, config.getItemByIdUrl, $s.requestParams);
     };
 
     $s.selectItem = (id) => {
@@ -145,7 +145,8 @@ let docCtrlr = ($s, httpService, itemFactory) => {
     $s.dateFrom = new Date(2015,0,1);
     $s.dateTo = new Date();
     $s.docs = [];
-    $s.requestsInProgress = 0;
+    // $s.requestsInProgress = 0;
+    $s.requestParams = {requestsQuantity: 0};
     $s.getEmptyItem = itemFactory.documentConfig.getEmptyItem;
     $s.doc = $s.getEmptyItem();
 
@@ -289,7 +290,7 @@ angular.module('inputs', [])
     .directive( "addEditBank", () => {
         return {
             restrict: 'E',
-            scope: { item: "=bank", modalVisible: "=", getItems: '&?'},
+            scope: { item: "=bank", modalVisible: "=", getItems: '&?', requestParams: '='},
             template: addEditBankTpl,
             controller : ($scope, itemFactory) => {
                 return bankChangeCtrlr($scope, itemFactory);
@@ -310,7 +311,13 @@ angular.module('inputs', [])
     .directive( "addEditBuyer", () => {
         return {
             restrict: 'E',
-            scope: { item: "=buyer", user: "=?", modalVisible: "=", getItems: '&?'},
+            scope: {
+                item: "=buyer",
+                user: "=?",
+                modalVisible: "=",
+                getItems: '&?',
+                requestParams: '='
+            },
             template: addEditBuyerTpl,
             controller : ($scope, itemFactory) => {
                 return buyerChangeCtrlr($scope, itemFactory);
@@ -374,7 +381,7 @@ angular.module('inputs', [])
     .directive( "addEditItem", () => {
         return {
             restrict: 'E',
-            scope: { item: "=", user: "=?", modalVisible: "=", getItems: '&?'},
+            scope: { item: "=", user: "=?", modalVisible: "=", getItems: '&?', requestParams: '='},
             template: addEditItemTpl,
             controller : ($scope, itemFactory, paneFactory) => {
                 return itemChangeCtrlr($scope, itemFactory, paneFactory);
@@ -395,7 +402,7 @@ angular.module('inputs', [])
     .directive( "addEditItemSection", () => {
         return {
             restrict: 'E',
-            scope: { item: "=section", user: "=?", modalVisible: "=", getItems: '&?'},
+            scope: { item: "=section", user: "=?", modalVisible: "=", getItems: '&?', requestParams: '='},
             template: addEditItemSectionTpl,
             controller : ($scope, itemFactory) => {
                 return sectionChangeCtrlr($scope, itemFactory);
@@ -509,22 +516,20 @@ angular.module('inputs', [])
     .directive( "addEditSupplier", () => {
         return {
             restrict: 'E',
-            scope: { item: "=supplier", modalVisible: "=", getItems: '&?'},
+            scope: { item: "=supplier", modalVisible: "=", getItems: '&?', requestParams: '='},
             transclude: true,
             template:
             "<div ng-show='modalVisible' class='trans-layer'></div>" +
             "<div class='modal-container-addeditsupplier' ng-class='{modalactive: modalVisible}'>" +
-            "<div class='wrapper' ng-keyup='handleKeyup($event)'>" +
-            "<item-add-edit-id item-id='item.id'></item-add-edit-id>" +
-            "<span title='Применить' class='glyphicon glyphicon-ok item-add' style='float: left;'" +
-            "ng-click='appendData()'></span>" +
-            "<span title='Закрыть' class='glyphicon glyphicon-remove item-blank' style='float: right;'" +
-            "ng-click='closeModal()'></span>" +
-            "<div>" +
-            "<span>Наименование</span>" +
-            "<span class='warning-item-input' ng-hide='item.name.length > 0'>Введите наименование</span>"+
-                "<input type='text' class='form-control' " +
-                    "id='{{inputId}}' ng-model='item.name' placeholder=''/>" +
+            "<div class='wrapper'>" +
+            "<item-add-edit-controls " +
+                "append-data='appendData()' close-modal='closeModal()' item-id='item.id'" +
+                "is-ok-active='item.name.length>0'>" +
+            "</item-add-edit-controls>" +
+                "<div>" +
+                    "<item-add-edit-name " +
+                        "name='item.name' requests-quantity='requestParams.requestsQuantity'>" +
+                    "</item-add-edit-name>" +
                 "</div>" +
             "</div>",
             controller : ($scope, itemFactory) => {
@@ -533,11 +538,11 @@ angular.module('inputs', [])
         }
     })
     .component( "itemInputTotal", {
-                bindings: {total: '<', requestsInProgress: '<'},
-                template:"<span ng-show='$ctrl.total > 0 && $ctrl.requestsInProgress === 0'>" +
+                bindings: {total: '<', requestsQuantity: '<'},
+                template:"<span ng-show='$ctrl.total > 0 && $ctrl.requestsQuantity === 0'>" +
                     "{{$ctrl.total}}</span>" +
                 "<span class='glyphicon glyphicon-warning-sign' " +
-                        "ng-hide='$ctrl.requestsInProgress === 0'></span>",
+                        "ng-hide='$ctrl.requestsQuantity === 0'></span>",
                 controller: function() {}
         })
     .component( "itemAddEditId", {
@@ -550,11 +555,55 @@ angular.module('inputs', [])
             "</span>",
         controller: function() {}
     })
+    .component( "itemAddEditName", {
+        bindings: {
+            name: '=',
+            requestsQuantity: '<?'
+        },
+        template:
+        "<span>Наименование:</span>" +
+        "<span class='warning-item-input' ng-hide='$ctrl.name.length > 0'>Введите наименование</span>" +
+        "<input type='text' class='form-control' ng-model='$ctrl.name'" +
+            "ng-readonly='$ctrl.requestsQuantity'" +
+            "placeholder=''/>",
+        controller: function() {}
+    })
+    .component( "itemAddEditAddress", {
+        bindings: {
+            address: '=',
+            requestsQuantity: '<?'
+        },
+        template:
+        "<span>Адрес:</span>" +
+        "<span class='warning-item-input'" +
+            "ng-hide='$ctrl.address.length > 0'>Введите адрес</span>" +
+        "<input type='text' class='form-control' placeholder='Адрес:' "+
+            "ng-readonly='$ctrl.requestsQuantity' ng-model='$ctrl.address'/>",
+        controller: function() {}
+    })
+    .component( "itemAddEditControls", {
+        bindings: {
+            appendData: '&',
+            closeModal: '&',
+            isOkActive: '<',
+            itemId: '<'
+        },
+        template:
+        "<div style='display: flex;'>" +
+        "<div style='width: 10%'>"+
+            "<button title='Применить' class='glyphicon glyphicon-ok common-ok-btn add'" +
+            "ng-class='{disabled: !$ctrl.isOkActive}' style='font-size: 22px;' " +
+            "ng-disabled='!$ctrl.isOkActive' ng-click='$ctrl.appendData()'></button></div>" +
+            "<div style='width: 100%;'><item-add-edit-id item-id='$ctrl.itemId'></item-add-edit-id></div>" +
+            "<span title='Закрыть' class='glyphicon glyphicon-remove item-blank'" +
+                "style='margin-top: 4px;' ng-click='$ctrl.closeModal()'></span></div>",
+        controller: function() {}
+    })
     .component( "itemInputName", {
         bindings: {
             item: '<',
             items: '<',
-            requestsInProgress: '<',
+            requestsQuantity: '<',
             title: '@inputName',
             getItems: '&',
             inputId: '<',
@@ -576,8 +625,8 @@ angular.module('inputs', [])
                 "ng-keydown='$ctrl.keypressHandler()($event, \"name\")'" +
                 "ng-model='$ctrl.item.name'" +
                 "ng-readonly='$ctrl.item.id || $ctrl.item === null'></textarea>" +
-        "<span class='item-input-toolbox' ng-hide='$ctrl.item.id > 0'>" +
-            "<item-input-total requests-in-progress='$ctrl.requestsInProgress'" +
+        "<span class='item-input-toolbox' ng-hide='$ctrl.item.id > 0 && $ctrl.requestsQuantity === 0'>" +
+            "<item-input-total requests-quantity='$ctrl.requestsQuantity'" +
                 "total='$ctrl.items.length'></item-input-total>" +
         "</span>",
         controller: function() {}
@@ -610,9 +659,9 @@ angular.module('inputs', [])
                     canBeComposite:true, components:[] };
             };
 
-            let getItemById = (id, url) => {
+            let getItemById = (id, url, requestParams) => {
                 if(id)
-                    return httpService.getItemById({id, url});
+                    return httpService.getItemById({id, url, requestParams});
             };
 
             return {
@@ -682,15 +731,14 @@ angular.module('inputs', [])
                 },
                 getItems: ($s, url) => {
                     $s.items=[];
-                    $s.requestsInProgress += 1;
-                    httpService.getItems({params: {filter: $s.item.name || ''}, url}).then(
+                    httpService.getItems({params: {filter: $s.item.name || ''},
+                        requestParams: $s.requestParams, url})
+                        .then(
                         (value) => {
                             $s.items = value;
-                            $s.requestsInProgress -= 1;
                         },
                         (value) => {
                             $s.item.name = value;
-                            $s.requestsInProgress -= 1;
                         }
                     );
                 },
@@ -719,7 +767,8 @@ angular.module('inputs', [])
                     $s.user = paneFactory.user;
                 },
                 addItem : ($s, url) => {
-                    httpService.addItem({data: $s.item, url}).then(
+                    httpService.addItem({data: $s.item, url, requestParams: $s.requestParams})
+                        .then(
                         resp => {
                             $s.item = resp.item;
                             if(resp.success) {
@@ -734,14 +783,6 @@ angular.module('inputs', [])
                     $s.modalVisible = false;
                     $s.warning ="";
                 },
-                // setItemEanByTopId : (item) => {
-                //     httpService.getItemById(null, 'getTopId').then(
-                //         resp => {
-                //             item.ean = paneFactory.generateEan((resp + 1).toString());
-                //         },
-                //         resp => {console.log(resp);}
-                //     );
-                // },
                 setItemEanByTopId : (item) => {
                     httpService.getItemById({id: null, url: 'getTopId'})
                         .then(

@@ -2139,7 +2139,7 @@ td.quick-filter {
     height: 99%;
 }
 
-.request-in-progress-on-pane {
+.pane-request-indicator {
     width: 34px;
     height: 32px;
     padding-left: 3px;
@@ -2163,7 +2163,7 @@ td.quick-filter {
     text-align: center;
 }
 
-.coming-item-btn {
+.common-ok-btn {
     background: var(--white-color);
     border-radius: 5px;
     border: 1px var(--gray-color) solid;
@@ -2183,4 +2183,8 @@ button.delete {
 
 button.disabled {
     color: var(--gray-color);
+}
+
+div.add-edit-controls-container {
+    font-size: 22px;
 }

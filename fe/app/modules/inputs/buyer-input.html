@@ -1,7 +1,7 @@
 <div class="dropdown">
 
     <item-input-name input-id='inputId' item="item" input-name="Покупатель"
-                     requests-in-progress="requestsInProgress" items="items"
+                     requests-quantity="requestParams.requestsQuantity" items="items"
                      get-items="getItems()">
     </item-input-name>
     <div class="buyer-debt" style="top: 0px; right: 0px;">
@@ -20,5 +20,6 @@
     </ul>
 </div>
 <add-edit-buyer
-        buyer="item" modal-visible="addEditModalVisible" user="user" get-items="getItems()">
+        buyer="item" modal-visible="addEditModalVisible"
+        user="user" get-items="getItems()" request-params="requestParams">
 </add-edit-buyer>

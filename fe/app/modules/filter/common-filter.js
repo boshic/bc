@@ -1,8 +1,3 @@
-/**
- * Created by xlinux on 18.01.19.
- */
-// define(['angular'], angular => {
-
 import quickFilterTpl from './quick-filter.html';
 import commonFilterTpl from './common-filter.html';
 
@@ -101,7 +96,6 @@ import commonFilterTpl from './common-filter.html';
                 };
 
                 return {
-
                     resetComingFilter: (filter) => {
 
                         resetCommonFilterFields(filter);
@@ -150,4 +144,3 @@ import commonFilterTpl from './common-filter.html';
                 };
             }
         ]);
-// });

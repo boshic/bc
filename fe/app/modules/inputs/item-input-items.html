@@ -22,7 +22,10 @@
                     title="Код" ng-click="$ctrl.selectItem()(x.id)">
                     {{ x.code || x.id}}
                 </td>
-                <td class="hoverable" title="Наименование" ng-click="$ctrl.selectItem()(x.id)">{{ x.name }}</td>
+                <td class="hoverable" title="{{x.ean + ' ' + x.name}}"
+                    ng-click="$ctrl.selectItem()(x.id)">
+                    {{ x.name }}
+                </td>
                 <td style="width: 25px;">
                     <a href="#" title="Редактировать" style="float: right;"
                        ng-show = "$ctrl.changeItem() != null"

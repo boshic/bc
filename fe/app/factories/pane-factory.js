@@ -62,6 +62,37 @@ import snd from '../../media/audio/sell.mp3';
                     return totals
                 };
 
+                let findItemsByFilter = ($s, url)=> {
+                    setTimeout(() => {
+                        httpService.getItemsByFilter({filter: $s.filter, url,
+                            requestParams:$s.requestParams})
+                            .then(
+                                resp => {
+                                    if(resp.items.length === 0 && $s.filter.page != 1)
+                                        $s.filter.page =  1;
+                                    else {
+                                        $s.rows = resp.items;
+                                        $s.pages = getPages(resp.numberOfPages);
+                                        if (resp.success && $s.filter.calcTotal && resp.totals.length > 0)
+                                            $s.totals = resp.totals;
+                                        if('buyers' in resp && resp.buyers != null )
+                                            $s.filter.buyers = resp.buyers;
+                                        if('suppliers' in resp && resp.suppliers != null)
+                                            $s.filter.suppliers = resp.suppliers;
+                                        if('sections' in resp && resp.sections != null)
+                                            $s.filter.sections = resp.sections;
+                                        if(typeof $s.setReports === 'function')
+                                            $s.setReports();
+                                    }
+                                    $s.filter.calcTotal = false;
+                                },
+                                resp => {
+                                    console.log(resp);
+                                }
+                            );
+                    }, 100);
+                };
+
                 return {
                     fractionalUnits,
                     successSound,
@@ -72,6 +103,7 @@ import snd from '../../media/audio/sell.mp3';
                     checkDuplicateRows,
                     calcTotals,
                     checkNumberLimit,
+                    findItemsByFilter,
                     getItemByBarcode : (ean, getItems) => {
                         if ((ean.length === barcodeLength) && ean > 0) {
                             getItems(ean);
@@ -118,30 +150,9 @@ import snd from '../../media/audio/sell.mp3';
                         if (e.ctrlKey && e.keyCode == 13)
                             callback2();
                     },
-                    findItemsByFilter: ($s, url)=> {
-                        setTimeout(() => {
-                            httpService.getItemsByFilter({filter: $s.filter, url, requestParams:$s.requestParams})
-                                .then(
-                                resp => {
-                                    $s.rows = resp.items;
-                                    $s.pages = getPages(resp.numberOfPages);
-                                    if (resp.success && $s.filter.calcTotal && resp.totals.length > 0)
-                                        $s.totals = resp.totals;
-                                    if('buyers' in resp)
-                                        $s.filter.buyers = resp.buyers;
-                                    if('suppliers' in resp)
-                                        $s.filter.suppliers = resp.suppliers;
-                                    if('sections' in resp)
-                                        $s.filter.sections = resp.sections;
-                                    if(typeof $s.setReports === 'function')
-                                        $s.setReports();
-                                    $s.filter.calcTotal = false;
-                                },
-                                resp => {
-                                    console.log(resp);
-                                }
-                            );
-                        }, 100);
+                    calcTotalsAndRefresh : (filter, findItems) => {
+                        filter.calcTotal = true;
+                        findItems();
                     },
                     releaseItems: ($s, url, params) => {
                         if($s.canRelease) {

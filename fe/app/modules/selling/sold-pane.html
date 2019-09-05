@@ -1,8 +1,4 @@
-<!--<div ng-transclude></div>-->
-<div ng-hide='!filter.calcTotal'
-     ng-if="user.shadeWhenQuyering"
-     class='trans-layer'>
-</div>
+<pane-shader active="requestParams.requestsQuantity"></pane-shader>
 <div>
     <quantity-changer-modal
             check-input = 'checkRows()'
@@ -163,8 +159,7 @@
                 <td class="price-data" title="Номер">
                     {{ ($index + 1) + (filter.page - 1)*filter.rowsOnPage }}
                 </td>
-                <td title="Дата" ng-show="!filter.groupByItems">
-                    <!--ng-class='{hoverable: (x.quantity > 0)}'-->
+                <td ng-show="!filter.groupByItems">
                     <span style="position: absolute; cursor: pointer;"
                           ng-if="((user.role == 'ROLE_ADMIN' || user.actsAllowed.indexOf('changeDateOFSI') > -1)
                                && (x.quantity > 0))">

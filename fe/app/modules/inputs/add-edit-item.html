@@ -1,28 +1,19 @@
 <div ng-show='modalVisible' class='trans-layer'></div>
 <div class='modal-container-addeditsupplier' ng-class='{modalactive: modalVisible}'>
     <div class="wrapper">
-        <div style="display: flex;">
-            <div style="text-align:left; width: 10%; margin-top: 2px;">
-                <span title="Применить" class="glyphicon glyphicon-ok item-add"
-                    ng-show="item.name.length>0 && item.unit.length > 0 && item.ean > 0
+        <div>
+            <item-add-edit-controls
+                    append-data="appendData()" close-modal="closeModal()" item-id="item.id"
+                    is-ok-active="item.name.length > 0 && item.unit.length > 0 && item.ean > 0
                         && (item.eanSynonym.length == 13 || item.eanSynonym.length == 0)
                         && item.predefinedQuantity >= 0
-                        && item.ean.length == 13 && item.section.id > 0"
-                      ng-click="appendData()"></span>
-            </div>
-            <div style="width: 90%">
-                <item-add-edit-id item-id="item.id"></item-add-edit-id>
-                <span title="Закрыть" class="glyphicon glyphicon-remove item-blank"
-                      style="float: right;"
-                      ng-click="closeModal()"></span>
-            </div>
+                        && item.ean.length == 13 && item.section.id > 0">
+            </item-add-edit-controls>
         </div>
         <div>
-            <span>Наименование</span>
-            <span class="warning-item-input" ng-hide="item.name.length > 0">Введите наименование</span>
-            <input type="text" class="form-control"
-                   id = "{{inputId}}"
-                   ng-model="item.name" placeholder=""/>
+            <item-add-edit-name
+                    name="item.name" requests-quantity = "requestParams.requestsQuantity">
+            </item-add-edit-name>
             <div>
                 <div style="display: flex;">
                     <span style="width: 50%;">Единица измерения</span>

@@ -1,6 +1,6 @@
 <div class="dropdown">
     <item-input-name input-id='inputId' item="item" input-name="Секция"
-                     requests-in-progress="requestsInProgress" items="items"
+                     requests-quantity="requestParams.requestsQuantity" items="items"
                      get-items="getItems()">
     </item-input-name>
     <ul class="dropdown-menu hoverable item-input-dropdown">
@@ -11,5 +11,7 @@
     </ul>
 </div>
 <add-edit-item-section
-        section="item" modal-visible="addEditModalVisible" user="user" get-items="getItems()">
+        request-params="requestParams"
+        section="item" modal-visible="addEditModalVisible"
+        user="user" get-items="getItems()">
 </add-edit-item-section>

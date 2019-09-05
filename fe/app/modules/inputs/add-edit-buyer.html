@@ -1,27 +1,22 @@
 <div ng-show='modalVisible' class='trans-layer'></div>
 <div class='modal-container-addeditsupplier' ng-class='{modalactive: modalVisible}'>
     <div class="wrapper">
-        <item-add-edit-id item-id="item.id"></item-add-edit-id>
-        <span title="Применить" class="glyphicon glyphicon-ok item-add" style="float: left;"
-              ng-show="item.name.length>0 && item.address.length > 0"
-              ng-click="appendData()"></span>
-        <span class="add-edit-item-warning" ng-show="warning.length">{{warning}}</span>
-        <span title="Закрыть" class="glyphicon glyphicon-remove item-blank" style="float: right;"
-              ng-click="closeModal()"></span>
+            <item-add-edit-controls
+                    append-data="appendData()" close-modal="closeModal()" item-id="item.id"
+                    is-ok-active="item.name.length>0 && item.address.length > 0">
+            </item-add-edit-controls>
         <div>
             <div>
-                <span>Наименование:</span>
-                <span class="warning-item-input" ng-hide="item.name.length > 0">Введите наименование</span>
-                <input type="text" class="form-control" ng-model="item.name" placeholder=""/>
+                <item-add-edit-name
+                        name = "item.name"
+                        requests-quantity = "requestParams.requestsQuantity">
+                </item-add-edit-name>
             </div>
-
             <div>
-                <span>Адрес:</span>
-                <span class="warning-item-input"
-                      ng-hide="item.address.length > 0">
-                    Введите адрес
-                </span>
-                <input type="text" class="form-control" ng-model="item.address" placeholder=""/>
+                <item-add-edit-address
+                        address = "item.address"
+                        requests-quantity = "requestParams.requestsQuantity">
+                </item-add-edit-address>
             </div>
 
             <div style="display: flex;">
@@ -31,15 +26,18 @@
             </div>
             <div style="display: flex;">
                 <input style="width: 20%;" type="number" class="form-control" min="0" max="100"
-                        ng-model="item.debt"/>
+                       ng-readonly="requestParams.requestsQuantity"
+                       ng-model="item.debt"/>
                 <div style="width: 20%;">
                     <input type="number" class="form-control" min="0" max="100"
+                           ng-readonly="requestParams.requestsQuantity"
                            ng-model="item.discount"
                     placeholder=""/>
                 </div>
                 <div style="width: 60%;">
                     <input type="text" class="form-control" maxlength="28"
                            ng-model="item.account"
+                           ng-readonly="requestParams.requestsQuantity"
                            placeholder="Расчетный счет"/>
                 </div>
             </div>
@@ -54,6 +52,7 @@
                 <!--Введите УНП (9 знаков)-->
             <!--</span>-->
             <input  style="width: 40%;" type="text" class="form-control" maxlength="9"
+                    ng-readonly="requestParams.requestsQuantity"
                     ng-model="item.unp" placeholder="УНП"/>
             <div style="width: 60%;">
                 <bank-input bank="item.bank"></bank-input>

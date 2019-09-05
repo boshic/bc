@@ -12,8 +12,7 @@ import invoicesPaneTpl from './invoices-pane.html';
         };
 
         let calcTotalsAndRefresh = () => {
-            $s.filter.calcTotal = true;
-            ($s.filter.page && $s.filter.page === 1) ? findItemsByFilter() : ($s.filter.page = 1);
+            return paneFactory.calcTotalsAndRefresh($s.filter, findItemsByFilter);
         };
 
         $s.handleKeyup = e => {

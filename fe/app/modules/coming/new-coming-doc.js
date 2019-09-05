@@ -9,6 +9,7 @@ import newComingDocPaneTpl from './new-coming-doc.html';
         $s.item = getEpmtyItem();
         $s.buyer = itemFactory.buyerConfig.getEmptyItem();
         $s.quantityChangerModalData = {hidden : true, row: {}};
+        $s.requestParams = {requestsQuantity: 0};
 
         $s.barcode = "";
         $s.warning = "";
@@ -42,7 +43,9 @@ import newComingDocPaneTpl from './new-coming-doc.html';
         let getItems = ean => {
             $s.warning="";
 
-            httpService.getItems({params: {filter: ean}, url: 'getItemForNewComing'}).then(
+            httpService.getItems({params: {filter: ean},
+                    url: 'getItemForNewComing', requestParams:$s.requestParams})
+                .then(
                 resp => {
                     $s.canRelease = false;
                     let item = resp.item;
@@ -171,7 +174,8 @@ import newComingDocPaneTpl from './new-coming-doc.html';
         $s.makeComing = () => {
             if($s.canRelease) {
                 $s.canRelease = false;
-                httpService.addItem({data: $s.rows, url: 'addComings'}).then(
+                httpService.addItem({data: $s.rows, url: 'addComings', requestParams:$s.requestParams})
+                    .then(
                     resp => {
                         $s.deleteRows();
                     },

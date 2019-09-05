@@ -8,6 +8,7 @@ import soldPaneTpl from './sold-pane.html';
         $s.quantityChangerModalData = {hidden : true, row: {}};
         $s.textEditModalData = {hidden : true, row: {}};
         $s.quantityChangerModalClose = () => {};
+        $s.requestParams = {requestsQuantity: 0};
         $s.totals = {};
         $s.user = {};
 
@@ -16,8 +17,7 @@ import soldPaneTpl from './sold-pane.html';
         };
 
         let calcTotalsAndRefresh = () => {
-            $s.filter.calcTotal = true;
-            ($s.filter.page && $s.filter.page === 1) ? findItemsByFilter() : ($s.filter.page = 1);
+            return paneFactory.calcTotalsAndRefresh($s.filter, findItemsByFilter);
         };
 
         $s.setReports = () => {
@@ -45,6 +45,7 @@ import soldPaneTpl from './sold-pane.html';
 
         $s.refresh = () => {
             calcTotalsAndRefresh();
+            paneFactory.changeElementState(document.getElementById('sold-pane'), ['focus']);
         };
 
         $s.$watch('filter', (nv, ov) => {
@@ -60,6 +61,7 @@ import soldPaneTpl from './sold-pane.html';
                     httpService.addItem({
                         data: {text: row.comment, action: row.commentCause},
                         url: 'addSoldItemComment',
+                        requestParams: $s.requestParams,
                         params: {params: {id: row.id}}})
                         .then(
                             () => {findItemsByFilter();},
@@ -75,7 +77,8 @@ import soldPaneTpl from './sold-pane.html';
                 currentQuantity: $s.rows[index].quantity});
             $s.quantityChangerModalClose = () => {
                 if(confirm("Подтвердите возврат"))
-                    httpService.addItem({data: row, url: 'returnSoldItem'}).then(
+                    httpService.addItem({data: row, url: 'returnSoldItem', requestParams: $s.requestParams})
+                        .then(
                         () => {calcTotalsAndRefresh();},
                         () => {console.log('return failed');}
                     );
@@ -85,7 +88,7 @@ import soldPaneTpl from './sold-pane.html';
         };
 
         $s.changeSoldItemDate = function () {
-            httpService.addItem({data: this.x, url: 'changeSoldItemDate'})
+            httpService.addItem({data: this.x, url: 'changeSoldItemDate', requestParams: $s.requestParams})
                 .then(
                 () => {
                     calcTotalsAndRefresh();

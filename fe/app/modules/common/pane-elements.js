@@ -91,6 +91,24 @@
                 "</div>"
             };
         })
+        .component( "paneRequestIndicator", {
+            bindings: {
+                requestsQuantity: '<'
+            },
+            template:
+            "<span class='glyphicon glyphicon-warning-sign pane-request-indicator'" +
+                "ng-hide='$ctrl.requestsQuantity === 0'>" +
+            "</span>",
+            controller: function() {}
+        })
+        .component( "paneShader", {
+            bindings: {
+                active: '<'
+            },
+            template:
+            "<div ng-show='$ctrl.active' class='trans-layer'></div>",
+            controller: function() {}
+        })
         .component( "sortingRow", {
                 bindings: {
                     listeningField: '<',

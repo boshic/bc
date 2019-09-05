@@ -9,9 +9,9 @@
                ng-model="barcode"
                name="search" placeholder="Введите штрих-код..."/>
         <span style="margin-left: 5px;" class="selling-warning" ng-show="warning.length">{{warning}}</span>
-        <span class='glyphicon glyphicon-warning-sign request-in-progress-on-pane'
-              ng-hide='requestsInProgress === 0'>
-        </span>
+        <pane-request-indicator
+                requests-quantity="requestParams.requestsQuantity">
+        </pane-request-indicator>
     </div>
     <div class="one-control-on-pane" ng-show="!rows.length">
         <div class="one-icon-on-control-pane">
