@@ -14,7 +14,9 @@ import newComingDocPaneTpl from './new-coming-doc.html';
         $s.barcode = "";
         $s.warning = "";
         $s.canRelease = false;
-        $s.totals = {sum: 0, quantity: 0};
+        $s.viewTotalsByComing = true;
+        $s.totals = { sum: 0, quantity: 0 };
+        $s.totalsOut = { sum: 0, quantity: 0 };
 
         let getDataFromLastRow = () => {
             if($s.rows.length > 0)
@@ -146,6 +148,7 @@ import newComingDocPaneTpl from './new-coming-doc.html';
 
             if ($s.rows.length) {
                 $s.totals = paneFactory.calcTotals($s.rows);
+                $s.totalsOut = paneFactory.calcTotals(printFactory.getRowsForReports($s, 'priceOut'));
                 for (let row of $s.rows) {
 
                     if ((!row.quantity) || (!row.price) || (!row.priceOut))
@@ -188,7 +191,11 @@ import newComingDocPaneTpl from './new-coming-doc.html';
         };
 
         $s.handleKeyup = e => {
-            paneFactory.keyupHandler(e, $s.openQuantityChangerModal, $s.makeComing);
+            // paneFactory.keyupHandler(e, $s.openQuantityChangerModal, $s.makeComing);
+            paneFactory.keyUpHandler(e, [
+                {keyCode: paneFactory.keyCodes.escKeyCode, doAction: $s.openQuantityChangerModal},
+                {keyCode: paneFactory.keyCodes.enterKeyCode, doAction: $s.makeComing, ctrlReq: true}
+            ]);
         };
 
         $s.blankSearch = () => {

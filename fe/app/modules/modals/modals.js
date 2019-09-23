@@ -37,7 +37,8 @@
         });
 
         vm.handleKeyup = e => {
-            paneFactory.keyupHandler(e, vm.closeModal);
+            // paneFactory.keyupHandler(e, vm.closeModal);
+            paneFactory.keyUpHandler(e, [{keyCode: paneFactory.keyCodes.escKeyCode, doAction: vm.closeModal}]);
         };
     };
     quantityChangerModalCtrlr.$inject = ['$scope', 'paneFactory', '$element'];
@@ -78,7 +79,8 @@
         });
 
         vm.handleKeyup = e => {
-            paneFactory.keyupHandler(e, vm.closeModal);
+            // paneFactory.keyupHandler(e, vm.closeModal);
+            paneFactory.keyUpHandler(e, [{keyCode: paneFactory.keyCodes.escKeyCode, doAction: vm.closeModal}]);
         };
     };
     textEditModalCtrlr.$inject = ['$scope', 'paneFactory', '$element'];
@@ -130,10 +132,14 @@
     };
 
     $s.handleKeyup =  e => {
-        if (e.keyCode == 27)
-            $s.closeModal();
-        if (e.keyCode == 13)
-            $s.sellThis();
+        // if (e.keyCode == 27)
+        //     $s.closeModal();
+        // if (e.keyCode == 13)
+        //     $s.sellThis();
+        paneFactory.keyUpHandler(e, [
+            {keyCode: paneFactory.keyCodes.escKeyCode, doAction: $s.closeModal},
+            {keyCode: paneFactory.keyCodes.enterKeyCode, doAction: $s.sellThis, ctrlReq: true}
+        ]);
     };
 
     $s.setReportData = () => {
@@ -215,10 +221,14 @@
     };
 
     $s.handleKeyup =  e => {
-        if (e.keyCode == 27)
-            $s.closeModal();
-        if (e.keyCode == 13)
-            $s.moveThis();
+        // if (e.keyCode == 27)
+        //     $s.closeModal();
+        // if (e.keyCode == 13)
+        //     $s.moveThis();
+        paneFactory.keyUpHandler(e, [
+            {keyCode: paneFactory.keyCodes.escKeyCode, doAction: $s.closeModal},
+            {keyCode: paneFactory.keyCodes.enterKeyCode, doAction: $s.moveThis, ctrlReq: true}
+        ]);
     };
 
     $s.checkMoving = () => {

@@ -105,7 +105,11 @@ let sellingPaneCntrlr = ($s, $http, paneFactory, printFactory, modalFactory, ite
         });
 
         $s.handleKeyup = e => {
-            paneFactory.keyupHandler(e, $s.openQuantityChangerModal, $s.sellThis);
+            paneFactory.keyUpHandler(e, [
+                {keyCode: paneFactory.keyCodes.escKeyCode, doAction: $s.openQuantityChangerModal},
+                {keyCode: paneFactory.keyCodes.enterKeyCode, doAction: $s.sellThis, ctrlReq: true},
+                {keyCode: paneFactory.keyCodes.backSpaceKeyCode, doAction: $s.deleteRows, ctrlReq: true}
+            ]);
         };
 
         $s.setEanPrefix = e => {

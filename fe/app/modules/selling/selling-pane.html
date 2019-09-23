@@ -69,8 +69,9 @@
             </div>
             <div style="width: 3px;"></div>
             <div style="width: 40%;" class="total-sum-on-selling-modal">
-                <span style="margin-right: 10%;">{{(totals.quantity.toFixed(3)) + " ед."}}</span>
-                <span style="color: yellow;">{{(totals.sum).toFixed(2) + " руб."}}</span>
+                <on-fly-calc-totals totals="totals"></on-fly-calc-totals>
+                <!--<span style="margin-right: 10%;">{{(totals.quantity.toFixed(3)) + " ед."}}</span>-->
+                <!--<span style="color: yellow;">{{(totals.sum).toFixed(2) + " руб."}}</span>-->
             </div>
         </div>
     </div>

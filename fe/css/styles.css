@@ -1531,6 +1531,7 @@ button.user-select {
 }
 
 .totals-root-div {
+    cursor: pointer;
     box-shadow: 5px 5px 5px 0px;
     display: flex;
     background: var(--main-color);
@@ -1722,6 +1723,7 @@ td.price-data {
 }
 
 .totals-on-new-coming {
+    cursor: pointer;
     width: 35%;
     text-align: center;
     font-size: 32px;
@@ -2187,4 +2189,10 @@ button.disabled {
 
 div.add-edit-controls-container {
     font-size: 22px;
+}
+
+div.totals-type {
+    color: var(--white-color);
+    font-size: 20px;
+    margin-top: -10px;
 }

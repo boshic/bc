@@ -5,7 +5,12 @@ import snd from '../../media/audio/sell.mp3';
             function ( httpService, $timeout, $window) {
 
                 let barcodeLength = 13;
+
                 let generateEanKeyCode = 192;
+                let backSpaceKeyCode = 8;
+                let escKeyCode = 27;
+                let enterKeyCode = 13;
+
                 let focusTimeout = 200;
                 let successSound =  new Audio(snd);
 
@@ -110,6 +115,7 @@ import snd from '../../media/audio/sell.mp3';
                             return true;
                         }
                     },
+                    keyCodes: {escKeyCode, enterKeyCode, backSpaceKeyCode},
                     eanPrefix : {value: "000000000", keyCode: generateEanKeyCode},
                     generateEanByKey: (e, ean) => {
                         if (e.ctrlKey && e.keyCode === generateEanKeyCode)
@@ -144,11 +150,12 @@ import snd from '../../media/audio/sell.mp3';
                                 }.bind(element), focusTimeout);
                             });
                     },
-                    keyupHandler: (e, callback1, callback2) => {
-                        if (e.keyCode == 27)
-                            callback1();
-                        if (e.ctrlKey && e.keyCode == 13)
-                            callback2();
+                    keyUpHandler: (e, combinations) => {
+                        combinations.forEach((comb) => {
+                            if((e.keyCode === comb.keyCode)
+                                && (!(comb.ctrlReq) || (comb.ctrlReq && e.ctrlKey)))
+                                comb.doAction();
+                        });
                     },
                     calcTotalsAndRefresh : (filter, findItems) => {
                         filter.calcTotal = true;

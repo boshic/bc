@@ -63,9 +63,11 @@
                         <div style="width: 65%;">
                             <doc-input doc="doc"></doc-input>
                         </div>
-                        <div class="totals-on-new-coming">
-                            <span style="margin-right: 10%;">{{(totals.quantity.toFixed(3)) + " ед."}}</span>
-                            <span style="color: yellow;">{{(totals.sum).toFixed(2) + " руб."}}</span>
+                        <div class="totals-on-new-coming" ng-show="viewTotalsByComing" ng-click="viewTotalsByComing = false">
+                            <on-fly-calc-totals totals="totals" descr="цены поступления"></on-fly-calc-totals>
+                        </div>
+                        <div class="totals-on-new-coming" ng-hide="viewTotalsByComing" ng-click="viewTotalsByComing = true">
+                            <on-fly-calc-totals totals="totalsOut" descr="цены реализации"></on-fly-calc-totals>
                         </div>
                     </div>
                 </td>

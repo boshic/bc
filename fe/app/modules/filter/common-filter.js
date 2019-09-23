@@ -6,8 +6,9 @@ import commonFilterTpl from './common-filter.html';
         $s.allowAllStocks = true;
 
         $s.handleKeyup = e => {
-            if (e.keyCode == 27)
-                $s.toggleFilter();
+            // if (e.keyCode == 27)
+            //     $s.toggleFilter();
+            paneFactory.keyUpHandler(e, [{keyCode: paneFactory.keyCodes.escKeyCode, doAction: $s.toggleFilter}]);
         };
 
         $s.toggleFilter = () => {

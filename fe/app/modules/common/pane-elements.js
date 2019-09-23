@@ -109,6 +109,17 @@
             "<div ng-show='$ctrl.active' class='trans-layer'></div>",
             controller: function() {}
         })
+        .component( "onFlyCalcTotals", {
+            bindings: {
+                totals: '<',
+                descr: '@'
+            },
+            template:
+                "<span style='margin-right: 10%;'>{{($ctrl.totals.quantity.toFixed(3)) + ' ед.'}}</span>" +
+                "<span style='color: yellow;'>{{($ctrl.totals.sum).toFixed(2) + ' руб.'}}</span>" +
+                "<div class='totals-type'>{{$ctrl.descr}}</div>",
+            controller: function() {}
+        })
         .component( "sortingRow", {
                 bindings: {
                     listeningField: '<',

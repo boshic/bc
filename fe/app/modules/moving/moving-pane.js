@@ -69,7 +69,11 @@ import movingPaneTpl from './moving-pane.html';
         });
 
         $s.handleKeyup = e => {
-            paneFactory.keyupHandler(e, $s.openQuantityChangerModal, $s.moveThis);
+            // paneFactory.keyupHandler(e, $s.openQuantityChangerModal, $s.moveThis);
+            paneFactory.keyUpHandler(e, [
+                {keyCode: paneFactory.keyCodes.escKeyCode, doAction: $s.openQuantityChangerModal},
+                {keyCode: paneFactory.keyCodes.enterKeyCode, doAction: $s.moveThis, ctrlReq: true}
+            ]);
         };
 
         $s.setEanPrefix = e => {

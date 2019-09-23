@@ -206,7 +206,7 @@ public class InvoiceHandler extends EntityHandlerImpl {
             return headers;
         }
 
-        return new ResponseItem<>(NOTHING_FOUND,false);
+        return new ResponseItem<>(NOTHING_FOUND, new ArrayList<>(), false);
     }
 
     public Long addInvoiceByFilter(SoldItemFilter filter) {

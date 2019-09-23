@@ -17,7 +17,7 @@ public class ItemSectionHandler {
     }
 
     private ResponseItem<ItemSection> update(ItemSection newSection, ItemSection section) {
-        ResponseItem<ItemSection> responseItem = new ResponseItem<ItemSection>("Создание нового товара ");
+        ResponseItem<ItemSection> responseItem = new ResponseItem<ItemSection>("Создание новой секции ");
         section.setName(newSection.getName());
         itemSectionRepository.save(section);
         return new ResponseItem<ItemSection>("Создана секция '" + section.getName() + "'", true, section);
