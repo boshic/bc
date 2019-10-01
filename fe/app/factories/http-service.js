@@ -1,4 +1,6 @@
-    angular.module('common-http-service', [])
+import { Observable } from 'rxjs';
+
+angular.module('common-http-service', [])
         .factory('httpService',['$http', '$q',
             function ($http, $q) {
 
@@ -34,6 +36,21 @@
                 };
 
                 return {
+                    getItemsRx: (opts) => {
+                        addRequestsQuantity(opts.requestParams);
+                        return new Observable((observer) => {
+                            fetch('/'+ opts.url + opts.params)
+                                .then(res => res.json()).then(json => {
+                                    observer.next(json);
+                                    observer.complete();
+                                    decreaseRequestsQuantity(opts.requestParams);
+                                })
+                                .catch(eroror => {
+                                    decreaseRequestsQuantity(opts.requestParams);
+                                    observer.error();
+                                });
+                        });
+                    },
                     addItem: (opts) => {
                         let defer = $q.defer();
                         addRequestsQuantity(opts.requestParams);

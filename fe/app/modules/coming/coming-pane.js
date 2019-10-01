@@ -26,8 +26,6 @@ import comingPaneTpl from './coming-pane.html';
         };
 
         $s.handleKeyup = e => {
-            // if (e.keyCode == 27)
-            //     calcTotalsAndRefresh();
             paneFactory.keyUpHandler(e, [{keyCode: paneFactory.keyCodes.escKeyCode, doAction: calcTotalsAndRefresh}]);
         };
 

@@ -19,6 +19,10 @@ public class Item {
 //    private BigDecimal price;
     private String ean;
 
+    @Column(name = "alter_name", columnDefinition="varchar(250) COLLATE utf8_general_ci default ''")
+    private String alterName;
+
+
     @Column(name = "ean_synonym", columnDefinition="varchar(13) COLLATE utf8_general_ci default ''")
     private String eanSynonym;
 
@@ -119,6 +123,14 @@ public class Item {
 
     public void setCanBeComposite(Boolean canBeComposite) {
         this.canBeComposite = canBeComposite;
+    }
+
+    public String getAlterName() {
+        return alterName;
+    }
+
+    public void setAlterName(String alterName) {
+        this.alterName = alterName;
     }
 
     @Override

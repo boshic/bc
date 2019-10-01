@@ -52,9 +52,7 @@ import comingItemTpl from './coming-item.html';
         };
 
         $s.handleKeyup = e => {
-            // if (e.keyCode == 27)
-            //     $s.comingConfig.refresh();
-            paneFactory.keyUpHandler(e, [{keyCode: paneFactory.keyCodes.escKeyCode, doAction: vm.comingConfig.refresh}]);
+            paneFactory.keyUpHandler(e, [{keyCode: paneFactory.keyCodes.escKeyCode, doAction: $s.comingConfig.refresh}]);
         };
 
         $s.updateComing = () => {

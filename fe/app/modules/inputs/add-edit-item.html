@@ -11,9 +11,14 @@
             </item-add-edit-controls>
         </div>
         <div>
-            <item-add-edit-name
-                    name="item.name" requests-quantity = "requestParams.requestsQuantity">
-            </item-add-edit-name>
+            <common-item-text-input
+                    text="item.name" description="наименование"
+                    requests-quantity = "requestParams.requestsQuantity">
+            </common-item-text-input>
+            <common-item-text-input
+                    text="item.alterName" description="дополнительное наименование"
+                    requests-quantity = "requestParams.requestsQuantity">
+            </common-item-text-input>
             <div>
                 <div style="display: flex;">
                     <span style="width: 50%;">Единица измерения</span>

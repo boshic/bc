@@ -48,6 +48,7 @@ public class ItemHandler {
             return new ResponseItem<Item>(BAD_EAN_SYNONYM + " " + newItem.getName(), false, newItem);
         }
 
+        item.setAlterName(newItem.getAlterName() == null ? "" : newItem.getAlterName());
         item.setPredefinedQuantity(newItem.getPredefinedQuantity() == null ? BigDecimal.ZERO : newItem.getPredefinedQuantity());
 
         if (item.getCanBeComposite() == null)

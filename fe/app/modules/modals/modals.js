@@ -132,10 +132,6 @@
     };
 
     $s.handleKeyup =  e => {
-        // if (e.keyCode == 27)
-        //     $s.closeModal();
-        // if (e.keyCode == 13)
-        //     $s.sellThis();
         paneFactory.keyUpHandler(e, [
             {keyCode: paneFactory.keyCodes.escKeyCode, doAction: $s.closeModal},
             {keyCode: paneFactory.keyCodes.enterKeyCode, doAction: $s.sellThis, ctrlReq: true}
@@ -221,10 +217,6 @@
     };
 
     $s.handleKeyup =  e => {
-        // if (e.keyCode == 27)
-        //     $s.closeModal();
-        // if (e.keyCode == 13)
-        //     $s.moveThis();
         paneFactory.keyUpHandler(e, [
             {keyCode: paneFactory.keyCodes.escKeyCode, doAction: $s.closeModal},
             {keyCode: paneFactory.keyCodes.enterKeyCode, doAction: $s.moveThis, ctrlReq: true}

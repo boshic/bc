@@ -1,3 +1,5 @@
+import './rxjstest';
+
 import itemInputItemsTpl from './item-input-items.html';
 import userPickerTpl from './user-picker.html';
 import pagePickerTpl from './page-picker.html';
@@ -275,7 +277,7 @@ let stockCntrlr = ($s, httpService) => {
 
 };
 
-angular.module('inputs', [])
+angular.module('inputs', ['rxjstest'])
     .directive( "bankInput", () => {
         return {
             restrict: 'E',
@@ -555,30 +557,19 @@ angular.module('inputs', [])
             "</span>",
         controller: function() {}
     })
-    .component( "itemAddEditName", {
+    .component( "commonItemTextInput", {
         bindings: {
-            name: '=',
+            text: '=',
+            description: '@',
             requestsQuantity: '<?'
         },
         template:
-        "<span>Наименование:</span>" +
-        "<span class='warning-item-input' ng-hide='$ctrl.name.length > 0'>Введите наименование</span>" +
-        "<input type='text' class='form-control' ng-model='$ctrl.name'" +
-            "ng-readonly='$ctrl.requestsQuantity'" +
-            "placeholder=''/>",
-        controller: function() {}
-    })
-    .component( "itemAddEditAddress", {
-        bindings: {
-            address: '=',
-            requestsQuantity: '<?'
-        },
-        template:
-        "<span>Адрес:</span>" +
-        "<span class='warning-item-input'" +
-            "ng-hide='$ctrl.address.length > 0'>Введите адрес</span>" +
-        "<input type='text' class='form-control' placeholder='Адрес:' "+
-            "ng-readonly='$ctrl.requestsQuantity' ng-model='$ctrl.address'/>",
+        "<span>{{$ctrl.description}}:</span>" +
+        "<span class='warning-item-input' ng-hide='$ctrl.text.length > 0'>" +
+            "{{'Введите ' + $ctrl.description}}</span>" +
+        "<input type='text' class='form-control' ng-model='$ctrl.text'" +
+        "ng-readonly='$ctrl.requestsQuantity'" +
+        "placeholder=''/>",
         controller: function() {}
     })
     .component( "itemAddEditControls", {
@@ -651,7 +642,7 @@ angular.module('inputs', [])
             let getNewSection = () => {return {name: ''};};
             let getNewItem = () => {
                 return {
-                    name: '', ean: '',
+                    name: '', ean: '', alterName: '',
                     predefinedQuantity: 0, eanSynonym: '',
                     section: getNewSection(),
                     component: {},

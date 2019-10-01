@@ -30,11 +30,6 @@ import soldPaneTpl from './sold-pane.html';
                         {type: 'invoice', data: $s.filter, method: 'addInvoiceByFilter'}], $s.reports);
         };
 
-        // $s.handleKeyup = e => {
-        //     if (e.keyCode == 27)
-        //         calcTotalsAndRefresh();
-        // };
-
         $s.handleKeyup = e => {
             paneFactory.keyUpHandler(e, [{keyCode: paneFactory.keyCodes.escKeyCode, doAction: calcTotalsAndRefresh}]);
         };

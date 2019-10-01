@@ -6,8 +6,6 @@ import commonFilterTpl from './common-filter.html';
         $s.allowAllStocks = true;
 
         $s.handleKeyup = e => {
-            // if (e.keyCode == 27)
-            //     $s.toggleFilter();
             paneFactory.keyUpHandler(e, [{keyCode: paneFactory.keyCodes.escKeyCode, doAction: $s.toggleFilter}]);
         };
 
@@ -90,8 +88,8 @@ import commonFilterTpl from './common-filter.html';
                     if (filter.ean.length > paneFactory.barcodeLength && filter.ean > 0)
                         filter.ean = filter.ean.substring(paneFactory.barcodeLength);
                     if (filter.ean.length === paneFactory.barcodeLength && filter.ean > 0) {
-                        if (!filter.visible)
-                            filter.fromDate = commonStartDate;
+                        // if (!filter.visible)
+                        //     filter.fromDate = commonStartDate;
                         calcTotalsAndRefresh();
                     }
                 };
