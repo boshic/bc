@@ -9,7 +9,7 @@
             <div style="display: flex;">
                 <div style="width: 10%;">
                     <button class="glyphicon glyphicon-shopping-cart sell-icon"
-                        ng-click="sellThis()"
+                        ng-click="release()"
                         ng-show="canRelease"
                         title="Продать">
                     </button>
@@ -47,11 +47,12 @@
                     <tr class="hoverable" ng-repeat="x in rows track by $index">
                         <td class="price-data" title="Номер">{{ $index + 1 }}</td>
                         <td title="">{{ x.coming.item.name + "(" + x.coming.item.ean + ")"}}</td>
-                        <td class="current-quantity unprintable" title="Текущее количество">{{ x.currentQuantity }}</td>
+                        <td class="text-table-row"
+                            title="Текущее количество">{{ x.currentQuantity }}</td>
                         <td class="hoverable for-sale" title="К продаже">
                             <input type="number"
                                    class="form-control selling-quantity"
-                                   id="change-quantity-on-selling-modal"
+                                   id={{quantityInputId}}
                                    ng-model="x.quantity"
                                    ng-change="checkRows()"/>
                         </td>

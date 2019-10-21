@@ -17,7 +17,8 @@
             </tr>
             </thead>
             <tbody>
-            <tr class="hoverable" ng-repeat="x in $ctrl.items">
+            <tr class="hoverable" ng-repeat="x in $ctrl.items"
+                ng-class='{"item-synonym-record": x.eanSynonym > 0}'>
                 <td class="hoverable" style="width: 45px;"
                     title="Код" ng-click="$ctrl.selectItem()(x.id)">
                     {{ x.code || x.id}}

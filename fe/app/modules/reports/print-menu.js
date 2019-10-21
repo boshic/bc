@@ -1,8 +1,9 @@
 // define(['angular'], angular => {
 
-    let printMenuCntrlr = function ($scope, httpService)  {
+    let printMenuCntrlr = function ($scope, httpService, paneFactory)  {
 
         let vm = this;
+        vm.btnId = paneFactory.generateUuid();
 
         let openReport = (group, type, id) => {
             window.open('reports/' + group + '/' + type +'.html?id='+id+'&stamp='+vm.hasStamp, "Атчот");
@@ -17,6 +18,7 @@
 
         vm.print = function(report, e) {
 
+            paneFactory.changeElementState(document.getElementById(vm.btnId), ['focus']);
             e.stopPropagation();
             vm.toggleReportList();
 
@@ -32,11 +34,10 @@
             }
         };
     };
-    printMenuCntrlr.$inject = ['$scope', 'httpService'];
+    printMenuCntrlr.$inject = ['$scope', 'httpService', 'paneFactory'];
 
     angular.module('print-menu', [])
-        .component( "printMenu",
-            {
+        .component( "printMenu", {
             transclude: true,
             bindings: {
                 reports: "=reports",
@@ -46,7 +47,7 @@
             template:
             "<div class='dropdown' style='display: inherit;'>" +
             "<button class='glyphicon glyphicon-print print-cmp-btn' " +
-            "ng-click='$ctrl.toggleReportList()'></button>" +
+            "id={{$ctrl.btnId}} ng-click='$ctrl.toggleReportList()'></button>" +
             "<ul class='stocks-list' ng-show='$ctrl.reportListVisible'>" +
             "<li style='list-style: none;'>" +
             "<table class='table report-list-table'>" +

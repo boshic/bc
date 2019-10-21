@@ -27,6 +27,9 @@ public class ComingItemHandler extends EntityHandlerImpl {
 
     private static final String AUTO_COMING_MAKER = "Автоприход";
 
+    private static final String CHECK_COMING_INVALID_DOC=
+            "Приход с указанным товаром, ценой и документом уже содержится!";
+
     public static ComingItemPredicatesBuilder cipb = new ComingItemPredicatesBuilder();
 
 //    public static QComingItem qComingItem = QComingItem.comingItem;
@@ -205,7 +208,7 @@ public class ComingItemHandler extends EntityHandlerImpl {
 
     public ResponseItem<ComingItem> getComingForSell(String ean, Long stockId) {
 
-        Item item = itemHandler.getItemByEanSynonim(ean);
+        Item item = itemHandler.getItemByEanSynonym(ean);
 
         if (item == null)
             return new ResponseItem<ComingItem>("не найден товар с заданным ШК: " + ean, false);
@@ -268,7 +271,8 @@ public class ComingItemHandler extends EntityHandlerImpl {
 
             }
 
-            responseItem.getItems().add(responseItemTemp);
+//            responseItem.getItems().add(responseItemTemp);
+            responseItem.setItem(responseItemTemp);
         }
 
         return responseItem;
@@ -318,7 +322,8 @@ public class ComingItemHandler extends EntityHandlerImpl {
         //item
         ResponseItem responseByItem = new ResponseItem("Товар с именем " + coming.getItem().getName() + " найден");
 
-        Item item = itemHandler.getItemByEan(coming.getItem().getEan());
+//        Item item = itemHandler.getItemByEan(coming.getItem().getEan());
+        Item item = itemHandler.getItemByEanSynonym(coming.getItem().getEan());
 
         if (item == null) {
 
@@ -383,8 +388,9 @@ public class ComingItemHandler extends EntityHandlerImpl {
 
         if (comingItemRepository.findAll(predicate).size() > 0) {
 
-            responseItem.getItems().add(new ResponseItem(
-                 "Приход этого наименования с таким же документом и ценой " +"уже содержится, добавление НЕ состоится"));
+            responseItem.getItems().add(new ResponseItem(CHECK_COMING_INVALID_DOC));
+
+            responseItem.setText(CHECK_COMING_INVALID_DOC);
 
             return responseItem;
         }
@@ -394,11 +400,23 @@ public class ComingItemHandler extends EntityHandlerImpl {
         return responseItem;
     }
 
+    void checkEanInFilter(ComingItemFilter filter) {
+
+        String eanSynonym;
+        if(itemHandler.isEanValid(filter.getEan())) {
+            eanSynonym = itemHandler.getItemByEan(filter.getEan()).getEanSynonym();
+            if(itemHandler.isEanValid(eanSynonym))
+                filter.setEan(eanSynonym);
+        }
+    }
+
     public ResponseByComingItems findByFilter(ComingItemFilter filter) {
 
 //        Sort sort = new Sort(Sort.Direction.DESC, "doc.date");
 
-        abstractEntityManager.test();
+//        abstractEntityManager.test();
+
+        checkEanInFilter(filter);
 
         Sort sort = new Sort(Sort.Direction.fromStringOrNull(filter.getSortDirection()), filter.getSortField());
 
@@ -430,7 +448,7 @@ public class ComingItemHandler extends EntityHandlerImpl {
 
     public DtoItemForNewComing getItemForNewComing(String ean) {
 
-        Item item = itemHandler.getItemByEanSynonim(ean);
+        Item item = itemHandler.getItemByEanSynonym(ean);
         if(item == null)
             return new DtoItemForNewComing(null, BigDecimal.ZERO, BigDecimal.ZERO);
 

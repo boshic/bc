@@ -1,4 +1,8 @@
-import './rxjstest';
+// import './rxjstest';
+
+import 'angular1-async-filter';
+import { BehaviorSubject, of, Subject } from 'rxjs';
+import { filter, tap, map, debounceTime, distinctUntilChanged, switchMap } from 'rxjs/operators';
 
 import itemInputItemsTpl from './item-input-items.html';
 import userPickerTpl from './user-picker.html';
@@ -30,26 +34,28 @@ let commonItemCtrlr = ($s, itemFactory, itemConfig) => {
             $s.getItems();
     }, true);
 
+    let searchTerms = itemFactory.getSearchTerms($s, config.getItemsUrl);
+
     $s.getItems = () => {
-        itemFactory.getItems($s, config.getItemsUrl);
+        searchTerms.next($s.item.name);
     };
 
     $s.getItemById = (id) => {
         return itemFactory.getItemById(id, config.getItemByIdUrl, $s.requestParams);
     };
-
+    //
     $s.selectItem = (id) => {
         itemFactory.selectItem(id, $s, config);
     };
-
+    //
     $s.changeItem = (id) => {
         itemFactory.changeItem(id, $s);
     };
-
+    //
     $s.clearItem = () => {
         itemFactory.clearItem($s);
     };
-
+    //
     $s.setEanPrefix = (e, field) => {
         itemFactory.setEanPrefix($s, e, field);
     };
@@ -136,7 +142,12 @@ let itemChangeCtrlr = ($s, itemFactory, paneFactory) => {
     };
 
     $s.focusOnEan = () => {
-        paneFactory.changeElementState(document.getElementById($s.eanInputId), ['focus']);
+        paneFactory.changeElementState(document.getElementById($s.eanInputId), ['select']);
+    };
+
+    $s.copyEanToSynonym = () => {
+        $s.item.eanSynonym = $s.item.ean;
+        $s.focusOnEan();
     };
 
     return commonAddEditCtrlr($s, itemFactory, 'itemConfig');
@@ -277,7 +288,7 @@ let stockCntrlr = ($s, httpService) => {
 
 };
 
-angular.module('inputs', ['rxjstest'])
+angular.module('inputs', ['asyncFilter'])
     .directive( "bankInput", () => {
         return {
             restrict: 'E',
@@ -540,11 +551,11 @@ angular.module('inputs', ['rxjstest'])
         }
     })
     .component( "itemInputTotal", {
-                bindings: {total: '<', requestsQuantity: '<'},
+                bindings: {total: '<', requestsQuantity: '='},
                 template:"<span ng-show='$ctrl.total > 0 && $ctrl.requestsQuantity === 0'>" +
                     "{{$ctrl.total}}</span>" +
                 "<span class='glyphicon glyphicon-warning-sign' " +
-                        "ng-hide='$ctrl.requestsQuantity === 0'></span>",
+                        "ng-show='$ctrl.requestsQuantity > 0'></span>",
                 controller: function() {}
         })
     .component( "itemAddEditId", {
@@ -632,8 +643,8 @@ angular.module('inputs', ['rxjstest'])
         template: itemComponentsPickerTpl,
         controller: function() {}
     })
-    .factory('itemFactory',['httpService', 'paneFactory',
-        function (httpService, paneFactory) {
+    .factory('itemFactory',['httpService', 'paneFactory', '$filter',
+        function (httpService, paneFactory, $filter) {
 
             let getNewBank = () => {return {name: ''};};
             let getNewSupplier = () => { return {name: ''};};
@@ -695,7 +706,6 @@ angular.module('inputs', ['rxjstest'])
                     {
                         getEmptyItem: getNewItem,
                         getItemsUrl: 'getItems',
-                        // getComponentsForCompositeItem
                         getItemByIdUrl: 'getItemById'
                 },
                 supplierConfig :
@@ -734,13 +744,15 @@ angular.module('inputs', ['rxjstest'])
                     );
                 },
                 selectItem: (id, $s, config) => {
-                    $s.items=[];
+                    // $s.items=[];
                     $s.getItemById(id).then(
                         item => {
+                            $s.items=[item];
                             $s.item = item;
                             if(typeof config.selectItemForParent === 'function')
                                 config.selectItemForParent($s);
-                        }
+                        },
+                        resp => {$s.item.name = resp;}
                     );
                 },
                 clearItem: ($s) => {
@@ -770,7 +782,8 @@ angular.module('inputs', ['rxjstest'])
                     );
                 },
                 closeModal : ($s) => {
-                    $s.getItems();
+                    if($s.item.id > 0)
+                        $s.getItems()($s.item.id);
                     $s.modalVisible = false;
                     $s.warning ="";
                 },
@@ -785,6 +798,32 @@ angular.module('inputs', ['rxjstest'])
                 },
                 setEanPrefix : ($s, e, field) => {
                     $s.item[field] = paneFactory.generateEanByKey(e, $s.item[field]);
+                    // if(paneFactory.isEanValid($s.item[field]))
+                    //     $s.getItems();
+                },
+                getSearchTerms: ($s, url) => {
+                    let searchTerms = new Subject();
+
+                    $filter('async')(searchTerms
+                        .pipe(
+                            debounceTime(400),
+                            map(keyword => keyword.trim()),
+                            // filter(keyword => keyword.length > 0),
+                            // filter(() => $scope.test),
+                            // distinctUntilChanged(),
+                            switchMap(keyword =>
+                                httpService.getItemsRx({
+                                    requestParams: $s.requestParams,
+                                    url: url,
+                                    params: '?filter=' + keyword
+                                })),
+                            tap((value) => {
+                                $s.items = value;
+                                console.log(value);
+                            }),
+                        ), $s);
+
+                    return searchTerms;
                 }
             };
         }

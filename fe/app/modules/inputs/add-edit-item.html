@@ -55,10 +55,10 @@
                                             'enabled-button': item.ean.length != 13}"
                                 ng-disabled="item.ean.length === 13"
                                 ng-click="getNextId()"></button>
-                    <eraser style="margin-top: 6px;" data="item.ean" ng-click="focusOnEan()">
-                    </eraser>
-                    <input  style="width: 45%;" id="{{eanInputId}}"
-                            type="text" class="form-control" maxlength="13" placeholder=""
+                    <eraser style="margin-top: 6px;" data="item.ean" ng-click="focusOnEan()"></eraser>
+                    <input  style="width: 45%; text-align: center;" id="{{eanInputId}}"
+                            type="text" class="form-control"
+                            maxlength="13" placeholder=""
                             ng-keydown="setEanPrefix($event, 'ean')"
                             ng-model="item.ean"/>
 
@@ -66,7 +66,10 @@
                           ng-hide="item.eanSynonym.length == 13 || item.eanSynonym.length == 0">
                         Неверно указан штрих-код синоним
                     </span>
-                    <input style="width: 49%;" type="text"
+                    <button class="glyphicon glyphicon-arrow-right copy-ean-btn"
+                        ng-click="copyEanToSynonym()">
+                    </button>
+                    <input style="width: 45%; text-align: center;" type="text"
                            class="form-control" maxlength="13" placeholder=""
                            ng-keydown="setEanPrefix($event, 'eanSynonym')"
                            ng-model="item.eanSynonym"/>

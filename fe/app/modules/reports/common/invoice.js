@@ -25,7 +25,7 @@ import '../../../../css/invoice.css';
                             $window.document.title = resp.buyer.name + " №" +
                                 resp.id + " от " + new Date(resp.date).toLocaleDateString() +
                                 ", " +resp.stock.name;
-                            // $window.print();
+                            $window.print();
                         }, 200);
                 },
                 resp => { console.log(resp); }

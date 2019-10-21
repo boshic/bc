@@ -39,12 +39,12 @@ angular.module('common-http-service', [])
                     getItemsRx: (opts) => {
                         addRequestsQuantity(opts.requestParams);
                         return new Observable((observer) => {
-                            fetch('/'+ opts.url + opts.params)
-                                .then(res => res.json()).then(json => {
-                                    observer.next(json);
-                                    observer.complete();
-                                    decreaseRequestsQuantity(opts.requestParams);
-                                })
+                            $http.get('/'+ opts.url + opts.params)
+                                 .then(resp => {
+                                     observer.next(resp.data);
+                                     decreaseRequestsQuantity(opts.requestParams);
+                                     observer.complete();
+                                 })
                                 .catch(eroror => {
                                     decreaseRequestsQuantity(opts.requestParams);
                                     observer.error();

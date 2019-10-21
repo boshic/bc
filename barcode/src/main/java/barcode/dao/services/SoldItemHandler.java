@@ -330,6 +330,8 @@ public class SoldItemHandler extends EntityHandlerImpl {
 
 //        SoldItemPredicatesBuilder sipb = new SoldItemPredicatesBuilder();
 
+        comingItemHandler.checkEanInFilter(filter);
+
         Sort sort = new Sort(Sort.Direction.fromStringOrNull(filter.getSortDirection()), filter.getSortField());
 
         if(filter.getGroupByItems())

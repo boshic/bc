@@ -1,17 +1,15 @@
 <div ng-transclude></div>
 
-<div class="item-input-on-panes"
-     ng-show="item.name.length > 0">
+<div class="item-input-on-panes" ng-show="itemInputVisible">
     <item-input item="item" get-items="getItems"></item-input>
 </div>
-<div class="item-input-on-panes"
-     ng-show="reportListVisible">
+<div class="item-input-on-panes" ng-show="reportListVisible">
     <buyer-input buyer="buyer"></buyer-input>
+    <!--<autocomplete></autocomplete>-->
 </div>
 <div>
     <quantity-changer-modal
-            check-input = 'checkRows()'
-            after-close = 'blankSearch()'
+            check-input = 'checkRows()' after-close = 'blankSearch()'
             modal-data="quantityChangerModalData">
     </quantity-changer-modal>
 </div>
@@ -33,7 +31,6 @@
 
     <button class='glyphicon glyphicon-arrow-up pane-searchinput-btn'
             title="искать по наименованию"
-            ng-disabled = "barcode.length === 0"
             ng-click="editItem(barcode)">
     </button>
 
@@ -63,10 +60,10 @@
                         <div style="width: 65%;">
                             <doc-input doc="doc"></doc-input>
                         </div>
-                        <div class="totals-on-new-coming" ng-show="viewTotalsByComing" ng-click="viewTotalsByComing = false">
+                        <div class="totals-on-new-coming" ng-show="totalsByComingVisible" ng-click="totalsByComingVisible = false">
                             <on-fly-calc-totals totals="totals" descr="цены поступления"></on-fly-calc-totals>
                         </div>
-                        <div class="totals-on-new-coming" ng-hide="viewTotalsByComing" ng-click="viewTotalsByComing = true">
+                        <div class="totals-on-new-coming" ng-hide="totalsByComingVisible" ng-click="totalsByComingVisible = true">
                             <on-fly-calc-totals totals="totalsOut" descr="цены реализации"></on-fly-calc-totals>
                         </div>
                     </div>
@@ -91,7 +88,7 @@
         <tbody>
             <tr class="hoverable" ng-repeat="x in rows track by $index">
                 <td class="hoverable" title="Номер">{{ $index + 1 }}</td>
-                <td class="hoverable" title="Товар">
+                <td class="hoverable" title="{{x.item.ean}}">
                     <a href="#" style="color: black; text-decoration: unset;">
                         <span class="item-name-on-coming-item-pane"
                               ng-click="editItem(x.item.name)">

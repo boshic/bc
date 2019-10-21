@@ -141,7 +141,7 @@ public class ItemHandler {
         return  itemRepository.findOneByEan(ean);
     }
 
-    Item getItemByEanSynonim (String ean) {
+    Item getItemByEanSynonym (String ean) {
         Item item = itemRepository.findOneByEan(ean);
 
         if(item != null && item.getEanSynonym().length() == EAN_LENGTH) {
@@ -151,6 +151,11 @@ public class ItemHandler {
         }
 
         return item;
+    }
+
+    Boolean isEanValid(String ean) {
+
+        return (ean != null && ean.length() == EAN_LENGTH);
     }
 
 }

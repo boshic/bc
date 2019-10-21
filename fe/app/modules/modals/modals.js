@@ -85,87 +85,84 @@
     };
     textEditModalCtrlr.$inject = ['$scope', 'paneFactory', '$element'];
 
-    let sellingModalCtrlr = ($s, $http, paneFactory, elem, printFactory) => {
+    let commonReleaseModalController = ($s, paneFactory, modalFactory, modalParams) => {
 
-    $s.totals = {
-        date: new Date,
-        sum: 0,
-        quantity: 0
-    };
-
-    let checkInput = row => {
-        row.quantity = paneFactory.checkNumberLimit(row.quantity, row.currentQuantity);
-    };
-
-    $s.$watchCollection("[modalConfig.hidden, buyer]", () => {
-
-        if($s.modalConfig.data) {
-            let coming = $s.modalConfig.data;
-            $s.comment = "";
-            $s.stock = coming.stock;
-
-            $s.rows = [];
-            $s.rows.push(
-                {
-                    coming: coming,
-                    item: coming.item,
-                    price: coming.priceOut,
-                    vat: paneFactory.user.stock.organization.vatValue,
-                    quantity: 1,
-                    currentQuantity: coming.currentQuantity
-                }
-            );
-
-            $s.modalConfig.data = undefined;
-        }
-        if($s.rows)
-            $s.checkRows();
-        if(!$s.modalConfig.hidden)
-            $s.changeQuantInLastRow();
-    }, true);
-
-    $s.modalConfig.hidden = true;
-
-    $s.closeModal = () => {
-        $s.modalConfig.data = undefined;
+        $s.quantityInputId = paneFactory.generateUuid();
         $s.modalConfig.hidden = true;
+        let config = modalFactory[modalParams];
+        $s.requestParams = {requestsQuantity: 0};
+
+        $s.totals = {
+            date: new Date,
+            sum: 0,
+            quantity: 0
+        };
+
+        let checkInput = row => {
+            row.quantity = paneFactory.checkNumberLimit(row.quantity, row.currentQuantity);
+        };
+
+        $s.$watchCollection(config.watchingValue, () => {
+
+            if($s.modalConfig.data) {
+                let coming = $s.modalConfig.data;
+                $s.comment = "";
+                $s.stock = coming.stock;
+
+                $s.rows = [];
+                $s.rows.push(
+                    {
+                        coming: coming,
+                        item: coming.item,
+                        price: coming.priceOut,
+                        vat: paneFactory.user.stock.organization.vatValue,
+                        quantity: 1,
+                        currentQuantity: coming.currentQuantity
+                    }
+                );
+
+                $s.modalConfig.data = undefined;
+            }
+            if($s.rows)
+                $s.checkRows();
+            if(!$s.modalConfig.hidden)
+                setTimeout(() => {$s.changeQuantInLastRow();}, 0);
+        }, true);
+
+        $s.closeModal = () => {
+            $s.modalConfig.data = undefined;
+            $s.modalConfig.hidden = true;
+        };
+
+        $s.handleKeyup =  e => {
+            paneFactory.keyUpHandler(e, [
+                {keyCode: paneFactory.keyCodes.escKeyCode, doAction: $s.closeModal},
+                {keyCode: paneFactory.keyCodes.enterKeyCode, doAction: $s.sellThis, ctrlReq: true}
+            ]);
+        };
+
+        $s.setReportData = () => {
+            modalFactory.setReportData($s, config);
+        };
+
+        $s.checkRows = () => {
+            paneFactory.checkRowsForSelling($s, paneFactory.user);
+        };
+
+        $s.release = () => {
+            modalFactory.releaseItem($s, config.addItemUrl);
+        };
+
+        $s.changeQuantInLastRow = () => {
+            paneFactory
+                .changeElementState(document.getElementById($s.quantityInputId), ['focus', 'select']);
+        };
+
     };
 
-    $s.handleKeyup =  e => {
-        paneFactory.keyUpHandler(e, [
-            {keyCode: paneFactory.keyCodes.escKeyCode, doAction: $s.closeModal},
-            {keyCode: paneFactory.keyCodes.enterKeyCode, doAction: $s.sellThis, ctrlReq: true}
-        ]);
-    };
+    let sellingModalCtrlr = ($s, paneFactory, modalFactory) => {
 
-    $s.setReportData = () => {
-        let data = { stock: $s.stock, buyer: $s.buyer, comment: $s.comment, rows: $s.rows};
-        printFactory.setReportsByParams([
-            {type: 'invoiceWithContract', data: data, method: 'addInvoice'},
-            {type: 'invoice', data: data, method: 'addInvoice'}], $s.reports);
-    };
-
-    $s.checkRows = () => {
-        paneFactory.checkRowsForSelling($s, paneFactory.user);
-    };
-
-    $s.sellThis = () => {
-        $s.checkRows();
-        let row =   $s.rows[0];
-        $s.closeModal();
-        $http.post('/addOneSelling', row)
-            .then(
-                resp => {
-                    (resp.data.success) ? paneFactory.successSound.play() : $s.warning = resp.data.text;
-                    $s.modalConfig.refresh();
-                },
-                () => {$s.warning = "ошибка при проведении продажи!";}
-            );
-    };
-
-    $s.changeQuantInLastRow = () => {
-        paneFactory.changeElementState(document.getElementById('change-quantity-on-selling-modal'), ['focus']);
-    };
+        return commonReleaseModalController($s, paneFactory, modalFactory, 'sellingModalConfig');
 
 };
 
@@ -254,7 +251,7 @@
                     // (resp.data.success) ? appConfig.sound.play() : $s.warning = resp.data.text;
                     // $s.comment = "";
                 },
-                () => {$s.warning = "ошибка при проведении продажи!";}
+                () => {$s.warning = "ошибка при проведении перемещения!";}
             );
     };
 
@@ -352,10 +349,9 @@
                 // templateUrl: 'html/selling/selling-modal.html',
                 scope: {modalConfig: '='},
                 transclude: true,
-                controller: ( $scope, $http, paneFactory, $element, printFactory) => {
-                    return sellingModalCtrlr($scope, $http, paneFactory, $element, printFactory);
-                },
-                link: ( scope,elem) => {}
+                controller: ( $scope, paneFactory, modalFactory) => {
+                    return sellingModalCtrlr($scope, paneFactory, modalFactory);
+                }
             }
         })
         .directive( "movingModal", () => {
@@ -384,16 +380,50 @@
                 }
             }
         })
-        .factory('modalFactory',[
-            function () {
+        .factory('modalFactory',['httpService', 'paneFactory', 'printFactory',
+            function (httpService, paneFactory, printFactory) {
                 return {
+                    sellingModalConfig: {
+                        watchingValue: '[modalConfig.hidden, buyer]',
+                        addItemUrl: 'addOneSelling',
+                        priceProp: 'price',
+                        allowedReports: (data) => {
+                            return [
+                                {type: 'invoiceWithContract', data: data, method: 'addInvoice'},
+                                {type: 'invoice', data: data, method: 'addInvoice'}
+                            ];
+                        }
+                    },
                     openModal: (index, rows, modalData) => {
                         if(rows.length) {
                             modalData.hidden = false;
                             (angular.isDefined(index)) ? modalData.row = rows[index] : modalData.row = rows[0];
                         }
                     },
+                    setReportData: ($s, config) => {
+                        let data = { stock: $s.stock, buyer: $s.buyer, comment: $s.comment,
+                            rows: printFactory.getRowsForReports($s, config.priceProp)};
+                        printFactory.setReportsByParams(
+                            config.allowedReports({
+                                stock: $s.stock, buyer: $s.buyer, comment: $s.comment,
+                                rows: printFactory.getRowsForReports($s, config.priceProp)
+                            }), $s.reports);
+                    },
+                    releaseItem: ($s, url) => {
+                        $s.checkRows();
+                        let row =   $s.rows[0];
+                        $s.closeModal();
+                        httpService.addItem({data: row, url, requestParams: $s.requestParams})
+                            .then(
+                                resp => {
+                                    (resp.success) ? paneFactory.successSound.play() : $s.warning = resp.text;
+                                    $s.modalConfig.refresh();
+                                },
+                                () => {
+                                    $s.warning = "ошибка при проведении продажи!";
+                                }
+                            );
+                    }
                 };
             }
         ]);
-// });

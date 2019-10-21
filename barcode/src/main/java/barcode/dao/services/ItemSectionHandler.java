@@ -1,6 +1,9 @@
 package barcode.dao.services;
 
 import barcode.dao.entities.ItemSection;
+import barcode.dao.entities.QItem;
+import barcode.dao.entities.QItemSection;
+import barcode.dao.predicates.ItemSectionPredicateBuilder;
 import barcode.dao.repositories.ItemSectionRepository;
 import barcode.dto.ResponseItem;
 import org.springframework.stereotype.Service;
@@ -25,7 +28,11 @@ public class ItemSectionHandler {
 
     public Iterable<ItemSection> getItems(String name) {
 
-        return itemSectionRepository.findByNameContainingIgnoreCaseOrderByNameAsc(name);
+        ItemSectionPredicateBuilder ispb = new ItemSectionPredicateBuilder();
+
+//        ispb.test(QItem.item);
+        return itemSectionRepository.findAll(ispb.buildByFilter(name));
+//        return itemSectionRepository.findByNameContainingIgnoreCaseOrderByNameAsc(name);
     }
 
     public ItemSection getItemById(Long id) {

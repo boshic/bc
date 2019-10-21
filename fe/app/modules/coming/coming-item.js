@@ -67,17 +67,18 @@ import comingItemTpl from './coming-item.html';
 
         $s.addComing = () => {
             $s.coming.user = paneFactory.user;
-            httpService.addItem({data: $s.coming, url:'addComing',
-                requestParams: $s.requestParams})
-                .then(
-                resp => {
-                    $s.coming = resp.item;
-                    $s.checkComing();
-                    $s.hasSellings = false;
-                },
-                resp => { console.log(resp);}
-            );
-        };
+            if(confirm("Подтвердите добавление копии прихода!"))
+                httpService.addItem({data: $s.coming, url:'addComing',
+                    requestParams: $s.requestParams})
+                    .then(
+                    resp => {
+                        $s.coming = resp.item;
+                        $s.checkComing();
+                        $s.hasSellings = false;
+                    },
+                    resp => { console.log(resp);}
+                );
+            };
 
         $s.deleteComing = () => {
             if(confirm("Подтвердите удаление"))
@@ -108,6 +109,7 @@ import comingItemTpl from './coming-item.html';
                 && (coming.price != null && coming.priceOut != null)
                 && (coming.price >= 0 && coming.priceOut >= 0)
                 && (angular.isDefined(coming.item.id) && coming.item.id !== null)
+                && (!coming.item.eanSynonym > 0)
                 && (angular.isDefined(coming.doc.id) && coming.doc.id !== null)
                 && (angular.isDefined(coming.doc.date)))
                     setPermissions(true, coming.id > 0 && $s.hasSellings === false);

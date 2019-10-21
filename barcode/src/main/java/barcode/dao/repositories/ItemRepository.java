@@ -9,7 +9,8 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface ItemRepository extends CrudRepository<Item, Long>, QueryDslPredicateExecutor<Item> {
+public interface ItemRepository extends CrudRepository<Item, Long>,
+        QueryDslPredicateExecutor<Item> {
     Item findTopByOrderByIdDesc();
     List<Item> findAll();
     List<Item> findByNameContainingIgnoreCase(String name);

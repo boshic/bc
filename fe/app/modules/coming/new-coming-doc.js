@@ -4,6 +4,7 @@ import newComingDocPaneTpl from './new-coming-doc.html';
 
         $s.rows = [];
         $s.allowAllStocks = false;
+        $s.itemInputVisible = false;
 
         let getEpmtyItem = itemFactory.itemConfig.getEmptyItem;
         $s.item = getEpmtyItem();
@@ -14,7 +15,7 @@ import newComingDocPaneTpl from './new-coming-doc.html';
         $s.barcode = "";
         $s.warning = "";
         $s.canRelease = false;
-        $s.viewTotalsByComing = true;
+        $s.totalsByComingVisible = true;
         $s.totals = { sum: 0, quantity: 0 };
         $s.totalsOut = { sum: 0, quantity: 0 };
 
@@ -80,6 +81,7 @@ import newComingDocPaneTpl from './new-coming-doc.html';
 
                     } else {
                         $s.warning = "Такого товара нет, нужно добавить!";
+                        $s.itemInputVisible = true;
                         $s.item = angular.extend(getEpmtyItem(), {name: ean, ean: ean});
                     }
                 },
@@ -92,6 +94,7 @@ import newComingDocPaneTpl from './new-coming-doc.html';
 
         $s.editItem = (name) => {
             $s.item = angular.extend(getEpmtyItem(), {name: name, ean: name});
+            $s.itemInputVisible = !$s.itemInputVisible;
         };
 
         $s.getItems = (ean) => {
@@ -180,7 +183,8 @@ import newComingDocPaneTpl from './new-coming-doc.html';
                 httpService.addItem({data: $s.rows, url: 'addComings', requestParams:$s.requestParams})
                     .then(
                     resp => {
-                        $s.deleteRows();
+                        resp.item.success ? $s.deleteRows() : $s.warning = resp.item.text;
+
                     },
                     resp => {
                         $s.warning = "ошибка при проведении операции! Позиций - "
@@ -191,7 +195,6 @@ import newComingDocPaneTpl from './new-coming-doc.html';
         };
 
         $s.handleKeyup = e => {
-            // paneFactory.keyupHandler(e, $s.openQuantityChangerModal, $s.makeComing);
             paneFactory.keyUpHandler(e, [
                 {keyCode: paneFactory.keyCodes.escKeyCode, doAction: $s.openQuantityChangerModal},
                 {keyCode: paneFactory.keyCodes.enterKeyCode, doAction: $s.makeComing, ctrlReq: true}
@@ -202,6 +205,7 @@ import newComingDocPaneTpl from './new-coming-doc.html';
             $s.barcode = "";
             $s.item = getEpmtyItem();
             $s.warning = "";
+            $s.itemInputVisible = false;
             paneFactory.changeElementState(document.getElementById('new-coming-doc'), ['focus']);
         };
 

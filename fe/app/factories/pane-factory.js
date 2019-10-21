@@ -38,6 +38,10 @@ import snd from '../../media/audio/sell.mp3';
                     return pages;
                 };
 
+                let isEanValid = (ean) => {
+                    return (ean > 0 && ean.length === barcodeLength);
+                };
+
                 let getDiscountedPrice = (price, discount) => {
                         if(angular.isDefined(discount))
                             return (price - price * discount/100).toFixed(2);
@@ -102,6 +106,7 @@ import snd from '../../media/audio/sell.mp3';
                     fractionalUnits,
                     successSound,
                     barcodeLength,
+                    isEanValid,
                     generateEan,
                     getDiscountedPrice,
                     getPages,
@@ -110,7 +115,7 @@ import snd from '../../media/audio/sell.mp3';
                     checkNumberLimit,
                     findItemsByFilter,
                     getItemByBarcode : (ean, getItems) => {
-                        if ((ean.length === barcodeLength) && ean > 0) {
+                        if (isEanValid(ean)) {
                             getItems(ean);
                             return true;
                         }
@@ -245,7 +250,7 @@ import snd from '../../media/audio/sell.mp3';
                                         row.user = user;
                                         row.buyer = $s.buyer;
                                         row.comment = $s.comment;
-                            };
+                            }
                             $s.canRelease = true;
                             $s.setReportData();
                         }

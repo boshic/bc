@@ -20,6 +20,7 @@ angular.module('rxjstest', ['asyncFilter'])
             controller: ($scope, httpService) => {
                 let searchTerms = new Subject();
                 $scope.term = '';
+                // $scope.test = false;
 
                 $scope.search = () => {
                     searchTerms.next($scope.term);
@@ -30,6 +31,7 @@ angular.module('rxjstest', ['asyncFilter'])
                         debounceTime(400),
                         map(keyword => keyword.trim()),
                         // filter(keyword => keyword.length > 0),
+                        // filter(() => $scope.test),
                         distinctUntilChanged(),
                         switchMap(keyword =>  keyword.length > 0 ?
                             httpService.getItemsRx({url: 'getItems', params: '?filter=' + keyword}) : of([])),
