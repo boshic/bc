@@ -30,8 +30,7 @@
                 </div>
                 <div style="width: 3px;"></div>
                 <div style="width: 40%;" class="total-sum-on-selling-modal">
-                    <span style="margin-right: 10%;">{{(totals.quantity.toFixed(2)) + " ед."}}</span>
-                    <span style="color: yellow;">{{(totals.sum).toFixed(2) + " руб."}}</span>
+                    <on-fly-calc-totals totals="totals" descr="цены реализации"></on-fly-calc-totals>
                 </div>
             </div>
         </div>
@@ -49,19 +48,15 @@
                         <td title="">{{ x.coming.item.name + "(" + x.coming.item.ean + ")"}}</td>
                         <td class="text-table-row"
                             title="Текущее количество">{{ x.currentQuantity }}</td>
-                        <td class="hoverable for-sale" title="К продаже">
-                            <input type="number"
-                                   class="form-control selling-quantity"
-                                   id={{quantityInputId}}
-                                   ng-model="x.quantity"
-                                   ng-change="checkRows()"/>
+                        <td class="hoverable common-number-input" title="К продаже">
+                            <pane-quantity-input value-field="quantity" input-id={{quantityInputId}}
+                                                 input-value="x" change-value="checkRows()">
+                            </pane-quantity-input>
                         </td>
-                        <td class="hoverable" title="Цена продажи">
-                            <input type="number" class="form-control selling-quantity" min="0"
-                                   ng-model="x.price"
-                                   ng-readonly="buyer.sellByComingPrices"
-                                   ng-change="checkRows()"
-                                   ng-class="{'warning-input': x.price==0||''}"/>
+                        <td class="hoverable common-number-input" title="Цена продажи">
+                            <pane-quantity-input read-only=buyer.sellByComingPrices value-field="price"
+                                                 input-value="x" change-value="checkRows()">
+                            </pane-quantity-input>
                         </td>
                     </tr>
                 </tbody>

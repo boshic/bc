@@ -93,7 +93,7 @@ let sellingPaneCntrlr = ($s, $http, paneFactory, printFactory, modalFactory, ite
         };
 
         $s.checkRows = () => {
-            paneFactory.checkRowsForSelling($s, paneFactory.user);
+            paneFactory.checkRows($s, paneFactory.user, 'selling');
         };
 
         $s.$on("tabSelected", (event, data) => {

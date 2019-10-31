@@ -112,17 +112,12 @@
                         {{ ((100 * x.priceOut / x.price)-100).toFixed(1) + '%'}}
                     </span>
                 </td>
-                <td class="hoverable" title="Сумма">
-                    <input type="number" class="form-control selling-quantity"
-                           string-to-number
-                           ng-model="x.sum"
-                           ng-class="{'warning-input': x.sum==0 || ''}"/>
+                <td class="hoverable common-number-input" title="Сумма">
+                    <pane-quantity-input value-field="sum" input-value="x"></pane-quantity-input>
                 </td>
-                <td class="hoverable" title="Цена продажи">
-                    <input type="number" class="form-control selling-quantity"
-                           ng-model="x.priceOut"
-                           ng-change = 'checkRows()'
-                           ng-class="{'warning-input': x.priceOut==0||''}"/>
+                <td class="hoverable common-number-input" title="Цена продажи">
+                    <pane-quantity-input value-field="priceOut" input-value="x"
+                                         change-value="checkRows()"></pane-quantity-input>
                 </td>
                 <td style="text-align: center; padding-top: 14px;">
                     <a href="#" title="удалить строку" ng-click="deleteRows()">

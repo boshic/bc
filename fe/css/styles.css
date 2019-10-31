@@ -911,15 +911,22 @@ div.locked {
     padding: 5px;
 }
 
-input.selling-quantity {
+.common-number-input {
     text-align: center;
     padding-top: 0px;
     padding-bottom: 0px;
     /*font-size: 14px;*/
     /*font-weight: bold;*/
-    background: inherit;
+    /*background: inherit;*/
     border: none;
     font-size: 25px;
+}
+
+input.common-number {
+    font-size: inherit;
+    text-align: inherit;
+    background: inherit;
+    border: none;
 }
 
 div.total-sellings {
@@ -954,13 +961,19 @@ div.total-sellings {
 .total-sum-on-selling-modal {
 
     height: 59px;
-    padding-top: 10px;
+    /*padding-top: 10px;*/
 
     border-top-left-radius: 15px;
     text-align: center;
     font-size: 30px;
     background: var(--main-color);
     color: var(--white-color);
+}
+
+.total-sum-on-moving-modal {
+    width: 32%;
+    right: 2px;
+    padding: 0px;
 }
 
 .total-sum-on-moving-pane {

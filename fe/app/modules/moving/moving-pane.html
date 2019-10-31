@@ -68,7 +68,8 @@
             <tr class="hoverable" ng-repeat="x in rows track by $index">
                 <td class="hoverable" title="Номер">{{ $index + 1 }}</td>
                 <td class="hoverable" title="">{{ x.item.name + "(" + x.item.ean + ")"}}</td>
-                <td class="hoverable current-quantity unprintable" title="Текущее количество">{{ x.currentQuantity }}</td>
+                <td class="hoverable current-quantity unprintable text-table-row"
+                    title="Текущее количество">{{ x.currentQuantity }}</td>
                 <td class="hoverable for-sale" title="К перемещению">
                     <div>
                         <button class='change-quantity-btn'
@@ -77,13 +78,11 @@
                         </button>
                     </div>
                 </td>
-                <td class="hoverable" title="Цена продажи">
-                    <input type="number" class="form-control selling-quantity" ng-model="x.price"
-                           ng-change="checkRows()"
-                            ng-class="{'warning-input': x.price==0||''}"
-                    />
+                <td class="hoverable common-number-input" title="Цена продажи">
+                    <pane-quantity-input value-field="price" input-value="x"
+                                         change-value="checkRows()"></pane-quantity-input>
                 </td>
-                <td class="hoverable" title="Сумма">{{ (x.quantity * x.price).toFixed(2) }}</td>
+                <td class="hoverable text-table-row" title="Сумма">{{ (x.quantity * x.price).toFixed(2) }}</td>
                 <td class="unprintable">
                     <a href="#" title="удалить строку" ng-click="deleteRows()">
                         <span class="glyphicon glyphicon-remove item-blank"></span>

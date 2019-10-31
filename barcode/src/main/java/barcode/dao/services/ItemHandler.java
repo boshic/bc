@@ -1,17 +1,17 @@
 package barcode.dao.services;
 
-import barcode.dao.entities.ComingItem;
 import barcode.dao.entities.Item;
+import barcode.dao.entities.QComingItem;
+import barcode.dao.entities.QItem;
 import barcode.dao.predicates.ItemPredicateBuilder;
 import barcode.dao.repositories.ComingItemRepository;
 import barcode.dao.repositories.ItemRepository;
 import barcode.dto.ResponseItem;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.querydsl.core.types.Predicate;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class ItemHandler {
@@ -32,41 +32,47 @@ public class ItemHandler {
 
     }
 
-    private ResponseItem<Item> update(Item newItem, Item item) {
+    private ResponseItem<Item> update(Item srcItem, Item item) {
 
-        item.setName(newItem.getName());
+        item.setName(srcItem.getName());
 
-        item.setUnit(newItem.getUnit());
+        item.setUnit(srcItem.getUnit());
 
-        item.setEan(newItem.getEan());
+        item.setEan(srcItem.getEan());
 
-        String eanSynonym = newItem.getEanSynonym() == null ? "" : newItem.getEanSynonym();
-        if(isAllowedEanSynonym(newItem.getEan(), eanSynonym))
-           item.setEanSynonym(eanSynonym);
+        if(isAllowedEanSynonym(srcItem, item))
+           item.setEanSynonym(srcItem.getEanSynonym());
         else {
-            newItem.setEanSynonym(BAD_EAN_SYNONYM);
-            return new ResponseItem<Item>(BAD_EAN_SYNONYM + " " + newItem.getName(), false, newItem);
+            srcItem.setEanSynonym(BAD_EAN_SYNONYM);
+            return new ResponseItem<Item>(BAD_EAN_SYNONYM + " " + srcItem.getName(), false, srcItem);
         }
 
-        item.setAlterName(newItem.getAlterName() == null ? "" : newItem.getAlterName());
-        item.setPredefinedQuantity(newItem.getPredefinedQuantity() == null ? BigDecimal.ZERO : newItem.getPredefinedQuantity());
+        item.setAlterName(srcItem.getAlterName() == null ? "" : srcItem.getAlterName());
+        item.setPredefinedQuantity(srcItem.getPredefinedQuantity() == null ? BigDecimal.ZERO : srcItem.getPredefinedQuantity());
 
         if (item.getCanBeComposite() == null)
             item.setCanBeComposite(true);
 
-        if(newItem.getSection()!= null)
-            item.setSection(newItem.getSection());
+        if(srcItem.getSection()!= null)
+            item.setSection(srcItem.getSection());
 
         itemRepository.save(item);
 
-        return new ResponseItem<Item>("Создание нового товара " + item.getName(), true, item);
+        return new ResponseItem<Item>("Создан новый товар: " + item.getName(), true, item);
     }
 
-    private boolean isAllowedEanSynonym(String ean, String eanSynonym) {
+    private boolean isAllowedEanSynonym(Item srcItem, Item destItem) {
 
-        return eanSynonym.length() != EAN_LENGTH ||
-                (comingItemRepository.findByItemEan(ean).size() == 0
-                && itemRepository.findOneByEan(eanSynonym).getEanSynonym().length() != EAN_LENGTH);
+        QItem qItem = QComingItem.comingItem.item;
+
+        Predicate predicate = (destItem.getId() == null)
+                ? qItem.ean.eq(srcItem.getEan()) :
+                qItem.ean.eq(srcItem.getEan()).or(qItem.id.eq(destItem.getId()));
+
+        return srcItem.getEanSynonym()== null || srcItem.getEanSynonym().length() != EAN_LENGTH ||
+                (comingItemRepository.findAll(predicate).size() == 0
+                        && itemRepository.findOneByEan(srcItem.getEanSynonym())
+                            .getEanSynonym().length() != EAN_LENGTH);
     };
 
     private ResponseItem<Item> duplicateEanError(Item item) {
@@ -74,25 +80,25 @@ public class ItemHandler {
         return new ResponseItem<Item>(ITEM_ALREADY_EXIST, false, item);
     }
 
-    public ResponseItem<Item> addItem(Item model) {
+    public ResponseItem<Item> addItem(Item item) {
 
-        if (itemRepository.findByEanOrderByNameDesc(model.getEan()).size() == 0)
-            return update(model, new Item());
+        if (itemRepository.findByEanOrderByNameDesc(item.getEan()).size() == 0)
+            return update(item, new Item());
 
         else
-            return duplicateEanError(model);
+            return duplicateEanError(item);
     }
 
-    public ResponseItem<Item> updateItem(Item newItem) {
+    public ResponseItem<Item> updateItem(Item item) {
 
-        List<Item> items = itemRepository.findByEanOrderByNameDesc(newItem.getEan());
+        List<Item> items = itemRepository.findByEanOrderByNameDesc(item.getEan());
 
         if ((items.size() == 0) ||
-                ((items.size() == 1) && (items.get(0).getId().equals(newItem.getId()))))
-            return update(newItem, getItemById(newItem.getId()));
+                ((items.size() == 1) && (items.get(0).getId().equals(item.getId()))))
+            return update(item, getItemById(item.getId()));
 
         else
-            return duplicateEanError(newItem);
+            return duplicateEanError(item);
 
     }
 

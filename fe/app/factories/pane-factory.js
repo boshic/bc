@@ -25,6 +25,34 @@ import snd from '../../media/audio/sell.mp3';
                     return ean;
                 };
 
+                let checkRowsBeforeSelling = ($s, user) => {
+                    if (angular.isDefined($s.buyer.id) && ($s.rows.length)) {
+                        for(let row of $s.rows) {
+                            if (!row.quantity > 0 || !row.price) {
+                                return $s.canRelease = false;
+                            }
+                            row.user = user;
+                            row.buyer = $s.buyer;
+                            row.comment = $s.comment;
+                        }
+                        $s.canRelease = true;
+                        $s.setReportData();
+                    }
+                };
+
+                let checkRowsBeforeMoving = ($s, user) => {
+                    if ($s.rows.length > 0) {
+                        for (let row of $s.rows) {
+                            let stockId = angular.isDefined($s.stockDest) ? $s.stockDest.id : row.coming.stock.id;
+                            if (!row.quantity || $s.stock.id === stockId)
+                                return $s.canRelease = false;
+                            row.user = user;
+                            row.comment = $s.comment;
+                        }
+                        $s.canRelease = true;
+                    }
+                };
+
                 let checkNumberLimit = (value, limit) => {
                     if((value < 0) || (value > limit))
                         return 0;
@@ -63,6 +91,10 @@ import snd from '../../media/audio/sell.mp3';
                 let calcTotals = (rows, discount) => {
                     let totals = {quantity: 0, sum: 0};
                     rows.forEach(row =>  {
+                        if (angular.isDefined(row.price))
+                            row.price = checkNumberLimit(row.price, undefined);
+                        if (angular.isDefined(row.vat))
+                            row.vat = checkNumberLimit(row.vat, undefined);
                         row.quantity = checkNumberLimit(row.quantity, row.currentQuantity);
                         (angular.isDefined(row.sum) && row.sum != null) ? totals.sum += +(row.sum) :
                             totals.sum += +(row.quantity * getDiscountedPrice(row.price, discount));
@@ -237,23 +269,14 @@ import snd from '../../media/audio/sell.mp3';
 
                         return f === s;
                     },
-                    checkRowsForSelling: ($s, user) => {
+                    checkRows: ($s, user, checkingType) => {
                         $s.canRelease = false;
-                        $s.totals = calcTotals($s.rows, $s.buyer.discount);
+                        $s.totals = calcTotals($s.rows, typeof $s.buyer === 'object'? $s.buyer.discount : undefined);
                         $s.reports = [];
-                        if (angular.isDefined($s.buyer.id) && ($s.rows.length)) {
-                            for(let row of $s.rows) {
-                                      if (!row.quantity > 0 || !row.price) {
-                                            return $s.canRelease = false;
-                                        }
-                                        // row.sum = (row.quantity * row.price).toFixed(2);
-                                        row.user = user;
-                                        row.buyer = $s.buyer;
-                                        row.comment = $s.comment;
-                            }
-                            $s.canRelease = true;
-                            $s.setReportData();
-                        }
+                        if(checkingType === 'selling')
+                            checkRowsBeforeSelling($s, user);
+                        else
+                            checkRowsBeforeMoving($s, user);
                     }
                 };
             }

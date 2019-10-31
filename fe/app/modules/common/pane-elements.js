@@ -1,11 +1,3 @@
-// /**
-//  * Created by xlinux on 05.02.19.
-//  */
-// define(['angular'], angular => {
-//
-//     let htmlDir = 'html/';
-//
-//
     angular.module('pane-elements', [])
         .directive("totals", () => {
             return {
@@ -120,6 +112,24 @@
                 "<div class='totals-type'>{{$ctrl.descr}}</div>",
             controller: function() {}
         })
+        .component( "paneQuantityInput", {
+            bindings: {
+                inputId: '@?',
+                readOnly: '<?',
+                inputValue: '=',
+                valueField: '@',
+                changeValue: '&?'
+            },
+            template:
+            // selling-quantity
+            "<td class='hoverable'>" +
+                "<input type='number' class='form-control common-number' " +
+                "ng-class='{\"warning-input\": $ctrl.inputValue[$ctrl.valueField] == 0 || \"\"}'" +
+                    "id={{$ctrl.inputId}} ng-readonly='$ctrl.readOnly' string-to-number " +
+                "ng-model='$ctrl.inputValue[$ctrl.valueField]' ng-change='$ctrl.changeValue()'/>" +
+            "</td>",
+            controller: function() {}
+        })
         .component( "sortingRow", {
                 bindings: {
                     listeningField: '<',
@@ -135,6 +145,3 @@
                     "ng-click = '$ctrl.sortDirection=\"ASC\"'/>",
                 controller: function() {}
             });
-// });
-
-

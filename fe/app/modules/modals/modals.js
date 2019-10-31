@@ -9,7 +9,7 @@
         modalData.hidden = true;
     };
 
-    let quantityChangerModalCtrlr = function($scope, paneFactory, elem) {
+    let quantityChangerModalCtrlr = function($scope, paneFactory) {
 
         let vm = this;
         vm.cmpUuid = paneFactory.generateUuid();
@@ -43,7 +43,7 @@
     };
     quantityChangerModalCtrlr.$inject = ['$scope', 'paneFactory', '$element'];
 
-    let textEditModalCtrlr = function($scope, paneFactory, elem) {
+    let textEditModalCtrlr = function($scope, paneFactory) {
 
         let vm = this;
         vm.cmpUuid = paneFactory.generateUuid();
@@ -90,6 +90,8 @@
         $s.quantityInputId = paneFactory.generateUuid();
         $s.modalConfig.hidden = true;
         let config = modalFactory[modalParams];
+        let getReleaseItemParams = typeof config.getReleaseItemParams === 'function' ?
+            config.getReleaseItemParams : () => {return undefined;};
         $s.requestParams = {requestsQuantity: 0};
 
         $s.totals = {
@@ -126,7 +128,9 @@
             if($s.rows)
                 $s.checkRows();
             if(!$s.modalConfig.hidden)
-                setTimeout(() => {$s.changeQuantInLastRow();}, 0);
+                setTimeout(() => { paneFactory
+                    .changeElementState(document.getElementById($s.quantityInputId), ['focus', 'select']);
+                }, 0);
         }, true);
 
         $s.closeModal = () => {
@@ -137,7 +141,7 @@
         $s.handleKeyup =  e => {
             paneFactory.keyUpHandler(e, [
                 {keyCode: paneFactory.keyCodes.escKeyCode, doAction: $s.closeModal},
-                {keyCode: paneFactory.keyCodes.enterKeyCode, doAction: $s.sellThis, ctrlReq: true}
+                {keyCode: paneFactory.keyCodes.enterKeyCode, doAction: $s.release, ctrlReq: true}
             ]);
         };
 
@@ -146,119 +150,23 @@
         };
 
         $s.checkRows = () => {
-            paneFactory.checkRowsForSelling($s, paneFactory.user);
+            paneFactory.checkRows($s, paneFactory.user, config.checkingType);
         };
 
         $s.release = () => {
-            modalFactory.releaseItem($s, config.addItemUrl);
+            modalFactory.releaseItem($s, config.addItemUrl, getReleaseItemParams($s));
         };
-
-        $s.changeQuantInLastRow = () => {
-            paneFactory
-                .changeElementState(document.getElementById($s.quantityInputId), ['focus', 'select']);
-        };
-
     };
 
     let sellingModalCtrlr = ($s, paneFactory, modalFactory) => {
 
         return commonReleaseModalController($s, paneFactory, modalFactory, 'sellingModalConfig');
-
-};
-
-    let movingModalCntrlr = ($s, $http, paneFactory, elem) => {
-
-    $s.allowAllStocks = false;
-    $s.totals = {
-        date: new Date,
-        sum: 0,
-        quantity: 0
     };
 
-    let checkInput = moving => {
-        moving.quantity = paneFactory.checkNumberLimit(moving.quantity, moving.currentQuantity);
+    let movingModalCntrlr = ($s, paneFactory, modalFactory) => {
+
+        return commonReleaseModalController($s, paneFactory, modalFactory, 'movingModalConfig');
     };
-
-    let calcTotals = () => {
-        $s.totals.sum = $s.totals.quantity = 0;
-        for (let moving of $s.movings) {
-            checkInput(moving);
-            $s.totals.sum += +(moving.quantity * moving.price);
-            $s.totals.quantity += +moving.quantity;
-        }
-    };
-
-    $s.$watchCollection("[modalConfig.hidden, stock]", () => {
-        if($s.modalConfig.data) {
-            $s.comment = "";
-            $s.movings = [{
-                quantity: 1,
-                currentQuantity: $s.modalConfig.data.currentQuantity,
-                coming: $s.modalConfig.data,
-                price: $s.modalConfig.data.priceOut
-            }];
-            $s.modalConfig.data = undefined;
-        }
-        if($s.movings)
-            $s.checkMoving();
-        if(!$s.modalConfig.hidden)
-            $s.changeQuantInLastRow();
-    }, true);
-
-    $s.modalConfig.hidden = true;
-
-    $s.closeModal = () => {
-        $s.modalConfig.data = undefined;
-        $s.modalConfig.hidden = true;
-        $s.modalConfig.refresh();
-    };
-
-    $s.handleKeyup =  e => {
-        paneFactory.keyUpHandler(e, [
-            {keyCode: paneFactory.keyCodes.escKeyCode, doAction: $s.closeModal},
-            {keyCode: paneFactory.keyCodes.enterKeyCode, doAction: $s.moveThis, ctrlReq: true}
-        ]);
-    };
-
-    $s.checkMoving = () => {
-        $s.canMove = false;
-        calcTotals();
-        if (($s.movings.length) && ($s.movings[0].coming.stock.id !== $s.stock.id)) {
-            for (let moving of $s.movings) {
-                if (!moving.quantity)
-                    return;
-                moving.user = paneFactory.user;
-                moving.comment = $s.comment;
-            }
-            $s.canMove = true;
-        }
-    };
-
-    $s.moveThis = () => {
-        $s.checkMoving();
-        let moving =   $s.movings[0];
-        $s.modalConfig.hidden = true;
-        $http.post('/addOneMoving', moving, {
-            params: {
-                stockId: $s.stock.id
-            }
-        })
-            .then(
-                resp => {
-                    $s.modalConfig.data = undefined;
-                    $s.modalConfig.refresh();
-                    console.log(resp.data.text);
-                    // (resp.data.success) ? appConfig.sound.play() : $s.warning = resp.data.text;
-                    // $s.comment = "";
-                },
-                () => {$s.warning = "ошибка при проведении перемещения!";}
-            );
-    };
-
-    $s.changeQuantInLastRow = () => {
-        paneFactory.changeElementState(document.getElementById('change-quantity-on-moving-modal'), ['focus']);
-    };
-};
 
     let invoiceModalCtrlr = ($s, printFactory, $http ) => {
 
@@ -346,7 +254,6 @@
             return {
                 restrict: "E",
                 template: sellingModalTpl,
-                // templateUrl: 'html/selling/selling-modal.html',
                 scope: {modalConfig: '='},
                 transclude: true,
                 controller: ( $scope, paneFactory, modalFactory) => {
@@ -361,8 +268,8 @@
                 template: movingModalTpl,
                 scope: {modalConfig: '='},
                 transclude: true,
-                controller: ( $scope, $http, paneFactory, $element) => {
-                    return movingModalCntrlr($scope, $http, paneFactory, $element);
+                controller: ( $scope, paneFactory, modalFactory) => {
+                    return movingModalCntrlr($scope, paneFactory, modalFactory);
                 },
                 link: () => {}
             }
@@ -386,12 +293,25 @@
                     sellingModalConfig: {
                         watchingValue: '[modalConfig.hidden, buyer]',
                         addItemUrl: 'addOneSelling',
+                        checkingType: 'selling',
                         priceProp: 'price',
                         allowedReports: (data) => {
                             return [
                                 {type: 'invoiceWithContract', data: data, method: 'addInvoice'},
                                 {type: 'invoice', data: data, method: 'addInvoice'}
                             ];
+                        }
+                    },
+                    movingModalConfig: {
+                        watchingValue: '[modalConfig.hidden, stock]',
+                        addItemUrl: 'addOneMoving',
+                        getReleaseItemParams: ($s) => {
+                            return $s.stock ? {params:{stockId: $s.stock.id}}: undefined;
+                        },
+                        checkingType: 'moving',
+                        priceProp: 'price',
+                        allowedReports: (data) => {
+                            return [];
                         }
                     },
                     openModal: (index, rows, modalData) => {
@@ -409,11 +329,11 @@
                                 rows: printFactory.getRowsForReports($s, config.priceProp)
                             }), $s.reports);
                     },
-                    releaseItem: ($s, url) => {
+                    releaseItem: ($s, url, params) => {
                         $s.checkRows();
                         let row =   $s.rows[0];
                         $s.closeModal();
-                        httpService.addItem({data: row, url, requestParams: $s.requestParams})
+                        httpService.addItem({data: row, url, requestParams: $s.requestParams, params})
                             .then(
                                 resp => {
                                     (resp.success) ? paneFactory.successSound.play() : $s.warning = resp.text;

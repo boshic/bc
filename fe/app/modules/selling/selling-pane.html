@@ -70,8 +70,6 @@
             <div style="width: 3px;"></div>
             <div style="width: 40%;" class="total-sum-on-selling-modal">
                 <on-fly-calc-totals totals="totals"></on-fly-calc-totals>
-                <!--<span style="margin-right: 10%;">{{(totals.quantity.toFixed(3)) + " ед."}}</span>-->
-                <!--<span style="color: yellow;">{{(totals.sum).toFixed(2) + " руб."}}</span>-->
             </div>
         </div>
     </div>
@@ -107,9 +105,9 @@
                 </td>
                 <td class="text-table-row" title="Единица измерения">{{ x.item.unit }}</td>
                 <td class="text-table-row" title="Текущее количество">{{ x.currentQuantity }}</td>
-                <td class="hoverable" title="ставка НДС">
-                    <input type="number" class="form-control selling-quantity"
-                           ng-model="x.vat" min="0"/>
+                <td class="hoverable common-number-input" title="ставка НДС">
+                    <pane-quantity-input value-field="vat" input-value="x"
+                                         change-value="checkRows()"></pane-quantity-input>
                 </td>
                 <td class="hoverable for-sale"
                     ng-class="{'warning-input': x.quantity === 0 || x.quantity === null}"
@@ -121,12 +119,9 @@
                         </button>
                     </div>
                 </td>
-                <td class="hoverable" title="Цена продажи">
-                    <input type="number" class="form-control selling-quantity" min="0"
-                           ng-readonly="buyer.sellByComingPrices"
-                           ng-model="x.price"
-                           ng-change="checkRows()"
-                           ng-class="{'warning-input': x.price < 0||''}"/>
+                <td class="hoverable common-number-input" title="Цена продажи">
+                    <pane-quantity-input value-field="price" read-only="buyer.sellByComingPrices"
+                                         input-value="x" change-value="checkRows()"></pane-quantity-input>
                 </td>
                 <!--(x.quantity * x.price).toFixed(2)-->
                 <td class="text-table-row" title="Сумма">{{ (x.quantity * x.price).toFixed(2) }}

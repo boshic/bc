@@ -45,20 +45,7 @@ import movingPaneTpl from './moving-pane.html';
         };
 
         $s.checkRows = () => {
-            let rows = $s.rows;
-            $s.canRelease =  false;
-            if (rows.length > 0) {
-                $s.totals = paneFactory.calcTotals($s.rows);
-                for (let row of rows) {
-                    if (!row.quantity || $s.stock.id === $s.stockDest.id)
-                        return $s.canRelease = false;
-                    row.user = paneFactory.user;
-                    // row.coming.stock = $s.stock;
-                    row.comment = $s.comment;
-                }
-                $s.canRelease = true;
-            }
-
+            paneFactory.checkRows($s, paneFactory.user, 'moving');
         };
 
         $s.$on("tabSelected", (event, data) => {
@@ -69,7 +56,6 @@ import movingPaneTpl from './moving-pane.html';
         });
 
         $s.handleKeyup = e => {
-            // paneFactory.keyupHandler(e, $s.openQuantityChangerModal, $s.moveThis);
             paneFactory.keyUpHandler(e, [
                 {keyCode: paneFactory.keyCodes.escKeyCode, doAction: $s.openQuantityChangerModal},
                 {keyCode: paneFactory.keyCodes.enterKeyCode, doAction: $s.moveThis, ctrlReq: true}

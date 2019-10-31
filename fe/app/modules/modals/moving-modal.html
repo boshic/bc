@@ -7,19 +7,18 @@
             <div class="container-sell-buyer-comment-on-selling-pane">
                 <div class="sell-button-on-selling-pane">
                     <button class="glyphicon glyphicon-send sell-icon" title="Переместить"
-                            ng-click="moveThis()"
-                            ng-show="canMove">
+                            ng-click="release()"
+                            ng-show="canRelease">
                     </button>
                 </div>
                 <div class="moving-modal-header stock-picker-on-moving-modal">
-                    <stock-picker allow-all="allowAllStocks" stock="stock"></stock-picker>
+                    <stock-picker allow-all="false" stock="stock"></stock-picker>
                 </div>
                 <div class="moving-modal-header comment-input-on-moving-modal">
                     <comment-input ng-model="comment"></comment-input>
                 </div>
-                <div class="total-sum">
-                    <span style="margin-right: 10%;">{{(totals.quantity.toFixed(2)) + " ед."}}</span>
-                    <span style="color: yellow;">{{(totals.sum).toFixed(2) + " руб."}}</span>
+                <div class="total-sum total-sum-on-moving-modal">
+                    <on-fly-calc-totals totals="totals" descr="цены реализации"></on-fly-calc-totals>
                 </div>
             </div>
         </div>
@@ -32,21 +31,21 @@
                 <td style="width: 100px;">Цена, руб., коп.</td>
             </tr>
             <tbody>
-            <tr class="hoverable" ng-repeat="x in movings track by $index">
+            <tr class="hoverable" ng-repeat="x in rows track by $index">
                 <td class="price-data" title="Номер">{{ $index + 1 }}</td>
                 <td title="">{{ x.coming.item.name + "(" + x.coming.item.ean + ")"}}</td>
-                <td class="current-quantity unprintable" title="Текущее количество">{{ x.coming.currentQuantity }}</td>
-                <td class="hoverable for-sale" title="К продаже">
-                    <input type="number" class="form-control selling-quantity"
-                           id="change-quantity-on-moving-modal"
-                           ng-model="x.quantity"
-                           ng-change="checkMoving()"/>
+                <td class="current-quantity unprintable" title="Текущее количество">
+                    {{ x.coming.currentQuantity }}
                 </td>
-                <td class="hoverable" title="Цена продажи">
-                    <input type="number" class="form-control selling-quantity" min="0"
-                           ng-model="x.price"
-                           ng-change="checkMoving()"
-                           ng-class="{'warning-input': x.price==0||''}"/>
+                <td class="hoverable common-number-input" title="К продаже">
+                    <pane-quantity-input input-id={{quantityInputId}} value-field="quantity"
+                                         input-value="x" change-value="checkRows()">
+                    </pane-quantity-input>
+                </td>
+                <td class="hoverable common-number-input" title="Цена продажи">
+                    <pane-quantity-input value-field="price"
+                                         input-value="x" change-value="checkRows()">
+                    </pane-quantity-input>
                 </td>
             </tr>
             </tbody>
