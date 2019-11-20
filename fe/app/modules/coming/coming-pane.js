@@ -106,7 +106,6 @@ import comingPaneTpl from './coming-pane.html';
         $s.$on("tabSelected", (event, data) => {
             if (data.event != null && paneFactory.paneToggler(data.pane) === "Список") {
                 $s.user = paneFactory.user;
-                // $s.blankSearch();
                 $s.focusOnEanInput();
             }
         });
