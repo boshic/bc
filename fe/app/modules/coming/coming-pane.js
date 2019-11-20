@@ -1,11 +1,11 @@
 import comingPaneTpl from './coming-pane.html';
 
-    let comingPaneCtrlr = ($s, filterFactory, paneFactory, elem, printFactory) => {
+    let comingPaneCtrlr = ($s, filterFactory, paneFactory, printFactory, modalFactory) => {
 
         $s.rows=[];
         $s.requestParams = {requestsQuantity: 0};
+        $s.quantityChangerModalData = { hidden : true, row: {} };
         $s.filter = {visible: false};
-        // $s.hideModal = true;
         $s.modalConfig = {};
         $s.sellingModalConfig = {};
         $s.movingModalConfig = {};
@@ -17,8 +17,10 @@ import comingPaneTpl from './coming-pane.html';
 
         let eanInputElement =  document.getElementById('coming-pane');
 
-        let findItemsByFilter = ()=> {
-            return paneFactory.findItemsByFilter($s, 'findComingItemByFilter');
+        let searchTerms = paneFactory.getSearchTermsForGetItemsByFilter($s, 'findComingItemByFilter');
+
+        let findItemsByFilter = () => {
+            paneFactory.getItemsBySearchTermsAndFilter(searchTerms, $s.filter);
         };
 
         let calcTotalsAndRefresh = () => {
@@ -26,7 +28,10 @@ import comingPaneTpl from './coming-pane.html';
         };
 
         $s.handleKeyup = e => {
-            paneFactory.keyUpHandler(e, [{keyCode: paneFactory.keyCodes.escKeyCode, doAction: calcTotalsAndRefresh}]);
+            paneFactory.keyUpHandler(e, [
+                {keyCode: paneFactory.keyCodes.escKeyCode, doAction: calcTotalsAndRefresh},
+                {keyCode: paneFactory.keyCodes.enterKeyCode, doAction: $s.setInventoryValues, ctrlReq: true}
+            ]);
         };
 
         $s.resetFilter = () => {
@@ -37,8 +42,15 @@ import comingPaneTpl from './coming-pane.html';
             $s.filter.ean = paneFactory.generateEanByKey(e, $s.filter.ean);
         };
 
+        $s.setInventoryValues = () => {
+            paneFactory.setInventoryValues($s, 'setInventoryItems');
+        };
+
         $s.refresh = () => {
             calcTotalsAndRefresh();
+        };
+
+        $s.focusOnEanInput = () => {
             paneFactory.changeElementState(eanInputElement, ['focus']);
         };
 
@@ -52,35 +64,57 @@ import comingPaneTpl from './coming-pane.html';
                 calcTotalsAndRefresh()
         };
 
+        $s.afterSearch = () => {
+            if($s.filter.inventoryModeEnabled && $s.rows.length === 1)
+                $s.openQuantityChangerModal(0);
+            else
+                $s.focusOnEanInput();
+        };
+
         $s.openComingModal = function() {
-            if(this.x.quantity !=0) {
+            if(this.x.quantity != 0 && !$s.filter.inventoryModeEnabled) {
                 $s.modalConfig.id = ((this.x) && ('id' in this.x)) ? this.x.id : null;
                 $s.modalConfig.hidden = false;
-            }
+            } else
+                $s.filter.ean = this.x.item.ean;
         };
 
         $s.sellThis = function () {
-            $s.sellingModalConfig.hidden = false;
-            $s.sellingModalConfig.data = this.x;
+            angular.extend($s.sellingModalConfig, {hidden: false, data: this.x, requestParams: $s.requestParams});
         };
 
         $s.moveThis = function () {
-            $s.movingModalConfig.hidden = false;
-            $s.movingModalConfig.data = this.x;
+            angular.extend($s.movingModalConfig, {hidden: false, data: this.x, requestParams: $s.requestParams});
+        };
+
+        $s.openQuantityChangerModal = (index) => {
+            let row = $s.rows[index];
+            $s.quantityChangerModalData.params = {index};
+            modalFactory.openModal(undefined,
+                [{ quantity : row.currentQuantity, currentQuantity: undefined, item: row.item }],
+                $s.quantityChangerModalData);
+        };
+
+        $s.afterCloseQuantityChangerModal = () => {
+            let index = $s.quantityChangerModalData.params.index;
+            $s.rows[index].currentQuantity = $s.quantityChangerModalData.row.quantity;
+            $s.totals=[{quantDescr: 'нажмите записать остатки', quantValue: 0, sumValue: 0}];
+            if($s.rows.length === 1)
+                $s.focusOnEanInput();
         };
 
         $s.$on("tabSelected", (event, data) => {
             if (data.event != null && paneFactory.paneToggler(data.pane) === "Список") {
                 $s.user = paneFactory.user;
-                $s.blankSearch();
+                // $s.blankSearch();
+                $s.focusOnEanInput();
             }
         });
 
         $s.blankSearch = () => {
             $s.filter.ean = "";
-            paneFactory.changeElementState(eanInputElement, ['focus']);
+            $s.focusOnEanInput();
         };
-
      };
 
     angular.module('coming-pane', [])
@@ -90,8 +124,8 @@ import comingPaneTpl from './coming-pane.html';
                 transclude: true,
                 scope: {},
                 template: comingPaneTpl,
-                controller: ($scope, filterFactory, paneFactory, $element, printFactory ) => {
-                    return comingPaneCtrlr($scope , filterFactory, paneFactory, $element, printFactory);
+                controller: ($scope, filterFactory, paneFactory, printFactory, modalFactory ) => {
+                    return comingPaneCtrlr($scope , filterFactory, paneFactory, printFactory, modalFactory);
                 },
                 link: (scope) => {
                     scope.resetFilter();

@@ -19,8 +19,7 @@
                 vm.modalData.row.quantity =
                     paneFactory.checkNumberLimit(vm.modalData.row.quantity, vm.modalData.row.currentQuantity);
             }
-
-            if(vm.checkInput)
+            if(typeof vm.checkInput === 'function')
                 vm.checkInput();
 
         });
@@ -37,7 +36,6 @@
         });
 
         vm.handleKeyup = e => {
-            // paneFactory.keyupHandler(e, vm.closeModal);
             paneFactory.keyUpHandler(e, [{keyCode: paneFactory.keyCodes.escKeyCode, doAction: vm.closeModal}]);
         };
     };
@@ -92,7 +90,7 @@
         let config = modalFactory[modalParams];
         let getReleaseItemParams = typeof config.getReleaseItemParams === 'function' ?
             config.getReleaseItemParams : () => {return undefined;};
-        $s.requestParams = {requestsQuantity: 0};
+        // $s.requestParams = {requestsQuantity: 0};
 
         $s.totals = {
             date: new Date,
@@ -333,7 +331,7 @@
                         $s.checkRows();
                         let row =   $s.rows[0];
                         $s.closeModal();
-                        httpService.addItem({data: row, url, requestParams: $s.requestParams, params})
+                        httpService.addItem({data: row, url, requestParams: $s.modalConfig.requestParams, params})
                             .then(
                                 resp => {
                                     (resp.success) ? paneFactory.successSound.play() : $s.warning = resp.text;

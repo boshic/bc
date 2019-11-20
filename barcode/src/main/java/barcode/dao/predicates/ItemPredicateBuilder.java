@@ -2,6 +2,7 @@ package barcode.dao.predicates;
 
 import barcode.dao.entities.QItem;
 import com.querydsl.core.types.Predicate;
+import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.EntityPathBase;
 
 /**
@@ -21,5 +22,11 @@ public class ItemPredicateBuilder {
 
         return null;
     }
+
+//    public Predicate getInventoryRowByStock(Long itemId, Long stockId) {
+//
+//        return item.id.eq(itemId).and(item.inventoryRows.any().stock.id.eq(stockId));
+////        return null;
+//    }
 
 }

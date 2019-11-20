@@ -7,7 +7,7 @@ import java.util.List;
 
 public class SoldItemFilter extends ComingItemFilter {
 
-    public enum SortingStrategies {
+    public enum GroupedSoldItemSortingStrategies {
         COMING_ITEM_NAME {
             @Override
             public void sort(List<SoldItem> soldItems) {

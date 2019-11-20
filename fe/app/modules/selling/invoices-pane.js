@@ -7,8 +7,10 @@ import invoicesPaneTpl from './invoices-pane.html';
         $s.totals = {};
         $s.user = {};
 
+        let searchTerms = paneFactory.getSearchTermsForGetItemsByFilter($s, 'getInvoicesByFilter');
+
         let findItemsByFilter = () => {
-            return paneFactory.findItemsByFilter($s, 'getInvoicesByFilter');
+            paneFactory.getItemsBySearchTermsAndFilter(searchTerms, $s.filter);
         };
 
         let calcTotalsAndRefresh = () => {

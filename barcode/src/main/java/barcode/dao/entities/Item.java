@@ -1,5 +1,6 @@
 package barcode.dao.entities;
 
+import barcode.dao.entities.embeddable.InventoryRow;
 import barcode.dao.entities.embeddable.ItemComponent;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -43,6 +44,10 @@ public class Item {
     @ElementCollection
     @JsonProperty("components")
     private List<ItemComponent> components;
+
+    @ElementCollection
+    @JsonProperty("inventoryRows")
+    private List<InventoryRow> inventoryRows;
 
     @Column(name = "can_be_composite", columnDefinition="tinyint(1) default 1")
     private Boolean canBeComposite;
@@ -131,6 +136,14 @@ public class Item {
 
     public void setAlterName(String alterName) {
         this.alterName = alterName;
+    }
+
+    public List<InventoryRow> getInventoryRows() {
+        return inventoryRows;
+    }
+
+    public void setInventoryRows(List<InventoryRow> inventoryRows) {
+        this.inventoryRows = inventoryRows;
     }
 
     @Override

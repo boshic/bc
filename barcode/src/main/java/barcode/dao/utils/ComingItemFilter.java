@@ -18,6 +18,7 @@ public class ComingItemFilter extends  BasicFilter {
     private Supplier supplier;
     private Boolean calcTotal;
     private Boolean hideNullQuantity;
+    private Boolean inventoryModeEnabled;
 
     public ComingItemFilter() {}
 
@@ -35,6 +36,7 @@ public class ComingItemFilter extends  BasicFilter {
         this.supplier = comingItemFilter.getSupplier();
         this.calcTotal = comingItemFilter.getCalcTotal();
         this.hideNullQuantity = comingItemFilter.getHideNullQuantity();
+        this.inventoryModeEnabled = comingItemFilter.getInventoryModeEnabled();
     }
 
     public Integer getPage() {
@@ -123,6 +125,14 @@ public class ComingItemFilter extends  BasicFilter {
 
     public void setSectionPart(String sectionPart) {
         this.sectionPart = sectionPart;
+    }
+
+    public Boolean getInventoryModeEnabled() {
+        return inventoryModeEnabled;
+    }
+
+    public void setInventoryModeEnabled(Boolean inventoryModeEnabled) {
+        this.inventoryModeEnabled = inventoryModeEnabled;
     }
 
     @Override

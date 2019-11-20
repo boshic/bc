@@ -155,6 +155,14 @@ public class SoldItemHandler extends EntityHandlerImpl {
         return soldItem.getPrice();
     }
 
+    void makeSellingByInvoice(List<SoldItem> sellings) {
+
+        // get Sellings by comment with a specified type, buyer, and stock
+        // compare by quantity
+        // correcting incoming sellings by quantity
+        // addSellings
+
+    }
 
     public synchronized ResponseItem addSellings (Set<SoldItem> soldItems) {
 
@@ -270,8 +278,8 @@ public class SoldItemHandler extends EntityHandlerImpl {
 
     public static void SortSoldItemsList(List<SoldItem> soldItems, String field, String direction) {
 
-        SoldItemFilter.SortingStrategies strategy
-                = SoldItemFilter.SortingStrategies.valueOf(field.replace(".","_").toUpperCase());
+        SoldItemFilter.GroupedSoldItemSortingStrategies strategy
+                = SoldItemFilter.GroupedSoldItemSortingStrategies.valueOf(field.replace(".","_").toUpperCase());
         strategy.sort(soldItems);
 
         if(direction.equalsIgnoreCase(BasicFilter.SORT_DIRECTION_DESC))

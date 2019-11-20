@@ -32,6 +32,11 @@ public class ComingItemController {
         return this.comingItemHandler.updateItem(item);
     }
 
+    @RequestMapping(value = "/setInventoryItems", method = RequestMethod.POST)
+    public @ResponseBody void setInventoryItems(@RequestBody Set<ComingItem> comings) {
+        this.comingItemHandler.setInventoryItems(comings);
+    }
+
     @RequestMapping(value = "/addComings", method = RequestMethod.POST)
     public @ResponseBody ResponseItem addComings(@RequestBody Set<ComingItem> comings) {
         return this.comingItemHandler.addItems(comings);

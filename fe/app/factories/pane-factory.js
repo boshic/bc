@@ -1,8 +1,12 @@
 import snd from '../../media/audio/sell.mp3';
+// import 'angular1-async-filter';
+import { BehaviorSubject, of, Subject, from } from 'rxjs';
+import { filter, tap, map, debounceTime, distinctUntilChanged, switchMap } from 'rxjs/operators';
+
 
     angular.module('pane-factory', [])
-        .factory('paneFactory',[ 'httpService', '$timeout', '$window',
-            function ( httpService, $timeout, $window) {
+        .factory('paneFactory',[ 'httpService', '$timeout', '$filter',
+            function ( httpService, $timeout, $filter) {
 
                 let barcodeLength = 13;
 
@@ -54,7 +58,7 @@ import snd from '../../media/audio/sell.mp3';
                 };
 
                 let checkNumberLimit = (value, limit) => {
-                    if((value < 0) || (value > limit))
+                    if((!angular.isDefined(value)) || (value === null) ||(value === 'null') || (value < 0) || (value > limit))
                         return 0;
                     return value;
                 };
@@ -103,35 +107,56 @@ import snd from '../../media/audio/sell.mp3';
                     return totals
                 };
 
-                let findItemsByFilter = ($s, url)=> {
-                    setTimeout(() => {
-                        httpService.getItemsByFilter({filter: $s.filter, url,
-                            requestParams:$s.requestParams})
-                            .then(
-                                resp => {
-                                    if(resp.items.length === 0 && $s.filter.page != 1)
-                                        $s.filter.page =  1;
-                                    else {
-                                        $s.rows = resp.items;
-                                        $s.pages = getPages(resp.numberOfPages);
-                                        if (resp.success && $s.filter.calcTotal && resp.totals.length > 0)
-                                            $s.totals = resp.totals;
-                                        if('buyers' in resp && resp.buyers != null )
-                                            $s.filter.buyers = resp.buyers;
-                                        if('suppliers' in resp && resp.suppliers != null)
-                                            $s.filter.suppliers = resp.suppliers;
-                                        if('sections' in resp && resp.sections != null)
-                                            $s.filter.sections = resp.sections;
-                                        if(typeof $s.setReports === 'function')
-                                            $s.setReports();
-                                    }
-                                    $s.filter.calcTotal = false;
-                                },
-                                resp => {
-                                    console.log(resp);
+                let getSearchTermsForGetItemsByFilter = ($s, url) => {
+
+                    let searchTerms = new Subject();
+
+                    $filter('async')(searchTerms
+                        .pipe(
+                            debounceTime(500),
+                            switchMap(filter => {
+                                return httpService.getItemsByFilterRx({requestParams: $s.requestParams,url,
+                                    filter: JSON.parse(filter)});
+                            }),
+                            tap((resp) => {
+                                if(resp.items.length === 0 && $s.filter.page != 1)
+                                    $s.filter.page =  1;
+                                else {
+                                    $s.rows = resp.items;
+                                    $s.pages = getPages(resp.numberOfPages);
+                                    if (resp.success && $s.filter.calcTotal && resp.totals.length > 0)
+                                        $s.totals = resp.totals;
+                                    if('buyers' in resp && resp.buyers != null )
+                                        $s.filter.buyers = resp.buyers;
+                                    if('suppliers' in resp && resp.suppliers != null)
+                                        $s.filter.suppliers = resp.suppliers;
+                                    if('sections' in resp && resp.sections != null)
+                                        $s.filter.sections = resp.sections;
+                                    if(typeof $s.setReports === 'function')
+                                        $s.setReports();
                                 }
-                            );
-                    }, 100);
+                                $s.filter.calcTotal = false;
+                                // console.log(resp);
+                                if(typeof $s.afterSearch === 'function')
+                                    $s.afterSearch();
+                            }),
+                        ), $s);
+
+                    return searchTerms;
+                };
+
+                let getItemsBySearchTermsAndFilter = (term, filter) => {
+                    term.next(JSON.stringify(filter));
+                };
+
+                let setInventoryValues = ($s, url) => {
+                    httpService.addItem({data: $s.rows, url, requestParams: $s.requestParams})
+                        .then(
+                            resp => {
+                                $s.refresh();
+                            },
+                            (resp) => {}
+                        );
                 };
 
                 return {
@@ -145,7 +170,10 @@ import snd from '../../media/audio/sell.mp3';
                     checkDuplicateRows,
                     calcTotals,
                     checkNumberLimit,
-                    findItemsByFilter,
+                    setInventoryValues,
+                    getItemsBySearchTermsAndFilter,
+                    getSearchTermsForGetItemsByFilter,
+                    // findItemsByFilter,
                     getItemByBarcode : (ean, getItems) => {
                         if (isEanValid(ean)) {
                             getItems(ean);

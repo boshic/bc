@@ -2220,3 +2220,24 @@ div.totals-type {
     color: coral;
     border-radius: 5px;
 }
+
+.set-invetnory-values-btn {
+    width: 98%;
+    height: 50px;
+    font-size: 33px;
+    color: yellow;
+    background: var(--main-color);
+    border-radius: 8px;
+    margin: 1%;
+    /*font-family: Times new roman;*/
+}
+
+.last-change-inventory-date {
+    padding: 2px;
+    font-size: 10px;
+    font-weight: bold;
+    background: var(--main-color);
+    border: 1px solid;
+    color: var(--white-color);
+    border-radius: 2px;
+}

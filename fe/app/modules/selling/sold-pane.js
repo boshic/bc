@@ -12,8 +12,10 @@ import soldPaneTpl from './sold-pane.html';
         $s.totals = {};
         $s.user = {};
 
+        let searchTerms = paneFactory.getSearchTermsForGetItemsByFilter($s, 'findSoldItemByFilter');
+
         let findItemsByFilter = () => {
-            return paneFactory.findItemsByFilter($s, 'findSoldItemByFilter');
+            searchTerms.next(JSON.stringify($s.filter));
         };
 
         let calcTotalsAndRefresh = () => {

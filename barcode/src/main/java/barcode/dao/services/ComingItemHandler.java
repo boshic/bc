@@ -1,5 +1,6 @@
 package barcode.dao.services;
 
+import barcode.dao.entities.embeddable.InventoryRow;
 import com.querydsl.core.types.Predicate;
 import barcode.dao.entities.*;
 import barcode.dao.entities.embeddable.Comment;
@@ -11,16 +12,15 @@ import barcode.dao.utils.DocumentFilter;
 import barcode.dto.DtoItemForNewComing;
 import barcode.dto.ResponseByComingItems;
 import barcode.dto.ResponseItem;
+import org.springframework.beans.support.PagedListHolder;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class ComingItemHandler extends EntityHandlerImpl {
@@ -403,11 +403,54 @@ public class ComingItemHandler extends EntityHandlerImpl {
     void checkEanInFilter(ComingItemFilter filter) {
 
         String eanSynonym;
+        Item item = itemHandler.getItemByEan(filter.getEan());
         if(itemHandler.isEanValid(filter.getEan())) {
-            eanSynonym = itemHandler.getItemByEan(filter.getEan()).getEanSynonym();
+            eanSynonym = item == null ? null : item.getEanSynonym();
             if(itemHandler.isEanValid(eanSynonym))
                 filter.setEan(eanSynonym);
         }
+    }
+
+    private ResponseByComingItems getInventoryItems(List<ComingItem> comingItems, ComingItemFilter filter) {
+
+        Map<Item, List<ComingItem>> groupedItems = comingItems.stream()
+                                                    .collect(Collectors.groupingBy(ComingItem::getItem));
+
+        List<ComingItem> result = new ArrayList<ComingItem>();
+
+        //item, stock, sum, quantity, currentQuantity
+        groupedItems.forEach((item, comings) -> {
+            InventoryRow inventoryRow = itemHandler.getInventoryRowByStock(item, filter.getStock().getId());
+            result.add(new ComingItem(
+                    item,
+                    filter.getStock(),
+                    comings.stream()
+                            .map(ComingItem::getSum)
+                            .reduce(BigDecimal.ZERO, BigDecimal::add),
+                    comings.stream()
+                            .map(ComingItem::getCurrentQuantity)
+                            .reduce(BigDecimal.ZERO, BigDecimal::add),
+                    inventoryRow == null ? BigDecimal.ZERO : inventoryRow.getQuantity(),
+                    inventoryRow == null ? null : inventoryRow.getDate()
+            ));
+        });
+
+//        SortSoldItemsList(result, filter.getSortField(), filter.getSortDirection());
+//
+        PagedListHolder<ComingItem> page = new PagedListHolder<ComingItem>(result);
+        page.setPageSize(result.size());
+        page.setPage(filter.getPage() - 1);
+
+        ResponseByComingItems ribyci =
+                new ResponseByComingItems("сгрупированные данные", page.getPageList(),
+                        true, page.getPageCount());
+
+        if(filter.getCalcTotal())
+            ribyci.calcTotals(comingItems);
+//
+        return ribyci;
+
+//        return null;
     }
 
     public ResponseByComingItems findByFilter(ComingItemFilter filter) {
@@ -419,6 +462,9 @@ public class ComingItemHandler extends EntityHandlerImpl {
         checkEanInFilter(filter);
 
         Sort sort = new Sort(Sort.Direction.fromStringOrNull(filter.getSortDirection()), filter.getSortField());
+
+        if(filter.getInventoryModeEnabled())
+                    return getInventoryItems(comingItemRepository.findAll(cipb.buildByFilter(filter), sort), filter);
 
         PageRequest pageRequest = new PageRequest(filter.getPage() - 1, filter.getRowsOnPage(), sort);
 
@@ -459,6 +505,31 @@ public class ComingItemHandler extends EntityHandlerImpl {
             return new DtoItemForNewComing(item, BigDecimal.ZERO, BigDecimal.ZERO);
 
         return new DtoItemForNewComing(coming.getItem(), coming.getPriceIn(), coming.getPriceOut());
+    }
+
+    public void setInventoryItems(Set<ComingItem> comingItems) {
+
+        for (ComingItem coming : comingItems) {
+
+            Item item = itemHandler.getItemById(coming.getItem().getId());
+
+            InventoryRow inventoryRow = itemHandler.getInventoryRowByStock(item, coming.getStock().getId());
+
+            if(inventoryRow == null)
+                item.setInventoryRows(new ArrayList<InventoryRow>() {
+                    {
+                        add(new InventoryRow(userHandler.getCurrentUser(),
+                                coming.getStock(), coming.getCurrentQuantity()));
+                    }
+                });
+            else {
+                inventoryRow.setDate(new Date());
+                inventoryRow.setUser(userHandler.getCurrentUser());
+                inventoryRow.setQuantity(coming.getCurrentQuantity());
+            }
+            itemHandler.saveItem(item);
+
+        }
     }
 
 }

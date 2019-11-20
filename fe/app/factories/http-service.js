@@ -94,6 +94,21 @@ angular.module('common-http-service', [])
                             );
                         return defer.promise;
                     },
+                    getItemsByFilterRx: (opts) => {
+                        addRequestsQuantity(opts.requestParams);
+                        return new Observable((observer) => {
+                            $http.post('/'+ opts.url, opts.filter)
+                                .then(resp => {
+                                    observer.next(resp.data);
+                                    decreaseRequestsQuantity(opts.requestParams);
+                                    observer.complete();
+                                })
+                                .catch(eroror => {
+                                    decreaseRequestsQuantity(opts.requestParams);
+                                    observer.error();
+                                });
+                        });
+                    },
                     getItemById : (opts) => {
                         let defer = $q.defer();
                         addRequestsQuantity(opts.requestParams);

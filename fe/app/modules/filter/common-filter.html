@@ -46,17 +46,25 @@
 
     <li class="filter-row" style="display: inline-flex;">
         <input class="form-control" style="width: 30%;" type="number" min="1"
-               ng-readonly="filter.calcTotal"
+               ng-readonly="filter.calcTotal || filter.inventoryModeEnabled"
                ng-model="filter.rowsOnPage"/>
         <label style="margin-left: 1%;margin-top: 1%; color: coral;">Количество строк на странице</label>
     </li>
 
+    <li class="filter-row"
+        ng-if = "filter.inventoryModeEnabled != null">
+        <input style="zoom: 1.5; position: absolute;" type="checkbox" ng-model="filter.inventoryModeEnabled"/>
+        <label style="margin-left: 5%; margin-top: 1%;  color: coral;">
+            Режим инвентаризации: {{(filter.inventoryModeEnabled) ? "Да" : "Нет"}}
+        </label>
+    </li>
+
+    <!--ng-readonly="filter.calcTotal"-->
     <li class="filter-row">
         <div style="display: flex;">
             <input class="form-control filter-row-two-elements" type="text"
                    list="commentsList"
                    placeholder="Комментарий"
-                   ng-readonly="filter.calcTotal"
                    ng-model="filter.comment"/>
 
             <datalist id="commentsList">
@@ -86,12 +94,12 @@
         <buyer-input buyer="filter.buyer" buyers="filter.buyers"></buyer-input>
     </li>
 
+    <!--ng-readonly="filter.calcTotal"-->
     <li class="filter-row"
         ng-if = "filter.sectionPart != null">
         <div style="display: flex;">
             <input class="form-control filter-row-two-elements" type="text"
                    placeholder="Поиск по фрагменту наименования секции"
-                   ng-readonly="filter.calcTotal"
                    ng-change="filter.section.name=filter.sectionPart"
                    ng-model="filter.sectionPart"/>
             <eraser class="filter-eraser" data="filter.sectionPart"></eraser>
@@ -114,11 +122,11 @@
         </div>
     </li>
 
+    <!--ng-readonly="filter.calcTotal"-->
     <li class="filter-row">
         <div style="display: flex;">
             <input class="form-control filter-row-two-elements" type="text"
                    placeholder="Поиск по фрагменту наименования товара"
-                   ng-readonly="filter.calcTotal"
                    ng-change="filter.item.name=filter.searchString"
                    ng-model="filter.searchString"/>
             <eraser class="filter-eraser" data="filter.searchString"></eraser>

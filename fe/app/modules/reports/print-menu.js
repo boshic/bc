@@ -110,7 +110,6 @@
                         return rows;
                     },
                     setReportsByParams: (params, reps) => {
-                        // let arr = reports;
                         reports.forEach((report)=> {
                            params.forEach((param) => {
                                if(param.type === report.type)

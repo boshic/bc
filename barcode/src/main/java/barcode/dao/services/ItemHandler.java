@@ -3,7 +3,9 @@ package barcode.dao.services;
 import barcode.dao.entities.Item;
 import barcode.dao.entities.QComingItem;
 import barcode.dao.entities.QItem;
+import barcode.dao.entities.embeddable.InventoryRow;
 import barcode.dao.predicates.ItemPredicateBuilder;
+import barcode.dao.predicates.ItemSectionPredicateBuilder;
 import barcode.dao.repositories.ComingItemRepository;
 import barcode.dao.repositories.ItemRepository;
 import barcode.dto.ResponseItem;
@@ -15,6 +17,8 @@ import java.util.List;
 
 @Service
 public class ItemHandler {
+
+    public static ItemPredicateBuilder ipb = new ItemPredicateBuilder();
 
     private static final Integer EAN_LENGTH = 13;
     private static final String BAD_EAN_SYNONYM = "Товар имеет приходы, или указанный ШК уже имеет синоним!";
@@ -41,7 +45,7 @@ public class ItemHandler {
         item.setEan(srcItem.getEan());
 
         if(isAllowedEanSynonym(srcItem, item))
-           item.setEanSynonym(srcItem.getEanSynonym());
+           item.setEanSynonym(srcItem.getEanSynonym() == null ? "" : srcItem.getEanSynonym());
         else {
             srcItem.setEanSynonym(BAD_EAN_SYNONYM);
             return new ResponseItem<Item>(BAD_EAN_SYNONYM + " " + srcItem.getName(), false, srcItem);
@@ -110,7 +114,7 @@ public class ItemHandler {
             return items;
 
         if(filter != null && filter.length() >= 2)
-            return itemRepository.findAll(new ItemPredicateBuilder().buildByFilter(filter));
+            return itemRepository.findAll(ipb.buildByFilter(filter));
 //            return itemRepository.findByNameContainingIgnoreCase(filter);
 
         return itemRepository.findTop100ByNameContainingIgnoreCase(filter);
@@ -126,6 +130,10 @@ public class ItemHandler {
 
         itemRepository.save(item);
     }
+
+    void saveItem(Item item) {
+        itemRepository.save(item);
+    };
 
     public Integer deleteItem(long id) {
 
@@ -162,6 +170,16 @@ public class ItemHandler {
     Boolean isEanValid(String ean) {
 
         return (ean != null && ean.length() == EAN_LENGTH);
+    }
+
+    InventoryRow getInventoryRowByStock(Item item, Long stockId) {
+
+        if(item.getInventoryRows() != null)
+            for(InventoryRow row : item.getInventoryRows())
+                if(row.getStock().getId().equals(stockId))
+                    return row;
+
+        return null;
     }
 
 }

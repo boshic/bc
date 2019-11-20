@@ -100,6 +100,7 @@ import commonFilterTpl from './common-filter.html';
                         resetCommonFilterFields(filter);
 
                         filter.hideNullQuantity = true;
+                        filter.inventoryModeEnabled = false;
 
                         filter.ean = "";
                         // filter.sortField = 'item.name';
@@ -125,6 +126,7 @@ import commonFilterTpl from './common-filter.html';
                                 if ((key === 'toDate') || (key === 'fromDate') || (key === 'user')
                                     || (key === 'comment') || (key === 'document') || (key === 'supplier')
                                     || (key === 'sectionPart') || (key === 'hideNullQuantity')
+                                    || (key === 'inventoryModeEnabled')
                                     || (key === 'section') || (key === 'item') || (key === 'buyer')
                                     || (key === 'stock') || (key === 'searchString')) {
                                     calcTotalsAndRefresh();

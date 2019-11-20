@@ -814,7 +814,7 @@ angular.module('inputs', ['asyncFilter'])
                             switchMap(keyword =>
                                 httpService.getItemsRx({
                                     requestParams: $s.requestParams,
-                                    url: url,
+                                    url,
                                     params: '?filter=' + keyword
                                 })),
                             tap((value) => {
