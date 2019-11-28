@@ -205,7 +205,7 @@ public class MovingHandler extends EntityHandlerImpl {
 
             responseItemTemp = this.checkMoving(moving);
 
-            responseItem.getItems().add(responseItemTemp);
+            responseItem.getEntityItems().add(responseItemTemp);
 
             if (!responseItemTemp.getSuccess()) {
 
@@ -249,12 +249,12 @@ public class MovingHandler extends EntityHandlerImpl {
         ResponseItem<ComingItem> responseByComing = this.comingItemHandler.getComingForSell(
                                                         moving.getComing().getItem().getEan(), stock.getId());
 
-        responseItem.getItems().add(responseByComing);
+        responseItem.getEntityItems().add(responseByComing);
 
         if (!responseByComing.getSuccess())
             return responseByComing;
 
-        moving.setComing(responseByComing.getItem());
+        moving.setComing(responseByComing.getEntityItem());
 
         moving.getComing().setStock(stock);
 

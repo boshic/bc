@@ -5,6 +5,7 @@ let sellingPaneCntrlr = ($s, $http, paneFactory, printFactory, modalFactory, ite
         $s.rows=[];
 
         let getEmptyItem = itemFactory.itemConfig.getEmptyItem;
+        let getEmptyBuyer = itemFactory.buyerConfig.getEmptyItem;
         $s.item = getEmptyItem();
 
         $s.allowAllStocks = false;
@@ -26,12 +27,9 @@ let sellingPaneCntrlr = ($s, $http, paneFactory, printFactory, modalFactory, ite
             paneFactory.getItemsForRelease( {filter: ean, stockId: $s.stock.id}, 'getComingForSell', $s);
         };
 
-        let setDefaultBuyer = () => {
-            let buyer = paneFactory.user.buyer || null;
-            if(!$s.rows.length && typeof buyer === 'object' && buyer !=null && buyer.id > 0)
-                $s.buyer = buyer;
-
-        };
+        // let setDefaultBuyer = () => {
+        //     $s.buyer = paneFactory.getDefaultBuyer(paneFactory.user.buyer, $s.rows);
+        // };
 
     $s.editItem = (barcode) => {
         $s.item = angular.extend(getEmptyItem(), {name: barcode});
@@ -75,7 +73,8 @@ let sellingPaneCntrlr = ($s, $http, paneFactory, printFactory, modalFactory, ite
             else {
                 $s.comment = "";
                 $s.rows=[];
-                setDefaultBuyer();
+                $s.buyer = getEmptyBuyer();
+                // setDefaultBuyer();
             }
             $s.blankSearch();
         };
@@ -98,8 +97,8 @@ let sellingPaneCntrlr = ($s, $http, paneFactory, printFactory, modalFactory, ite
 
         $s.$on("tabSelected", (event, data) => {
             if (data.event != null && paneFactory.paneToggler(data.pane) === "Продавать!") {
-                $s.user = paneFactory.user;
-                setDefaultBuyer();
+                // $s.user = paneFactory.user;
+                // setDefaultBuyer();
                 $s.blankSearch();
             }
         });
@@ -120,10 +119,20 @@ let sellingPaneCntrlr = ($s, $http, paneFactory, printFactory, modalFactory, ite
             $s.barcode = "";
             $s.item = getEmptyItem();
             paneFactory.changeElementState(eanInputElement, ['focus']);
+            if(!angular.isDefined($s.buyer.id) && !$s.rows.length)
+                $s.buyer = itemFactory.buyerConfig.checkAndGetItem(paneFactory.user.buyer);
+
         };
 
         $s.openQuantityChangerModal = (index) => {
-            modalFactory.openModal(index, $s.rows, $s.quantityChangerModalData);
+            // let i = typeof index === 'number' ? index : 0;
+            // $s.rows[i].availQuantity = $s.rows[i].limitQuantity = $s.rows[i].currentQuantity;
+            // modalFactory.openModal(index, $s.rows, $s.quantityChangerModalData);
+            if($s.rows.length)
+                modalFactory.openModalWithConfig({index, rows: $s.rows,
+                    availQuantityField : 'currentQuantity',
+                    limitQuantityField : 'currentQuantity',
+                    modalData: $s.quantityChangerModalData});
         };
 
     };

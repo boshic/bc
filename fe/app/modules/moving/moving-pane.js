@@ -72,7 +72,13 @@ import movingPaneTpl from './moving-pane.html';
         };
 
         $s.openQuantityChangerModal = (index) => {
-            modalFactory.openModal(index, $s.rows, $s.quantityChangerModalData);
+            // $s.rows[index].availQuantity = $s.rows[index].limitQuantity = $s.rows[index].currentQuantity;
+            // modalFactory.openModal(index, $s.rows, $s.quantityChangerModalData);
+            if($s.rows.length)
+                modalFactory.openModalWithConfig({index, rows: $s.rows,
+                    availQuantityField : 'currentQuantity',
+                    limitQuantityField : 'currentQuantity',
+                    modalData: $s.quantityChangerModalData});
         };
 
     };

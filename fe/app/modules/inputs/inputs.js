@@ -202,7 +202,7 @@ let docCtrlr = ($s, httpService, itemFactory) => {
         httpService.addItem({data: $s.newDoc, url: 'addDocument'})
             .then(
                 resp => {
-                    (resp.item == null) ? $s.doc.name = resp.text : $s.doc = resp.item;
+                    (resp.entityItem == null) ? $s.doc.name = resp.text : $s.doc = resp.entityItem;
                     $s.showDocsList();
                 },
                 resp => {
@@ -682,7 +682,12 @@ angular.module('inputs', ['asyncFilter'])
                         getEmptyItem: getNewBuyer,
                         getItemsUrl: 'getBuyers',
                         addItemUrl: 'addBuyer',
-                        getItemByIdUrl: 'getBuyerById'
+                        getItemByIdUrl: 'getBuyerById',
+                        checkAndGetItem: (buyer) => {
+                            if(angular.isDefined(buyer) && typeof buyer === 'object' && buyer !=null && buyer.id > 0)
+                                return buyer;
+                            return getNewBuyer;
+                        }
                 },
                 documentConfig :
                     {
@@ -773,7 +778,7 @@ angular.module('inputs', ['asyncFilter'])
                     httpService.addItem({data: $s.item, url, requestParams: $s.requestParams})
                         .then(
                         resp => {
-                            $s.item = resp.item;
+                            $s.item = resp.entityItem;
                             if(resp.success) {
                                 $s.closeModal();
                             }

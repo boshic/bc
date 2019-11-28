@@ -131,13 +131,13 @@ public class ComingItemHandler extends EntityHandlerImpl {
 
             comingItemRepository.save(coming);
 
-            responseItem.setItem(coming);
+            responseItem.setEntityItem(coming);
 
         } else {
 
             responseItem.setText("Недостаточно прав для изменения/создания прихода");
 
-            responseItem.setItem(newComing);
+            responseItem.setEntityItem(newComing);
         }
 
 //        responseItem.packItems();
@@ -261,7 +261,7 @@ public class ComingItemHandler extends EntityHandlerImpl {
             responseItemTemp = this.checkComing(coming);
 
             if (responseItemTemp.getSuccess())
-                responseItemTemp.getItems().add(update(coming, new ComingItem()));
+                responseItemTemp.getEntityItems().add(update(coming, new ComingItem()));
 
              else {
 
@@ -272,7 +272,7 @@ public class ComingItemHandler extends EntityHandlerImpl {
             }
 
 //            responseItem.getItems().add(responseItemTemp);
-            responseItem.setItem(responseItemTemp);
+            responseItem.setEntityItem(responseItemTemp);
         }
 
         return responseItem;
@@ -310,14 +310,14 @@ public class ComingItemHandler extends EntityHandlerImpl {
 
         if(section == null) {
 
-            section = itemSectionHandler.addItem(coming.getItem().getSection()).getItem();
+            section = itemSectionHandler.addItem(coming.getItem().getSection()).getEntityItem();
 
             responseBySection.setText("Секция с именем " + coming.getItem().getName() + " создана");
         }
 
         coming.getItem().setSection(section);
 
-        responseItem.getItems().add(responseBySection);
+        responseItem.getEntityItems().add(responseBySection);
 
         //item
         ResponseItem responseByItem = new ResponseItem("Товар с именем " + coming.getItem().getName() + " найден");
@@ -327,7 +327,7 @@ public class ComingItemHandler extends EntityHandlerImpl {
 
         if (item == null) {
 
-            item = itemHandler.addItem(coming.getItem()).getItem();
+            item = itemHandler.addItem(coming.getItem()).getEntityItem();
 
             responseByItem.setText("Новый товар с именем " + coming.getItem().getName() + " создан");
         }
@@ -341,7 +341,7 @@ public class ComingItemHandler extends EntityHandlerImpl {
 
         coming.setItem(item);
 
-        responseItem.getItems().add(responseByItem);
+        responseItem.getEntityItems().add(responseByItem);
 
         //supplier
         ResponseItem responseBySupplier = new ResponseItem("Поставщик " + coming.getDoc().getSupplier().getName()
@@ -350,14 +350,14 @@ public class ComingItemHandler extends EntityHandlerImpl {
 
         if (supplier == null) {
 
-            supplier = supplierHandler.addSupplier(coming.getDoc().getSupplier()).getItem();
+            supplier = supplierHandler.addSupplier(coming.getDoc().getSupplier()).getEntityItem();
 
             responseBySupplier.setText("Поставщик " + coming.getDoc().getSupplier().getName() + " создан");
         }
 
         coming.getDoc().setSupplier(supplier);
 
-        responseItem.getItems().add(responseBySupplier);
+        responseItem.getEntityItems().add(responseBySupplier);
 
         //doc
         ResponseItem responseBydoc = new ResponseItem("Документ " + coming.getDoc().getName() + " от "
@@ -369,7 +369,7 @@ public class ComingItemHandler extends EntityHandlerImpl {
 
         if (document == null ) {
 
-            document = documentHandler.addItem(coming.getDoc()).getItem();
+            document = documentHandler.addItem(coming.getDoc()).getEntityItem();
 
             responseBydoc.setText("Документ " + coming.getDoc().getName() + " от "
                                               + coming.getDoc().getDate() +" создан");
@@ -377,7 +377,7 @@ public class ComingItemHandler extends EntityHandlerImpl {
 
         coming.setDoc(document);
 
-        responseItem.getItems().add(responseBydoc);
+        responseItem.getEntityItems().add(responseBydoc);
 
         QComingItem qComingItem = QComingItem.comingItem;
 
@@ -388,7 +388,7 @@ public class ComingItemHandler extends EntityHandlerImpl {
 
         if (comingItemRepository.findAll(predicate).size() > 0) {
 
-            responseItem.getItems().add(new ResponseItem(CHECK_COMING_INVALID_DOC));
+            responseItem.getEntityItems().add(new ResponseItem(CHECK_COMING_INVALID_DOC));
 
             responseItem.setText(CHECK_COMING_INVALID_DOC);
 
@@ -446,7 +446,7 @@ public class ComingItemHandler extends EntityHandlerImpl {
                         true, page.getPageCount());
 
         if(filter.getCalcTotal())
-            ribyci.calcTotals(comingItems);
+            ribyci.calcInventoryTotals(page.getPageList());
 //
         return ribyci;
 

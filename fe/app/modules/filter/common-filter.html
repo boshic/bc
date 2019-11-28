@@ -30,16 +30,16 @@
 
     <li class="filter-row"
         ng-if = "filter.hideNullQuantity != null">
-        <input style="zoom: 1.5; position: absolute;" type="checkbox" ng-model="filter.hideNullQuantity"/>
-        <label style="margin-left: 5%; margin-top: 1%;  color: coral;">
+        <input class="filter-checkbox-input" type="checkbox" ng-model="filter.hideNullQuantity"/>
+        <label style="margin-left: 5%" class="filter-checkbox-name">
             Убрать нулевые остатки: {{(filter.hideNullQuantity) ? "Да" : "Нет"}}
         </label>
     </li>
 
     <li class="filter-row"
         ng-if = "filter.groupByItems != null">
-        <input style="zoom: 1.5; position: absolute;" type="checkbox" ng-model="filter.groupByItems"/>
-        <label style="margin-left: 5%; margin-top: 1%;  color: coral;">
+        <input class="filter-checkbox-input" type="checkbox" ng-model="filter.groupByItems"/>
+        <label style="margin-left: 5%" class="filter-checkbox-name">
             Группировать по товару: {{(filter.groupByItems) ? "Да" : "Нет"}}
         </label>
     </li>
@@ -53,11 +53,21 @@
 
     <li class="filter-row"
         ng-if = "filter.inventoryModeEnabled != null">
-        <input style="zoom: 1.5; position: absolute;" type="checkbox" ng-model="filter.inventoryModeEnabled"/>
-        <label style="margin-left: 5%; margin-top: 1%;  color: coral;">
+        <input class="filter-checkbox-input" type="checkbox" ng-model="filter.inventoryModeEnabled"/>
+        <label style="margin-left: 5%" class="filter-checkbox-name">
             Режим инвентаризации: {{(filter.inventoryModeEnabled) ? "Да" : "Нет"}}
         </label>
     </li>
+
+    <li class="filter-row"
+        ng-if = "filter.autoOpenQuantityChangerModalInInventoryMode != null"
+        ng-show = "filter.inventoryModeEnabled">
+        <input style="margin-left: 5%;" class="filter-checkbox-input" type="checkbox" ng-model="filter.autoOpenQuantityChangerModalInInventoryMode"/>
+        <label style="margin-left: 10%" class="filter-checkbox-name">
+           Автом. открытие окна ввода количества: {{(filter.autoOpenQuantityChangerModalInInventoryMode) ? "Да" : "Нет"}}
+        </label>
+    </li>
+
 
     <!--ng-readonly="filter.calcTotal"-->
     <li class="filter-row">

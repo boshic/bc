@@ -101,6 +101,7 @@ import commonFilterTpl from './common-filter.html';
 
                         filter.hideNullQuantity = true;
                         filter.inventoryModeEnabled = false;
+                        filter.autoOpenQuantityChangerModalInInventoryMode = true;
 
                         filter.ean = "";
                         // filter.sortField = 'item.name';

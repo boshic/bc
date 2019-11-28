@@ -36,8 +36,11 @@ public class SoldItemHandler extends EntityHandlerImpl {
 
     private BuyerHandler buyerHandler;
 
+    private RecipeHandler recipeHandler;
+
     public SoldItemHandler (SoldItemsRepository soldItemsRepository, ComingItemHandler comingItemHandler,
-                            UserHandler userHandler, StockHandler stockHandler, BuyerHandler buyerHandler) {
+                            UserHandler userHandler, StockHandler stockHandler, BuyerHandler buyerHandler,
+                            RecipeHandler recipeHandler) {
 
         this.soldItemsRepository = soldItemsRepository;
 
@@ -48,6 +51,8 @@ public class SoldItemHandler extends EntityHandlerImpl {
         this.stockHandler = stockHandler;
 
         this.buyerHandler = buyerHandler;
+
+        this.recipeHandler = recipeHandler;
     }
 
     public ResponseItem makeAutoSelling(Set<SoldItem> sellings) {
@@ -61,7 +66,7 @@ public class SoldItemHandler extends EntityHandlerImpl {
 
             responseItemTemp = this.checkSelling(selling);
 
-            responseItem.getItems().add(responseItemTemp);
+            responseItem.getEntityItems().add(responseItemTemp);
 
             if (!responseItemTemp.getSuccess()) {
 
@@ -105,12 +110,12 @@ public class SoldItemHandler extends EntityHandlerImpl {
         ResponseItem<ComingItem> responseByComing = this.comingItemHandler.getComingForSell(
                                                     selling.getComing().getItem().getEan(), stock.getId());
 
-        responseItem.getItems().add(responseByComing);
+        responseItem.getEntityItems().add(responseByComing);
 
         if (!responseByComing.getSuccess())
             return responseByComing;
 
-        selling.setComing(responseByComing.getItem());
+        selling.setComing(responseByComing.getEntityItem());
 
         selling.getComing().setStock(stock);
 
@@ -121,14 +126,14 @@ public class SoldItemHandler extends EntityHandlerImpl {
 
         if (buyer == null) {
 
-            buyer = this.buyerHandler.addBuyer(selling.getBuyer()).getItem();
+            buyer = this.buyerHandler.addBuyer(selling.getBuyer()).getEntityItem();
 
             responseByBuyer.setText("Покупатель " + selling.getBuyer().getName() + " создан");
         }
 
         selling.setBuyer(buyer);
 
-        responseItem.getItems().add(responseByBuyer);
+        responseItem.getEntityItems().add(responseByBuyer);
 
         QSoldItem qSoldItem = QSoldItem.soldItem;
 
@@ -138,7 +143,7 @@ public class SoldItemHandler extends EntityHandlerImpl {
 
         if (soldItemsRepository.findAll(predicate).size() > 0) {
 
-            responseItem.getItems().add(new ResponseItem("Соответствующая продажа " +
+            responseItem.getEntityItems().add(new ResponseItem("Соответствующая продажа " +
                     "уже содержится, добавление НЕ состоится"));
 
             return responseItem;
@@ -170,6 +175,13 @@ public class SoldItemHandler extends EntityHandlerImpl {
                 new ArrayList<SoldItem>(),false);
 
         Long uuid = new Random().nextLong();
+
+        Recipe recipe = new Recipe(new Date(),
+                soldItems.stream().map(v -> v.getPrice().multiply(v.getQuantity())).reduce(BigDecimal.ZERO, BigDecimal::add),
+                soldItems.size(), soldItems.iterator().next().getUser(), soldItems.iterator().next().getBuyer()
+        );
+
+        recipeHandler.save(recipe);
 
         for (SoldItem soldItem : soldItems) {
 
@@ -259,9 +271,11 @@ public class SoldItemHandler extends EntityHandlerImpl {
 
 //                        newSoldItem.setUuid(uuid);
 
+                        newSoldItem.setRecipe(recipe);
+
                         soldItemsRepository.save(newSoldItem);
 
-                        responseItem.getItems().add(newSoldItem);
+                        responseItem.getEntityItems().add(newSoldItem);
 
                     if (reqForSell.compareTo(BigDecimal.ZERO) == 0) break;
 
@@ -448,6 +462,11 @@ public class SoldItemHandler extends EntityHandlerImpl {
 
         soldItem.setSum(soldItem.getPrice().multiply(soldItem.getQuantity())
                 .setScale(2, BigDecimal.ROUND_HALF_UP));
+
+        Recipe recipe = new Recipe(new Date(), soldItem.getSum(), 1, soldItem.getUser(), soldItem.getBuyer());
+        recipeHandler.save(recipe);
+
+        soldItem.setRecipe(recipe);
 
         soldItemsRepository.save(soldItem);
 

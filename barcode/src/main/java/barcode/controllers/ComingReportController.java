@@ -24,7 +24,7 @@ public class ComingReportController {
     Long addComingReportByFilter(@RequestBody ComingItemFilter filter) {
 
         if(filter != null)
-            return this.comingReportHandler.addItemByFilter(filter).getItem().getId();
+            return this.comingReportHandler.addItemByFilter(filter).getEntityItem().getId();
 
         return 0L;
     }
@@ -34,7 +34,7 @@ public class ComingReportController {
     Long addComingReport(@RequestBody ComingReport comingReport) {
 
         if(comingReport != null)
-            return this.comingReportHandler.addItem(comingReport).getItem().getId();
+            return this.comingReportHandler.addItem(comingReport).getEntityItem().getId();
 
         return 0L;
     }

@@ -9,7 +9,7 @@
                 "<div class='totals-root-div' ng-show='$index == selected'>" +
                 "<div class='totals-quantity'>" +
                 "<div class='description-on-totals'>{{x.quantDescr}}:</div>" +
-                "<div class='value-on-totals'>{{x.quantValue + ' шт.'}}</div>" +
+                "<div class='value-on-totals'>{{x.quantValue + ' ед.'}}</div>" +
                 "</div>" +
                 "<div class='totals-sum'>" +
                 "<div class='description-on-totals'>{{x.sumDescr}}:</div>" +

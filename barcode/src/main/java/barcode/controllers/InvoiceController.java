@@ -27,10 +27,10 @@ public class InvoiceController {
     public @ResponseBody Long addInvoice(@RequestBody Invoice invoice) {
 
         if (invoice.getId() == null)
-            return this.invoiceHandler.addInvoice(invoice).getItem().getId();
+            return this.invoiceHandler.addInvoice(invoice).getEntityItem().getId();
 
          else
-            return this.invoiceHandler.updateInvoice(invoice).getItem().getId();
+            return this.invoiceHandler.updateInvoice(invoice).getEntityItem().getId();
     }
 
     @RequestMapping(value = "/addWriteOffAct", method = RequestMethod.POST)

@@ -38,7 +38,7 @@ public class DocumentHandler extends EntityHandlerImpl {
 
         documentRepository.save(newDocument);
 
-        responseItem.setItem(newDocument);
+        responseItem.setEntityItem(newDocument);
 
         return responseItem;
     }

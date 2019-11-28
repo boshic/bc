@@ -23,6 +23,10 @@ public class SoldItem {
     private User user;
 
     @ManyToOne
+    @JoinColumn(name = "recipe_id")
+    private Recipe recipe;
+
+    @ManyToOne
     @JoinColumn(name = "coming_id")
     @QueryInit("*.*")
     private ComingItem coming;
@@ -36,13 +40,6 @@ public class SoldItem {
 
     @Column(name = "comment", nullable = false, columnDefinition="varchar(2500) COLLATE utf8_general_ci")
     private String comment;
-
-//    @Column(name = "uuid", columnDefinition="BIGINT(20) default '0'")
-
-
-
-//        String uniqueID = UUID.randomUUID().toString();
-//    private Long uuid;
 
     @ElementCollection
     @JsonIgnore
@@ -145,4 +142,11 @@ public class SoldItem {
         this.sum = sum;
     }
 
+    public Recipe getRecipe() {
+        return recipe;
+    }
+
+    public void setRecipe(Recipe recipe) {
+        this.recipe = recipe;
+    }
 }

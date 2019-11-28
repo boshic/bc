@@ -200,8 +200,8 @@ public class InvoiceHandler extends EntityHandlerImpl {
                             "", new ArrayList<InvoiceHeader>(),true,
                                                 responseByInvoices.getNumberOfPages());
 
-            for(Invoice invoice: responseByInvoices.getItems())
-                headers.getItems().add(new InvoiceHeader(invoice));
+            for(Invoice invoice: responseByInvoices.getEntityItems())
+                headers.getEntityItems().add(new InvoiceHeader(invoice));
 
             return headers;
         }
@@ -225,7 +225,7 @@ public class InvoiceHandler extends EntityHandlerImpl {
                 if(soldItem.getQuantity().compareTo(BigDecimal.ZERO) > 0)
                     invoice.getInvoiceRows().add(new InvoiceRow(soldItem,"", soldItem.getPrice()));
 
-            return addInvoice(invoice).getItem().getId();
+            return addInvoice(invoice).getEntityItem().getId();
         }
 
         return null;
@@ -256,7 +256,7 @@ public class InvoiceHandler extends EntityHandlerImpl {
                         soldItem.getComing().getPriceIn()));
 
 
-            return addInvoice(invoice).getItem().getId();
+            return addInvoice(invoice).getEntityItem().getId();
         }
 
         return null;

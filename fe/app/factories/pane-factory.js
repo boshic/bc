@@ -119,10 +119,10 @@ import { filter, tap, map, debounceTime, distinctUntilChanged, switchMap } from 
                                     filter: JSON.parse(filter)});
                             }),
                             tap((resp) => {
-                                if(resp.items.length === 0 && $s.filter.page != 1)
+                                if(resp.entityItems.length === 0 && $s.filter.page != 1)
                                     $s.filter.page =  1;
                                 else {
-                                    $s.rows = resp.items;
+                                    $s.rows = resp.entityItems;
                                     $s.pages = getPages(resp.numberOfPages);
                                     if (resp.success && $s.filter.calcTotal && resp.totals.length > 0)
                                         $s.totals = resp.totals;
@@ -132,6 +132,8 @@ import { filter, tap, map, debounceTime, distinctUntilChanged, switchMap } from 
                                         $s.filter.suppliers = resp.suppliers;
                                     if('sections' in resp && resp.sections != null)
                                         $s.filter.sections = resp.sections;
+                                    if('goods' in resp && resp.goods != null)
+                                        $s.filter.items = resp.goods;
                                     if(typeof $s.setReports === 'function')
                                         $s.setReports();
                                 }
@@ -173,7 +175,6 @@ import { filter, tap, map, debounceTime, distinctUntilChanged, switchMap } from 
                     setInventoryValues,
                     getItemsBySearchTermsAndFilter,
                     getSearchTermsForGetItemsByFilter,
-                    // findItemsByFilter,
                     getItemByBarcode : (ean, getItems) => {
                         if (isEanValid(ean)) {
                             getItems(ean);
@@ -250,7 +251,7 @@ import { filter, tap, map, debounceTime, distinctUntilChanged, switchMap } from 
                             resp => {
                                 if (resp.success) {
                                     $s.warning ="";
-                                    let row = resp.item;
+                                    let row = resp.entityItem;
                                     row.coming = {
                                         item: row.item,
                                         stock: $s.stock

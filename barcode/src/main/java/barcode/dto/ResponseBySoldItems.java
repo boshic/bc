@@ -1,10 +1,7 @@
 package barcode.dto;
 
 
-import barcode.dao.entities.Buyer;
-import barcode.dao.entities.ItemSection;
-import barcode.dao.entities.SoldItem;
-import barcode.dao.entities.Supplier;
+import barcode.dao.entities.*;
 
 import java.math.BigDecimal;
 import java.util.Comparator;
@@ -23,23 +20,27 @@ public class ResponseBySoldItems extends ResponseItemExt<SoldItem> {
     @Override
     public void calcTotals(List<SoldItem> soldItemList) {
 
-        BigDecimal quantity = BigDecimal.ZERO;
-        BigDecimal sum = BigDecimal.ZERO, sumByComing = BigDecimal.ZERO;
+        BigDecimal quantity = BigDecimal.ZERO, sum = BigDecimal.ZERO, sumByComing = BigDecimal.ZERO;
+        Set<Recipe> recipes = new HashSet<>();
         Set<Buyer> buyers = new HashSet<>();
         Set<Supplier> suppliers = new HashSet<>();
         Set<ItemSection> sections = new HashSet<>();
 
         for(SoldItem soldItem: soldItemList)  {
 
+            if(soldItem.getRecipe() != null)
+                recipes.add(soldItem.getRecipe());
+
             buyers.add(soldItem.getBuyer());
+
             sections.add(soldItem.getComing().getItem().getSection());
+
             suppliers.add(soldItem.getComing().getDoc().getSupplier());
 
             quantity = quantity.add(soldItem.getQuantity());
+
             sum = sum.add(soldItem.getSum());
-//            sumByComing = sumByComing.add(soldItem.getComing().getSum());
-//            sum = sum.add(soldItem.getPrice().multiply(soldItem.getQuantity()))
-//                    .setScale(2, BigDecimal.ROUND_HALF_UP);
+
             sumByComing = sumByComing.add(soldItem.getComing().getPriceIn().multiply(soldItem.getQuantity()))
                     .setScale(2, BigDecimal.ROUND_HALF_UP);
         }
@@ -50,6 +51,11 @@ public class ResponseBySoldItems extends ResponseItemExt<SoldItem> {
                 ("отпущено по учетной", quantity, "на сумму" , sumByComing));
         super.getTotals().add(new ResultRowByItemsCollection<BigDecimal, BigDecimal>
                 ("выбыло", quantity, "доход" , sum.subtract(sumByComing)));
+        if(recipes.size() > 0)
+            super.getTotals().add(new ResultRowByItemsCollection<Integer, BigDecimal>
+                ("чеков", recipes.size(), "средний" ,
+                        recipes.stream().map(Recipe::getSum).reduce(BigDecimal.ZERO, BigDecimal::add)
+                                .divide(new BigDecimal(recipes.size()), 2)));
 
         super.setBuyers(buyers.stream().sorted(Comparator.comparing(Buyer::getName)).collect(Collectors.toList()));
         super.setSuppliers(suppliers
@@ -61,6 +67,8 @@ public class ResponseBySoldItems extends ResponseItemExt<SoldItem> {
                 .stream()
                 .sorted(Comparator.comparing(ItemSection::getName))
                 .collect(Collectors.toList()));
+
+        super.setGoodsBySellings(soldItemList);
 
     }
 }

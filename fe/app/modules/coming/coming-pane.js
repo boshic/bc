@@ -51,7 +51,8 @@ import comingPaneTpl from './coming-pane.html';
         };
 
         $s.focusOnEanInput = () => {
-            paneFactory.changeElementState(eanInputElement, ['focus']);
+            if(!$s.filter.visible)
+                paneFactory.changeElementState(eanInputElement, ['focus']);
         };
 
         $s.$watch('filter', (nv, ov) => {
@@ -65,7 +66,8 @@ import comingPaneTpl from './coming-pane.html';
         };
 
         $s.afterSearch = () => {
-            if($s.filter.inventoryModeEnabled && $s.rows.length === 1)
+            if($s.filter.inventoryModeEnabled && $s.rows.length === 1
+                && $s.filter.autoOpenQuantityChangerModalInInventoryMode)
                 $s.openQuantityChangerModal(0);
             else
                 $s.focusOnEanInput();
@@ -91,7 +93,7 @@ import comingPaneTpl from './coming-pane.html';
             let row = $s.rows[index];
             $s.quantityChangerModalData.params = {index};
             modalFactory.openModal(undefined,
-                [{ quantity : row.currentQuantity, currentQuantity: undefined, item: row.item }],
+                [{ quantity : row.currentQuantity, currentQuantity: undefined, item: row.item, availQuantity: row.quantity }],
                 $s.quantityChangerModalData);
         };
 

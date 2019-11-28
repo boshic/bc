@@ -8,9 +8,9 @@ import java.util.List;
 
 public class ResponseItem<T> {
     private String text;
-    private T item;
+    private T entityItem;
     private Boolean success;
-    private List<T> items;
+    private List<T> entityItems;
 
     public ResponseItem() {}
 
@@ -23,25 +23,25 @@ public class ResponseItem<T> {
         this.success = success;
     }
 
-    public ResponseItem(String text, List<T> items, Boolean success) {
+    public ResponseItem(String text, List<T> entityItems, Boolean success) {
         this(text, success);
-        prepareItemsForTransfer(items);
-        this.items = items;
+        prepareItemsForTransfer(entityItems);
+        this.entityItems = entityItems;
     }
 
-    public ResponseItem(String text, Boolean success, T item) {
+    public ResponseItem(String text, Boolean success, T entityItem) {
         this(text, success);
-        prepareItemForTransfer(item);
-        this.item = item;
+        prepareItemForTransfer(entityItem);
+        this.entityItem = entityItem;
     }
 
     public void packItems() {
 
-        if(this.item != null)
-            prepareItemForTransfer(this.item);
+        if(this.entityItem != null)
+            prepareItemForTransfer(this.entityItem);
 
-        if(this.items != null && this.items.size() > 0)
-            prepareItemsForTransfer(this.items);
+        if(this.entityItems != null && this.entityItems.size() > 0)
+            prepareItemsForTransfer(this.entityItems);
 
     }
 
@@ -67,8 +67,6 @@ public class ResponseItem<T> {
             ((Invoice) o).getUser().setStamp(null);
     }
 
-    public T getItem() {return this.item;}
-    public void setItem(T item) {this.item = item;}
 
     public String getText() {return this.text;}
     public void setText(String text) {this.text = text;}
@@ -76,7 +74,19 @@ public class ResponseItem<T> {
     public Boolean getSuccess() {return this.success;}
     public void setSuccess(Boolean success) {this.success = success;}
 
-    public List<T> getItems() { return this.items;}
-    public void setItems(List<T> items) { this.items = items;}
+    public T getEntityItem() {
+        return entityItem;
+    }
 
+    public void setEntityItem(T entityItem) {
+        this.entityItem = entityItem;
+    }
+
+    public List<T> getEntityItems() {
+        return entityItems;
+    }
+
+    public void setEntityItems(List<T> entityItems) {
+        this.entityItems = entityItems;
+    }
 }

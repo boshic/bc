@@ -35,9 +35,9 @@ import comingItemTpl from './coming-item.html';
                 httpService.getItemById({id: id, url: 'getComingById', requestParams: $s.requestParams})
                     .then(
                     resp => {
-                        if (!(resp.item === null)) {
+                        if (!(resp.entityItem === null)) {
                             setPermissions(true);
-                            $s.coming = resp.item;
+                            $s.coming = resp.entityItem;
                             $s.hasSellings = !($s.coming.quantity == $s.coming.currentQuantity);
                             paneFactory.changeElementState(document.getElementById('coming-item-start-pos'), ['focus']);
                         }
@@ -72,7 +72,7 @@ import comingItemTpl from './coming-item.html';
                     requestParams: $s.requestParams})
                     .then(
                     resp => {
-                        $s.coming = resp.item;
+                        $s.coming = resp.entityItem;
                         $s.checkComing();
                         $s.hasSellings = false;
                     },

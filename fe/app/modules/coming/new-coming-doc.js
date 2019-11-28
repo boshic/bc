@@ -20,7 +20,7 @@ import newComingDocPaneTpl from './new-coming-doc.html';
         $s.totalsOut = { sum: 0, quantity: 0 };
 
         let getDataFromLastRow = () => {
-            if($s.rows.length > 0)
+            if($s.rows.length)
                 return {sum: $s.rows[0].sum, price: $s.rows[0].price,
                             quantity: 0, priceOut: $s.rows[0].priceOut};
             return {quantity: 1, sum:0, price: 0, priceOut: 0};
@@ -31,16 +31,18 @@ import newComingDocPaneTpl from './new-coming-doc.html';
         };
 
         let setReportData = () => {
-            let data = { stock: $s.stock, buyer: $s.buyer, id: undefined, rows: getRowsForReports()};
             $s.reports = [];
-            if(angular.isDefined($s.doc.id))
-                printFactory.setReportsByParams([{type: 'prices', data, method: 'addComingReport'}], $s.reports);
-            if(angular.isDefined($s.buyer.id))
-                printFactory.setReportsByParams([
-                    {type: 'salesReceipt', data, method: 'addInvoice'},
-                    {type: 'invoiceWithContract', data, method: 'addInvoice'},
-                    {type: 'workCompletionStatement', data, method: 'addInvoice'},
+            if($s.rows.length) {
+                let data = { stock: $s.stock, buyer: $s.buyer, id: undefined, rows: getRowsForReports()};
+                if(angular.isDefined($s.doc.id))
+                    printFactory.setReportsByParams([{type: 'prices', data, method: 'addComingReport'}], $s.reports);
+                if(angular.isDefined($s.buyer.id))
+                    printFactory.setReportsByParams([
+                        {type: 'salesReceipt', data, method: 'addInvoice'},
+                        {type: 'invoiceWithContract', data, method: 'addInvoice'},
+                        {type: 'workCompletionStatement', data, method: 'addInvoice'},
                         {type: 'invoice', data, method: 'addInvoice'}], $s.reports);
+            }
         };
 
         let getItems = ean => {
@@ -142,8 +144,9 @@ import newComingDocPaneTpl from './new-coming-doc.html';
         };
 
         $s.$on("tabSelected",  (event, data) => {
-            if (data.event != null && paneFactory.paneToggler(data.pane) === 'Новый')
+            if (data.event != null && paneFactory.paneToggler(data.pane) === 'Новый') {
                 $s.blankSearch();
+            }
         });
 
         $s.checkRows = () => {
@@ -183,7 +186,7 @@ import newComingDocPaneTpl from './new-coming-doc.html';
                 httpService.addItem({data: $s.rows, url: 'addComings', requestParams:$s.requestParams})
                     .then(
                     resp => {
-                        resp.item.success ? $s.deleteRows() : $s.warning = resp.item.text;
+                        resp.item.success ? $s.deleteRows() : $s.warning = resp.entityItem.text;
 
                     },
                     resp => {
@@ -207,6 +210,8 @@ import newComingDocPaneTpl from './new-coming-doc.html';
             $s.warning = "";
             $s.itemInputVisible = false;
             paneFactory.changeElementState(document.getElementById('new-coming-doc'), ['focus']);
+            if(!angular.isDefined($s.buyer.id) && !$s.rows.length)
+                $s.buyer = itemFactory.buyerConfig.checkAndGetItem(paneFactory.user.buyer);
         };
 
         $s.openQuantityChangerModal = (index) => {

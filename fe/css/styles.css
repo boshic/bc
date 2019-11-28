@@ -2241,3 +2241,28 @@ div.totals-type {
     color: var(--white-color);
     border-radius: 2px;
 }
+
+.filter-checkbox-input {
+    zoom: 1.5;
+    position: absolute;
+}
+
+.filter-checkbox-name {
+    margin-top: 1%;
+    color: var(--main-color);
+}
+
+span.inventory-deviation-ok {
+    color: green;
+    font-size: 22px;
+}
+
+span.inventory-deviation-shortage {
+    color: var(--white-color);
+    background: var(--main-color);
+}
+
+span.inventory-deviation-surplus {
+    background: var(--white-color);
+    color: var(--main-color);
+}

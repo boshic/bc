@@ -17,7 +17,7 @@
         $scope.$watch(() => vm.modalData.row.quantity, (nv) => {
             if (nv >= 0) {
                 vm.modalData.row.quantity =
-                    paneFactory.checkNumberLimit(vm.modalData.row.quantity, vm.modalData.row.currentQuantity);
+                    paneFactory.checkNumberLimit(vm.modalData.row.quantity, vm.modalData.row.limitQuantity);
             }
             if(typeof vm.checkInput === 'function')
                 vm.checkInput();
@@ -202,14 +202,14 @@
                         "<div style='display: flex;'>" +
                             "<div style='width: 60%;'>" +
                                 "<input type='number' class='form-control quantity-changer-input'" +
-                                    "min='0' max='$ctrl.modalData.row.currentQuantity'" +
+                                    "min='0' max='$ctrl.modalData.row.limitQuantity'" +
                                     "id = '{{$ctrl.cmpUuid}}'" +
                                     "ng-model='$ctrl.modalData.row.quantity'/>" +
                             "</div>"+
                             "<div class='quantity-rest-container'>" +
-                                "<span ng-show='$ctrl.modalData.row.currentQuantity > 0'>" +
+                                "<span ng-show='$ctrl.modalData.row.availQuantity > 0'>" +
                                     "<span>из:</span>" +
-                                    "<span>{{' ' + $ctrl.modalData.row.currentQuantity + $ctrl.modalData.row.coming.item.unit || 'ед.'}}</span>" +
+                                    "<span>{{' ' + $ctrl.modalData.row.availQuantity + $ctrl.modalData.row.item.unit || 'ед.'}}</span>" +
                                 "</span>" +
                             "</div>" +
                         "</div>"+
@@ -317,6 +317,16 @@
                             modalData.hidden = false;
                             (angular.isDefined(index)) ? modalData.row = rows[index] : modalData.row = rows[0];
                         }
+                    },
+                    openModalWithConfig: (config) => {
+                        if(config.rows.length)
+                            config.modalData.hidden = false;
+                        let i = config.index >= 0 ? config.index : 0;
+                        if(angular.isDefined(config.availQuantityField))
+                            config.rows[i].availQuantity = config.rows[i][config.availQuantityField];
+                        if(angular.isDefined(config.limitQuantityField))
+                            config.rows[i].limitQuantity = config.rows[i][config.limitQuantityField];
+                        config.modalData.row = config.rows[i];
                     },
                     setReportData: ($s, config) => {
                         let data = { stock: $s.stock, buyer: $s.buyer, comment: $s.comment,

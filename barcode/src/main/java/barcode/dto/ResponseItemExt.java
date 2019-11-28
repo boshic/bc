@@ -1,11 +1,14 @@
 package barcode.dto;
 
-import barcode.dao.entities.Buyer;
-import barcode.dao.entities.ItemSection;
-import barcode.dao.entities.Supplier;
+import barcode.dao.entities.*;
 
+import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * Created by xlinux on 21.11.18.
@@ -18,6 +21,8 @@ public abstract class ResponseItemExt<T> extends ResponseItem<T> {
     private List<ItemSection> sections;
     private List<Supplier> suppliers;
 
+    private List<Item> goods;
+
     public abstract void calcTotals(List<T> items);
 
     ResponseItemExt() {}
@@ -25,6 +30,42 @@ public abstract class ResponseItemExt<T> extends ResponseItem<T> {
         super(text, items, success);
         this.numberOfPages = number;
     }
+
+    void setSuppliersByComings(List<ComingItem> comings) {
+        this.setSuppliers(comings
+                        .stream()
+                        .map(s -> s.getDoc().getSupplier()).collect(Collectors.toSet())
+                        .stream()
+                        .sorted(Comparator.comparing(Supplier::getName))
+                        .collect(Collectors.toList()));
+    }
+
+    void setSectionsByComings(List<ComingItem> comings) {
+        this.setSections(comings
+                .stream()
+                .map(s -> s.getItem().getSection()).collect(Collectors.toSet())
+                .stream()
+                .sorted(Comparator.comparing(ItemSection::getName))
+                .collect(Collectors.toList()));
+    }
+
+    void setGoodsBySellings(List<SoldItem> sellings) {
+        this.setGoods(sellings
+                .stream()
+                .map(s -> s.getComing().getItem()).collect(Collectors.toSet())
+                .stream()
+                .sorted(Comparator.comparing(Item::getName))
+                .collect(Collectors.toList()));
+    }
+
+//    <V> void setSuppliersMethod(List<T> rows, java.util.function.Supplier<V> getField) {
+//        this.setSuppliers(rows
+//                .stream()
+//                .map(c -> getField.get()).collect(Collectors.toSet());
+////                .stream()
+//////                .sorted(Comparator.comparing(Supplier::getName))
+////                .collect(Collectors.toList()));
+//    }
 
     public Integer getNumberOfPages() {
         return numberOfPages;
@@ -64,5 +105,13 @@ public abstract class ResponseItemExt<T> extends ResponseItem<T> {
 
     public void setSections(List<ItemSection> sections) {
         this.sections = sections;
+    }
+
+    public List<Item> getGoods() {
+        return goods;
+    }
+
+    public void setGoods(List<Item> goods) {
+        this.goods = goods;
     }
 }
