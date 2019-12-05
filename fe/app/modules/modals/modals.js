@@ -193,8 +193,9 @@
                     "ng-transclude>" +
                 "<div>" +
                     "<div>" +
-                        "<div class='item-name-on-qty-changer-modal' ng-show='$ctrl.modalData.row.item.name.length'>" +
-                            "<span>{{$ctrl.modalData.row.item.name}}</span>" +
+                        "<div class='item-name-on-qty-changer-modal' " +
+                            "ng-show='$ctrl.modalData.row.item.name.length || $ctrl.modalData.row.coming.item.name'>" +
+                            "<span>{{$ctrl.modalData.row.item.name || $ctrl.modalData.row.coming.item.name}}</span>" +
                         "</div>" +
                         "<div style='font-size: 18px;' ng-show='$ctrl.modalData.row.commentCause.length'>" +
                             "<comment-input ng-model='$ctrl.modalData.row.comment'></comment-input>" +
@@ -209,7 +210,9 @@
                             "<div class='quantity-rest-container'>" +
                                 "<span ng-show='$ctrl.modalData.row.availQuantity > 0'>" +
                                     "<span>из:</span>" +
-                                    "<span>{{' ' + $ctrl.modalData.row.availQuantity + $ctrl.modalData.row.item.unit || 'ед.'}}</span>" +
+                                    "<span>" +
+            "{{' ' + $ctrl.modalData.row.availQuantity + ($ctrl.modalData.row.item.unit || $ctrl.modalData.row.coming.item.unit)}}" +
+                                    "</span>" +
                                 "</span>" +
                             "</div>" +
                         "</div>"+

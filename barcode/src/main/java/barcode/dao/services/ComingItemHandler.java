@@ -438,7 +438,7 @@ public class ComingItemHandler extends EntityHandlerImpl {
 //        SortSoldItemsList(result, filter.getSortField(), filter.getSortDirection());
 //
         PagedListHolder<ComingItem> page = new PagedListHolder<ComingItem>(result);
-        page.setPageSize(result.size());
+        page.setPageSize(filter.getRowsOnPage());
         page.setPage(filter.getPage() - 1);
 
         ResponseByComingItems ribyci =
@@ -446,7 +446,7 @@ public class ComingItemHandler extends EntityHandlerImpl {
                         true, page.getPageCount());
 
         if(filter.getCalcTotal())
-            ribyci.calcInventoryTotals(page.getPageList());
+            ribyci.calcInventoryTotals(result);
 //
         return ribyci;
 

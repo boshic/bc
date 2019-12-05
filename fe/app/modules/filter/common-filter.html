@@ -14,16 +14,16 @@
             Х
         </button>
     </li>
+    <!--ng-readonly="filter.calcTotal"-->
     <li class="filter-row">
         <div class="doc-date-pickers">
             <span>c</span>
             <input date-input class="form-control" type="date"
                    id="filter-input"
-                   ng-readonly="filter.calcTotal"
                    ng-model="filter.fromDate"/>
             <span>по</span>
+            <!--ng-readonly="filter.calcTotal"-->
             <input date-input class="form-control" type="date"
-                   ng-readonly="filter.calcTotal"
                    ng-model="filter.toDate"/>
         </div>
     </li>
@@ -44,9 +44,9 @@
         </label>
     </li>
 
+    <!--ng-readonly="filter.calcTotal || filter.inventoryModeEnabled"-->
     <li class="filter-row" style="display: inline-flex;">
         <input class="form-control" style="width: 30%;" type="number" min="1"
-               ng-readonly="filter.calcTotal || filter.inventoryModeEnabled"
                ng-model="filter.rowsOnPage"/>
         <label style="margin-left: 1%;margin-top: 1%; color: coral;">Количество строк на странице</label>
     </li>

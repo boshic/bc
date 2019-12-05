@@ -186,7 +186,7 @@ import newComingDocPaneTpl from './new-coming-doc.html';
                 httpService.addItem({data: $s.rows, url: 'addComings', requestParams:$s.requestParams})
                     .then(
                     resp => {
-                        resp.item.success ? $s.deleteRows() : $s.warning = resp.entityItem.text;
+                        resp.entityItem.success ? $s.deleteRows() : $s.warning = resp.entityItem.text;
 
                     },
                     resp => {

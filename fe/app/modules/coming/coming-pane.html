@@ -57,7 +57,7 @@
             <quick-filter filter="filter"></quick-filter>
         </div>
     </div>
-    <div ng-show = "filter.inventoryModeEnabled">
+    <div ng-show = "filter.inventoryModeEnabled && !totals.length && rows.length">
         <button class="set-invetnory-values-btn"
             ng-click = "setInventoryValues()">
             Записать остатки
@@ -288,7 +288,10 @@
                     <span class="price-out-on-coming-pane"
                           ng-show="(x.currentQuantity * x.sum/x.quantity - x.sum) != 0">
                         {{ ((x.currentQuantity * (x.sum/x.quantity).toFixed(5)).toFixed(2) - x.sum).toFixed(2)}}
-                        <span style="font-weight: normal">{{ "(" + (x.currentQuantity - x.quantity) + ")" }}</span>
+                        <span style="font-weight: normal">(</span>
+                        <span unit-sensitive unit="x.item.unit" quantity="(x.currentQuantity - x.quantity)">
+                        </span>
+                        <span style="font-weight: normal">)</span>
                     </span>
                     <span class="glyphicon glyphicon-ok inventory-deviation-ok"
                           ng-show="(x.currentQuantity * x.sum/x.quantity - x.sum) == 0">

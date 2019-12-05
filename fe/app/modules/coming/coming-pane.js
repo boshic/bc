@@ -19,8 +19,15 @@ import comingPaneTpl from './coming-pane.html';
 
         let searchTerms = paneFactory.getSearchTermsForGetItemsByFilter($s, 'findComingItemByFilter');
 
+        let beforeFindItemsByFilter = () => {
+            if($s.filter.inventoryModeEnabled && !$s.totals.length && $s.rows.length)
+                return (confirm("Записать результаты инвентаризации?")) ? $s.setInventoryValues() : true;
+            return true;
+        };
+
         let findItemsByFilter = () => {
-            paneFactory.getItemsBySearchTermsAndFilter(searchTerms, $s.filter);
+            if(!(typeof beforeFindItemsByFilter === 'function') || (beforeFindItemsByFilter()))
+                paneFactory.getItemsBySearchTermsAndFilter(searchTerms, $s.filter);
         };
 
         let calcTotalsAndRefresh = () => {
@@ -90,17 +97,17 @@ import comingPaneTpl from './coming-pane.html';
         };
 
         $s.openQuantityChangerModal = (index) => {
-            let row = $s.rows[index];
-            $s.quantityChangerModalData.params = {index};
-            modalFactory.openModal(undefined,
-                [{ quantity : row.currentQuantity, currentQuantity: undefined, item: row.item, availQuantity: row.quantity }],
-                $s.quantityChangerModalData);
+            $s.quantityChangerModalData.params = {index, quantity: $s.rows[index].currentQuantity};
+            modalFactory.openModalWithConfig({undefined, rows: [angular.extend({}, $s.rows[index])],
+                availQuantityField : 'quantity', modalData: $s.quantityChangerModalData});
         };
 
         $s.afterCloseQuantityChangerModal = () => {
-            let index = $s.quantityChangerModalData.params.index;
-            $s.rows[index].currentQuantity = $s.quantityChangerModalData.row.quantity;
-            $s.totals=[{quantDescr: 'нажмите записать остатки', quantValue: 0, sumValue: 0}];
+            let params = $s.quantityChangerModalData.params;
+            if(params.quantity != $s.quantityChangerModalData.row.quantity)
+                $s.totals=[];
+            $s.rows[params.index].currentQuantity = $s.quantityChangerModalData.row.quantity;
+            // $s.totals=[];
             if($s.rows.length === 1)
                 $s.focusOnEanInput();
         };

@@ -74,8 +74,7 @@ import soldPaneTpl from './sold-pane.html';
         };
 
         $s.makeReturn = (index) => {
-            let row = angular.extend($s.rows[index], {comment: '', commentCause:'Возврат',
-                currentQuantity: $s.rows[index].quantity});
+            let row = angular.extend($s.rows[index], {comment: '', commentCause:'Возврат'});
             $s.quantityChangerModalClose = () => {
                 if(confirm("Подтвердите возврат"))
                     httpService.addItem({data: row, url: 'returnSoldItem', requestParams: $s.requestParams})
@@ -85,7 +84,10 @@ import soldPaneTpl from './sold-pane.html';
                     );
                 else findItemsByFilter();
             };
-            modalFactory.openModal(undefined, [row], $s.quantityChangerModalData);
+            modalFactory.openModalWithConfig({undefined, rows: [row],
+                    availQuantityField : 'quantity',
+                    limitQuantityField : 'quantity',
+                    modalData: $s.quantityChangerModalData});
         };
 
         $s.changeSoldItemDate = function () {

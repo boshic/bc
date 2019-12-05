@@ -162,7 +162,8 @@
                 <td ng-show="!filter.groupByItems">
                     <span style="position: absolute; cursor: pointer;"
                           ng-if="((user.role == 'ROLE_ADMIN' || user.actsAllowed.indexOf('changeDateOFSI') > -1)
-                               && (x.quantity > 0))">
+                               && (x.quantity > 0))"
+                            ng-show = "requestParams.requestsQuantity === 0">
                         <div class="dropdown">
                         <span class="glyphicon glyphicon-pencil"></span>
                         <ul class="dropdown-menu hoverable comments-container sip-date-changer">

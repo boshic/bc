@@ -119,8 +119,10 @@ import { filter, tap, map, debounceTime, distinctUntilChanged, switchMap } from 
                                     filter: JSON.parse(filter)});
                             }),
                             tap((resp) => {
-                                if(resp.entityItems.length === 0 && $s.filter.page != 1)
+                                if(resp.entityItems.length === 0 && $s.filter.page != 1) {
+                                    $s.filter.calcTotal = true;
                                     $s.filter.page =  1;
+                                }
                                 else {
                                     $s.rows = resp.entityItems;
                                     $s.pages = getPages(resp.numberOfPages);
@@ -132,12 +134,12 @@ import { filter, tap, map, debounceTime, distinctUntilChanged, switchMap } from 
                                         $s.filter.suppliers = resp.suppliers;
                                     if('sections' in resp && resp.sections != null)
                                         $s.filter.sections = resp.sections;
-                                    if('goods' in resp && resp.goods != null)
-                                        $s.filter.items = resp.goods;
+                                    // if('goods' in resp && resp.goods != null)
+                                    //     $s.filter.items = resp.goods;
                                     if(typeof $s.setReports === 'function')
                                         $s.setReports();
+                                    $s.filter.calcTotal = false;
                                 }
-                                $s.filter.calcTotal = false;
                                 // console.log(resp);
                                 if(typeof $s.afterSearch === 'function')
                                     $s.afterSearch();
@@ -155,6 +157,7 @@ import { filter, tap, map, debounceTime, distinctUntilChanged, switchMap } from 
                     httpService.addItem({data: $s.rows, url, requestParams: $s.requestParams})
                         .then(
                             resp => {
+                                $s.totals = [{}];
                                 $s.refresh();
                             },
                             (resp) => {}

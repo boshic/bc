@@ -25,7 +25,7 @@ public class ResponseByComingItems extends ResponseItemExt<ComingItem> {
     @Override
     public void calcTotals(List<ComingItem> comings) {
 
-        BigDecimal quantity = comings.stream().map(ComingItem::getQuantity).reduce(BigDecimal.ZERO, BigDecimal::add),
+        BigDecimal quantity = BigDecimal.ZERO,
                     currentQuantity = BigDecimal.ZERO,
                     sum = BigDecimal.ZERO, currentSum = BigDecimal.ZERO,
                     sumOut = BigDecimal.ZERO, currentSumOut = BigDecimal.ZERO;
