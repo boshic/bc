@@ -400,17 +400,6 @@ public class ComingItemHandler extends EntityHandlerImpl {
         return responseItem;
     }
 
-    void checkEanInFilter(ComingItemFilter filter) {
-
-        String eanSynonym;
-        Item item = itemHandler.getItemByEan(filter.getEan());
-        if(itemHandler.isEanValid(filter.getEan())) {
-            eanSynonym = item == null ? null : item.getEanSynonym();
-            if(itemHandler.isEanValid(eanSynonym))
-                filter.setEan(eanSynonym);
-        }
-    }
-
     private ResponseByComingItems getInventoryItems(List<ComingItem> comingItems, ComingItemFilter filter) {
 
         Map<Item, List<ComingItem>> groupedItems = comingItems.stream()
@@ -459,7 +448,7 @@ public class ComingItemHandler extends EntityHandlerImpl {
 
 //        abstractEntityManager.test();
 
-        checkEanInFilter(filter);
+        itemHandler.checkEanInFilter(filter);
 
         Sort sort = new Sort(Sort.Direction.fromStringOrNull(filter.getSortDirection()), filter.getSortField());
 

@@ -1,11 +1,14 @@
 package barcode.dao.services;
 
 import barcode.dao.entities.Buyer;
+import barcode.dao.predicates.BuyerPredicateBuilder;
 import barcode.dao.repositories.BuyerRepository;
 import barcode.dto.DtoBuyer;
 import barcode.dto.ResponseItem;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collector;
@@ -53,15 +56,20 @@ public class BuyerHandler {
     }
 
     public List<Buyer> getBuyers(String filter) {
-        return this.buyerRepository
-                .findByNameContainingIgnoreCaseOrderByIdAsc(filter);
+
+        Sort sort = new Sort(Sort.Direction.ASC, "name");
+
+        return this.buyerRepository.findAll(new BuyerPredicateBuilder().buildByFilter(filter), sort);
     }
 
     public List<DtoBuyer> getDtoBuyers(String filter) {
 
-        return buyerRepository.findByNameContainingIgnoreCaseOrderByIdAsc(filter)
+        Sort sort = new Sort(Sort.Direction.ASC, "id");
+
+        return buyerRepository.findAll(new BuyerPredicateBuilder().buildByFilter(filter), sort)
                 .stream()
-                .map(b -> new DtoBuyer(b.getId(), b.getName()))
+                .map(b -> new DtoBuyer(b.getId(), b.getName(), b.getSellings().size()))
+                .sorted(Comparator.comparing(DtoBuyer::getNumberOfSellings).reversed())
                 .collect(Collectors.toList());
     }
 

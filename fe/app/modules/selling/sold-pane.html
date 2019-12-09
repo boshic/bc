@@ -13,6 +13,7 @@
             modal-data="textEditModalData">
     </text-edit-modal>
 </div>
+<selling-modal modal-config="sellingModalConfig"></selling-modal>
 
 <div class="menu-panel unprintable" ng-keyup="handleKeyup($event)">
 
@@ -267,6 +268,12 @@
                                     ng-disabled = "x.quantity <= 0"
                                     ng-click="makeReturn($index)"
                                     title="Сделать возврат!">
+                            </button>
+                            <button class="glyphicon glyphicon-pencil sell-icon-on-coming-pane btn-on-pane"
+                                    ng-class = "{inherited: x.quantity <= 0}"
+                                    ng-disabled = "x.quantity <= 0"
+                                    ng-click="editSoldItem($index)"
+                                    title="Изменить продажу!">
                             </button>
                             <span style="cursor: pointer; float: right">
                                 <div class="dropdown">

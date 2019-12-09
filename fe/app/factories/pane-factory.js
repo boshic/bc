@@ -303,7 +303,7 @@ import { filter, tap, map, debounceTime, distinctUntilChanged, switchMap } from 
                     },
                     checkRows: ($s, user, checkingType) => {
                         $s.canRelease = false;
-                        $s.totals = calcTotals($s.rows, typeof $s.buyer === 'object'? $s.buyer.discount : undefined);
+                        $s.totals = calcTotals($s.rows, typeof $s.buyer === 'object' && $s.buyer.id > 0 ? $s.buyer.discount : undefined);
                         $s.reports = [];
                         if(checkingType === 'selling')
                             checkRowsBeforeSelling($s, user);

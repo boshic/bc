@@ -28,7 +28,7 @@ public class ResponseBySoldItems extends ResponseItemExt<SoldItem> {
 
         for(SoldItem soldItem: soldItemList)  {
 
-            if(soldItem.getRecipe() != null)
+            if(soldItem.getRecipe() != null && soldItem.getRecipe().getSum().compareTo(BigDecimal.ZERO) > 0)
                 recipes.add(soldItem.getRecipe());
 
             buyers.add(soldItem.getBuyer());

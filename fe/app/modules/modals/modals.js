@@ -89,7 +89,10 @@
         $s.modalConfig.hidden = true;
         let config = modalFactory[modalParams];
         let getReleaseItemParams = typeof config.getReleaseItemParams === 'function' ?
-            config.getReleaseItemParams : () => {return undefined;};
+            config.getReleaseItemParams : () => { return undefined; };
+
+        let getReleaseItemUrl = typeof config.addItemUrl === 'function' ?
+            config.addItemUrl : () => { return config.addItemUrl; };
         // $s.requestParams = {requestsQuantity: 0};
 
         $s.totals = {
@@ -107,11 +110,12 @@
             if($s.modalConfig.data) {
                 let coming = $s.modalConfig.data;
                 $s.comment = "";
-                $s.stock = coming.stock;
+                $s.stock = coming.stock || null;
 
                 $s.rows = [];
                 $s.rows.push(
                     {
+                        id: $s.modalConfig.id,
                         coming: coming,
                         item: coming.item,
                         price: coming.priceOut,
@@ -152,7 +156,8 @@
         };
 
         $s.release = () => {
-            modalFactory.releaseItem($s, config.addItemUrl, getReleaseItemParams($s));
+            modalFactory.releaseItem($s, getReleaseItemUrl($s.modalConfig.url),
+                getReleaseItemParams($s));
         };
     };
 
@@ -293,7 +298,11 @@
                 return {
                     sellingModalConfig: {
                         watchingValue: '[modalConfig.hidden, buyer]',
-                        addItemUrl: 'addOneSelling',
+                        addItemUrl: (url) => {
+                            if(angular.isDefined(url))
+                                return url;
+                            return   'addOneSelling';
+                        },
                         checkingType: 'selling',
                         priceProp: 'price',
                         allowedReports: (data) => {

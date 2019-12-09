@@ -26,15 +26,19 @@ public class ComingReportHandler {
 
     private UserHandler userHandler;
 
+    private ItemHandler itemHandler;
+
     public ComingReportHandler(ComingReportRepository comingReportRepository,
                                ComingItemRepository comingItemRepository,
-                               UserHandler userHandler) {
+                               UserHandler userHandler, ItemHandler itemHandler) {
 
         this.comingReportRepository = comingReportRepository;
 
         this.comingItemRepository = comingItemRepository;
 
         this.userHandler = userHandler;
+
+        this.itemHandler = itemHandler;
     }
 
 
@@ -57,6 +61,8 @@ public class ComingReportHandler {
     }
 
     public ResponseItem<ComingReport> addItemByFilter(ComingItemFilter filter) {
+
+        itemHandler.checkEanInFilter(filter);
 
         Predicate predicate = ComingItemHandler.cipb.buildByFilter(filter);
 

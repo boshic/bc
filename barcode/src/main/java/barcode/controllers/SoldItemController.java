@@ -49,6 +49,11 @@ public class SoldItemController {
         return this.soldItemHandler.returnSoldItem(soldItem);
     }
 
+    @RequestMapping(value = "/changeSoldItem", method = RequestMethod.POST)
+    public @ResponseBody ResponseItem changeSoldItem(@RequestBody SoldItem soldItem) {
+        return this.soldItemHandler.changeSoldItem(soldItem);
+    }
+
     @RequestMapping(value = "/changeSoldItemDate", method = RequestMethod.POST)
     public @ResponseBody ResponseItem changeSoldItemDate(@RequestBody SoldItem soldItem) {
         return this.soldItemHandler.changeDate(soldItem);
@@ -58,6 +63,11 @@ public class SoldItemController {
     public @ResponseBody String addSoldItemComment(@RequestBody Comment comment, @RequestParam Long id) {
         this.soldItemHandler.addComment(comment, id);
         return null;
+    }
+
+    @GetMapping(path="/getSoldItemById")
+    public @ResponseBody SoldItem getComingById(@RequestParam Long id) {
+        return soldItemHandler.getItemById(id);
     }
 
 

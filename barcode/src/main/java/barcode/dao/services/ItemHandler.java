@@ -8,6 +8,7 @@ import barcode.dao.predicates.ItemPredicateBuilder;
 import barcode.dao.predicates.ItemSectionPredicateBuilder;
 import barcode.dao.repositories.ComingItemRepository;
 import barcode.dao.repositories.ItemRepository;
+import barcode.dao.utils.ComingItemFilter;
 import barcode.dto.ResponseItem;
 import com.querydsl.core.types.Predicate;
 import org.springframework.stereotype.Service;
@@ -180,6 +181,20 @@ public class ItemHandler {
                     return row;
 
         return null;
+    }
+
+    void checkEanInFilter(ComingItemFilter filter) {
+
+        String eanSynonym;
+
+        Item item = getItemByEan(filter.getEan());
+
+        if(isEanValid(filter.getEan())) {
+            eanSynonym = item == null ? null : item.getEanSynonym();
+
+            if(isEanValid(eanSynonym))
+                filter.setEan(eanSynonym);
+        }
     }
 
 }

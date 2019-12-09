@@ -54,6 +54,8 @@ public class SoldItemPredicatesBuilder {
         if (filter.getDocument() != null && filter.getDocument().getId() != null)
             predicate = predicate.and(doc.id.eq(filter.getDocument().getId()));
 
+        if(filter.getHideNullQuantity())
+            predicate = predicate.and(soldItem.quantity.gt(0));
 
         return predicate;
     }

@@ -6,6 +6,7 @@ import soldPaneTpl from './sold-pane.html';
         $s.reports = [];
         $s.filter = {visible: false};
         $s.quantityChangerModalData = {hidden : true, row: {}};
+        $s.sellingModalConfig = {hidden : true, row: {}};
         $s.textEditModalData = {hidden : true, row: {}};
         $s.quantityChangerModalClose = () => {};
         $s.requestParams = {requestsQuantity: 0};
@@ -98,6 +99,21 @@ import soldPaneTpl from './sold-pane.html';
                 },
                 (resp) => { console.log(resp);}
             );
+        };
+
+        $s.editSoldItem = (index) => {
+            httpService.getItemById({url: 'getSoldItemById', requestParams: $s.requestParams, id: $s.rows[index].id})
+                .then(
+                    resp => {
+                        let data = angular.extend(resp.coming, {
+                            currentQuantity: resp.quantity, priceOut: resp.price, buyer: resp.buyer});
+                        angular.extend($s.sellingModalConfig, {url: 'changeSoldItem', id: resp.id,
+                            refresh: calcTotalsAndRefresh, hidden: false, data, requestParams: $s.requestParams});
+                    },
+                    resp => {
+                        console.log(resp);
+                    }
+                );
         };
 
         $s.$on("tabSelected", (event, data) => {

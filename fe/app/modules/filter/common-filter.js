@@ -67,6 +67,7 @@ import commonFilterTpl from './common-filter.html';
                     toDate = new Date();
                     filter.sortDirection = 'DESC';
                     // filter.sortDirection = 'ASC';
+                    filter.hideNullQuantity = true;
                     filter.sectionPart = "";
                     filter.section = {name:""};
                     filter.supplier = {name:""};
@@ -99,7 +100,6 @@ import commonFilterTpl from './common-filter.html';
 
                         resetCommonFilterFields(filter);
 
-                        filter.hideNullQuantity = true;
                         filter.inventoryModeEnabled = false;
                         filter.autoOpenQuantityChangerModalInInventoryMode = false;
 

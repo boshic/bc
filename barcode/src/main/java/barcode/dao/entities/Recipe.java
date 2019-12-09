@@ -1,8 +1,11 @@
 package barcode.dao.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.Set;
 
 /**
  * Created by xlinux on 27.11.19.
@@ -26,6 +29,10 @@ public class Recipe {
     @ManyToOne
     @JoinColumn(name = "buyer_id")
     private Buyer buyer;
+
+    @OneToMany(mappedBy = "recipe", cascade = CascadeType.ALL)
+    @JsonIgnore
+    private Set<SoldItem> sellings;
 
     public Recipe() {}
 
@@ -86,5 +93,13 @@ public class Recipe {
 
     public void setBuyer(Buyer buyer) {
         this.buyer = buyer;
+    }
+
+    public Set<SoldItem> getSellings() {
+        return sellings;
+    }
+
+    public void setSellings(Set<SoldItem> sellings) {
+        this.sellings = sellings;
     }
 }

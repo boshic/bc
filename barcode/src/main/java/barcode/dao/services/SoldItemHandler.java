@@ -18,6 +18,7 @@ import org.springframework.stereotype.Service;
 import java.math.BigDecimal;
 import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Service
 public class SoldItemHandler extends EntityHandlerImpl {
@@ -36,11 +37,13 @@ public class SoldItemHandler extends EntityHandlerImpl {
 
     private BuyerHandler buyerHandler;
 
+    private ItemHandler itemHandler;
+
     private RecipeHandler recipeHandler;
 
     public SoldItemHandler (SoldItemsRepository soldItemsRepository, ComingItemHandler comingItemHandler,
                             UserHandler userHandler, StockHandler stockHandler, BuyerHandler buyerHandler,
-                            RecipeHandler recipeHandler) {
+                            RecipeHandler recipeHandler, ItemHandler itemHandler) {
 
         this.soldItemsRepository = soldItemsRepository;
 
@@ -53,6 +56,8 @@ public class SoldItemHandler extends EntityHandlerImpl {
         this.buyerHandler = buyerHandler;
 
         this.recipeHandler = recipeHandler;
+
+        this.itemHandler = itemHandler;
     }
 
     public ResponseItem makeAutoSelling(Set<SoldItem> sellings) {
@@ -169,7 +174,7 @@ public class SoldItemHandler extends EntityHandlerImpl {
 
     }
 
-    public synchronized ResponseItem addSellings (Set<SoldItem> soldItems) {
+    public synchronized ResponseItem<SoldItem> addSellings (Set<SoldItem> soldItems) {
 
         ResponseItem<SoldItem> responseItem = new ResponseItem<SoldItem>("",
                 new ArrayList<SoldItem>(),false);
@@ -352,7 +357,7 @@ public class SoldItemHandler extends EntityHandlerImpl {
 
 //        SoldItemPredicatesBuilder sipb = new SoldItemPredicatesBuilder();
 
-        comingItemHandler.checkEanInFilter(filter);
+        itemHandler.checkEanInFilter(filter);
 
         Sort sort = new Sort(Sort.Direction.fromStringOrNull(filter.getSortDirection()), filter.getSortField());
 
@@ -414,6 +419,14 @@ public class SoldItemHandler extends EntityHandlerImpl {
         newSoldItem.setSum(newSoldItem.getPrice().multiply(newSoldItem.getQuantity())
                         .setScale(2, BigDecimal.ROUND_HALF_UP));
 
+//        Recipe recipe = newSoldItem.getRecipe();
+//        if(recipe != null) {
+//            recipe.setSum(recipe.getSum()
+//                    .subtract(soldItem.getPrice().multiply(soldItem.getQuantity())
+//                            .setScale(2, BigDecimal.ROUND_HALF_UP)));
+////            recipe.
+//        }
+
         newSoldItem.setAvailQuantityByEan(newSoldItem.getAvailQuantityByEan().add(soldItem.getQuantity()));
 
         newSoldItem.setComment(
@@ -441,6 +454,9 @@ public class SoldItemHandler extends EntityHandlerImpl {
         ComingItem comingItem = comingItemHandler.getComingItemById(soldItem.getComing().getId());
 
         soldItem.setQuantityBeforeSelling(comingItem.getCurrentQuantity());
+
+        if(soldItem.getQuantity().compareTo(comingItem.getCurrentQuantity()) > 0)
+            return new ResponseItem("не хватает наличия товара!", false);
 
         comingItem.setCurrentQuantity(comingItem.getCurrentQuantity().subtract(soldItem.getQuantity()));
 
@@ -483,6 +499,17 @@ public class SoldItemHandler extends EntityHandlerImpl {
             );
             soldItemsRepository.save(soldItem);
         }
+    }
+
+    public SoldItem getItemById(Long id) {
+        return soldItemsRepository.findOne(id);
+    }
+
+    public ResponseItem<SoldItem> changeSoldItem (SoldItem soldItem) {
+
+        returnSoldItem(soldItem);
+
+        return addSellings(Stream.of(soldItem).collect(Collectors.toSet()));
     }
 
 }
