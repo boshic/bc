@@ -11,7 +11,7 @@ import java.util.Set;
  * Created by xlinux on 27.11.19.
  */
 @Entity
-public class Recipe {
+public class Receipt {
     @Id
     @GeneratedValue(strategy= GenerationType.AUTO)
     private Long id;
@@ -30,13 +30,13 @@ public class Recipe {
     @JoinColumn(name = "buyer_id")
     private Buyer buyer;
 
-    @OneToMany(mappedBy = "recipe", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "receipt", cascade = CascadeType.ALL)
     @JsonIgnore
     private Set<SoldItem> sellings;
 
-    public Recipe() {}
+    public Receipt() {}
 
-    public Recipe(Date date, BigDecimal sum, Integer numberOfPositions, User user, Buyer buyer) {
+    public Receipt(Date date, BigDecimal sum, Integer numberOfPositions, User user, Buyer buyer) {
 
         this.date = date;
         this.sum = sum;

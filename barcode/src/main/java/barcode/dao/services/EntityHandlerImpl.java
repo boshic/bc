@@ -18,6 +18,12 @@ import java.util.List;
 public class EntityHandlerImpl implements EntityHandler{
 
     static final String ELEMENTS_FOUND = "найдены элементы";
+    static final String INSUFFICIENT_QUANTITY_OF_GOODS = "Неудачно! Не хватает количества товара!";
+    static final String SALE_COMPLETED_SUCCESSFULLY = "Продажа завершена успешно";
+    static final String MOVE_COMPLETED_SUCCESSFULLY = "Перемещение завершено успешно";
+    static final String SALE_COMMENT = "Продажа";
+    static final String MOVE_COMMENT  = "Перемещение";
+    static final String RETURN_COMMENT = "Возврат";
     static final String NOTHING_FOUND = "ничего не найдено";
     static final SimpleDateFormat DATE_FORMAT_WITH_TIME = new SimpleDateFormat("dd.MM.yyyy HH:mm");
     static final SimpleDateFormat DATE_FORMAT_WO_TIME = new SimpleDateFormat("dd.MM.yyyy");

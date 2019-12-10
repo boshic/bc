@@ -18,8 +18,6 @@ public class MovingHandler extends EntityHandlerImpl {
 
     private static final String AUTO_MOVING_MAKER = "Автоперемещение";
 
-    private static final String MOVING_ACTION  = "Перемещение";
-
     private ComingItemHandler comingItemHandler;
 
     private StockHandler stockHandler;
@@ -75,7 +73,7 @@ public class MovingHandler extends EntityHandlerImpl {
 //                                    "на " + this.stockHandler.getStockById(stockId).getName() + " "
 //                                            + moving.getQuantity() + " ед., " + moving.getComment(),
 //                                    getCheckedUserName(moving.getUser()),
-//                                    MOVING_ACTION));
+//                                    MOVE_COMMENT));
 
 
                     newComing.setComment(
@@ -84,7 +82,7 @@ public class MovingHandler extends EntityHandlerImpl {
                                             " на " + this.stockHandler.getStockById(stockId).getName() + " "
                                             + moving.getQuantity() + " ед., " + moving.getComment(),
                                     getCheckedUserName(moving.getUser()),
-                                    MOVING_ACTION));
+                                    MOVE_COMMENT));
 
                     newComing.setUser(moving.getUser());
 
@@ -144,14 +142,14 @@ public class MovingHandler extends EntityHandlerImpl {
                                                 " на " + this.stockHandler.getStockById(stockId).getName() + " "
                                                 + moving.getQuantity() + " ед., " + moving.getComment(),
                                         getCheckedUserName(moving.getUser()),
-                                        MOVING_ACTION));
+                                        MOVE_COMMENT));
 //
 //                        coming.setComment(
 //                                this.buildComment(coming.getComments(),
 //                                        "на " + this.stockHandler.getStockById(stockId).getName() + " "
 //                                                + moving.getQuantity() + " ед., " + moving.getComment(),
 //                                        getCheckedUserName(moving.getUser()),
-//                                        MOVING_ACTION));
+//                                        MOVE_COMMENT));
 
                         coming.setStock(this.stockHandler.getStockById(stockId));
 
@@ -175,21 +173,20 @@ public class MovingHandler extends EntityHandlerImpl {
                                                 " на " + this.stockHandler.getStockById(stockId).getName() + " "
                                                 + moving.getQuantity() + " ед., " + moving.getComment(),
                                         getCheckedUserName(moving.getUser()),
-                                        MOVING_ACTION));
+                                        MOVE_COMMENT));
 
                         comingItemHandler.saveComingItem(newComing);
                     }
 
                     if (reqForMove.compareTo(BigDecimal.ZERO) == 0) break;
-
                 }
             }
 
             if(reqForMove.compareTo(BigDecimal.ZERO) > 0)
-                return new ResponseItem("увы недостаточно для перемещения... не хватает - " + reqForMove, false);
+                return new ResponseItem(INSUFFICIENT_QUANTITY_OF_GOODS, false);
         }
 
-        return new ResponseItem("Перемещения выполнены", true);
+        return new ResponseItem(MOVE_COMPLETED_SUCCESSFULLY, true);
 
     }
 
@@ -274,6 +271,9 @@ public class MovingHandler extends EntityHandlerImpl {
 
         ComingItem coming = comingItemHandler.getComingItemById(moving.getComing().getId());
 
+        if(moving.getQuantity().compareTo(coming.getCurrentQuantity()) > 0)
+            return new ResponseItem(INSUFFICIENT_QUANTITY_OF_GOODS, false);
+
         if(coming.getQuantity().compareTo(moving.getQuantity()) == 0) {
 
             coming.setComment(
@@ -282,7 +282,7 @@ public class MovingHandler extends EntityHandlerImpl {
                             " на " + this.stockHandler.getStockById(stockId).getName() + " "
                                     + moving.getQuantity() + " ед., " + moving.getComment(),
                             getCheckedUserName(moving.getUser()),
-                            MOVING_ACTION));
+                            MOVE_COMMENT));
 
             coming.setStock(this.stockHandler.getStockById(stockId));
 
@@ -312,7 +312,7 @@ public class MovingHandler extends EntityHandlerImpl {
                                     " на " + this.stockHandler.getStockById(stockId).getName() + " "
                                     + moving.getQuantity() + " ед., " + moving.getComment(),
                             getCheckedUserName(moving.getUser()),
-                            MOVING_ACTION));
+                            MOVE_COMMENT));
 
             newComing.setComment(
                     this.buildComment(newComing.getComments(),
@@ -320,7 +320,7 @@ public class MovingHandler extends EntityHandlerImpl {
                             " на " + this.stockHandler.getStockById(stockId).getName() + " "
                                     + moving.getQuantity() + " ед., " + moving.getComment(),
                             getCheckedUserName(moving.getUser()),
-                            MOVING_ACTION));
+                            MOVE_COMMENT));
 
             newComing.setStock(this.stockHandler.getStockById(stockId));
 
@@ -358,7 +358,7 @@ public class MovingHandler extends EntityHandlerImpl {
 
         }
 
-        return new ResponseItem("Перемещено", true);
+        return new ResponseItem(MOVE_COMPLETED_SUCCESSFULLY, true);
     }
 
 }

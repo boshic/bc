@@ -21,15 +21,15 @@ public class ResponseBySoldItems extends ResponseItemExt<SoldItem> {
     public void calcTotals(List<SoldItem> soldItemList) {
 
         BigDecimal quantity = BigDecimal.ZERO, sum = BigDecimal.ZERO, sumByComing = BigDecimal.ZERO;
-        Set<Recipe> recipes = new HashSet<>();
+        Set<Receipt> receipts = new HashSet<>();
         Set<Buyer> buyers = new HashSet<>();
         Set<Supplier> suppliers = new HashSet<>();
         Set<ItemSection> sections = new HashSet<>();
 
         for(SoldItem soldItem: soldItemList)  {
 
-            if(soldItem.getRecipe() != null && soldItem.getRecipe().getSum().compareTo(BigDecimal.ZERO) > 0)
-                recipes.add(soldItem.getRecipe());
+            if(soldItem.getReceipt() != null && soldItem.getReceipt().getSum().compareTo(BigDecimal.ZERO) > 0)
+                receipts.add(soldItem.getReceipt());
 
             buyers.add(soldItem.getBuyer());
 
@@ -51,11 +51,11 @@ public class ResponseBySoldItems extends ResponseItemExt<SoldItem> {
                 ("отпущено по учетной", quantity, "на сумму" , sumByComing));
         super.getTotals().add(new ResultRowByItemsCollection<BigDecimal, BigDecimal>
                 ("выбыло", quantity, "доход" , sum.subtract(sumByComing)));
-        if(recipes.size() > 0)
+        if(receipts.size() > 0)
             super.getTotals().add(new ResultRowByItemsCollection<Integer, BigDecimal>
-                ("чеков", recipes.size(), "средний" ,
-                        recipes.stream().map(Recipe::getSum).reduce(BigDecimal.ZERO, BigDecimal::add)
-                                .divide(new BigDecimal(recipes.size()), 2)));
+                ("чеков", receipts.size(), "средний" ,
+                        receipts.stream().map(Receipt::getSum).reduce(BigDecimal.ZERO, BigDecimal::add)
+                                .divide(new BigDecimal(receipts.size()), 2)));
 
         super.setBuyers(buyers.stream().sorted(Comparator.comparing(Buyer::getName)).collect(Collectors.toList()));
         super.setSuppliers(suppliers

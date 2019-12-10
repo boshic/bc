@@ -25,6 +25,10 @@
                    ng-model="filter.ean"
                    ng-keydown="setEanPrefix($event)"
             />
+            <span style="margin-left: 5px;"
+                  class="selling-warning" ng-show="warning.length">
+            {{warning}}
+        </span>
         </div>
 
     <button class='glyphicon glyphicon-arrow-down pane-searchinput-btn'

@@ -25,6 +25,9 @@ public class SoldItemHandler extends EntityHandlerImpl {
 
 //    public static QSoldItem qSoldItem = QSoldItem.soldItem;
 
+//    "Неудачно! Не хватает количества товара!"
+//    private static final String INSUFFICIENT_QUANTITY_OF_GOODS = "Неудачно! Не хватает количества товара!";
+
     public static SoldItemPredicatesBuilder sipb = new SoldItemPredicatesBuilder();
 
     private SoldItemsRepository soldItemsRepository;
@@ -39,11 +42,11 @@ public class SoldItemHandler extends EntityHandlerImpl {
 
     private ItemHandler itemHandler;
 
-    private RecipeHandler recipeHandler;
+    private ReceiptHandler receiptHandler;
 
     public SoldItemHandler (SoldItemsRepository soldItemsRepository, ComingItemHandler comingItemHandler,
                             UserHandler userHandler, StockHandler stockHandler, BuyerHandler buyerHandler,
-                            RecipeHandler recipeHandler, ItemHandler itemHandler) {
+                            ReceiptHandler receiptHandler, ItemHandler itemHandler) {
 
         this.soldItemsRepository = soldItemsRepository;
 
@@ -55,7 +58,7 @@ public class SoldItemHandler extends EntityHandlerImpl {
 
         this.buyerHandler = buyerHandler;
 
-        this.recipeHandler = recipeHandler;
+        this.receiptHandler = receiptHandler;
 
         this.itemHandler = itemHandler;
     }
@@ -181,12 +184,12 @@ public class SoldItemHandler extends EntityHandlerImpl {
 
         Long uuid = new Random().nextLong();
 
-        Recipe recipe = new Recipe(new Date(),
+        Receipt receipt = new Receipt(new Date(),
                 soldItems.stream().map(v -> v.getPrice().multiply(v.getQuantity())).reduce(BigDecimal.ZERO, BigDecimal::add),
                 soldItems.size(), soldItems.iterator().next().getUser(), soldItems.iterator().next().getBuyer()
         );
 
-        recipeHandler.save(recipe);
+        receiptHandler.save(receipt);
 
         for (SoldItem soldItem : soldItems) {
 
@@ -216,7 +219,7 @@ public class SoldItemHandler extends EntityHandlerImpl {
                         newSoldItem.setComment(
                             this.buildComment(newSoldItem.getComments(), soldItem.getComment(),
                                 userHandler.checkUser(soldItem.getUser(), null ).getFullName(),
-                                "Продажа")
+                                    SALE_COMMENT)
                         );
 
                     newSoldItem.setAvailQuantityByEan(availQuantityByEan);
@@ -264,6 +267,15 @@ public class SoldItemHandler extends EntityHandlerImpl {
 
                         coming.setLastChangeDate(newSoldItem.getDate());
 
+
+                        coming.setComment(
+                            this.buildComment(coming.getComments(),
+                                    soldItem.getComment() + " для " + soldItem.getBuyer().getName()
+                                            + " " + soldItem.getQuantity() + "ед.",
+                                    userHandler.checkUser(soldItem.getUser(), null ).getFullName(),
+                                    SALE_COMMENT)
+                        );
+
                         newSoldItem.setComing(coming); // - добавляем ссылку на приход новой продажи
 
                         newSoldItem.setPrice(getPriceOfSoldItem(soldItem, coming.getPriceIn()));
@@ -276,7 +288,7 @@ public class SoldItemHandler extends EntityHandlerImpl {
 
 //                        newSoldItem.setUuid(uuid);
 
-                        newSoldItem.setRecipe(recipe);
+                        newSoldItem.setReceipt(receipt);
 
                         soldItemsRepository.save(newSoldItem);
 
@@ -288,11 +300,11 @@ public class SoldItemHandler extends EntityHandlerImpl {
             }
 
             if(reqForSell.compareTo(BigDecimal.ZERO) > 0)
-                return new ResponseItem("увы продано до Вас... с другой кассы, не хватает - " + reqForSell, false);
+                return new ResponseItem<SoldItem>(INSUFFICIENT_QUANTITY_OF_GOODS, false);
 
         }
 
-        return new ResponseItem("Продажа завершена успешно", true);
+        return new ResponseItem<SoldItem>(SALE_COMPLETED_SUCCESSFULLY, true);
     }
 
     public static void SortSoldItemsList(List<SoldItem> soldItems, String field, String direction) {
@@ -373,7 +385,7 @@ public class SoldItemHandler extends EntityHandlerImpl {
         if (result.size() > 0) {
 
             ResponseBySoldItems ribysi =
-                    new ResponseBySoldItems("найдены элементы", result, true, page.getTotalPages());
+                    new ResponseBySoldItems(ELEMENTS_FOUND, result, true, page.getTotalPages());
 
             if(filter.getCalcTotal())
                 ribysi.calcTotals(soldItemsRepository.findAll(sipb.buildByFilter(filter)));
@@ -381,7 +393,7 @@ public class SoldItemHandler extends EntityHandlerImpl {
             return ribysi;
         }
 
-        return new ResponseBySoldItems("ничего не найдено", new ArrayList<>(), false, 0);
+        return new ResponseBySoldItems(NOTHING_FOUND, new ArrayList<>(), false, 0);
     }
 
     public synchronized ResponseItem<SoldItem> changeDate(SoldItem soldItem) {
@@ -405,6 +417,9 @@ public class SoldItemHandler extends EntityHandlerImpl {
 
         SoldItem newSoldItem = soldItemsRepository.findOne(soldItem.getId());
 
+        if(soldItem.getQuantity().compareTo(newSoldItem.getQuantity()) > 0)
+            return new ResponseItem(INSUFFICIENT_QUANTITY_OF_GOODS, false);
+
         ComingItem comingItem = comingItemHandler.getComingItemById(soldItem.getComing().getId());
 
         comingItem.setLastChangeDate(new Date());
@@ -414,26 +429,24 @@ public class SoldItemHandler extends EntityHandlerImpl {
         comingItem.setSum(comingItem.getPriceIn().multiply(comingItem.getCurrentQuantity())
                 .setScale(2, BigDecimal.ROUND_HALF_UP));
 
+        comingItem.setComment(
+                this.buildComment(comingItem.getComments(),
+                        " от " + soldItem.getBuyer().getName() + ", " + soldItem.getQuantity() + " ед. "
+                                + soldItem.getComment(),
+                        userHandler.checkUser(soldItem.getUser(), null ).getFullName(),
+                        RETURN_COMMENT));
+
         newSoldItem.setQuantity(newSoldItem.getQuantity().subtract(soldItem.getQuantity()));
 
         newSoldItem.setSum(newSoldItem.getPrice().multiply(newSoldItem.getQuantity())
                         .setScale(2, BigDecimal.ROUND_HALF_UP));
-
-//        Recipe recipe = newSoldItem.getRecipe();
-//        if(recipe != null) {
-//            recipe.setSum(recipe.getSum()
-//                    .subtract(soldItem.getPrice().multiply(soldItem.getQuantity())
-//                            .setScale(2, BigDecimal.ROUND_HALF_UP)));
-////            recipe.
-//        }
 
         newSoldItem.setAvailQuantityByEan(newSoldItem.getAvailQuantityByEan().add(soldItem.getQuantity()));
 
         newSoldItem.setComment(
                 this.buildComment(newSoldItem.getComments(), soldItem.getQuantity() + " ед. " + soldItem.getComment(),
                         userHandler.checkUser(soldItem.getUser(), null ).getFullName(),
-                        "Возврат")
-        );
+                        RETURN_COMMENT));
 
         soldItemsRepository.save(newSoldItem);
 
@@ -455,12 +468,17 @@ public class SoldItemHandler extends EntityHandlerImpl {
 
         soldItem.setQuantityBeforeSelling(comingItem.getCurrentQuantity());
 
-        if(soldItem.getQuantity().compareTo(comingItem.getCurrentQuantity()) > 0)
-            return new ResponseItem("не хватает наличия товара!", false);
-
         comingItem.setCurrentQuantity(comingItem.getCurrentQuantity().subtract(soldItem.getQuantity()));
 
         comingItem.setLastChangeDate(new Date());
+
+        comingItem.setComment(
+                this.buildComment(comingItem.getComments(),
+                        soldItem.getComment() + " для " + soldItem.getBuyer().getName()
+                                + " " + soldItem.getQuantity() + "ед.",
+                        userHandler.checkUser(soldItem.getUser(), null ).getFullName(),
+                        SALE_COMMENT)
+        );
 
         soldItem.setDate(new Date());
 
@@ -468,7 +486,7 @@ public class SoldItemHandler extends EntityHandlerImpl {
         soldItem.setComment(
                 this.buildComment(soldItem.getComments(), soldItem.getComment(),
                         userHandler.checkUser(soldItem.getUser(), null ).getFullName(),
-                        "Продажа")
+                        SALE_COMMENT)
         );
 
         soldItem.setPrice(getPriceOfSoldItem(soldItem, comingItem.getPriceIn()));
@@ -479,14 +497,17 @@ public class SoldItemHandler extends EntityHandlerImpl {
         soldItem.setSum(soldItem.getPrice().multiply(soldItem.getQuantity())
                 .setScale(2, BigDecimal.ROUND_HALF_UP));
 
-        Recipe recipe = new Recipe(new Date(), soldItem.getSum(), 1, soldItem.getUser(), soldItem.getBuyer());
-        recipeHandler.save(recipe);
+        if(soldItem.getQuantity().compareTo(comingItem.getCurrentQuantity()) > 0)
+            return new ResponseItem(INSUFFICIENT_QUANTITY_OF_GOODS, false);
 
-        soldItem.setRecipe(recipe);
+        Receipt receipt = new Receipt(new Date(), soldItem.getSum(), 1, soldItem.getUser(), soldItem.getBuyer());
+        receiptHandler.save(receipt);
+
+        soldItem.setReceipt(receipt);
 
         soldItemsRepository.save(soldItem);
 
-        return new ResponseItem("Продано", true);
+        return new ResponseItem(SALE_COMPLETED_SUCCESSFULLY, true);
     }
 
     public void addComment(Comment comment, Long id) {

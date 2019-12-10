@@ -9,7 +9,6 @@ import javax.persistence.*;
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
-import java.util.UUID;
 
 //@Config(entityAccessors=true)
 @Entity
@@ -23,8 +22,8 @@ public class SoldItem {
     private User user;
 
     @ManyToOne
-    @JoinColumn(name = "recipe_id")
-    private Recipe recipe;
+    @JoinColumn(name = "receipt_id")
+    private Receipt receipt;
 
     @ManyToOne
     @JoinColumn(name = "coming_id")
@@ -142,11 +141,11 @@ public class SoldItem {
         this.sum = sum;
     }
 
-    public Recipe getRecipe() {
-        return recipe;
+    public Receipt getReceipt() {
+        return receipt;
     }
 
-    public void setRecipe(Recipe recipe) {
-        this.recipe = recipe;
+    public void setReceipt(Receipt receipt) {
+        this.receipt = receipt;
     }
 }

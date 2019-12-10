@@ -57,7 +57,7 @@ import comingPaneTpl from './coming-pane.html';
             calcTotalsAndRefresh();
         };
 
-        $s.focusOnEanInput = () => {
+        let focusOnEanInput = () => {
             if(!$s.filter.visible)
                 paneFactory.changeElementState(eanInputElement, ['focus']);
         };
@@ -77,7 +77,7 @@ import comingPaneTpl from './coming-pane.html';
                 && $s.filter.autoOpenQuantityChangerModalInInventoryMode)
                 $s.openQuantityChangerModal(0);
             else
-                $s.focusOnEanInput();
+                focusOnEanInput();
         };
 
         $s.openComingModal = function() {
@@ -109,19 +109,19 @@ import comingPaneTpl from './coming-pane.html';
             $s.rows[params.index].currentQuantity = $s.quantityChangerModalData.row.quantity;
             // $s.totals=[];
             if($s.rows.length === 1)
-                $s.focusOnEanInput();
+                focusOnEanInput();
         };
 
         $s.$on("tabSelected", (event, data) => {
             if (data.event != null && paneFactory.paneToggler(data.pane) === "Список") {
                 $s.user = paneFactory.user;
-                $s.focusOnEanInput();
+                focusOnEanInput();
             }
         });
 
         $s.blankSearch = () => {
             $s.filter.ean = "";
-            $s.focusOnEanInput();
+            focusOnEanInput();
         };
      };
 

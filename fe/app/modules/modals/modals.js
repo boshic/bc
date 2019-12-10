@@ -356,7 +356,9 @@
                         httpService.addItem({data: row, url, requestParams: $s.modalConfig.requestParams, params})
                             .then(
                                 resp => {
-                                    (resp.success) ? paneFactory.successSound.play() : $s.warning = resp.text;
+                                    if(resp.success)
+                                        paneFactory.successSound.play();
+                                    $s.warning = resp.text;
                                     $s.modalConfig.refresh();
                                 },
                                 () => {

@@ -12,6 +12,17 @@ import soldPaneTpl from './sold-pane.html';
         $s.requestParams = {requestsQuantity: 0};
         $s.totals = {};
         $s.user = {};
+        $s.warning = "";
+
+        let focusOnEanInput = () => {
+            if(!$s.filter.visible)
+                paneFactory.changeElementState(document.getElementById('sold-pane'), ['focus']);
+        };
+
+        $s.afterSearch = () => {
+            focusOnEanInput();
+        };
+
 
         let searchTerms = paneFactory.getSearchTermsForGetItemsByFilter($s, 'findSoldItemByFilter');
 
@@ -80,7 +91,11 @@ import soldPaneTpl from './sold-pane.html';
                 if(confirm("Подтвердите возврат"))
                     httpService.addItem({data: row, url: 'returnSoldItem', requestParams: $s.requestParams})
                         .then(
-                        () => {calcTotalsAndRefresh();},
+                        (resp) => {
+                            if(!resp.success)
+                                $s.warning = resp.text;
+                            calcTotalsAndRefresh();
+                        },
                         () => {console.log('return failed');}
                     );
                 else findItemsByFilter();
@@ -119,13 +134,13 @@ import soldPaneTpl from './sold-pane.html';
         $s.$on("tabSelected", (event, data) => {
             if (data.event != null && paneFactory.paneToggler(data.pane) === "Продано") {
                 $s.user = paneFactory.user;
-                $s.blankSearch();
+                focusOnEanInput();
             }
         });
 
         $s.blankSearch = () => {
             $s.filter.ean = "";
-            paneFactory.changeElementState(document.getElementById('sold-pane'), ['focus']);
+            focusOnEanInput();
         };
 
     };
