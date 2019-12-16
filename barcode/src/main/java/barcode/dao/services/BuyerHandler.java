@@ -64,12 +64,28 @@ public class BuyerHandler {
 
     public List<DtoBuyer> getDtoBuyers(String filter) {
 
+        if (filter.equals(""))
+        return buyerRepository.getBuyersOrderedBySellingsSize()
+                .stream()
+                .map(b -> new DtoBuyer(b.getId(), b.getName()))
+                .collect(Collectors.toList());
+
         Sort sort = new Sort(Sort.Direction.ASC, "id");
 
-        return buyerRepository.findAll(new BuyerPredicateBuilder().buildByFilter(filter), sort)
+        List<Buyer> buyers = buyerRepository.findAll(new BuyerPredicateBuilder().buildByFilter(filter), sort);
+
+        if(buyers.size() > 20)
+            return buyers
+                    .stream()
+                    .map(b -> new DtoBuyer(b.getId(), b.getName()))
+                    .collect(Collectors.toList());
+
+        return buyers
                 .stream()
-                .map(b -> new DtoBuyer(b.getId(), b.getName(), b.getSellings().size()))
-                .sorted(Comparator.comparing(DtoBuyer::getNumberOfSellings).reversed())
+                .sorted(Comparator.comparing(Buyer::getSellings, (s1, s2) -> {
+                    return  s2.size() - s1.size();
+                }))
+                .map(b -> new DtoBuyer(b.getId(), b.getName()))
                 .collect(Collectors.toList());
     }
 

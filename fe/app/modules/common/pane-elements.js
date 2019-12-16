@@ -130,6 +130,34 @@
             "</td>",
             controller: function() {}
         })
+        .component( "paneComment", {
+            bindings: {
+                comment: '=',
+                filter: '=',
+                row: '=?',
+                openTextModal: '&?'
+            },
+            template:
+            "<div class='dropdown'>" +
+                "<span class='glyphicon glyphicon-th-list'></span>" +
+                    "<ul class='dropdown-menu hoverable comments-container left-side'" +
+                        "ng-show='$ctrl.comment.length > 0'>" +
+                        "<li style='text-align: center' ng-show='$ctrl.openTextModal != null'>" +
+                            "<button class='glyphicon glyphicon-plus add-comment-btn'" +
+                                "ng-click='$ctrl.openTextModal($ctrl.row)'>" +
+                            "</button>" +
+                        "</li>" +
+                        "<phrase-by-word-to-filter filter='$ctrl.filter.comment' comment='$ctrl.comment'></phrase-by-word-to-filter>" +
+                    "</ul>" +
+                    "<ul class='dropdown-menu hoverable comments-container left-side'" +
+                        "ng-show='$ctrl.comment.length == 0'>" +
+                        "<li>" +
+                            "<button>Загрузить комментарии</button>" +
+                        "</li>" +
+                    "</ul>" +
+            "</div>",
+            controller: function() {}
+        })
         .component( "sortingRow", {
                 bindings: {
                     listeningField: '<',

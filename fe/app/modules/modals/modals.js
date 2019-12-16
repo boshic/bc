@@ -358,11 +358,11 @@
                                 resp => {
                                     if(resp.success)
                                         paneFactory.successSound.play();
-                                    $s.warning = resp.text;
+                                    $s.modalConfig.warning = resp.text;
                                     $s.modalConfig.refresh();
                                 },
                                 () => {
-                                    $s.warning = "ошибка при проведении продажи!";
+                                    $s.modalConfig.warning = "ошибка при проведении продажи!";
                                 }
                             );
                     }

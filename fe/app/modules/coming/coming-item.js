@@ -163,7 +163,6 @@ import comingItemTpl from './coming-item.html';
                         $scope.modalConfig.hidden = true;
                         $scope.modalConfig.refresh();
                     };
-                },
-                link: ( scope,elem) => {}
+                }
             }
         });

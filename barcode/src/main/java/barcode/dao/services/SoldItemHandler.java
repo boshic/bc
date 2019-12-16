@@ -466,6 +466,9 @@ public class SoldItemHandler extends EntityHandlerImpl {
 
         ComingItem comingItem = comingItemHandler.getComingItemById(soldItem.getComing().getId());
 
+        if(soldItem.getQuantity().compareTo(comingItem.getCurrentQuantity()) > 0)
+            return new ResponseItem(INSUFFICIENT_QUANTITY_OF_GOODS, false);
+
         soldItem.setQuantityBeforeSelling(comingItem.getCurrentQuantity());
 
         comingItem.setCurrentQuantity(comingItem.getCurrentQuantity().subtract(soldItem.getQuantity()));
@@ -496,9 +499,6 @@ public class SoldItemHandler extends EntityHandlerImpl {
 
         soldItem.setSum(soldItem.getPrice().multiply(soldItem.getQuantity())
                 .setScale(2, BigDecimal.ROUND_HALF_UP));
-
-        if(soldItem.getQuantity().compareTo(comingItem.getCurrentQuantity()) > 0)
-            return new ResponseItem(INSUFFICIENT_QUANTITY_OF_GOODS, false);
 
         Receipt receipt = new Receipt(new Date(), soldItem.getSum(), 1, soldItem.getUser(), soldItem.getBuyer());
         receiptHandler.save(receipt);

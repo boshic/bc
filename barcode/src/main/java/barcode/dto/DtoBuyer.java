@@ -17,13 +17,12 @@ public class DtoBuyer {
     @JsonIgnore
     private Integer numberOfSellings;
 
-    public DtoBuyer(Long id, String name, Integer numberOfSellings) {
+    public DtoBuyer(Long id, String name) {
 
         this.id = id;
 
         this.name = name;
 
-        this.numberOfSellings = numberOfSellings;
     }
 
     public Long getId() {

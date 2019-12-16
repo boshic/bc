@@ -280,18 +280,10 @@
                                     title="Изменить продажу!">
                             </button>
                             <span style="cursor: pointer; float: right">
-                                <div class="dropdown">
-                                    <span class="glyphicon glyphicon-th-list"></span>
-                                    <ul class="dropdown-menu hoverable comments-container left-side"
-                                        ng-show="x.comment.length > 0">
-                                        <li style="text-align: center">
-                                            <button class="glyphicon glyphicon-plus add-comment-btn"
-                                                ng-click="openTextEditModal($index)">
-                                            </button>
-                                        </li>
-                                        <phrase-by-word-to-filter filter="filter.comment" comment="x.comment"></phrase-by-word-to-filter>
-                                    </ul>
-                                </div>
+                                <pane-comment
+                                        open-text-modal = "openTextModal(x)"
+                                        comment="x.comment" filter="filter">
+                                </pane-comment>
                             </span>
                         </div>
                     <span class="clickable-filter-value item-additional-info-on-cp"

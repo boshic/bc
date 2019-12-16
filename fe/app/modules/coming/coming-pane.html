@@ -17,6 +17,10 @@
                ng-model="filter.ean"
                ng-keydown="setEanPrefix($event)"
         />
+        <!--<span style="margin-left: 5px;"-->
+              <!--class="selling-warning" ng-show="sellingModalConfig.warning.length">-->
+            <!--{{sellingModalConfig.warning}}-->
+        <!--</span>-->
     </div>
 
     <button class='glyphicon glyphicon-arrow-down pane-searchinput-btn'
@@ -36,7 +40,7 @@
         </div>
         <div class="coming-pane-right-menu-option">
             <span class="glyphicon glyphicon-refresh"
-                ng-click="refresh()">
+                ng-click="calcTotalsAndRefresh()">
             </span>
         </div>
         <div class="coming-pane-right-menu-option">
@@ -227,7 +231,7 @@
                     </div>
 
                     <span class="item-name-on-coming-item-pane"
-                          ng-click="openComingModal()">{{ x.item.name }}
+                          ng-click="openComingModal(x)">{{ x.item.name }}
                     </span>
 
                     <div style="text-align: right; margin-right: 12px;">
@@ -313,22 +317,16 @@
                                     sell-icon-on-coming-pane"
                                     ng-show="x.currentQuantity > 0"
                                     ng-if="user.role == 'ROLE_ADMIN' || x.stock.id === user.stock.id"
-                                    ng-click="sellThis()"
+                                    ng-click="sellThis(x)"
                                     title="Продать именно его!"></button>
                             <button class="glyphicon glyphicon-send btn-on-pane
                                     sell-icon-on-coming-pane"
                                     title="Переместить именно его!"
                                     ng-show="x.currentQuantity > 0"
                                     ng-if="user.role == 'ROLE_ADMIN' || user.actsAllowed.indexOf('moving') > -1"
-                                    ng-click="moveThis()"></button>
+                                    ng-click="moveThis(x)"></button>
                             <span style="cursor: pointer; float: right">
-                                <div class="dropdown">
-                                    <span class="glyphicon glyphicon-th-list"></span>
-                                    <ul class="dropdown-menu hoverable comments-container left-side"
-                                        ng-show="x.comment.length > 0">
-                                        <phrase-by-word-to-filter filter="filter.comment" comment="x.comment"></phrase-by-word-to-filter>
-                                    </ul>
-                                </div>
+                                <pane-comment comment="x.comment" filter="filter"></pane-comment>
                             </span>
                         </div>
                         <span>{{" " + x.user.name + " "}}</span>

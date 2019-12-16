@@ -8,6 +8,9 @@ import java.util.Date;
 import java.util.Set;
 
 @Entity
+@Table(name = "buyer")
+//@NamedQuery(name = "Buyer.findBuyersSortedBySellingsSize",
+//        query = "SELECT b from barcode.dao.entities.Buyer b ORDER BY b.name DESC")
 public class Buyer {
     @Id
     @GeneratedValue(strategy= GenerationType.AUTO)

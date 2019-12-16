@@ -17,6 +17,10 @@ import java.util.List;
  */
 public class EntityHandlerImpl implements EntityHandler{
 
+    static final Integer MAX_COMMENT_LENGTH = 2000;
+
+    static final String COMMENT_TOO_LONG = "";
+
     static final String ELEMENTS_FOUND = "найдены элементы";
     static final String INSUFFICIENT_QUANTITY_OF_GOODS = "Неудачно! Не хватает количества товара!";
     static final String SALE_COMPLETED_SUCCESSFULLY = "Продажа завершена успешно";
@@ -52,7 +56,7 @@ public class EntityHandlerImpl implements EntityHandler{
             comment += c.getAction() + SPACE + c.getText() + SPACE + c.getUserName() +
                     SPACE + DATE_FORMAT_WITH_TIME.format(c.getDate())+SEPARATOR;
 
-        return comment;
+        return comment.length() > MAX_COMMENT_LENGTH ? COMMENT_TOO_LONG : comment;
     }
 
     public String getCommentByAction(List<Comment> comments, String action) {
@@ -64,8 +68,6 @@ public class EntityHandlerImpl implements EntityHandler{
 
         return result;
     }
-
-
 
     public Date getDateOnly(final Date date) {
         final Calendar cal = Calendar.getInstance();

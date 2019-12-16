@@ -67,8 +67,8 @@ import soldPaneTpl from './sold-pane.html';
             }
         }, true);
 
-        $s.openTextEditModal = (index) => {
-            let row = angular.extend($s.rows[index], {comment: '', commentCause:''});
+        $s.openTextModal = (x) => {
+            let row = angular.extend(x, {comment: '', commentCause:''});
             $s.textEditModalClose = () => {
                 if(confirm("Подтвердите добавление комментария"))
                     httpService.addItem({
@@ -77,8 +77,8 @@ import soldPaneTpl from './sold-pane.html';
                         requestParams: $s.requestParams,
                         params: {params: {id: row.id}}})
                         .then(
-                            () => {findItemsByFilter();},
-                            () => {console.log('comment has not been added!');}
+                            () => { findItemsByFilter(); },
+                            () => { console.log('comment has not been added!'); }
                     );
                 else findItemsByFilter();
             };

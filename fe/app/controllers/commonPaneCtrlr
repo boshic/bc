@@ -1,0 +1,107 @@
+let commonPaneCtrlr = ($s, filterFactory, paneFactory, printFactory, modalFactory, paneConfig) => {
+
+    let config = paneFactory[paneConfig];
+    $s.rows=[];
+    $s.requestParams = {requestsQuantity: 0};
+    $s.quantityChangerModalData = { hidden : true, row: {} };
+    $s.filter = {visible: false};
+    $s.modalConfig = {};
+    // $s.warning = "";
+    $s.sellingModalConfig = {};
+    $s.movingModalConfig = {};
+    $s.totals = {};
+    $s.user = {};
+
+    $s.setReports = () => {
+        $s.reports = [];
+        if(config.checkAddingReportCondition())
+            printFactory.setReportsByParams(config.getReportsParams($s), $s.reports);
+    };
+
+    let eanInputElement =  document.getElementById(config.eanInputElementId);
+
+    let searchTerms = paneFactory.getSearchTermsForGetItemsByFilter($s, config.findItemUrl);
+
+    let beforeFindItemsByFilter = () => {
+        return config.doBeforeFindItemsByFilter($s);
+    };
+
+    let findItemsByFilter = () => {
+        if(!(typeof beforeFindItemsByFilter === 'function') || (beforeFindItemsByFilter()))
+            paneFactory.getItemsBySearchTermsAndFilter(searchTerms, $s.filter);
+    };
+
+    $s.calcTotalsAndRefresh = () => {
+        return paneFactory.calcTotalsAndRefresh($s.filter, findItemsByFilter);
+    };
+
+    $s.resetFilter = () => {
+        config.resetFilter(filterFactory, $s.filter);
+    };
+
+    $s.setEanPrefix = e => {
+        $s.filter.ean = paneFactory.generateEanByKey(e, $s.filter.ean);
+    };
+
+    $s.setInventoryValues = () => {
+        paneFactory.setInventoryValues($s, 'setInventoryItems');
+    };
+
+    $s.focusOnEanInput = () => {
+        if(!$s.filter.visible)
+            paneFactory.changeElementState(eanInputElement, ['focus']);
+    };
+
+    $s.$watch('filter', (nv, ov) => {
+        if ((nv) && (ov)) {
+            filterFactory.doFilter($s.calcTotalsAndRefresh, findItemsByFilter, nv, ov);
+        }
+    }, true);
+
+    $s.sellingModalConfig.refresh = $s.movingModalConfig.refresh = $s.modalConfig.refresh = () => {
+        $s.calcTotalsAndRefresh()
+    };
+
+    $s.afterSearch = () => {
+        return config.afterSearch($s);
+    };
+
+    $s.handleKeyup = e => {
+        paneFactory.keyUpHandler(e, config.getKeyupCombinations($s));
+    };
+
+    $s.blankSearch = () => {
+        $s.filter.ean = "";
+        $s.focusOnEanInput();
+    };
+
+    $s.$on("tabSelected", (event, data) => {
+        if (data.event != null && paneFactory.paneToggler(data.pane) === config.paneName) {
+            $s.user = paneFactory.user;
+            $s.focusOnEanInput();
+        }
+    });
+
+    $s.openComingModal = (row) => {
+        config.openComingModal(row, $s);
+    };
+
+    $s.sellThis = (data) => {
+        angular.extend($s.sellingModalConfig, {hidden: false, data, requestParams: $s.requestParams});
+    };
+
+    $s.moveThis = (data) => {
+        angular.extend($s.movingModalConfig, {hidden: false, data, requestParams: $s.requestParams});
+    };
+
+    $s.openQuantityChangerModal = (index) => {
+        config.openQuantityChangerModal($s, index, modalFactory);
+    };
+
+    $s.afterCloseQuantityChangerModal = () => {
+        config.afterCloseQuantityChangerModal($s);
+    };
+
+};
+
+module.exports = commonPaneCtrlr;
