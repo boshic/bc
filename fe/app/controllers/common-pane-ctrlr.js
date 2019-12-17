@@ -1,20 +1,27 @@
 let commonPaneCtrlr = ($s, filterFactory, paneFactory, printFactory, modalFactory, paneConfig) => {
 
     let config = paneFactory[paneConfig];
+    let httpService = paneFactory.getHttpService();
+
     $s.rows=[];
-    $s.requestParams = {requestsQuantity: 0};
-    $s.quantityChangerModalData = { hidden : true, row: {} };
+    $s.reports = [];
     $s.filter = {visible: false};
+    $s.requestParams = {requestsQuantity: 0};
+
+    $s.quantityChangerModalData = { hidden : true, row: {} };
+    $s.sellingModalConfig = {hidden : true, row: {}};
+    $s.textEditModalData = {hidden : true, row: {}};
+    $s.movingModalConfig = {hidden : true, row: {}};
     $s.modalConfig = {};
-    // $s.warning = "";
-    $s.sellingModalConfig = {};
-    $s.movingModalConfig = {};
+
+    $s.quantityChangerModalClose = () => {};
+    $s.warning = "";
     $s.totals = {};
     $s.user = {};
 
     $s.setReports = () => {
         $s.reports = [];
-        if(config.checkAddingReportCondition())
+        if(config.checkAddingReportCondition($s))
             printFactory.setReportsByParams(config.getReportsParams($s), $s.reports);
     };
 
@@ -67,7 +74,7 @@ let commonPaneCtrlr = ($s, filterFactory, paneFactory, printFactory, modalFactor
     };
 
     $s.handleKeyup = e => {
-        paneFactory.keyUpHandler(e, config.getKeyupCombinations($s));
+        paneFactory.keyUpHandler(e, config.getKeyupCombinations($s, paneFactory.keyCodes));
     };
 
     $s.blankSearch = () => {
@@ -82,8 +89,20 @@ let commonPaneCtrlr = ($s, filterFactory, paneFactory, printFactory, modalFactor
         }
     });
 
-    $s.openComingModal = (row) => {
-        config.openComingModal(row, $s);
+    $s.editItem = (index) => {
+        config.editItem($s, {index, httpService });
+    };
+
+    $s.openTextModal = (x) => {
+        config.openTextModal($s, {data: x, httpService, modalFactory});
+    };
+
+    $s.makeReturn = (index) => {
+        config.makeReturn($s, {index, httpService, modalFactory});
+    };
+
+    $s.changeItemDate =  (row) => {
+        config.changeItemDate($s, {row, httpService});
     };
 
     $s.sellThis = (data) => {

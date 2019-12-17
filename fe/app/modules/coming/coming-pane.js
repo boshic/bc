@@ -1,7 +1,7 @@
 import comingPaneTpl from './coming-pane.html';
-import commonPaneCtrlr from '../../controllers/commonPaneCtrlr';
+import commonPaneCtrlr from '../../controllers/common-pane-ctrlr';
 
-    // let commonPaneCtrlr = ($s, filterFactory, paneFactory, printFactory, modalFactory, paneConfig) => {
+    // let common-pane-ctrlr.js = ($s, filterFactory, paneFactory, printFactory, modalFactory, paneConfig) => {
     //
     //     let config = paneFactory[paneConfig];
     //     $s.rows=[];

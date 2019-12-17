@@ -48,7 +48,7 @@
 
         <div class="coming-pane-right-menu-option">
             <span class="glyphicon glyphicon-refresh"
-                  ng-click="refresh()">
+                  ng-click="calcTotalsAndRefresh()">
             </span>
         </div>
         <div class="coming-pane-right-menu-option">
@@ -176,7 +176,7 @@
                                 <input date-input class="form-control" type="datetime-local" ng-model="x.date"/>
                                 <div>
                                     <button class="glyphicon glyphicon-ok sip-date-changer-ok-btn"
-                                            ng-click="changeSoldItemDate()"
+                                            ng-click="changeItemDate(x)"
                                             title="Изменить дату!"/>
                                 </div>
                             </li>
@@ -276,7 +276,7 @@
                             <button class="glyphicon glyphicon-pencil sell-icon-on-coming-pane btn-on-pane"
                                     ng-class = "{inherited: x.quantity <= 0}"
                                     ng-disabled = "x.quantity <= 0"
-                                    ng-click="editSoldItem($index)"
+                                    ng-click="editItem($index)"
                                     title="Изменить продажу!">
                             </button>
                             <span style="cursor: pointer; float: right">

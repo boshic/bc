@@ -65,6 +65,7 @@ import commonFilterTpl from './common-filter.html';
                     ];
 
                     toDate = new Date();
+                    filter.ean = "";
                     filter.sortDirection = 'DESC';
                     // filter.sortDirection = 'ASC';
                     filter.hideNullQuantity = true;
@@ -103,7 +104,6 @@ import commonFilterTpl from './common-filter.html';
                         filter.inventoryModeEnabled = false;
                         filter.autoOpenQuantityChangerModalInInventoryMode = false;
 
-                        filter.ean = "";
                         // filter.sortField = 'item.name';
                         filter.sortField = 'doc.date';
                         filter.fromDate = new Date(toDate.getFullYear(), toDate.getMonth(), 1);
