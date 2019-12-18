@@ -15,6 +15,7 @@ let commonPaneCtrlr = ($s, filterFactory, paneFactory, printFactory, modalFactor
     $s.modalConfig = {};
 
     $s.quantityChangerModalClose = () => {};
+    $s.autoOpenQuantityChangerModalInInventoryMode = false;
     $s.warning = "";
     $s.totals = {};
     $s.user = {};
@@ -78,6 +79,7 @@ let commonPaneCtrlr = ($s, filterFactory, paneFactory, printFactory, modalFactor
     };
 
     $s.blankSearch = () => {
+        $s.warning = "";
         $s.filter.ean = "";
         $s.focusOnEanInput();
     };
@@ -106,11 +108,11 @@ let commonPaneCtrlr = ($s, filterFactory, paneFactory, printFactory, modalFactor
     };
 
     $s.sellThis = (data) => {
-        angular.extend($s.sellingModalConfig, {hidden: false, data, requestParams: $s.requestParams});
+        angular.extend($s.sellingModalConfig, {hidden: false, data, parentScope: $s});
     };
 
     $s.moveThis = (data) => {
-        angular.extend($s.movingModalConfig, {hidden: false, data, requestParams: $s.requestParams});
+        angular.extend($s.movingModalConfig, {hidden: false, data, parentScope: $s});
     };
 
     $s.openQuantityChangerModal = (index) => {

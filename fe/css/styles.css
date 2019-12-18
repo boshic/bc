@@ -2272,8 +2272,25 @@ span.inventory-deviation-surplus {
 }
 
 button.apply-inventory-results {
-    width: 90%;
+    margin-left: 1.5%;
+    width: 95%;
     color: var(--main-color);
     font-weight: bold;
     border-radius: 5px;
+    height: 50px;
+    font-size: 33px;
+    margin-top: 20px;
+}
+
+div.inventory-panel {
+    /*text-align: end;*/
+    background: var(--white-color);
+    border-top-left-radius: 10px;
+    border-bottom: 2px solid var(--main-color);
+    border-left: 2px solid var(--main-color);
+    border-right: 2px solid var(--main-color);
+}
+
+input.inventory-checkbox {
+    zoom: 1.5;
 }

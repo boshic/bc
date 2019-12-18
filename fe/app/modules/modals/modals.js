@@ -353,12 +353,13 @@
                         $s.checkRows();
                         let row =   $s.rows[0];
                         $s.closeModal();
-                        httpService.addItem({data: row, url, requestParams: $s.modalConfig.requestParams, params})
+                        httpService.addItem({data: row, url,
+                            requestParams: $s.modalConfig.parentScope.requestParams, params})
                             .then(
                                 resp => {
                                     if(resp.success)
                                         paneFactory.successSound.play();
-                                    $s.modalConfig.warning = resp.text;
+                                    $s.modalConfig.parentScope.warning = resp.text;
                                     $s.modalConfig.refresh();
                                 },
                                 () => {

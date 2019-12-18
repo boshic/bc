@@ -44,7 +44,7 @@ let soldPaneConfig =
             };
             config.modalFactory.openModal(undefined, [row], $s.textEditModalData);
         },
-        makeReturn: (config) => {
+        makeReturn: ($s, config) => {
             let row = angular.extend($s.rows[config.index], {comment: '', commentCause:'Возврат'});
             $s.quantityChangerModalClose = () => {
                 if(confirm("Подтвердите возврат"))
@@ -83,7 +83,7 @@ let soldPaneConfig =
                             let data = angular.extend(resp.coming, {
                                 currentQuantity: resp.quantity, priceOut: resp.price, buyer: resp.buyer});
                             angular.extend($s.sellingModalConfig, {url: 'changeSoldItem', id: resp.id,
-                                refresh: $s.calcTotalsAndRefresh, hidden: false, data, requestParams: $s.requestParams});
+                                refresh: $s.calcTotalsAndRefresh, hidden: false, data, parentScope: $s});
                         },
                         resp => {
                             console.log(resp);

@@ -102,7 +102,7 @@ import commonFilterTpl from './common-filter.html';
                         resetCommonFilterFields(filter);
 
                         filter.inventoryModeEnabled = false;
-                        filter.autoOpenQuantityChangerModalInInventoryMode = false;
+                        // filter.autoOpenQuantityChangerModalInInventoryMode = false;
 
                         // filter.sortField = 'item.name';
                         filter.sortField = 'doc.date';
