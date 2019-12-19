@@ -3,7 +3,7 @@
     <!--check-input = 'checkRows()'-->
     <!--after-close = 'blankSearch()'    -->
     <quantity-changer-modal
-            after-close = "afterCloseQuantityChangerModal()"
+            after-close = "afterCloseQuantityChangerModalInInventoryMode()"
             modal-data="quantityChangerModalData">
     </quantity-changer-modal>
 </div>
@@ -62,27 +62,14 @@
         </div>
     </div>
     <div class="inventory-panel" ng-show = "filter.inventoryModeEnabled">
-        <div style="display: flex;">
-            <div style="width: 80%">
-                <button class="apply-inventory-results"
-                        ng-show="totals.length && rows.length">
-                    Применить результаты инвентаризации =(?
-                </button>
-            </div>
-            <div style="width: 20%">
-                <input class="inventory-checkbox"
-                   type="checkbox" ng-model="autoOpenQuantityChangerModalInInventoryMode"/>
-                <label>
-                    Автом. открытие окна ввода количества: {{(autoOpenQuantityChangerModalInInventoryMode) ? "Да" : "Нет"}}
-                </label>
-            </div>
-        </div>
 
-        <button class="set-invetnory-values-btn"
-                ng-show="!totals.length && rows.length"
-            ng-click = "setInventoryValues()">
-            Записать остатки
-        </button>
+        <inventory-panel
+                set-inventory-values = "setInventoryValues()"
+                apply-inventory-results="applyInventoryResults()"
+                auto-open-quantity-changer-modal="autoOpenQuantityChangerModalInInventoryMode"
+                is-enabled-set-inventory-values = "!totals.length && rows.length"
+                is-enabled-apply-inventory-results = "totals.length && rows.length">
+        </inventory-panel>
     </div>
 
     <table class="table table-bordered table-responsive">
@@ -299,7 +286,7 @@
                 <td class="price-data" ng-show = "filter.inventoryModeEnabled">
                     <div>
                         <button class='change-quantity-btn'
-                                ng-click='openQuantityChangerModal($index)'>
+                                ng-click='openQuantityChangerModalInInventoryMode($index)'>
                             <span unit-sensitive unit="x.item.unit" quantity="x.currentQuantity"></span>
                         </button>
                     </div>

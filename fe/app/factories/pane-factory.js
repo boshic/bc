@@ -155,17 +155,6 @@ import soldPaneConfig from '../modules/selling/sold-pane-config';
                     term.next(JSON.stringify(filter));
                 };
 
-                let setInventoryValues = ($s, url) => {
-                    httpService.addItem({data: $s.rows, url, requestParams: $s.requestParams})
-                        .then(
-                            resp => {
-                                $s.totals = [{}];
-                                $s.calcTotalsAndRefresh();
-                            },
-                            (resp) => {}
-                        );
-                };
-
                 return {
                     fractionalUnits,
                     successSound,
@@ -177,7 +166,6 @@ import soldPaneConfig from '../modules/selling/sold-pane-config';
                     checkDuplicateRows,
                     calcTotals,
                     checkNumberLimit,
-                    setInventoryValues,
                     getItemsBySearchTermsAndFilter,
                     getSearchTermsForGetItemsByFilter,
                     comingPaneConfig,

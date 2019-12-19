@@ -14,8 +14,8 @@ let commonPaneCtrlr = ($s, filterFactory, paneFactory, printFactory, modalFactor
     $s.movingModalConfig = {hidden : true, row: {}};
     $s.modalConfig = {};
 
-    $s.quantityChangerModalClose = () => {};
-    $s.autoOpenQuantityChangerModalInInventoryMode = false;
+    // $s.quantityChangerModalCloseWhenSellingReturns = () => {};
+
     $s.warning = "";
     $s.totals = {};
     $s.user = {};
@@ -52,7 +52,8 @@ let commonPaneCtrlr = ($s, filterFactory, paneFactory, printFactory, modalFactor
     };
 
     $s.setInventoryValues = () => {
-        paneFactory.setInventoryValues($s, 'setInventoryItems');
+        config.setInventoryValues($s, {httpService});
+        // paneFactory.setInventoryValues($s, 'setInventoryItems');
     };
 
     $s.focusOnEanInput = () => {
@@ -115,12 +116,12 @@ let commonPaneCtrlr = ($s, filterFactory, paneFactory, printFactory, modalFactor
         angular.extend($s.movingModalConfig, {hidden: false, data, parentScope: $s});
     };
 
-    $s.openQuantityChangerModal = (index) => {
-        config.openQuantityChangerModal($s, index, modalFactory);
+    $s.openQuantityChangerModalInInventoryMode = (index) => {
+        config.openQuantityChangerModalInInventoryMode($s, index, modalFactory);
     };
 
-    $s.afterCloseQuantityChangerModal = () => {
-        config.afterCloseQuantityChangerModal($s);
+    $s.afterCloseQuantityChangerModalInInventoryMode = () => {
+        config.afterCloseQuantityChangerModalInInventoryMode($s);
     };
 
 };

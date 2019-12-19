@@ -22,7 +22,7 @@ let comingPaneConfig = {
             } else
                 $s.filter.ean = row.item.ean;
     },
-    openQuantityChangerModal: ($s, index, modalFactory) => {
+    openQuantityChangerModalInInventoryMode: ($s, index, modalFactory) => {
         let row = angular.extend({}, $s.rows[index]);
         let currentQuantity = row.currentQuantity;
         let quantity = row.quantity;
@@ -32,7 +32,7 @@ let comingPaneConfig = {
             modalFactory.openModalWithConfig({undefined, rows: [row],
             availQuantityField : 'currentQuantity', modalData: $s.quantityChangerModalData});
     },
-    afterCloseQuantityChangerModal: ($s) => {
+    afterCloseQuantityChangerModalInInventoryMode: ($s) => {
         let params = $s.quantityChangerModalData.params;
         if(params.quantity != $s.quantityChangerModalData.row.quantity)
             $s.totals=[];
@@ -42,7 +42,7 @@ let comingPaneConfig = {
     },
     afterSearch: ($s) => {
         if($s.filter.inventoryModeEnabled && $s.rows.length === 1 && $s.autoOpenQuantityChangerModalInInventoryMode)
-            $s.openQuantityChangerModal(0);
+            $s.openQuantityChangerModalInInventoryMode(0);
         else
             $s.focusOnEanInput();
     },
@@ -51,8 +51,17 @@ let comingPaneConfig = {
             {keyCode: keyCodes.escKeyCode, doAction: $s.calcTotalsAndRefresh},
             {keyCode: keyCodes.enterKeyCode, doAction: $s.setInventoryValues, ctrlReq: true}
         ];
+    },
+    setInventoryValues: ($s, config) => {
+        config.httpService.addItem({data: $s.rows, url: 'setInventoryItems', requestParams: $s.requestParams})
+            .then(
+                resp => {
+                    $s.totals = [{}];
+                    $s.calcTotalsAndRefresh();
+                },
+                (resp) => {}
+            );
     }
-
 };
 
 module.exports = comingPaneConfig;

@@ -1,4 +1,9 @@
-    angular.module('pane-elements', [])
+import comingPaneTpl from '../coming/coming-pane.html';
+import soldPaneTpl from '../selling/sold-pane.html';
+import commonPaneCtrlr from '../../controllers/common-pane-ctrlr';
+
+
+angular.module('pane-elements', [])
         .directive("totals", () => {
             return {
                 restrict: 'E',
@@ -83,6 +88,34 @@
                 "</div>"
             };
         })
+        .directive( "comingPane", () => {
+            return {
+                restrict: 'E',
+                transclude: true,
+                scope: {},
+                template: comingPaneTpl,
+                controller: ($scope, filterFactory, paneFactory, printFactory, modalFactory ) => {
+                    return commonPaneCtrlr($scope , filterFactory, paneFactory, printFactory, modalFactory, 'comingPaneConfig');
+                },
+                link: (scope) => {
+                    scope.resetFilter();
+                }
+            }
+        })
+        .directive( "soldPane", () => {
+            return {
+                restrict: 'E',
+                transclude: true,
+                scope: true,
+                template: soldPaneTpl,
+                controller: ($scope, filterFactory, paneFactory, printFactory, modalFactory) => {
+                    return commonPaneCtrlr($scope, filterFactory, paneFactory, printFactory, modalFactory, 'soldPaneConfig');
+                },
+                link: (scope) => {
+                    scope.resetFilter();
+                }
+            }
+        })
         .component( "paneRequestIndicator", {
             bindings: {
                 requestsQuantity: '<'
@@ -129,6 +162,41 @@
                 "ng-model='$ctrl.inputValue[$ctrl.valueField]' ng-change='$ctrl.changeValue()'/>" +
             "</td>",
             controller: function() {}
+        })
+        .component( "inventoryPanel", {
+            bindings: {
+                isEnabledApplyInventoryResults: '<',
+                isEnabledSetInventoryValues: '<',
+                setInventoryValues: '&',
+                applyInventoryResults: '&',
+                autoOpenQuantityChangerModal: '=',
+            },
+            template:
+            "<div style='display: flex;'>" +
+                "<div style='width: 80%'>" +
+                    "<button class='apply-inventory-results'" +
+                        "ng-disabled='!$ctrl.isEnabledApplyInventoryResults'" +
+                        "ng-click = '$ctrl.applyInventoryResults()'>" +
+                            "Применить результаты инвентаризации =(?" +
+                    "</button>" +
+                "</div>" +
+                "<div style='width: 20%'>" +
+                    "<input class='inventory-checkbox'" +
+                        "type='checkbox' ng-model='$ctrl.autoOpenQuantityChangerModal'/>" +
+                    "<label>" +
+                        "Автом. открытие окна ввода количества: {{($ctrl.autoOpenQuantityChangerModal) ? 'Да' : 'Нет'}}" +
+                    "</label>" +
+                "</div>" +
+            "</div>" +
+
+            "<button class='set-invetnory-values-btn'" +
+                "ng-disabled = '!$ctrl.isEnabledSetInventoryValues'" +
+                "ng-click = '$ctrl.setInventoryValues()'>" +
+                    "Записать остатки" +
+            "</button>",
+            controller: function() {
+                this.autoOpenQuantityChangerModal = false;
+            }
         })
         .component( "paneComment", {
             bindings: {

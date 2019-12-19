@@ -727,14 +727,14 @@ angular.module('inputs', ['asyncFilter'])
                         getItemsUrl: 'getSections',
                         getItemByIdUrl: 'getSectionById'
                 },
-                addEditItem: (item, childScope) => {
-                    childScope.modalHidden = false;
-                    if (typeof item === 'object')
-                        childScope.item = item;
-                    if(typeof item === 'number' && item > 0)
-                        childScope.getItemById(item);
-                    document.getElementById(childScope.inputId).focus();
-                },
+                // addEditItem: (item, childScope) => {
+                //     childScope.modalHidden = false;
+                //     if (typeof item === 'object')
+                //         childScope.item = item;
+                //     if(typeof item === 'number' && item > 0)
+                //         childScope.getItemById(item);
+                //     document.getElementById(childScope.inputId).focus();
+                // },
                 getItems: ($s, url) => {
                     $s.items=[];
                     httpService.getItems({params: {filter: $s.item.name || ''},

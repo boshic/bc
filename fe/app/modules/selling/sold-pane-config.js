@@ -46,7 +46,7 @@ let soldPaneConfig =
         },
         makeReturn: ($s, config) => {
             let row = angular.extend($s.rows[config.index], {comment: '', commentCause:'Возврат'});
-            $s.quantityChangerModalClose = () => {
+            $s.quantityChangerModalCloseWhenSellingReturns = () => {
                 if(confirm("Подтвердите возврат"))
                     config.httpService.addItem({data: row, url: 'returnSoldItem', requestParams: $s.requestParams})
                         .then(
