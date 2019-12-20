@@ -2225,17 +2225,6 @@ div.totals-type {
     border-radius: 5px;
 }
 
-.set-invetnory-values-btn {
-    width: 98%;
-    height: 50px;
-    font-size: 33px;
-    color: yellow;
-    background: var(--main-color);
-    border-radius: 8px;
-    margin: 1%;
-    /*font-family: Times new roman;*/
-}
-
 .last-change-inventory-date {
     padding: 2px;
     font-size: 10px;
@@ -2271,19 +2260,28 @@ span.inventory-deviation-surplus {
     color: var(--main-color);
 }
 
+button.set-invetnory-values {
+    width: 30%;
+}
+
 button.apply-inventory-results {
-    margin-left: 1.5%;
-    width: 95%;
-    color: var(--main-color);
-    font-weight: bold;
-    border-radius: 5px;
-    height: 50px;
+    width: 62%;
+}
+
+button.inventory-button {
+    margin: 1.25%;
+    color: var(--white-color);
+    background: var(--main-color);
+    border-radius: 10px;
     font-size: 33px;
-    margin-top: 20px;
+}
+
+button.disabled-inventory-btn {
+    background: var(--gray-color);
 }
 
 div.inventory-panel {
-    /*text-align: end;*/
+
     background: var(--white-color);
     border-top-left-radius: 10px;
     border-bottom: 2px solid var(--main-color);
@@ -2293,4 +2291,5 @@ div.inventory-panel {
 
 input.inventory-checkbox {
     zoom: 1.5;
+    margin-top: 7px;
 }

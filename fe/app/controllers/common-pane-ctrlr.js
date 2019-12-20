@@ -14,8 +14,6 @@ let commonPaneCtrlr = ($s, filterFactory, paneFactory, printFactory, modalFactor
     $s.movingModalConfig = {hidden : true, row: {}};
     $s.modalConfig = {};
 
-    // $s.quantityChangerModalCloseWhenSellingReturns = () => {};
-
     $s.warning = "";
     $s.totals = {};
     $s.user = {};
@@ -53,7 +51,6 @@ let commonPaneCtrlr = ($s, filterFactory, paneFactory, printFactory, modalFactor
 
     $s.setInventoryValues = () => {
         config.setInventoryValues($s, {httpService});
-        // paneFactory.setInventoryValues($s, 'setInventoryItems');
     };
 
     $s.focusOnEanInput = () => {
@@ -118,10 +115,6 @@ let commonPaneCtrlr = ($s, filterFactory, paneFactory, printFactory, modalFactor
 
     $s.openQuantityChangerModalInInventoryMode = (index) => {
         config.openQuantityChangerModalInInventoryMode($s, index, modalFactory);
-    };
-
-    $s.afterCloseQuantityChangerModalInInventoryMode = () => {
-        config.afterCloseQuantityChangerModalInInventoryMode($s);
     };
 
 };

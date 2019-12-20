@@ -14,7 +14,6 @@ import './modules/coming/coming-item';
 import './modules/coming/new-coming-doc';
 import './modules/moving/moving-pane';
 import './modules/selling/selling-pane';
-// import './modules/selling/sold-pane';
 import './modules/selling/invoices-pane';
 
 
@@ -22,9 +21,6 @@ import './factories/http-service';
 import './factories/user-service';
 import './factories/buyer-factory';
 import './factories/pane-factory';
-
-// 'coming-pane',
-// 'sold-pane',
 
     angular.module('barcode', [
     'common-http-service', 'user-service', 'pane-factory', 'buyer-factory',

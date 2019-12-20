@@ -1,3 +1,12 @@
+let afterCloseQuantityChangerModalInInventoryMode = ($s) => {
+    let params = $s.quantityChangerModalData.params;
+    if(params.quantity != $s.quantityChangerModalData.row.quantity)
+        $s.totals=[];
+    $s.rows[params.index].currentQuantity = $s.quantityChangerModalData.row.quantity;
+    if($s.rows.length === 1)
+        $s.focusOnEanInput();
+};
+
 let comingPaneConfig = {
     getReportsParams: ($s) => {
             return [{type: 'prices', data: $s.filter, method: 'addComingReportByFilter'}];
@@ -23,6 +32,9 @@ let comingPaneConfig = {
                 $s.filter.ean = row.item.ean;
     },
     openQuantityChangerModalInInventoryMode: ($s, index, modalFactory) => {
+        $s.afterCloseQuantityChangerModal = () => {
+            return afterCloseQuantityChangerModalInInventoryMode($s);
+        };
         let row = angular.extend({}, $s.rows[index]);
         let currentQuantity = row.currentQuantity;
         let quantity = row.quantity;
@@ -31,14 +43,6 @@ let comingPaneConfig = {
         $s.quantityChangerModalData.params = {index, quantity: currentQuantity};
             modalFactory.openModalWithConfig({undefined, rows: [row],
             availQuantityField : 'currentQuantity', modalData: $s.quantityChangerModalData});
-    },
-    afterCloseQuantityChangerModalInInventoryMode: ($s) => {
-        let params = $s.quantityChangerModalData.params;
-        if(params.quantity != $s.quantityChangerModalData.row.quantity)
-            $s.totals=[];
-        $s.rows[params.index].currentQuantity = $s.quantityChangerModalData.row.quantity;
-        if($s.rows.length === 1)
-            $s.focusOnEanInput();
     },
     afterSearch: ($s) => {
         if($s.filter.inventoryModeEnabled && $s.rows.length === 1 && $s.autoOpenQuantityChangerModalInInventoryMode)

@@ -173,11 +173,18 @@ angular.module('pane-elements', [])
             },
             template:
             "<div style='display: flex;'>" +
-                "<div style='width: 80%'>" +
-                    "<button class='apply-inventory-results'" +
+                "<div>" +
+                    "<button class='inventory-button apply-inventory-results'" +
                         "ng-disabled='!$ctrl.isEnabledApplyInventoryResults'" +
+                        "ng-class='{\"disabled-inventory-btn\": !$ctrl.isEnabledApplyInventoryResults}'" +
                         "ng-click = '$ctrl.applyInventoryResults()'>" +
                             "Применить результаты инвентаризации =(?" +
+                    "</button>" +
+                    "<button class='inventory-button set-invetnory-values'" +
+                        "ng-disabled='!$ctrl.isEnabledSetInventoryValues'" +
+                        "ng-class='{\"disabled-inventory-btn\": !$ctrl.isEnabledSetInventoryValues}'" +
+                        "ng-click = '$ctrl.setInventoryValues()'>" +
+                            "Записать остатки" +
                     "</button>" +
                 "</div>" +
                 "<div style='width: 20%'>" +
@@ -187,13 +194,7 @@ angular.module('pane-elements', [])
                         "Автом. открытие окна ввода количества: {{($ctrl.autoOpenQuantityChangerModal) ? 'Да' : 'Нет'}}" +
                     "</label>" +
                 "</div>" +
-            "</div>" +
-
-            "<button class='set-invetnory-values-btn'" +
-                "ng-disabled = '!$ctrl.isEnabledSetInventoryValues'" +
-                "ng-click = '$ctrl.setInventoryValues()'>" +
-                    "Записать остатки" +
-            "</button>",
+            "</div>",
             controller: function() {
                 this.autoOpenQuantityChangerModal = false;
             }
