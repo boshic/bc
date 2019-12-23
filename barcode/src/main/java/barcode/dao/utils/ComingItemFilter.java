@@ -2,9 +2,88 @@ package barcode.dao.utils;
 
 import barcode.dao.entities.*;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.util.Comparator;
+import java.util.List;
+
 public class ComingItemFilter extends  BasicFilter {
 
 //    public static final Integer NUMBER_OF_ROWS_ON_PAGE = 15;
+
+    public enum ComingItemSortingStrategies {
+
+        ITEM_NAME {
+            @Override
+            public void sort(List<ComingItem> comingItems) {
+                comingItems.sort(Comparator.comparing(ComingItem::getItem, (i1, i2) -> {
+                    return i1.getName().compareToIgnoreCase(i2.getName());
+                }));
+            }
+        },
+        ITEM_SECTION_NAME {
+            @Override
+            public void sort(List<ComingItem> comingItems) {
+                comingItems.sort(Comparator.comparing(ComingItem::getItem, (i1, i2) -> {
+                    return i1.getSection().getName().compareToIgnoreCase(i2.getSection().getName());
+                }));
+            }
+        },
+        STOCK_NAME {
+            @Override
+            public void sort(List<ComingItem> comingItems) {
+                comingItems.sort(Comparator.comparing(ComingItem::getStock, (s1, s2) -> {
+                    return s1.getName().compareToIgnoreCase(s2.getName());
+                }));
+            }
+        },
+        SUM {
+            @Override
+            public void sort(List<ComingItem> comingItems) {
+                comingItems.sort(Comparator.comparing(ComingItem::getSum));
+            }
+        },
+        QUANTITY {
+            @Override
+            public void sort(List<ComingItem> comingItems) {
+                comingItems.sort(Comparator.comparing(ComingItem::getQuantity));
+            }
+        },
+        CURRENTQUANTITY {
+            @Override
+            public void sort(List<ComingItem> comingItems) {
+                comingItems.sort(Comparator.comparing(ComingItem::getCurrentQuantity));
+            }
+        },
+        CURRENTSUM {
+            @Override
+            public void sort(List<ComingItem> comingItems) {
+                comingItems.sort(Comparator.comparing(ComingItem::new, (c1, c2) -> {
+                    return (c1.getCurrentQuantity()
+                                .multiply(c1.getSum().divide(c1.getQuantity(), 5, RoundingMode.CEILING))
+                                .setScale(2, BigDecimal.ROUND_HALF_UP).subtract(c1.getSum()))
+                            .compareTo(
+                                    (c2.getCurrentQuantity()
+                                        .multiply(c2.getSum().divide(c2.getQuantity(), 5, RoundingMode.CEILING))
+                                            .setScale(2, BigDecimal.ROUND_HALF_UP).subtract(c2.getSum())
+                            ));
+                }));
+            }
+        },
+        LASTCHANGEDATE {
+            @Override
+            public void sort(List<ComingItem> comingItems) {
+                comingItems.sort(Comparator.comparing(ComingItem::getLastChangeDate));
+            }
+        },
+        DOC_DATE {
+            @Override
+            public void sort(List<ComingItem> comingItems) {}
+        };
+
+        public abstract void sort(List<ComingItem> comingItems);
+    }
+
 
     private String ean;
     private String comment;

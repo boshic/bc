@@ -307,7 +307,7 @@ public class SoldItemHandler extends EntityHandlerImpl {
         return new ResponseItem<SoldItem>(SALE_COMPLETED_SUCCESSFULLY, true);
     }
 
-    public static void SortSoldItemsList(List<SoldItem> soldItems, String field, String direction) {
+    private static void SortSoldItemsList(List<SoldItem> soldItems, String field, String direction) {
 
         SoldItemFilter.GroupedSoldItemSortingStrategies strategy
                 = SoldItemFilter.GroupedSoldItemSortingStrategies.valueOf(field.replace(".","_").toUpperCase());
@@ -348,7 +348,6 @@ public class SoldItemHandler extends EntityHandlerImpl {
                 }
         );
 
-
         SortSoldItemsList(result, filter.getSortField(), filter.getSortDirection());
 
         PagedListHolder<SoldItem> page = new PagedListHolder<SoldItem>(result);
@@ -366,8 +365,6 @@ public class SoldItemHandler extends EntityHandlerImpl {
     }
 
     public ResponseBySoldItems findByFilter(SoldItemFilter filter) {
-
-//        SoldItemPredicatesBuilder sipb = new SoldItemPredicatesBuilder();
 
         itemHandler.checkEanInFilter(filter);
 

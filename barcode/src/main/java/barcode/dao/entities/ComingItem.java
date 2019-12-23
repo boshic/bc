@@ -65,6 +65,16 @@ public class ComingItem {
     private Set<SoldItem> sellings;
 
     public ComingItem() {}
+
+    public ComingItem(ComingItem comingItem) {
+
+        this.currentQuantity = comingItem.getCurrentQuantity();
+
+        this.sum = comingItem.getSum();
+
+        this.quantity = comingItem.getQuantity();
+    }
+
     public ComingItem(Item item, Stock stock) {
         this.stock = stock;
         this.item = item;

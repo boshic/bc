@@ -424,7 +424,7 @@ public class ComingItemHandler extends EntityHandlerImpl {
             ));
         });
 
-//        SortSoldItemsList(result, filter.getSortField(), filter.getSortDirection());
+        SortGroupedComingItems(result, filter.getSortField(), filter.getSortDirection());
 //
         PagedListHolder<ComingItem> page = new PagedListHolder<ComingItem>(result);
         page.setPageSize(filter.getRowsOnPage());
@@ -438,9 +438,18 @@ public class ComingItemHandler extends EntityHandlerImpl {
             ribyci.calcInventoryTotals(result);
 //
         return ribyci;
-
-//        return null;
     }
+
+    private static void SortGroupedComingItems(List<ComingItem> comingItems, String field, String direction) {
+
+        ComingItemFilter.ComingItemSortingStrategies strategy
+                = ComingItemFilter.ComingItemSortingStrategies.valueOf(field.replace(".","_").toUpperCase());
+        strategy.sort(comingItems);
+
+        if(direction.equalsIgnoreCase(BasicFilter.SORT_DIRECTION_DESC))
+            Collections.reverse(comingItems);
+    }
+
 
     public ResponseByComingItems findByFilter(ComingItemFilter filter) {
 
@@ -453,7 +462,7 @@ public class ComingItemHandler extends EntityHandlerImpl {
         Sort sort = new Sort(Sort.Direction.fromStringOrNull(filter.getSortDirection()), filter.getSortField());
 
         if(filter.getInventoryModeEnabled())
-                    return getInventoryItems(comingItemRepository.findAll(cipb.buildByFilter(filter), sort), filter);
+                    return getInventoryItems(comingItemRepository.findAll(cipb.buildByFilter(filter)), filter);
 
         PageRequest pageRequest = new PageRequest(filter.getPage() - 1, filter.getRowsOnPage(), sort);
 
@@ -467,11 +476,8 @@ public class ComingItemHandler extends EntityHandlerImpl {
                     new ResponseByComingItems("найдены элементы", result, true, page.getTotalPages());
 
             if(filter.getCalcTotal()) {
-//                 && (this.filter == null || !this.filter.equals(filter))
 
                 ribyci.calcTotals(comingItemRepository.findAll(cipb.buildByFilter(filter)));
-
-//                this.filter = new ComingItemFilter(filter);
             }
 
             return ribyci;
