@@ -5,6 +5,7 @@ import { filter, tap, map, debounceTime, distinctUntilChanged, switchMap } from 
 
 import comingPaneConfig from '../modules/coming/coming-pane-config';
 import soldPaneConfig from '../modules/selling/sold-pane-config';
+import invoicesPaneConfig from '../modules/selling/invoices-pane-config';
 
     angular.module('pane-factory', [])
         .factory('paneFactory',[ 'httpService', '$timeout', '$filter',
@@ -168,6 +169,7 @@ import soldPaneConfig from '../modules/selling/sold-pane-config';
                     checkNumberLimit,
                     getItemsBySearchTermsAndFilter,
                     getSearchTermsForGetItemsByFilter,
+                    invoicesPaneConfig,
                     comingPaneConfig,
                     soldPaneConfig,
                     getHttpService: () => {return httpService;},
@@ -192,7 +194,7 @@ import soldPaneConfig from '../modules/selling/sold-pane-config';
                     paneToggler: (pane) => {
                         for(let p of pane.$$childTail.panes) {
                             if(p.selected)
-                                return p.name;
+                                return p.paneId || p.name;
                         }
                     },
                     changeElementState: (element, states) => {

@@ -15,6 +15,7 @@ let comingPaneConfig = {
         eanInputElementId: 'coming-pane',
         findItemUrl: 'findComingItemByFilter',
         paneName: 'Список',
+        paneId: 'coming-pane',
     doBeforeFindItemsByFilter: ($s) => {
             if($s.filter.inventoryModeEnabled && !$s.totals.length && $s.rows.length)
                 return (confirm("Записать результаты инвентаризации?")) ? $s.setInventoryValues() : true;

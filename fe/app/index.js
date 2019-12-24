@@ -14,8 +14,6 @@ import './modules/coming/coming-item';
 import './modules/coming/new-coming-doc';
 import './modules/moving/moving-pane';
 import './modules/selling/selling-pane';
-import './modules/selling/invoices-pane';
-
 
 import './factories/http-service';
 import './factories/user-service';
@@ -26,7 +24,7 @@ import './factories/pane-factory';
     'common-http-service', 'user-service', 'pane-factory', 'buyer-factory',
     'inputs', 'modals', 'common-filter',
     'pane-elements', 'text-utils', 'print-menu',
-    'selling-pane', 'invoices-pane',
+    'selling-pane',
     'coming-item', 'new-coming-doc', 'moving-pane'
 ]);
 

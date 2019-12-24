@@ -76,17 +76,25 @@ public class ComingItem {
     }
 
     public ComingItem(Item item, Stock stock) {
+
         this.stock = stock;
+
         this.item = item;
     }
 
     public ComingItem(Item item, Stock stock, BigDecimal sum, BigDecimal quantity,
                       BigDecimal currentQuantity, Date lastChangeDate) {
+
         this.stock = stock;
+
         this.item = item;
+
         this.sum = sum;
+
         this.quantity = quantity;
+
         this.currentQuantity = currentQuantity;
+
         this.lastChangeDate = lastChangeDate;
     }
 

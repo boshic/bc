@@ -1,5 +1,6 @@
 import comingPaneTpl from '../coming/coming-pane.html';
 import soldPaneTpl from '../selling/sold-pane.html';
+import invoicesPaneTpl from '../selling/invoices-pane.html';
 import commonPaneCtrlr from '../../controllers/common-pane-ctrlr';
 
 
@@ -78,7 +79,7 @@ angular.module('pane-elements', [])
                 require: '^^myTabs',
                 restrict: 'E',
                 transclude: true,
-                scope: { name: '@' },
+                scope: { name: '@', paneId : '@?' },
                 link: (scope, element, attrs, tabsCtrl) => {
                     tabsCtrl.addPane(scope);
                 },
@@ -110,6 +111,20 @@ angular.module('pane-elements', [])
                 template: soldPaneTpl,
                 controller: ($scope, filterFactory, paneFactory, printFactory, modalFactory) => {
                     return commonPaneCtrlr($scope, filterFactory, paneFactory, printFactory, modalFactory, 'soldPaneConfig');
+                },
+                link: (scope) => {
+                    scope.resetFilter();
+                }
+            }
+        })
+        .directive( "invoicesPane", () => {
+            return {
+                restrict: 'E',
+                transclude: true,
+                scope: true,
+                template: invoicesPaneTpl,
+                controller: ($scope, filterFactory, paneFactory, printFactory, modalFactory) => {
+                    return commonPaneCtrlr($scope, filterFactory, paneFactory, printFactory, modalFactory, 'invoicesPaneConfig');
                 },
                 link: (scope) => {
                     scope.resetFilter();

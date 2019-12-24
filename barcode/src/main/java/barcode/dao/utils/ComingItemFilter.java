@@ -9,8 +9,6 @@ import java.util.List;
 
 public class ComingItemFilter extends  BasicFilter {
 
-//    public static final Integer NUMBER_OF_ROWS_ON_PAGE = 15;
-
     public enum ComingItemSortingStrategies {
 
         ITEM_NAME {
@@ -83,7 +81,6 @@ public class ComingItemFilter extends  BasicFilter {
 
         public abstract void sort(List<ComingItem> comingItems);
     }
-
 
     private String ean;
     private String comment;

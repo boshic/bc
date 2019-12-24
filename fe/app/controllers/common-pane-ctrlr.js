@@ -83,11 +83,12 @@ let commonPaneCtrlr = ($s, filterFactory, paneFactory, printFactory, modalFactor
     };
 
     $s.$on("tabSelected", (event, data) => {
-        if (data.event != null && paneFactory.paneToggler(data.pane) === config.paneName) {
+        if (data.event != null && paneFactory.paneToggler(data.pane) === config.paneId) {
             $s.user = paneFactory.user;
             $s.focusOnEanInput();
         }
     });
+
 
     $s.editItem = (index) => {
         config.editItem($s, {index, httpService });

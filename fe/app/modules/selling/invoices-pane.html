@@ -59,7 +59,7 @@
                 <span class="price-out-on-coming-pane" title="">{{ x.user }}</span>
             </td>
             <td title="Наименование" class="hoverable"
-                ng-click="openInvoiceModal()">{{ x.buyer}}
+                ng-click="editItem($index)">{{ x.buyer}}
                 <div>
                     <span class="price-out-on-coming-pane" title="Склад">{{ '(' + x.stock+ ')'}}</span>
                 </div>
