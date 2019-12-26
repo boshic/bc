@@ -12,7 +12,7 @@ let comingPaneConfig = {
             return [{type: 'prices', data: $s.filter, method: 'addComingReportByFilter'}];
         },
         checkAddingReportCondition: () => {return true;},
-        eanInputElementId: 'coming-pane',
+        // eanInputElementId: 'coming-pane-2',
         findItemUrl: 'findComingItemByFilter',
         paneName: 'Список',
         paneId: 'coming-pane',

@@ -11,12 +11,14 @@
 
     <div class = "blank-search-row hoverable"
          ng-click="blankSearch()">
-        <input class="searchinput" type="text"
-               id="coming-pane"
-               name="search" placeholder="Поиск приходов..."
-               ng-model="filter.ean"
-               ng-keydown="setEanPrefix($event)"
-        />
+        <!--<input class="searchinput" type="text"-->
+               <!--id="coming-pane"-->
+               <!--name="search" placeholder="Поиск приходов..."-->
+               <!--ng-model="filter.ean"-->
+               <!--ng-keydown="setEanPrefix($event)"/>-->
+        <pane-search-input
+                input-value = 'filter.ean' keypress-handler="setEanPrefix" input-id="searchInputId">
+        </pane-search-input>
         <span style="margin-left: 5px;"
               class="selling-warning" ng-show="warning.length">
             {{warning}}

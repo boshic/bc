@@ -17,14 +17,10 @@
 
 <div class="menu-panel unprintable" ng-keyup="handleKeyup($event)">
 
-        <div class = "blank-search-row hoverable"
-             ng-click="blankSearch()">
-            <input class="searchinput" type="text"
-                   name="search" placeholder="Поиск приходов..."
-                   id="sold-pane"
-                   ng-model="filter.ean"
-                   ng-keydown="setEanPrefix($event)"
-            />
+        <div class = "blank-search-row hoverable" ng-click="blankSearch()">
+            <pane-search-input
+                    input-value = 'filter.ean' keypress-handler="setEanPrefix" input-id="searchInputId">
+            </pane-search-input>
             <span style="margin-left: 5px;"
                   class="selling-warning" ng-show="warning.length">
             {{warning}}

@@ -5,10 +5,13 @@
 </div>
 <div class="menu-panel hoverable unprintable" ng-keyup="handleKeyup($event)">
     <div class = "blank-search-row" ng-click="blankSearch()">
-        <input class="searchinput soldpanesearch"
-               ng-model="filter.ean" ng-change="changeEan()" type="text"
-               id="invoices-pane"
-               name="search" placeholder="Введите штрих-код..."/>
+        <!--<input class="searchinput soldpanesearch"-->
+               <!--ng-model="filter.ean" ng-change="changeEan()" type="text"-->
+               <!--id="invoices-pane"-->
+               <!--name="search" placeholder="Введите штрих-код..."/>-->
+        <pane-search-input
+                input-value = 'filter.ean' keypress-handler="setEanPrefix" input-id="searchInputId">
+        </pane-search-input>
     </div>
 
     <div class="pane-right-menu">

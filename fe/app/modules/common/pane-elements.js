@@ -242,6 +242,20 @@ angular.module('pane-elements', [])
             "</div>",
             controller: function() {}
         })
+        .component( "paneSearchInput", {
+            bindings: {
+                inputId: '<',
+                inputValue: '=',
+                keypressHandler:'&?'
+            },
+            template:
+            "<input class='searchinput' type='text' " +
+                "id={{$ctrl.inputId}} " +
+                "name='search' placeholder='Введите что-нибудь ...' " +
+                "ng-model='$ctrl.inputValue' " +
+                "ng-keydown='$ctrl.keypressHandler()($event)'/>",
+            controller: function() {}
+        })
         .component( "sortingRow", {
                 bindings: {
                     listeningField: '<',

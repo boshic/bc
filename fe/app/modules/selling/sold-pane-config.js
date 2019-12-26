@@ -3,7 +3,6 @@
  */
 let soldPaneConfig =
     {
-        eanInputElementId: 'sold-pane',
         findItemUrl: 'findSoldItemByFilter',
         paneName: 'Продано',
         paneId: 'sold-pane',

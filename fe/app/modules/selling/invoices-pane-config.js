@@ -5,7 +5,6 @@
 let invoicesPaneConfig = {
 
     checkAddingReportCondition: () => {return false;},
-    eanInputElementId: 'invoices-pane',
     findItemUrl: 'getInvoicesByFilter',
     paneName: 'Документы расход',
     paneId: 'invoices-pane',

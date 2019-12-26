@@ -14,6 +14,7 @@ let commonPaneCtrlr = ($s, filterFactory, paneFactory, printFactory, modalFactor
     $s.movingModalConfig = {hidden : true, row: {}};
     $s.modalConfig = {};
 
+    $s.searchInputId = paneFactory.generateUuid();
     $s.warning = "";
     $s.totals = {};
     $s.user = {};
@@ -23,8 +24,6 @@ let commonPaneCtrlr = ($s, filterFactory, paneFactory, printFactory, modalFactor
         if(config.checkAddingReportCondition($s))
             printFactory.setReportsByParams(config.getReportsParams($s), $s.reports);
     };
-
-    let eanInputElement =  document.getElementById(config.eanInputElementId);
 
     let searchTerms = paneFactory.getSearchTermsForGetItemsByFilter($s, config.findItemUrl);
 
@@ -55,7 +54,7 @@ let commonPaneCtrlr = ($s, filterFactory, paneFactory, printFactory, modalFactor
 
     $s.focusOnEanInput = () => {
         if(!$s.filter.visible)
-            paneFactory.changeElementState(eanInputElement, ['focus']);
+            paneFactory.changeElementState( document.getElementById($s.searchInputId), ['focus']);
     };
 
     $s.$watch('filter', (nv, ov) => {
@@ -88,7 +87,6 @@ let commonPaneCtrlr = ($s, filterFactory, paneFactory, printFactory, modalFactor
             $s.focusOnEanInput();
         }
     });
-
 
     $s.editItem = (index) => {
         config.editItem($s, {index, httpService });
