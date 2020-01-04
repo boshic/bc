@@ -428,7 +428,7 @@ public class SoldItemHandler extends EntityHandlerImpl {
 
         comingItem.setComment(
                 this.buildComment(comingItem.getComments(),
-                        " от " + soldItem.getBuyer().getName() + ", " + soldItem.getQuantity() + " ед. "
+                        " от " + newSoldItem.getBuyer().getName() + ", " + soldItem.getQuantity() + " ед. "
                                 + soldItem.getComment(),
                         userHandler.checkUser(soldItem.getUser(), null ).getFullName(),
                         RETURN_COMMENT));

@@ -228,7 +228,7 @@ angular.module('pane-elements', [])
                         "ng-show='$ctrl.comment.length > 0'>" +
                         "<li style='text-align: center' ng-show='$ctrl.openTextModal != null'>" +
                             "<button class='glyphicon glyphicon-plus add-comment-btn'" +
-                                "ng-click='$ctrl.openTextModal($ctrl.row)'>" +
+                                "ng-click='$ctrl.openTextModal()'>" +
                             "</button>" +
                         "</li>" +
                         "<phrase-by-word-to-filter filter='$ctrl.filter.comment' comment='$ctrl.comment'></phrase-by-word-to-filter>" +

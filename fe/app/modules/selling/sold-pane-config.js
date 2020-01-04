@@ -27,7 +27,7 @@ let soldPaneConfig =
         },
         checkAddingReportCondition: ($s) => {return $s.filter.buyer.id > 0;},
         doBeforeFindItemsByFilter: () => { return true},
-        openTextModal : (config) => {
+        openTextModal : ($s, config) => {
             let row = angular.extend(config.data, {comment: '', commentCause:''});
             $s.textEditModalClose = () => {
                 if(confirm("Подтвердите добавление комментария"))
