@@ -14,7 +14,7 @@
 
         <div class="coming-pane-right-menu-option">
             <span class="glyphicon glyphicon-refresh"
-                  ng-click="refresh()">
+                  ng-click="calcTotalsAndRefresh()">
             </span>
         </div>
         <div class="coming-pane-right-menu-option">
@@ -71,6 +71,6 @@
     </table>
 </div>
 <invoice-modal
-        refresh="refresh()"
+        refresh="calcTotalsAndRefresh()"
         modal-config="modalConfig" invoice="invoice">
 </invoice-modal>
