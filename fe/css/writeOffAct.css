@@ -105,7 +105,9 @@
     border: none;
 }
 
-.eraser-icon {
+.eraser-btn {
     cursor: pointer;
     color: coral;
+    border: none;
+    background: none;
 }

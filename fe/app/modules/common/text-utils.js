@@ -23,7 +23,7 @@
                 restrict: 'E',
                 transclude: true,
                 scope: {data: '='},
-                template:"<span class='glyphicon glyphicon-remove eraser-icon' ng-click='erase()'></span>",
+                template:"<button class='glyphicon glyphicon-remove eraser-btn' ng-click='erase()'></button>",
                 // templateUrl: '/html/common/eraser.html',
                 controller: $scope => {
                     $scope.erase = () => {

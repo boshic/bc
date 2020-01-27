@@ -763,11 +763,13 @@ button.item-query:hover {
 }
 
 
-span.item-arrow-up {
+button.item-arrow-up-btn {
     cursor: pointer;
     color: green;
     font-size: 22px;
     margin-top: 5px;
+    background: none;
+    border: none;
 }
 
 span.item-add:hover {
@@ -814,9 +816,11 @@ span.item-blank {
     font-size: 22px;
 }
 
-.eraser-icon {
+.eraser-btn {
     cursor: pointer;
     color: var(--main-color);
+    border: none;
+    background: none;
 }
 
 span.item-blank.close-modal {

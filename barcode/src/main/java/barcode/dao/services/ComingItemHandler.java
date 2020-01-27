@@ -114,7 +114,7 @@ public class ComingItemHandler extends EntityHandlerImpl {
 
             coming.setComment(
                     this.buildComment(coming.getComments(),
-                            newComing.getStock().getName() + " " + newComing.getQuantity() + " ед., ",
+                            newComing.getStock().getName() + getQuantityForComment(newComing.getQuantity()),
                             checkedUser.getFullName(),
                             "Оприходование"));
         } else {
@@ -178,9 +178,9 @@ public class ComingItemHandler extends EntityHandlerImpl {
         if (checkedUser != null && checkedUser.getRole().equals("ROLE_ADMIN")) {
 
             comingItem.setComment(
-                    this.buildComment(comingItem.getComments(),  comingItem.getCurrentQuantity() + " ед.",
-                            checkedUser.getFullName(),
-                            "удален "));
+                    this.buildComment(comingItem.getComments(),
+                            getQuantityForComment(comingItem.getCurrentQuantity()),
+                            checkedUser.getFullName(), "удален "));
 
             comingItem.setCurrentQuantity(BigDecimal.ZERO);
 

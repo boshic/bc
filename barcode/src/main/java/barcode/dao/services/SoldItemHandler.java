@@ -217,10 +217,21 @@ public class SoldItemHandler extends EntityHandlerImpl {
 
                     if(soldItem.getComment() != null)
                         newSoldItem.setComment(
-                            this.buildComment(newSoldItem.getComments(), soldItem.getComment(),
-                                userHandler.checkUser(soldItem.getUser(), null ).getFullName(),
-                                    SALE_COMMENT)
+                                this.buildComment(newSoldItem.getComments(),
+                                        getQuantityForComment(
+                                                (reqForSell.compareTo(availQuant) > 0) ? availQuant : reqForSell)
+                                                + soldItem.getComment(),
+                                        userHandler.checkUser(soldItem.getUser(), null ).getFullName(),
+                                        SALE_COMMENT)
                         );
+
+//                        newSoldItem.setComment(
+//                            this.buildComment(newSoldItem.getComments(),
+//                                    (reqForSell.compareTo(availQuant) > 0) ? availQuant.toString()
+//                                            : reqForSell.toString() + " ед. " + soldItem.getComment(),
+//                                userHandler.checkUser(soldItem.getUser(), null ).getFullName(),
+//                                    SALE_COMMENT)
+//                        );
 
                     newSoldItem.setAvailQuantityByEan(availQuantityByEan);
 
@@ -271,7 +282,7 @@ public class SoldItemHandler extends EntityHandlerImpl {
                         coming.setComment(
                             this.buildComment(coming.getComments(),
                                     soldItem.getComment() + " для " + soldItem.getBuyer().getName()
-                                            + " " + soldItem.getQuantity() + "ед.",
+                                            + getQuantityForComment(soldItem.getQuantity()),
                                     userHandler.checkUser(soldItem.getUser(), null ).getFullName(),
                                     SALE_COMMENT)
                         );
@@ -428,8 +439,8 @@ public class SoldItemHandler extends EntityHandlerImpl {
 
         comingItem.setComment(
                 this.buildComment(comingItem.getComments(),
-                        " от " + newSoldItem.getBuyer().getName() + ", " + soldItem.getQuantity() + " ед. "
-                                + soldItem.getComment(),
+                        " от " + newSoldItem.getBuyer().getName() +
+                                getQuantityForComment(soldItem.getQuantity())  + soldItem.getComment(),
                         userHandler.checkUser(soldItem.getUser(), null ).getFullName(),
                         RETURN_COMMENT));
 
@@ -441,7 +452,8 @@ public class SoldItemHandler extends EntityHandlerImpl {
         newSoldItem.setAvailQuantityByEan(newSoldItem.getAvailQuantityByEan().add(soldItem.getQuantity()));
 
         newSoldItem.setComment(
-                this.buildComment(newSoldItem.getComments(), soldItem.getQuantity() + " ед. " + soldItem.getComment(),
+                this.buildComment(newSoldItem.getComments(),
+                        getQuantityForComment(soldItem.getQuantity()) + soldItem.getComment(),
                         userHandler.checkUser(soldItem.getUser(), null ).getFullName(),
                         RETURN_COMMENT));
 
@@ -475,7 +487,7 @@ public class SoldItemHandler extends EntityHandlerImpl {
         comingItem.setComment(
                 this.buildComment(comingItem.getComments(),
                         soldItem.getComment() + " для " + soldItem.getBuyer().getName()
-                                + " " + soldItem.getQuantity() + "ед.",
+                                + getQuantityForComment(soldItem.getQuantity()),
                         userHandler.checkUser(soldItem.getUser(), null ).getFullName(),
                         SALE_COMMENT)
         );
@@ -484,7 +496,8 @@ public class SoldItemHandler extends EntityHandlerImpl {
 
         soldItem.setComments(new ArrayList<>());
         soldItem.setComment(
-                this.buildComment(soldItem.getComments(), soldItem.getComment(),
+                this.buildComment(soldItem.getComments(), getQuantityForComment(soldItem.getQuantity())
+                                + soldItem.getComment(),
                         userHandler.checkUser(soldItem.getUser(), null ).getFullName(),
                         SALE_COMMENT)
         );

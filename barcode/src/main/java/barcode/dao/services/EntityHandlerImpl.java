@@ -6,6 +6,7 @@ import barcode.dao.entities.Item;
 import barcode.dao.entities.embeddable.Comment;
 import barcode.dao.utils.ComingItemFilter;
 
+import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Comparator;
@@ -28,6 +29,7 @@ public class EntityHandlerImpl implements EntityHandler{
     static final String SALE_COMMENT = "Продажа";
     static final String MOVE_COMMENT  = "Перемещение";
     static final String RETURN_COMMENT = "Возврат";
+    static final String COMMON_UNIT = " ед. ";
     static final String NOTHING_FOUND = "ничего не найдено";
     static final SimpleDateFormat DATE_FORMAT_WITH_TIME = new SimpleDateFormat("dd.MM.yyyy HH:mm");
     static final SimpleDateFormat DATE_FORMAT_WO_TIME = new SimpleDateFormat("dd.MM.yyyy");
@@ -57,6 +59,13 @@ public class EntityHandlerImpl implements EntityHandler{
                     SPACE + DATE_FORMAT_WITH_TIME.format(c.getDate())+SEPARATOR;
 
         return comment.length() > MAX_COMMENT_LENGTH ? COMMENT_TOO_LONG : comment;
+    }
+
+    String getQuantityForComment (BigDecimal quantity) {
+
+        BigDecimal fraction = quantity.remainder(BigDecimal.ONE);
+
+        return " " + (fraction.compareTo(BigDecimal.ZERO) > 0 ? quantity.toString() : quantity.toBigInteger().toString()) + COMMON_UNIT;
     }
 
     public String getCommentByAction(List<Comment> comments, String action) {

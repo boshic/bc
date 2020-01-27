@@ -79,8 +79,8 @@ public class MovingHandler extends EntityHandlerImpl {
                     newComing.setComment(
                             this.buildComment(newComing.getComments(),
                                     "c " + coming.getStock().getName() +
-                                            " на " + this.stockHandler.getStockById(stockId).getName() + " "
-                                            + moving.getQuantity() + " ед., " + moving.getComment(),
+                                            " на " + this.stockHandler.getStockById(stockId).getName() +
+                                            getQuantityForComment(moving.getQuantity()) + moving.getComment(),
                                     getCheckedUserName(moving.getUser()),
                                     MOVE_COMMENT));
 
@@ -135,21 +135,13 @@ public class MovingHandler extends EntityHandlerImpl {
                                     .setScale(2, BigDecimal.ROUND_HALF_UP));
 
                     if(coming.getQuantity().compareTo(BigDecimal.ZERO) == 0) {
-
                         coming.setComment(
                                 this.buildComment(coming.getComments(),
                                         "c " + coming.getStock().getName() +
-                                                " на " + this.stockHandler.getStockById(stockId).getName() + " "
-                                                + moving.getQuantity() + " ед., " + moving.getComment(),
+                                                " на " + this.stockHandler.getStockById(stockId).getName() +
+                                                getQuantityForComment(moving.getQuantity()) + moving.getComment(),
                                         getCheckedUserName(moving.getUser()),
                                         MOVE_COMMENT));
-//
-//                        coming.setComment(
-//                                this.buildComment(coming.getComments(),
-//                                        "на " + this.stockHandler.getStockById(stockId).getName() + " "
-//                                                + moving.getQuantity() + " ед., " + moving.getComment(),
-//                                        getCheckedUserName(moving.getUser()),
-//                                        MOVE_COMMENT));
 
                         coming.setStock(this.stockHandler.getStockById(stockId));
 
@@ -170,8 +162,8 @@ public class MovingHandler extends EntityHandlerImpl {
                         coming.setComment(
                                 this.buildComment(coming.getComments(),
                                         "c " + coming.getStock().getName() +
-                                                " на " + this.stockHandler.getStockById(stockId).getName() + " "
-                                                + moving.getQuantity() + " ед., " + moving.getComment(),
+                                                " на " + this.stockHandler.getStockById(stockId).getName()
+                                                + getQuantityForComment(moving.getQuantity()) + moving.getComment(),
                                         getCheckedUserName(moving.getUser()),
                                         MOVE_COMMENT));
 
@@ -279,8 +271,8 @@ public class MovingHandler extends EntityHandlerImpl {
             coming.setComment(
                     this.buildComment(coming.getComments(),
                             "c " + coming.getStock().getName() +
-                            " на " + this.stockHandler.getStockById(stockId).getName() + " "
-                                    + moving.getQuantity() + " ед., " + moving.getComment(),
+                            " на " + this.stockHandler.getStockById(stockId).getName()
+                                    + getQuantityForComment(moving.getQuantity()) + moving.getComment(),
                             getCheckedUserName(moving.getUser()),
                             MOVE_COMMENT));
 
@@ -309,16 +301,16 @@ public class MovingHandler extends EntityHandlerImpl {
             coming.setComment(
                     this.buildComment(coming.getComments(),
                             "c " + coming.getStock().getName() +
-                                    " на " + this.stockHandler.getStockById(stockId).getName() + " "
-                                    + moving.getQuantity() + " ед., " + moving.getComment(),
+                                    " на " + this.stockHandler.getStockById(stockId).getName()
+                                    + getQuantityForComment(moving.getQuantity()) + moving.getComment(),
                             getCheckedUserName(moving.getUser()),
                             MOVE_COMMENT));
 
             newComing.setComment(
                     this.buildComment(newComing.getComments(),
                             "c " + coming.getStock().getName() +
-                            " на " + this.stockHandler.getStockById(stockId).getName() + " "
-                                    + moving.getQuantity() + " ед., " + moving.getComment(),
+                            " на " + this.stockHandler.getStockById(stockId).getName() +
+                            getQuantityForComment(moving.getQuantity()) + moving.getComment(),
                             getCheckedUserName(moving.getUser()),
                             MOVE_COMMENT));
 
