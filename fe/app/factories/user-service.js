@@ -5,7 +5,11 @@
                     getUser : () => {
                         let defer = $q.defer();
                         $http.get('/getUser').then(
-                            resp => { defer.resolve(paneFactory.user = resp.data); },
+                            resp => {
+                                paneFactory.user = resp.data;
+                                paneFactory.user.vendor = 'made by PAB p.vilmen@mail.ru';
+                                defer.resolve(paneFactory.user);
+                            },
                             resp => { defer.reject(resp);}
                         );
                         return defer.promise;
