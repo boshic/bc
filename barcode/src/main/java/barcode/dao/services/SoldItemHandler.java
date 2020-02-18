@@ -202,12 +202,16 @@ public class SoldItemHandler extends EntityHandlerImpl {
 
                 //try get from solditem if !=null
                 BigDecimal availQuantityByEan =
-                        comings
-                                .stream().map(ComingItem::getCurrentQuantity)
-                                .reduce(BigDecimal.ZERO, BigDecimal::add)
-                                .subtract(soldItem.getQuantity());
+                        comings.stream().map(ComingItem::getCurrentQuantity)
+                               .reduce(BigDecimal.ZERO, BigDecimal::add);
+//                                .subtract(reqForSell);
 
+                if(reqForSell.compareTo(availQuantityByEan) > 0  || comings.size() == 0)
+                    return new ResponseItem<SoldItem>(INSUFFICIENT_QUANTITY_OF_GOODS + ": " + reqForSell +
+                            " из " + availQuantityByEan +
+                            COMMON_UNIT + soldItem.getComing().getItem().getName(), false);
 
+                availQuantityByEan = availQuantityByEan.subtract(reqForSell);
 
                 for (ComingItem coming: comings) {
 
@@ -305,9 +309,9 @@ public class SoldItemHandler extends EntityHandlerImpl {
                     }
                 }
 
-                if(reqForSell.compareTo(BigDecimal.ZERO) > 0  || comings.size() == 0)
-                    return new ResponseItem<SoldItem>(INSUFFICIENT_QUANTITY_OF_GOODS + ": " +reqForSell +
-                            "ед. " + soldItem.getComing().getItem().getName(), false);
+//                if(reqForSell.compareTo(BigDecimal.ZERO) > 0  || comings.size() == 0)
+//                    return new ResponseItem<SoldItem>(INSUFFICIENT_QUANTITY_OF_GOODS + ": " +reqForSell +
+//                            COMMON_UNIT + soldItem.getComing().getItem().getName(), false);
 
             }
 
