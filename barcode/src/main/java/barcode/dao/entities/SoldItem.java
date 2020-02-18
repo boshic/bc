@@ -26,6 +26,11 @@ public class SoldItem {
     private Receipt receipt;
 
     @ManyToOne
+    @JoinColumn(name = "sold_composite_item_id")
+    @QueryInit("*.*")
+    private SoldCompositeItem soldCompositeItem;
+
+    @ManyToOne
     @JoinColumn(name = "coming_id")
     @QueryInit("*.*")
     private ComingItem coming;
@@ -147,5 +152,13 @@ public class SoldItem {
 
     public void setReceipt(Receipt receipt) {
         this.receipt = receipt;
+    }
+
+    public SoldCompositeItem getSoldCompositeItem() {
+        return soldCompositeItem;
+    }
+
+    public void setSoldCompositeItem(SoldCompositeItem soldCompositeItem) {
+        this.soldCompositeItem = soldCompositeItem;
     }
 }

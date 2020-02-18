@@ -4,6 +4,7 @@
             <tr>
                 <td>
                     <a href="#" style="float: left;padding-left: 3%;" title="Добавить"
+                       ng-show = "$ctrl.changeItem() != null"
                        ng-click="$ctrl.changeItem()(0)">
                         <span class="glyphicon glyphicon-plus item-add"></span>
                     </a>

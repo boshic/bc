@@ -9,6 +9,7 @@ import barcode.dto.ResponseItem;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Set;
 
 @Controller
@@ -23,7 +24,7 @@ public class SoldItemController {
 
     @RequestMapping(value="/addSellingsSet", method = RequestMethod.POST)
     public @ResponseBody
-    ResponseItem addSelling(@RequestBody Set<SoldItem> sellings) {
+    ResponseItem addSelling(@RequestBody List<SoldItem> sellings) {
         return this.soldItemHandler.addSellings(sellings);
     }
 
@@ -40,7 +41,7 @@ public class SoldItemController {
     }
 
     @RequestMapping(value = "/addAutoSellings", method = RequestMethod.POST)
-    public @ResponseBody ResponseItem addAutoSellings(@RequestBody Set<SoldItem> soldItems) {
+    public @ResponseBody ResponseItem addAutoSellings(@RequestBody List<SoldItem> soldItems) {
         return this.soldItemHandler.makeAutoSelling(soldItems);
     }
 

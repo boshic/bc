@@ -117,6 +117,7 @@ let sellingPaneCntrlr = ($s, $http, paneFactory, printFactory, modalFactory, ite
 
         $s.blankSearch = () => {
             $s.barcode = "";
+            $s.user = paneFactory.user;
             $s.item = getEmptyItem();
             paneFactory.changeElementState(eanInputElement, ['focus']);
             if(!angular.isDefined($s.buyer.id) && !$s.rows.length)

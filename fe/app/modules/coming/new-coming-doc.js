@@ -73,6 +73,7 @@ import newComingDocPaneTpl from './new-coming-doc.html';
                                         }, getDataFromLastRow()));
                             index = 0;
                         } else {
+                            $s.rows[index].item = item;
                             $s.rows[index].quantity += 1;
                         }
                         $s.checkRows();

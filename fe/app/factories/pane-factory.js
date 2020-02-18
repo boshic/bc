@@ -66,6 +66,10 @@ import invoicesPaneConfig from '../modules/selling/invoices-pane-config';
                     return value;
                 };
 
+                let fixIfFractional = (value, unit) => {
+                    return fractionalUnits.indexOf(unit) >= 0 ? +value.toFixed(3) : +value.toFixed(0);
+                };
+
                 let getPages = numberOfPages => {
                     let pages = [];
                     for(let i = 0; i < numberOfPages; i++ )
@@ -161,6 +165,7 @@ import invoicesPaneConfig from '../modules/selling/invoices-pane-config';
                     successSound,
                     barcodeLength,
                     isEanValid,
+                    fixIfFractional,
                     generateEan,
                     getDiscountedPrice,
                     getPages,
@@ -233,8 +238,9 @@ import invoicesPaneConfig from '../modules/selling/invoices-pane-config';
                             httpService.addItem({data: rows, url, params, requestParams:$s.requestParams})
                                 .then(
                                     resp => {
-                                        (resp.success) ? successSound.play() : $s.warning = resp.text;
-                                        $s.warning = "Продано " + rows.length + " позиций.";
+                                        if (resp.success)
+                                            successSound.play();
+                                        $s.warning = resp.text;
                                     },
                                     (resp) => {
                                         $s.warning = "ошибка при проведении операции! Позиций - "

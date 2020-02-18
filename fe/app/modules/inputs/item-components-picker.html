@@ -1,7 +1,7 @@
 <div ng-show='$ctrl.modalVisible' class='trans-layer'></div>
 <div class='modal-container-addeditsupplier'
      ng-class='{modalactive: $ctrl.modalVisible}'>
-    <div class="wrapper" style="min-height: 310px;">
+    <div class="wrapper item-components-picker-wrapper">
         <div style="display: flex;">
             <!--<div style="text-align:left; width: 10%; margin-top: 2px;">-->
                 <!--<span title="Применить" class="glyphicon glyphicon-ok item-add"></span>-->
@@ -12,24 +12,36 @@
             </div>
         </div>
         <div class="item-components-table-container">
-            <!--<span>Компоненты</span>-->
+            <div style="text-align: center; color: coral; font-weight: bold;">{{$ctrl.item.name}}</div>
+            <div style="display: flex;">
+                <div style="padding: 0px; width: 80%;">
+                    <item-component-input
+                            item="$ctrl.component">
+                    </item-component-input>
+                </div>
+                <div class="item-components-table-quantity-td" style=" width: 20%; text-align: end;">
+                    <input class="item-components-table-quantity-input"
+                           ng-model="$ctrl.componentQuantity"
+                           type="number"
+                           placeholder="кол"/>
+                </div>
+            </div>
+            <div ng-show="$ctrl.componentQuantity > 0 && $ctrl.component.id > 0">
+                <button class="add-item-component"
+                        ng-click="$ctrl.addItemComponent()">
+                    Добавить
+                </button>
+            </div>
             <table class="table table-responsive">
-                <tr>
-                    <td style="padding: 0px;">
-                        <item-component-input
-                                item="$ctrl.component">
-                        </item-component-input>
-                    </td>
-                    <td class="item-components-table-quantity-td">
-                        <input class="item-components-table-quantity-input"
-                               ng-model="$ctrl.componentQuantity"
-                               type="number"
-                               placeholder="кол"/>
-                    </td>
-                </tr>
-                <tr ng-repeat="x in $ctrl.components">
-                    <td>{{x.item.name}}</td>
+                <tr style="font-size: 20px;" ng-repeat="x in $ctrl.item.components track by $index">
+                    <td>{{($index + 1)}}</td>
+                    <td style="width: 100%;">{{x.item.name + " (" + x.item.ean+ ")"}}</td>
                     <td>{{x.quantity}}</td>
+                    <td>{{x.item.unit}}</td>
+                    <td>
+                        <button ng-click="$ctrl.item.components.splice($index, 1)"
+                            class="glyphicon glyphicon-minus delete-item-component"></button>
+                    </td>
                 </tr>
             </table>
         </div>

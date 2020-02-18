@@ -32,6 +32,7 @@
             ng-click="editItem(barcode)">
     </button>
 
+    <!--&& (user.role == 'ROLE_ADMIN' || user.actsAllowed.indexOf('sellFromAllStocks')>-1)-->
     <div class="one-control-on-pane"
          ng-show="!rows.length && (user.role == 'ROLE_ADMIN' || user.actsAllowed.indexOf('sellFromAllStocks')>-1)">
         <div class="one-icon-on-control-pane">

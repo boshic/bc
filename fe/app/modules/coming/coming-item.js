@@ -110,6 +110,7 @@ import comingItemTpl from './coming-item.html';
                 && (coming.price >= 0 && coming.priceOut >= 0)
                 && (angular.isDefined(coming.item.id) && coming.item.id !== null)
                 && (!coming.item.eanSynonym > 0)
+                && (!coming.item.components.length > 0)
                 && (angular.isDefined(coming.doc.id) && coming.doc.id !== null)
                 && (angular.isDefined(coming.doc.date)))
                     setPermissions(true, coming.id > 0 && $s.hasSellings === false);

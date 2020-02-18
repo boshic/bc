@@ -1,11 +1,15 @@
 const packageJSON = require('./package.json');
 const path = require('path');
+const glob = require('glob');
 const webpack = require('webpack');
 
 const TerserJSPlugin = require('terser-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
+
 const NODE_ENV = process.env.NODE_ENV || 'development';
+const BUILD_DIR         = path.join(__dirname, 'build');
 
 const PATHS = {
   build: path.join(__dirname, 'target', 'classes', 'META-INF', 'resources', 'webjars', packageJSON.name, packageJSON.version)
@@ -23,7 +27,10 @@ module.exports = {
     },
 
     output: {
+        // path: BUILD_DIR,
+        // filename: 'js/[name].js',
         path: PATHS.build,
+        // path: __dirname,
         publicPath: '../',
         filename: '[name].js'
     },
@@ -122,6 +129,33 @@ module.exports = {
     optimization: {
         minimizer: [new TerserJSPlugin({}), new OptimizeCSSAssetsPlugin({})],
     },
+
+    devServer: {
+        // host: 'localhost',
+        port: 9090,
+        open: true,
+        compress: true,
+        contentBase: path.join(__dirname, 'app'),
+        publicPath: BUILD_DIR,
+        // historyApiFallback: true,
+        // watchContentBase: true,
+        // publicPath: '/app/',
+        // hot: true,
+        // proxy: {
+        //     '/': {
+        //         target: 'http://localhost:8555/',
+        //         secure: false,
+        //         prependPath: false
+        //     }
+        // },
+        // watchOptions: {
+        //     poll: 1000,
+        //     aggregateTimeout: 500
+        // },
+        // // publicPath: 'http://localhost:9090/',
+
+    },
+
     plugins: [
         new MiniCssExtractPlugin({
             // Options similar to the same options in webpackOptions.output

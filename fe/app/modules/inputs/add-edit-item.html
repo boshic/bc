@@ -80,16 +80,11 @@
                         <span>Секция</span>
                         <item-section-input section="item.section"></item-section-input>
                     </div>
-                    <span style="width:30%; margin-top: 21px;">
+                    <span style="width:30%; margin-top: 21px;" ng-hide="item.eanSynonym > 0" ng-show="item.id > 0">
                         <button class="item-component-modal-open-btn"
-                                ng-click="itemComponentsModalVisible = true"
-                            ng-disabled = '!item.canBeComposite'>
-                            <span ng-show="item.canBeComposite">
-                                Добавить/просмотреть компоненты товара
-                            </span>
-                            <span ng-hide="item.canBeComposite">
-                                Товар не может быть компонентным
-                            </span>
+                                ng-click="openItemComponentsModal()">
+                            <span ng-show="!cannotBeComposite">Редактировать компоненты товара</span>
+                            <span ng-show="cannotBeComposite">Не может иметь компоненты</span>
                         </button>
                     </span>
             </div>
@@ -97,6 +92,6 @@
     </div>
 </div>
 </div>
-<item-components-picker components="item.components"
+<item-components-picker item="item"
                         modal-visible="itemComponentsModalVisible">
 </item-components-picker>

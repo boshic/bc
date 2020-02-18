@@ -11,9 +11,13 @@ import barcode.dao.repositories.ItemRepository;
 import barcode.dao.utils.ComingItemFilter;
 import barcode.dto.ResponseItem;
 import com.querydsl.core.types.Predicate;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 @Service
@@ -56,8 +60,14 @@ public class ItemHandler {
         item.setPredefinedQuantity(srcItem.getPredefinedQuantity() == null ? BigDecimal.ZERO : srcItem.getPredefinedQuantity());
 
 //        qItem.components.any().component.ean.eq(srcItem.getEan());
-        if (item.getCanBeComposite() == null)
-            item.setCanBeComposite(true);
+//        if (item.getCanBeComposite() == null)
+//            item.setCanBeComposite(true);
+
+        if(srcItem.getComponents() != null)
+            item.setComponents(srcItem.getComponents());
+
+        if(isEanValid(srcItem.getEanSynonym()))
+            item.setComponents(null);
 
         if(srcItem.getSection()!= null)
             item.setSection(srcItem.getSection());
@@ -122,6 +132,42 @@ public class ItemHandler {
         return itemRepository.findTop100ByNameContainingIgnoreCase(filter);
     }
 
+
+    Item getItemByEanSynonym (String ean) {
+        Item item = itemRepository.findOneByEan(ean);
+
+        if(item != null && isEanValid(item.getEanSynonym())) {
+            BigDecimal predefinedQuantity = item.getPredefinedQuantity();
+            item = itemRepository.findOneByEan(item.getEanSynonym());
+            item.setPredefinedQuantity(predefinedQuantity);
+        }
+
+        return item;
+    }
+
+    private Item checkItemIfItHasSynonymAndGetItForComponents(Item item) {
+
+        if(item != null && isEanValid(item.getEanSynonym()))
+            return itemRepository.getItemByEanWithoutComponents(item.getEanSynonym());
+
+        return item;
+    }
+
+    public List<Item> getItemsForComponents(String filter) {
+
+        Item item = checkItemIfItHasSynonymAndGetItForComponents(
+                itemRepository.getItemByEanWithoutComponents(filter));
+
+        if(item != null)
+            return Collections.singletonList(item);
+
+        if(filter != null && filter.length() >= 2)
+            return itemRepository.findAll(ipb.buildByFilterForComponentsInput(filter));
+
+        return itemRepository.findAll(ipb.buildByFilterForComponentsInput(filter),
+                new PageRequest(0,100)).getContent();
+    }
+
     public Item getItemById(Long id) {
         return itemRepository.findOne(id);
     }
@@ -157,19 +203,7 @@ public class ItemHandler {
         return  itemRepository.findOneByEan(ean);
     }
 
-    Item getItemByEanSynonym (String ean) {
-        Item item = itemRepository.findOneByEan(ean);
-
-        if(item != null && item.getEanSynonym().length() == EAN_LENGTH) {
-            BigDecimal predefinedQuantity = item.getPredefinedQuantity();
-            item = itemRepository.findOneByEan(item.getEanSynonym());
-            item.setPredefinedQuantity(predefinedQuantity);
-        }
-
-        return item;
-    }
-
-    Boolean isEanValid(String ean) {
+    private Boolean isEanValid(String ean) {
 
         return (ean != null && ean.length() == EAN_LENGTH);
     }
@@ -196,6 +230,13 @@ public class ItemHandler {
             if(isEanValid(eanSynonym))
                 filter.setEan(eanSynonym);
         }
+    }
+
+    public Boolean checkIfItemCannotBeComposite (Long id) {
+
+        Item item = getItemById(id);
+        return (item.getComings() != null && item.getComings().size() > 0);
+
     }
 
 }

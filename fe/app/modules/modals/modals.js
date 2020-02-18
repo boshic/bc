@@ -18,6 +18,8 @@
             if (nv >= 0) {
                 vm.modalData.row.quantity =
                     paneFactory.checkNumberLimit(vm.modalData.row.quantity, vm.modalData.row.limitQuantity);
+                vm.modalData.row.quantity =
+                    paneFactory.fixIfFractional(vm.modalData.row.quantity, vm.modalData.row.item.unit);
             }
             if(typeof vm.checkInput === 'function')
                 vm.checkInput();

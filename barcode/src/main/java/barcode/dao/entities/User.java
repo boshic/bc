@@ -51,6 +51,7 @@ public class User {
     @JoinColumn(name = "buyer_id")
     private Buyer buyer;
 
+    @Transient private String vendor = "made by PAB p.vilmen@mail.ru";
 
     @ElementCollection
     private Set<AllowedStock> stocksAllowed;
@@ -167,5 +168,17 @@ public class User {
 
     public void setBuyer(Buyer buyer) {
         this.buyer = buyer;
+    }
+
+    public Set<String> getActionsAllowed() {
+        return actionsAllowed;
+    }
+
+    public void setActionsAllowed(Set<String> actionsAllowed) {
+        this.actionsAllowed = actionsAllowed;
+    }
+
+    public String getVendor() {
+        return vendor;
     }
 }

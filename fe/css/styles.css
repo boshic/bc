@@ -11,6 +11,7 @@
     --main-color: coral;
     --white-color: white;
     --gray-color: lightgray;
+    --common-font-size: 16px;
     /*'Roboto', -apple-system, system-ui, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif*/
     --main-font: Times;
 }
@@ -44,133 +45,29 @@
 /*@media print { @page { margin: 2cm; }}*/
 
 
-#result {
-	font-family: verdana;
-	font-size: 1.5em;
-	text-align: center;	
-}
+/*#result {*/
+	/*font-family: verdana;*/
+	/*font-size: 1.5em;*/
+	/*text-align: center;	*/
+/*}*/
 
-#barcode {
-	position: relative;
-	text-align: center;	
-}	
+/*#barcode {*/
+	/*position: relative;*/
+	/*text-align: center;	*/
+/*}	*/
 
-#barcodecanvas {
-	display: none;
-}
+/*#barcodecanvas {*/
+	/*display: none;*/
+/*}*/
 
-a.close-modal {
-    margin-top:15px;
-    margin-right:15px;
-}
-
-.rootdiv {
-    margin: auto; width: 90%;
-}
-
-.systeminfo {
-    background: antiquewhite;
-    text-align: left;
-    width: 100%;
-    margin: auto;
-}
-
-.systeminfocell{
-    border: var(--white-color) 1px solid;
-    color: blue;
-}
-
-.processespanel {
-    background-color: cornsilk;
-}
-
-.processesbtngroup {
-    width: 90%;
-    padding-top: 2px;
-    padding-left: 5%;
-    padding-right: 5%;
-}
-
-.processestable {
-    background-color:grey;
-    text-align: center;
-}
+/*a.close-modal {*/
+    /*margin-top:15px;*/
+    /*margin-right:15px;*/
+/*}*/
 
 div.items-table {
     overflow-x: unset;
 }
-
-.filemanagertable {
-    text-align: center; table-layout: fixed;
-}
-
-.filemanagertd {
-    display: flex;
-    border: none;
-    word-break: break-all;
-}
-
-.rootsul {
-    min-width: 220px;
-}
-
-.dirbtn {
-    float: right;
-    outline: outset;
-}
-
-.destinationdirbtn {
-    background-color: #23B0A7;
-    margin: auto;
-    outline: outset;
-}
-
-.filesul {
-    font-size: 12px;
-}
-
-.listnonetype {
-    list-style-type: none;
-    float: none;
-}
-
-.aligncenter {
-    text-align: center;
-}
-
-.clearprocessul {
-    min-width: 5%;
-    left:50%;
-    /*top: 0%;*/
-    font-size: 16px;
-    text-align: center;
-    background-color: transparent;
-}
-
-.processbtn {
-    padding: 0px;
-    margin: 2px;
-    outline:outset;
-}
-
-.selectedfiles {
-    margin: 2px;
-    font-size: 10px;
-    text-align: left;
-    color: darkblue;
-    border: 1px solid;
-}
-
-.selectedfilesfunctions {
-    color: orangered!important;
-    background: yellow;
-}
-
-.selectedfilesul {
-    text-align: center;
-}
-
-/*.container a:hover, .dropdown:hover .dropbtn {*/
 
 .dropdown > .hoverable {
     display: none;
@@ -237,25 +134,6 @@ div.hoverable:hover  {
     cursor: cell;
 }
 
-.dropdown .filebtn {
-    font-size: 11px;
-    /*border: none;*/
-    outline: none;
-    color: blue;
-    padding: 1px 1px;
-    background-color: inherit;
-}
-
-.container a:hover, .dropdown:hover .filebtn {
-    background-color: blue!important;
-    color: yellow;
-}
-
-.commonWarning {
-    text-align: center!important;
-}
-
-
 /*------------------------------tab_styles*/
 body {font-family: "Lato", sans-serif;}
 
@@ -287,34 +165,6 @@ div.tab button:hover {
 div.tab button.active {
     background-color: #ccc;
 }
-
-/* Style the tab content */
-.tabcontent {
-    display: none;
-    padding: 6px 12px;
-    border: 1px solid #ccc;
-    border-top: none;
-}
-
-/* Style the close button */
-.topright {
-    float: right;
-    cursor: pointer;
-    font-size: 20px;
-}
-
-.topright:hover {color: red;}
-
-.tabcontentext {
-    border-color: cornsilk;
-    /*width: 50%;*/
-    text-align: center;
-    background-color: transparent;
-    box-shadow: 10px 10px 5px #888888;
-}
-
-
-
 /*/--------------------------------Animated Search input--------------*/
 
 .searchinput {
@@ -341,155 +191,6 @@ div.tab button.active {
 .searchinput:focus {
     width: 40%;
 }
-
-/*---------------------------------AnimatedButton-----------------*/
-
-/*button {*/
-    /*background-color: lightgoldenrodyellow;*/
-    /*border: none;*/
-/*     border-color: orange; */
-/*     color: grey; */
-    /*width: 200px;*/
-    /*position: relative;    */
-    /*font-size: 15px;*/
-    /*padding: 5px;*/
-    /*text-align: center;*/
-    /*-webkit-transition-duration: 0.4s; !* Safari *!*/
-    /*transition-duration: 0.4s;*/
-    /*text-decoration: none;*/
-    /*overflow: hidden;*/
-    /*cursor: pointer;*/
-/*}*/
-
-/*button:after {*/
-    /*content: "";*/
-     /*background: #90EE90; */
-    /*background: black;*/
-    /*display: block;*/
-    /*position: absolute;*/
-    /*padding-top: 300%;*/
-    /*padding-left: 350%;*/
-    /*margin-left: -20px!important;*/
-    /*margin-top: -120%;*/
-    /*opacity: 0;*/
-    /*transition: all 0.8s*/
-/*}*/
-
-/*button:active:after {*/
-    /*padding: 0;*/
-    /*margin: 0;*/
-    /*opacity: 1;*/
-    /*transition: 0s*/
-/*}*/
-
-/* ------------------------------------------------------------------------------- */
-
-input.barcode-input {
-    text-align: center;
-    font-size: 22px;
-    width: 49%;
-}
-
-button.barcode-submit {
-    width:49%;
-}
-
-/*=-=-=-=-=-ModalStyles*=-=-=-=-=-=-=-=-=-/
-
-/* The Modal (background) */
-.cam-modal {
-    display: none; /* Hidden by default */
-    position: fixed; /* Stay in place */
-    z-index: 1; /* Sit on top */    
-    left: 0;
-    top: 0%;
-    width: 100%; /* Full width */
-    height: 100%; /* Full height */
-    overflow: auto; /* Enable scroll if needed */
-    background-color: rgb(0,0,0); /* Fallback color */
-    background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
-}
-
-.cam-modal-content {
-    position: relative;
-    background-color: #fefefe;
-    padding: 0;
-    border: 1px solid #888;
-    width: 65%;
-    box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2),0 6px 20px 0 rgba(0,0,0,0.19);
-    -webkit-animation-name: animatetop;
-    -webkit-animation-duration: 0.4s;
-    animation-name: animatetop;
-    animation-duration: 0.4s
-}
-
-.cam-modal-header {
-    display: block;
-    text-align: center;
-    padding: 6px;
-    background-color: aliceblue;
-    color: blue;
-}
-
-.modal {
-    display: none; /* Hidden by default */
-    position: fixed; /* Stay in place */
-    z-index: 1; /* Sit on top */
-    /*padding-top: 100px; !* Location of the box *!*/
-    left: 0;
-    top: 0;
-    width: 100%; /* Full width */
-    height: 100%; /* Full height */
-    overflow: auto; /* Enable scroll if needed */
-    background-color: rgb(0,0,0); /* Fallback color */
-    background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
-}
-
-/* Modal Content */
-.modal-content {
-    position: relative;
-    background-color: #fefefe;
-    padding: 0;
-    border: 1px solid #888;
-    width: 65%;
-    box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2),0 6px 20px 0 rgba(0,0,0,0.19);
-    -webkit-animation-name: animatetop;
-    -webkit-animation-duration: 0.4s;
-    animation-name: animatetop;
-    animation-duration: 0.4s
-}
-
-.modal-content.fileopermodal {
-    position: relative;
-    margin-top: 5%;
-    margin-left: 20%;
-    background-color: #fefefe;
-    padding: 0;
-    border: 1px solid #888;
-    width: 65%;
-    box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2),0 6px 20px 0 rgba(0,0,0,0.19);
-    -webkit-animation-name: animatetop;
-    -webkit-animation-duration: 0.4s;
-    animation-name: animatetop;
-    animation-duration: 0.4s
-}
-
-.loadingModal {
-    position: relative;
-    background-color: #fefefe;
-    margin: auto;
-    margin-top: 25%;
-    padding: 0;
-    /*border: 1px solid #888;*/
-    width: 5%;
-    box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2),0 6px 20px 0 rgba(0,0,0,0.19);
-    -webkit-animation-name: animatetop;
-    -webkit-animation-duration: 0.4s;
-    animation-name: animatetop;
-    animation-duration: 0.4s
-}
-
-
 /* Add Animation */
 @-webkit-keyframes animatetop {
     from {top:-300px; opacity:0}
@@ -515,59 +216,6 @@ button.barcode-submit {
     text-decoration: none;
     cursor: pointer;
 }
-
-.modal-header {
-    padding: 2px 16px;
-    background-color: #5cb85c;
-    color: var(--white-color);
-}
-
-.fileopermodal-modal-header {
-    display: block;
-    text-align: center;
-    padding: 6px;
-    background-color: sandybrown;
-    color: blue;
-}
-
-.modal-body {padding: 2px 16px;}
-
-.modal-footer {
-    padding: 2px 16px;
-    background-color: #5cb85c;
-    color: var(--white-color);
-}
-
-textarea.command {
-    background-color: burlywood;
-    text-align: center;
-    width: 100%;
-}
-
-.fileopermodalexec{
-    width: 100%;
-    background-color: transparent;
-    border-color: aliceblue;
-}
-
-/* angular test modal input*/
-
-/*@import url("https://fonts.googleapis.com/css?family=Raleway");
-
-/*body,.btn {*/
-  /*font-family: 'Raleway';*/
-/*}*!*/
-
-/*!*.btn {*!*/
-  /*!*background: teal;*!*/
-  /*!*color: white;*!*/
-/*!*!*   padding: 15px; *!*!*/
-  /*!*border-radius: 5px;*!*/
-  /*!*cursor: pointer;*!*/
-  /*!*font-size: 15px;*!*/
-  /*!*font-weight: normal;*!*/
-  /*!*outline: none;*!*/
-/*!*}*!*/
 
 .trans-layer {
   position: fixed;
@@ -626,16 +274,6 @@ textarea.command {
   -webkit-transition: opacity ease-in-out .3s, transform ease-in-out .3s;
 }
 
-.modal-heading {
-  background: #eaeaea;
-  text-align: center;
-  padding: 10px;
-}
-
-.modal-cont {
-  padding: 15px;
-}
-
 .modalactive {
     /*padding: 10px;*/
     opacity: 1;
@@ -653,23 +291,6 @@ div.items-modal {
 div.items-modal > input, textarea{
     background: beige;
 }
-
-/*div.price > input, span {    */
-    /*display: inline-flex;*/
-    /*width: 45%;    */
-/*}*/
-
-/*div.price {*/
-    /*width: 60%;*/
-/*}*/
-
-/*div.price > input {*/
-    /*background: beige;*/
-/*}*/
-
-/*div.items-modal-bottom-btns > button {*/
-    /*margin-top: 1px;*/
-/*}*/
 
 button.update-item-btn {
     border: 2px solid green;
@@ -717,14 +338,6 @@ td.comingdetails {
     text-align: center;
 }
 
-
-/*.nav-tabs > li.active > a:hover {*/
-    /*color: white;*/
-    /*cursor: default;*/
-    /*background-color: #fff;*/
-    /*border: none; */
-    /*border-bottom-color: transparent;*/
-/*}*/
 .nav-tabs > li.active > a, .nav-tabs > li.active > a:focus {
     padding: 5px;
     color: var(--main-color);
@@ -851,6 +464,7 @@ ul.suppliers {
 }
 
 div.wrapper {
+    font-size: var(--common-font-size);
     border-radius: 10px;
     background: lightgrey;
     padding: 1%;
@@ -1025,6 +639,10 @@ div.selectedpane {
     font-size: 16px;
 }
 
+.form-control {
+    font-size: var(--common-font-size);
+}
+
 .form-control:focus {
     border-color: var(--main-color);
 }
@@ -1034,8 +652,6 @@ div.selectedpane {
     background-color: var(--gray-color);
     opacity: 1;
     color: var(--main-color);
-    /*font-size: 16px;*/
-    /*font-weight: bold;*/
     border: var(--main-color) 2px solid;
 }
 
@@ -2153,7 +1769,7 @@ td.quick-filter {
 
 .item-components-table-quantity-input {
     text-align: center;
-    width: 90px;
+    width: 155px;
     font-size: 32px;
 }
 
@@ -2181,7 +1797,7 @@ td.quick-filter {
 }
 
 .item-name-on-qty-changer-modal {
-    font-size: 18px;
+    font-size: var(--common-font-size);
     background: var(--main-color);
     color: var(--white-color);
     text-align: center;
@@ -2225,7 +1841,7 @@ div.totals-type {
 
 .copy-ean-btn {
     margin-top: -2px;
-    color: coral;
+    color: var(--main-color);
     border-radius: 5px;
 }
 
@@ -2296,4 +1912,27 @@ div.inventory-panel {
 input.inventory-checkbox {
     zoom: 1.5;
     margin-top: 7px;
+}
+
+button.add-item-component {
+
+    font-size: 33px;
+    color: var(--white-color);
+    background: var(--main-color);
+    width: 100%;
+    margin-top: 3px;
+    border-radius: 10px;
+}
+
+button.delete-item-component {
+    color: brown;
+    font-size: 20px;
+    border-radius: 5px;
+}
+
+div.item-components-picker-wrapper {
+    min-height: 390px;
+    overflow-y: auto;
+    max-height: 440px;
+    border: 1px solid darkgrey;
 }

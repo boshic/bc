@@ -28,7 +28,17 @@ public class ComingItemHandler extends EntityHandlerImpl {
     private static final String AUTO_COMING_MAKER = "Автоприход";
 
     private static final String CHECK_COMING_INVALID_DOC=
-            "Приход с указанным товаром, ценой и документом уже содержится!";
+            "Приход с указанным товаром, ценой и документом уже содержится! ";
+
+    private static final String ITEM_IS_COMPOSITE_ERROR=
+            "Неудачно! Для компонентных товаров приход создать нельзя! ";
+
+    private static final String TRY_TO_CHANGE_SOLD_COMING_ERROR=
+            "Неудачно! Нельзя изменить приход, который уже продавался! ";
+
+    private static final String MAKING_OF_COMING= "Оприходование ";
+
+    private static final String CHANGING_OF_COMING= "Изменение прихода ";
 
     public static ComingItemPredicatesBuilder cipb = new ComingItemPredicatesBuilder();
 
@@ -78,7 +88,7 @@ public class ComingItemHandler extends EntityHandlerImpl {
 
     private ResponseItem<ComingItem> update(ComingItem newComing, ComingItem coming) {
 
-        ResponseItem<ComingItem> responseItem = new ResponseItem<ComingItem>();
+        ResponseItem<ComingItem> responseItem = new ResponseItem<ComingItem>("", false);
 
         coming.setPriceIn(newComing.getPriceIn());
 
@@ -102,13 +112,13 @@ public class ComingItemHandler extends EntityHandlerImpl {
 
         User checkedUser = userHandler.checkUser(newComing.getUser(), AUTO_COMING_MAKER);
 
-        responseItem.setText("Изменен приход товара " + newComing.getItem().getName() + " номер " + newComing.getId());
+        responseItem.setText(CHANGING_OF_COMING + newComing.getItem().getName() + " номер " + newComing.getId());
 
         if (coming.getId() == null) {
 
             coming.setComments(new ArrayList<Comment>());
 
-            responseItem.setText("Создан приход товара " + newComing.getItem().getName() + " номер " + newComing.getId());
+            responseItem.setText(MAKING_OF_COMING + newComing.getItem().getName() + " номер " + newComing.getId());
 
             coming.setFactDate(new Date());
 
@@ -116,13 +126,21 @@ public class ComingItemHandler extends EntityHandlerImpl {
                     this.buildComment(coming.getComments(),
                             newComing.getStock().getName() + getQuantityForComment(newComing.getQuantity()),
                             checkedUser.getFullName(),
-                            "Оприходование"));
+                            MAKING_OF_COMING));
         } else {
+
+            if(coming.getSellings() != null && coming.getSellings().size() > 0)
+                return new ResponseItem<>(TRY_TO_CHANGE_SOLD_COMING_ERROR, false);
+
             coming.setComment(
                     this.buildComment(coming.getComments(), "",
                             checkedUser.getFullName(),
-                            "Изменение прихода"));
+                            CHANGING_OF_COMING));
         }
+
+        if(coming.getItem().getComponents() != null && coming.getItem().getComponents().size() > 0)
+
+            return new ResponseItem<>(ITEM_IS_COMPOSITE_ERROR + coming.getItem().getName(), false, coming);
 
 
         if (checkedUser != null && checkedUser.getRole().equals("ROLE_ADMIN")) {
@@ -131,11 +149,13 @@ public class ComingItemHandler extends EntityHandlerImpl {
 
             comingItemRepository.save(coming);
 
+            responseItem.setSuccess(true);
+
             responseItem.setEntityItem(coming);
 
         } else {
 
-            responseItem.setText("Недостаточно прав для изменения/создания прихода");
+            responseItem.setText("Неудачно! Недостаточно прав для изменения/создания прихода");
 
             responseItem.setEntityItem(newComing);
         }
@@ -173,6 +193,9 @@ public class ComingItemHandler extends EntityHandlerImpl {
 
         ComingItem comingItem = this.getComingItemById(id);
 
+        if(comingItem.getSellings() != null && comingItem.getSellings().size() > 0)
+            return new ResponseItem<>(TRY_TO_CHANGE_SOLD_COMING_ERROR, false);
+
         User checkedUser = userHandler.checkUser(userHandler.getCurrentUser(), null);
 
         if (checkedUser != null && checkedUser.getRole().equals("ROLE_ADMIN")) {
@@ -192,10 +215,10 @@ public class ComingItemHandler extends EntityHandlerImpl {
 
 //            comingItemRepository.delete(comingItem);
 
-            return new ResponseItem<ComingItem>("Удален элемент", true, comingItem);
+            return new ResponseItem<ComingItem>("Удален ", true, comingItem);
 
         } else
-            return new ResponseItem<ComingItem>("Недостаточно прав для удаления", true, comingItem);
+            return new ResponseItem<ComingItem>("Неудачно. Удаление не удалось!", true, comingItem);
     }
 
     public List<ComingItem> getComingBySpec() {
@@ -259,24 +282,26 @@ public class ComingItemHandler extends EntityHandlerImpl {
         for (ComingItem coming : comings) {
 
             responseItemTemp = this.checkComing(coming);
+            responseItem.getEntityItems().add(responseItemTemp);
 
             if (responseItemTemp.getSuccess())
-                responseItemTemp.getEntityItems().add(update(coming, new ComingItem()));
-
-             else {
-
-                String resp = responseItemTemp.getText();
-
-                responseItemTemp.setText("Приход НЕ добавлен по товару " + coming.getItem().getName() + ", т.к. " + resp);
-
-            }
-
-//            responseItem.getItems().add(responseItemTemp);
-            responseItem.setEntityItem(responseItemTemp);
+                responseItem.getEntityItems().add(update(coming, new ComingItem()));
         }
+
+        responseItem.setEntityItem(buildResponseEntityByAddItems(responseItem.getEntityItems()));
 
         return responseItem;
     }
+
+    private ResponseItem<ResponseItem> buildResponseEntityByAddItems(List<ResponseItem> responses) {
+
+        for(ResponseItem responseItem : responses)
+            if(!responseItem.getSuccess())
+                return new ResponseItem<>(responseItem.getText(), false);
+
+        return new ResponseItem<>("Успешно! Приход добавлен по всем позициям", true);
+    }
+
 
     private ResponseItem<ResponseItem> checkComing(ComingItem coming) {
 
@@ -301,18 +326,18 @@ public class ComingItemHandler extends EntityHandlerImpl {
 
         //section
         if(coming.getItem().getSection() == null)
-            coming.getItem().setSection(new ItemSection("Секция не задана"));
+            coming.getItem().setSection(new ItemSection(DEAFULT_SECTION_NAME));
 
         ItemSection section = itemSectionHandler.getItemByName(coming.getItem().getSection().getName());
 
-        ResponseItem responseBySection = new ResponseItem("Секция с именем "
-                                                    + coming.getItem().getSection().getName() + " найдена");
+        ResponseItem responseBySection = new ResponseItem(CHECK_SECTION_LOG_MESS
+                                                    + coming.getItem().getSection().getName() + SMTH_FOUND);
 
         if(section == null) {
 
             section = itemSectionHandler.addItem(coming.getItem().getSection()).getEntityItem();
 
-            responseBySection.setText("Секция с именем " + coming.getItem().getName() + " создана");
+            responseBySection.setText(CHECK_SECTION_LOG_MESS + coming.getItem().getName() + SMTH_CREATED);
         }
 
         coming.getItem().setSection(section);
@@ -320,7 +345,7 @@ public class ComingItemHandler extends EntityHandlerImpl {
         responseItem.getEntityItems().add(responseBySection);
 
         //item
-        ResponseItem responseByItem = new ResponseItem("Товар с именем " + coming.getItem().getName() + " найден");
+        ResponseItem responseByItem = new ResponseItem(CHECK_ITEM_LOG_MESS + coming.getItem().getName() + SMTH_FOUND);
 
 //        Item item = itemHandler.getItemByEan(coming.getItem().getEan());
         Item item = itemHandler.getItemByEanSynonym(coming.getItem().getEan());
@@ -329,7 +354,7 @@ public class ComingItemHandler extends EntityHandlerImpl {
 
             item = itemHandler.addItem(coming.getItem()).getEntityItem();
 
-            responseByItem.setText("Новый товар с именем " + coming.getItem().getName() + " создан");
+            responseByItem.setText(CHECK_ITEM_LOG_MESS + coming.getItem().getName() + SMTH_CREATED);
         }
         else {
 
@@ -339,20 +364,22 @@ public class ComingItemHandler extends EntityHandlerImpl {
         }
 
 
+
+
         coming.setItem(item);
 
         responseItem.getEntityItems().add(responseByItem);
 
         //supplier
         ResponseItem responseBySupplier = new ResponseItem("Поставщик " + coming.getDoc().getSupplier().getName()
-                                                                                                        + " найден");
+                                                                                                        + SMTH_FOUND);
         Supplier supplier = supplierHandler.getSupplierByName(coming.getDoc().getSupplier().getName());
 
         if (supplier == null) {
 
             supplier = supplierHandler.addSupplier(coming.getDoc().getSupplier()).getEntityItem();
 
-            responseBySupplier.setText("Поставщик " + coming.getDoc().getSupplier().getName() + " создан");
+            responseBySupplier.setText("Поставщик " + coming.getDoc().getSupplier().getName() + SMTH_CREATED);
         }
 
         coming.getDoc().setSupplier(supplier);
@@ -361,7 +388,7 @@ public class ComingItemHandler extends EntityHandlerImpl {
 
         //doc
         ResponseItem responseBydoc = new ResponseItem("Документ " + coming.getDoc().getName() + " от "
-                                                                            + coming.getDoc().getDate() +" найден");
+                                                                            + coming.getDoc().getDate() + SMTH_FOUND);
 
         Document document = documentHandler.findOneDocumentByFilter(new DocumentFilter
                                                 (new BasicFilter(coming.getDoc().getName(),coming.getDoc().getDate(),
@@ -372,7 +399,7 @@ public class ComingItemHandler extends EntityHandlerImpl {
             document = documentHandler.addItem(coming.getDoc()).getEntityItem();
 
             responseBydoc.setText("Документ " + coming.getDoc().getName() + " от "
-                                              + coming.getDoc().getDate() +" создан");
+                                              + coming.getDoc().getDate() + SMTH_CREATED);
         }
 
         coming.setDoc(document);
@@ -473,7 +500,7 @@ public class ComingItemHandler extends EntityHandlerImpl {
         if (result.size() > 0) {
 
             ResponseByComingItems ribyci =
-                    new ResponseByComingItems("найдены элементы", result, true, page.getTotalPages());
+                    new ResponseByComingItems(ELEMENTS_FOUND, result, true, page.getTotalPages());
 
             if(filter.getCalcTotal()) {
 
@@ -483,7 +510,7 @@ public class ComingItemHandler extends EntityHandlerImpl {
             return ribyci;
         }
 
-        return new ResponseByComingItems("ничего не найдено", new ArrayList<ComingItem>(), false, 0);
+        return new ResponseByComingItems(NOTHING_FOUND, new ArrayList<ComingItem>(), false, 0);
     }
 
 

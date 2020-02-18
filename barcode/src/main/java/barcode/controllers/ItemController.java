@@ -32,13 +32,10 @@ public class ItemController {
         return this.itemHandler.getItems(filter);
     }
 
-    //    getComponentsForCompositeItem
-    @GetMapping(path="/getComponentsForCompositeItem")
-    public @ResponseBody Iterable<Item> getComponentsForCompositeItem(@RequestParam String filter) {
-        return null;
-//        return this.itemHandler.getItems(filter);
+    @GetMapping(path="/getItemsForComponents")
+    public @ResponseBody Iterable<Item> getItemsForComponents(@RequestParam String filter) {
+        return this.itemHandler.getItemsForComponents(filter);
     }
-
 
     @GetMapping(path="/getItemById")
     public @ResponseBody Item getItemById(@RequestParam Long id) {
@@ -54,5 +51,12 @@ public class ItemController {
     public @ResponseBody String getTopId() {
         return this.itemHandler.getTopId();
     }
+
+    //    checkIfItemCannotBeComposite
+    @GetMapping(path="/checkIfItemCannotBeComposite")
+    public @ResponseBody Boolean checkIfItemCannotBeComposite(@RequestParam Long id) {
+        return this.itemHandler.checkIfItemCannotBeComposite(id);
+    }
+
 
 }

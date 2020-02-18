@@ -10,6 +10,7 @@ public class MainController {
 
     @GetMapping("/login")
     public String redirectLogin() {
+
         return "login";
     }
 
@@ -21,6 +22,7 @@ public class MainController {
 
     @GetMapping("/mainPage")
     public String redirectMainPage() {
+
         return "mainPage";
     }
 
@@ -33,6 +35,7 @@ public class MainController {
 
     @GetMapping("/")
     public String redirectRoot() {
+
         return "redirect:/public/";
     }
 

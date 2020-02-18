@@ -23,6 +23,15 @@ public class ItemPredicateBuilder {
         return null;
     }
 
+    public Predicate buildByFilterForComponentsInput(String filter) {
+
+        if(filter != null)
+            return item.eanSynonym.eq("").and(item.components.size().eq(0))
+                .and(buildByFilter(filter));
+
+        return null;
+    }
+
 //    public Predicate getInventoryRowByStock(Long itemId, Long stockId) {
 //
 //        return item.id.eq(itemId).and(item.inventoryRows.any().stock.id.eq(stockId));

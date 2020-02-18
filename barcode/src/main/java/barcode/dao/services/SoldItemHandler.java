@@ -32,7 +32,7 @@ public class SoldItemHandler extends EntityHandlerImpl {
 
     private SoldItemsRepository soldItemsRepository;
 
-    private ComingItemHandler comingItemHandler;
+    private final ComingItemHandler comingItemHandler;
 
     private UserHandler userHandler;
 
@@ -63,7 +63,7 @@ public class SoldItemHandler extends EntityHandlerImpl {
         this.itemHandler = itemHandler;
     }
 
-    public ResponseItem makeAutoSelling(Set<SoldItem> sellings) {
+    public ResponseItem makeAutoSelling(List<SoldItem> sellings) {
 
         ResponseItem<ResponseItem> responseItem =
                 new ResponseItem<ResponseItem>("Обработка автоматических продаж", new ArrayList<ResponseItem>(), true);
@@ -136,7 +136,7 @@ public class SoldItemHandler extends EntityHandlerImpl {
 
             buyer = this.buyerHandler.addBuyer(selling.getBuyer()).getEntityItem();
 
-            responseByBuyer.setText("Покупатель " + selling.getBuyer().getName() + " создан");
+            responseByBuyer.setText("Покупатель " + selling.getBuyer().getName() + SMTH_CREATED);
         }
 
         selling.setBuyer(buyer);
@@ -177,10 +177,9 @@ public class SoldItemHandler extends EntityHandlerImpl {
 
     }
 
-    public synchronized ResponseItem<SoldItem> addSellings (Set<SoldItem> soldItems) {
+    public ResponseItem<SoldItem> addSellings (List<SoldItem> soldItems) {
+//        public synchronized ResponseItem<SoldItem> addSellings (List<SoldItem> soldItems) {
 
-        ResponseItem<SoldItem> responseItem = new ResponseItem<SoldItem>("",
-                new ArrayList<SoldItem>(),false);
 
         Long uuid = new Random().nextLong();
 
@@ -191,69 +190,74 @@ public class SoldItemHandler extends EntityHandlerImpl {
 
         receiptHandler.save(receipt);
 
-        for (SoldItem soldItem : soldItems) {
+        synchronized (comingItemHandler) {
+            for (SoldItem soldItem : soldItems) {
 
-            List<ComingItem> comings = this.comingItemHandler.getComingItemByIdAndStockId(
-                    soldItem.getComing().getItem().getId(),
-                    soldItem.getComing().getStock().getId());
+                //try get from RE<CominItem> after checking
+                List<ComingItem> comings = this.comingItemHandler.getComingItemByIdAndStockId(
+                        soldItem.getComing().getItem().getId(),
+                        soldItem.getComing().getStock().getId());
 
-            BigDecimal reqForSell = BigDecimal.ZERO;
-            BigDecimal availQuantityByEan =
-                    comings
-                            .stream().map(ComingItem::getCurrentQuantity)
-                            .reduce(BigDecimal.ZERO, BigDecimal::add)
-                            .subtract(soldItem.getQuantity());
+                BigDecimal reqForSell = soldItem.getQuantity();
 
-            for (ComingItem coming: comings) {
+                //try get from solditem if !=null
+                BigDecimal availQuantityByEan =
+                        comings
+                                .stream().map(ComingItem::getCurrentQuantity)
+                                .reduce(BigDecimal.ZERO, BigDecimal::add)
+                                .subtract(soldItem.getQuantity());
 
-                BigDecimal availQuant = coming.getCurrentQuantity();
 
-                reqForSell = soldItem.getQuantity();
 
-                if (availQuant.compareTo(BigDecimal.ZERO) > 0) { // проверяем на остаток по приходу
+                for (ComingItem coming: comings) {
 
-                    SoldItem newSoldItem = new SoldItem();
-                    newSoldItem.setComments(new ArrayList<>());
+                    BigDecimal availQuant = coming.getCurrentQuantity();
 
-                    if(soldItem.getComment() != null)
-                        newSoldItem.setComment(
-                                this.buildComment(newSoldItem.getComments(),
-                                        getQuantityForComment(
-                                                (reqForSell.compareTo(availQuant) > 0) ? availQuant : reqForSell)
-                                                + soldItem.getComment(),
+//                    reqForSell = soldItem.getQuantity();
+
+                    if (availQuant.compareTo(BigDecimal.ZERO) > 0) { // проверяем на остаток по приходу
+
+                        SoldItem newSoldItem = new SoldItem();
+                        newSoldItem.setComments(new ArrayList<>());
+
+                        if(soldItem.getComment() != null)
+                            newSoldItem.setComment(
+                                    this.buildComment(newSoldItem.getComments(),
+                                            getQuantityForComment(
+                                                    (reqForSell.compareTo(availQuant) > 0) ? availQuant : reqForSell)
+                                                    + soldItem.getComment(),
+                                            userHandler.checkUser(soldItem.getUser(), null ).getFullName(),
+                                            SALE_COMMENT)
+                            );
+
+                        newSoldItem.setAvailQuantityByEan(
+                                availQuantityByEan.compareTo(BigDecimal.ZERO) > 0 ? availQuantityByEan : BigDecimal.ZERO);
+
+                        newSoldItem.setQuantityBeforeSelling(availQuant); // устанавливаем количество до продажи
+
+                        newSoldItem.setBuyer(soldItem.getBuyer());
+
+                        newSoldItem.setUser(soldItem.getUser());
+
+                        newSoldItem.setDate(new Date());
+
+                        Integer discount = soldItem.getBuyer().getDiscount();
+
+                        if(discount !=null && discount > 0)
+                            newSoldItem.setComment(
+                                    this.buildComment(newSoldItem.getComments(), "",
+                                            userHandler.getCurrentUser().getFullName(),
+                                            "применена скидка " + discount + "%.")
+                            );
+
+
+                        coming.setComment(
+                                this.buildComment(coming.getComments(),
+                                        soldItem.getComment() + " для " + soldItem.getBuyer().getName()
+                                                + getQuantityForComment((reqForSell.compareTo(availQuant) > 0) ? availQuant : reqForSell),
                                         userHandler.checkUser(soldItem.getUser(), null ).getFullName(),
                                         SALE_COMMENT)
                         );
-
-//                        newSoldItem.setComment(
-//                            this.buildComment(newSoldItem.getComments(),
-//                                    (reqForSell.compareTo(availQuant) > 0) ? availQuant.toString()
-//                                            : reqForSell.toString() + " ед. " + soldItem.getComment(),
-//                                userHandler.checkUser(soldItem.getUser(), null ).getFullName(),
-//                                    SALE_COMMENT)
-//                        );
-
-                    newSoldItem.setAvailQuantityByEan(availQuantityByEan);
-
-                    newSoldItem.setQuantityBeforeSelling(availQuant); // устанавливаем количество до продажи
-
-                    newSoldItem.setBuyer(soldItem.getBuyer());
-
-                    newSoldItem.setUser(soldItem.getUser());
-
-                    newSoldItem.setDate(new Date());
-
-                    Integer discount = soldItem.getBuyer().getDiscount();
-
-                    if(discount !=null && discount > 0)
-
-                        newSoldItem.setComment(
-                                this.buildComment(newSoldItem.getComments(), "",
-                                        userHandler.getCurrentUser().getFullName(),
-                                        "применена скидка " + discount + "%.")
-                        );
-
-                    responseItem.setSuccess(true);
 
                         if (reqForSell.compareTo(availQuant) > 0) {
 
@@ -262,6 +266,8 @@ public class SoldItemHandler extends EntityHandlerImpl {
                             soldItem.setQuantity(reqForSell.subtract( availQuant));
 
                             newSoldItem.setQuantity(availQuant);
+
+                            reqForSell = soldItem.getQuantity();
 
                         } else {
 
@@ -274,18 +280,9 @@ public class SoldItemHandler extends EntityHandlerImpl {
 
 
                         coming.setSum(coming.getPriceIn().multiply(coming.getCurrentQuantity())
-                                    .setScale(2, BigDecimal.ROUND_HALF_UP));
+                                .setScale(2, BigDecimal.ROUND_HALF_UP));
 
                         coming.setLastChangeDate(newSoldItem.getDate());
-
-
-                        coming.setComment(
-                            this.buildComment(coming.getComments(),
-                                    soldItem.getComment() + " для " + soldItem.getBuyer().getName()
-                                            + getQuantityForComment(soldItem.getQuantity()),
-                                    userHandler.checkUser(soldItem.getUser(), null ).getFullName(),
-                                    SALE_COMMENT)
-                        );
 
                         newSoldItem.setComing(coming); // - добавляем ссылку на приход новой продажи
 
@@ -293,7 +290,7 @@ public class SoldItemHandler extends EntityHandlerImpl {
 
                         newSoldItem.setSum(newSoldItem.getPrice()
                                 .multiply(newSoldItem.getQuantity())
-                                    .setScale(2, BigDecimal.ROUND_HALF_UP));
+                                .setScale(2, BigDecimal.ROUND_HALF_UP));
 
                         newSoldItem.setVat(soldItem.getVat());
 
@@ -303,19 +300,21 @@ public class SoldItemHandler extends EntityHandlerImpl {
 
                         soldItemsRepository.save(newSoldItem);
 
-                        responseItem.getEntityItems().add(newSoldItem);
+                        if (reqForSell.compareTo(BigDecimal.ZERO) == 0) break;
 
-                    if (reqForSell.compareTo(BigDecimal.ZERO) == 0) break;
-
+                    }
                 }
+
+                if(reqForSell.compareTo(BigDecimal.ZERO) > 0  || comings.size() == 0)
+                    return new ResponseItem<SoldItem>(INSUFFICIENT_QUANTITY_OF_GOODS + ": " +reqForSell +
+                            "ед. " + soldItem.getComing().getItem().getName(), false);
+
             }
 
-            if(reqForSell.compareTo(BigDecimal.ZERO) > 0)
-                return new ResponseItem<SoldItem>(INSUFFICIENT_QUANTITY_OF_GOODS, false);
-
+            return new ResponseItem<SoldItem>(SALE_COMPLETED_SUCCESSFULLY, true);
         }
 
-        return new ResponseItem<SoldItem>(SALE_COMPLETED_SUCCESSFULLY, true);
+
     }
 
     private static void SortSoldItemsList(List<SoldItem> soldItems, String field, String direction) {
@@ -462,7 +461,10 @@ public class SoldItemHandler extends EntityHandlerImpl {
         return null;
     }
 
-    public synchronized ResponseItem addOneSelling(SoldItem soldItem) {
+//    public synchronized ResponseItem addOneSelling(SoldItem soldItem) {
+public ResponseItem addOneSelling(SoldItem soldItem) {
+
+    synchronized(comingItemHandler) {
 
         soldItem.setAvailQuantityByEan(comingItemHandler
                 .getComingItemByIdAndStockId(
@@ -520,6 +522,8 @@ public class SoldItemHandler extends EntityHandlerImpl {
         return new ResponseItem(SALE_COMPLETED_SUCCESSFULLY, true);
     }
 
+    }
+
     public void addComment(Comment comment, Long id) {
         if(id != null) {
             SoldItem soldItem = soldItemsRepository.findOne(id);
@@ -540,7 +544,7 @@ public class SoldItemHandler extends EntityHandlerImpl {
 
         returnSoldItem(soldItem);
 
-        return addSellings(Stream.of(soldItem).collect(Collectors.toSet()));
+        return addSellings(Stream.of(soldItem).collect(Collectors.toList()));
     }
 
 }

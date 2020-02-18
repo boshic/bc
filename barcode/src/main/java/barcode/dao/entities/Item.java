@@ -49,8 +49,8 @@ public class Item {
     @JsonProperty("inventoryRows")
     private List<InventoryRow> inventoryRows;
 
-    @Column(name = "can_be_composite", columnDefinition="tinyint(1) default 1")
-    private Boolean canBeComposite;
+//    @Column(name = "can_be_composite", columnDefinition="tinyint(1) default 1")
+//    private Boolean canBeComposite;
 
     public Item () {
     }
@@ -122,13 +122,13 @@ public class Item {
         this.components = components;
     }
 
-    public Boolean getCanBeComposite() {
-        return canBeComposite;
-    }
-
-    public void setCanBeComposite(Boolean canBeComposite) {
-        this.canBeComposite = canBeComposite;
-    }
+//    public Boolean getCanBeComposite() {
+//        return canBeComposite;
+//    }
+//
+//    public void setCanBeComposite(Boolean canBeComposite) {
+//        this.canBeComposite = canBeComposite;
+//    }
 
     public String getAlterName() {
         return alterName;

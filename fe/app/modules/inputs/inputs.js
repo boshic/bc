@@ -134,6 +134,11 @@ let itemChangeCtrlr = ($s, itemFactory, paneFactory) => {
 
     $s.eanInputId = itemFactory.generateUuid();
 
+    $s.openItemComponentsModal = () => {
+        itemFactory.openItemComponentsModal($s);
+        // $s.itemComponentsModalVisible = true;
+    };
+
     $s.getNextId = () => {
         if($s.item.id > 0)
             $s.item.ean = paneFactory.generateEan($s.item.id.toString());
@@ -639,9 +644,13 @@ angular.module('inputs', ['asyncFilter'])
         controller: function() {}
     })
     .component( "itemComponentsPicker", {
-        bindings: { components: '=', modalVisible: '='},
+        bindings: { item: '=', modalVisible: '='},
         template: itemComponentsPickerTpl,
-        controller: function() {}
+        controller: function() {
+            this.addItemComponent = () => {
+                this.item.components.push({item: this.component, quantity: this.componentQuantity});
+            }
+        }
     })
     .factory('itemFactory',['httpService', 'paneFactory', '$filter',
         function (httpService, paneFactory, $filter) {
@@ -658,7 +667,7 @@ angular.module('inputs', ['asyncFilter'])
                     section: getNewSection(),
                     component: {},
                     componentQuantity: 0,
-                    canBeComposite:true, components:[] };
+                    components:[] };
             };
 
             let getItemById = (id, url, requestParams) => {
@@ -704,13 +713,13 @@ angular.module('inputs', ['asyncFilter'])
                             if(typeof $s.getItemsForParent === 'function'
                                 && (angular.isDefined($s.item) && $s.item != null)
                                 && (angular.isDefined($s.item.ean) && $s.item.ean != null))
-                                $s.getItemsForParent()($s.item.ean);
+                                 $s.getItemsForParent()($s.item.ean);
                         }
                 },
                 itemComponentConfig :
                     {
                         getEmptyItem: getNewItem,
-                        getItemsUrl: 'getItems',
+                        getItemsUrl: 'getItemsForComponents',
                         getItemByIdUrl: 'getItemById'
                 },
                 supplierConfig :
@@ -782,7 +791,16 @@ angular.module('inputs', ['asyncFilter'])
                     if($s.item.id > 0)
                         $s.getItems()($s.item.id);
                     $s.modalVisible = false;
+                    $s.cannotBeComposite = false;
                     $s.warning ="";
+                },
+                openItemComponentsModal : ($s) => {
+                    httpService.getItemById({id: $s.item.id, url: 'checkIfItemCannotBeComposite'})
+                        .then(resp => {
+                                $s.cannotBeComposite = resp;
+                                $s.itemComponentsModalVisible = !resp;
+                            }
+                        );
                 },
                 setItemEanByTopId : (item) => {
                     httpService.getItemById({id: null, url: 'getTopId'})

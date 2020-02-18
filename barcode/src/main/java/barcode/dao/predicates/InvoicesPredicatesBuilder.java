@@ -45,7 +45,7 @@ public class InvoicesPredicatesBuilder {
         if (filter.getStock() != null && !filter.getStock().isAllowAll())
             predicate = predicate.and(invoice.stock.id.eq(filter.getStock().getId()));
 
-
+//        predicate = predicate.and(invoice.invoiceRows.size().eq(0));
 
         return predicate;
 
