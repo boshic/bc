@@ -1559,11 +1559,6 @@ td.quick-filter {
     /*float: right;*/
 }
 
-.totals-and-quick-filter-container {
-    border-right: 1px solid var(--white-color);
-    display: flex;
-}
-
 .quick-filter-container {
 
     background: var(--white-color);
@@ -1573,6 +1568,7 @@ td.quick-filter {
     padding: 3px;
     font-family: var(--main-font);
     font-size: large;
+    width: 44%;
 }
 
 .item-input-filter {
@@ -1935,4 +1931,9 @@ div.item-components-picker-wrapper {
     overflow-y: auto;
     max-height: 440px;
     border: 1px solid darkgrey;
+}
+
+div.on-pane-totals-container {
+    width: 65%;
+    text-align: center;
 }

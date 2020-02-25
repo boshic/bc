@@ -663,7 +663,7 @@ angular.module('inputs', ['asyncFilter'])
             let getNewItem = () => {
                 return {
                     name: '', ean: '', alterName: '',
-                    predefinedQuantity: 0, eanSynonym: '',
+                    predefinedQuantity: 0, price: 0, eanSynonym: '',
                     section: getNewSection(),
                     component: {},
                     componentQuantity: 0,

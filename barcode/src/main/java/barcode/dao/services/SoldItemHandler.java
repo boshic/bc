@@ -23,10 +23,6 @@ import java.util.stream.Stream;
 @Service
 public class SoldItemHandler extends EntityHandlerImpl {
 
-//    public static QSoldItem qSoldItem = QSoldItem.soldItem;
-
-//    "Неудачно! Не хватает количества товара!"
-//    private static final String INSUFFICIENT_QUANTITY_OF_GOODS = "Неудачно! Не хватает количества товара!";
 
     public static SoldItemPredicatesBuilder sipb = new SoldItemPredicatesBuilder();
 
@@ -128,7 +124,7 @@ public class SoldItemHandler extends EntityHandlerImpl {
         selling.getComing().setStock(stock);
 
         //buyer
-        ResponseItem responseByBuyer = new ResponseItem("Покупатель " + selling.getBuyer().getName() + " найден");
+        ResponseItem responseByBuyer = new ResponseItem("Покупатель " + selling.getBuyer().getName() + SMTH_FOUND);
 
         Buyer buyer = this.buyerHandler.getBuyerByName(selling.getBuyer().getName());
 
@@ -200,16 +196,13 @@ public class SoldItemHandler extends EntityHandlerImpl {
 
                 BigDecimal reqForSell = soldItem.getQuantity();
 
-                //try get from solditem if !=null
-                BigDecimal availQuantityByEan =
-                        comings.stream().map(ComingItem::getCurrentQuantity)
-                               .reduce(BigDecimal.ZERO, BigDecimal::add);
-//                                .subtract(reqForSell);
+                BigDecimal availQuantityByEan = comingItemHandler.getAvailQuantityByEan(comings);
 
                 if(reqForSell.compareTo(availQuantityByEan) > 0  || comings.size() == 0)
-                    return new ResponseItem<SoldItem>(INSUFFICIENT_QUANTITY_OF_GOODS + ": " + reqForSell +
-                            " из " + availQuantityByEan +
-                            COMMON_UNIT + soldItem.getComing().getItem().getName(), false);
+                    return new ResponseItem<>(getInsufficientQuantityOfGoodsMessage(
+                                    reqForSell, availQuantityByEan, soldItem.getComing().getItem().getName()
+                    ),
+                            false);
 
                 availQuantityByEan = availQuantityByEan.subtract(reqForSell);
 
@@ -429,7 +422,9 @@ public class SoldItemHandler extends EntityHandlerImpl {
         SoldItem newSoldItem = soldItemsRepository.findOne(soldItem.getId());
 
         if(soldItem.getQuantity().compareTo(newSoldItem.getQuantity()) > 0)
-            return new ResponseItem(INSUFFICIENT_QUANTITY_OF_GOODS, false);
+            return new ResponseItem(getInsufficientQuantityOfGoodsMessage(
+                    soldItem.getQuantity(), newSoldItem.getQuantity(), soldItem.getComing().getItem().getName()
+            ), false);
 
         ComingItem comingItem = comingItemHandler.getComingItemById(soldItem.getComing().getId());
 
@@ -481,8 +476,11 @@ public ResponseItem addOneSelling(SoldItem soldItem) {
 
         ComingItem comingItem = comingItemHandler.getComingItemById(soldItem.getComing().getId());
 
-        if(soldItem.getQuantity().compareTo(comingItem.getCurrentQuantity()) > 0)
-            return new ResponseItem(INSUFFICIENT_QUANTITY_OF_GOODS, false);
+        if(soldItem.getQuantity().compareTo(comingItem.getCurrentQuantity()) > 0
+                || soldItem.getAvailQuantityByEan().compareTo(BigDecimal.ZERO) < 0)
+            return new ResponseItem(getInsufficientQuantityOfGoodsMessage(
+                    soldItem.getQuantity(), comingItem.getCurrentQuantity(), comingItem.getItem().getName()
+            ), false);
 
         soldItem.setQuantityBeforeSelling(comingItem.getCurrentQuantity());
 

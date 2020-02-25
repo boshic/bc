@@ -15,7 +15,7 @@ import movingPaneTpl from './moving-pane.html';
         $s.totals = { date: new Date, sum: 0, quantity: 0 };
 
         let getItems =(ean) => {
-            paneFactory.getItemsForRelease( {filter: ean, stockId: $s.stock.id}, 'getComingForSell', $s);
+            paneFactory.getItemsForRelease( {filter: ean, stockId: $s.stock.id}, 'getComingForSellNonComposite', $s);
         };
 
         $s.$watchCollection("[rows, stockDest, rows.length]", () => {

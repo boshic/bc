@@ -55,6 +55,15 @@ public ResponseItem makeMovings(Set<SoldItem> movings, Long stockId) {
 
                 BigDecimal totalQuantity;
 
+                BigDecimal availQuantityByEan = comingItemHandler.getAvailQuantityByEan(comings);
+//                        comings.stream().map(ComingItem::getCurrentQuantity)
+//                                .reduce(BigDecimal.ZERO, BigDecimal::add);
+
+                if(reqForMove.compareTo(availQuantityByEan) > 0  || comings.size() == 0)
+                    return new ResponseItem<SoldItem>(getInsufficientQuantityOfGoodsMessage(
+                            reqForMove, availQuantityByEan, moving.getComing().getItem().getName()
+                    ), false);
+
                 for(ComingItem coming : comings) {
 
                     availQuant = coming.getCurrentQuantity();
@@ -170,9 +179,9 @@ public ResponseItem makeMovings(Set<SoldItem> movings, Long stockId) {
                         if (reqForMove.compareTo(BigDecimal.ZERO) == 0) break;
                     }
                 }
-
-                if(reqForMove.compareTo(BigDecimal.ZERO) > 0 || comings.size() == 0)
-                    return new ResponseItem(INSUFFICIENT_QUANTITY_OF_GOODS, false);
+//
+//                if(reqForMove.compareTo(BigDecimal.ZERO) > 0 || comings.size() == 0)
+//                    return new ResponseItem(INSUFFICIENT_QUANTITY_OF_GOODS, false);
             }
 
             return new ResponseItem(MOVE_COMPLETED_SUCCESSFULLY, true);
@@ -265,7 +274,9 @@ public ResponseItem addOneMoving(SoldItem moving, Long stockId) {
         ComingItem coming = comingItemHandler.getComingItemById(moving.getComing().getId());
 
         if(moving.getQuantity().compareTo(coming.getCurrentQuantity()) > 0)
-            return new ResponseItem(INSUFFICIENT_QUANTITY_OF_GOODS, false);
+            return new ResponseItem(getInsufficientQuantityOfGoodsMessage(
+                    moving.getQuantity(), coming.getCurrentQuantity(), coming.getItem().getName()
+            ), false);
 
         if(coming.getQuantity().compareTo(moving.getQuantity()) == 0) {
 

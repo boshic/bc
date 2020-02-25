@@ -58,6 +58,7 @@ public class ItemHandler {
 
         item.setAlterName(srcItem.getAlterName() == null ? "" : srcItem.getAlterName());
         item.setPredefinedQuantity(srcItem.getPredefinedQuantity() == null ? BigDecimal.ZERO : srcItem.getPredefinedQuantity());
+        item.setPrice(srcItem.getPrice() == null ? BigDecimal.ZERO : srcItem.getPrice());
 
 //        qItem.components.any().component.ean.eq(srcItem.getEan());
 //        if (item.getCanBeComposite() == null)

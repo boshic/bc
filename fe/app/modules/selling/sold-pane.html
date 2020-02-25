@@ -56,12 +56,12 @@
 <div class="items-table">
 
     <div style="display: flex;">
-        <div style="width: 65%; text-align: center;">
+        <div class="on-pane-totals-container">
             <div ng-show="rows.length > 0">
                 <totals totals="totals"></totals>
             </div>
         </div>
-        <div class="quick-filter-container" style="width: 35%;">
+        <div class="quick-filter-container">
             <quick-filter filter="filter"></quick-filter>
         </div>
     </div>
@@ -136,7 +136,7 @@
                 </span>
             </td>
             <!--<td style="width: 6%;" ng-show="!filter.groupByItems">Сумма</td>-->
-            <td style="width: 11%;" ng-show="!filter.groupByItems">
+            <td style="width: 6%;" ng-show="!filter.groupByItems">
                 <span class="sortable-thead-value" ng-click="filter.sortField='sum'">Сумма</span>
                 <span>
                     <sorting-row listening-field="'sum'" field="filter.sortField"

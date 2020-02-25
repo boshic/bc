@@ -7,6 +7,7 @@
                     is-ok-active="item.name.length > 0 && item.unit.length > 0 && item.ean > 0
                         && (item.eanSynonym.length == 13 || item.eanSynonym.length == 0)
                         && item.predefinedQuantity >= 0
+                        && item.price >= 0
                         && item.ean.length == 13 && item.section.id > 0">
             </item-add-edit-controls>
         </div>
@@ -21,13 +22,14 @@
             </common-item-text-input>
             <div>
                 <div style="display: flex;">
-                    <span style="width: 50%;">Единица измерения</span>
-                    <span style="width: 50%;">Количество для подбора</span>
+                    <span style="width: 33%;">Единица измерения</span>
+                    <span style="width: 33%;">Количество для подбора</span>
+                    <span style="width: 33%;">Цена справочно</span>
                 </div>
                 <div style="display: flex;margin-bottom: 10px;">
                     <span class="warning-item-input" ng-hide="item.unit.length > 0">Введите единицу измерения</span>
                     <eraser style="margin-top: 6px;" data="item.unit"></eraser>
-                    <input style = "width: 50%; text-align: center;" type="text"
+                    <input style = "width: 33%; text-align: center;" type="text"
                            class="form-control"
                            ng-model="item.unit" list="measure-units" placeholder=""/>
                     <datalist id="measure-units" >
@@ -37,11 +39,16 @@
                         <option>м</option>
                         <option>к-т</option>
                     </datalist>
-                    <span style="    margin-left: 50%;" class="warning-item-input"
+                    <span style="    margin-left: 33%;" class="warning-item-input"
                           ng-hide="item.predefinedQuantity >= 0">Неверное количество для подбора</span>
-                    <input style = "width: 50%; text-align: center;" type="number"
+                    <input style = "width: 33%; text-align: center;" type="number"
                            class="form-control" min="0"
                            ng-model="item.predefinedQuantity" placeholder=""/>
+                    <span style="    margin-left: 33%;" class="warning-item-input"
+                          ng-hide="item.price >= 0">Неверно указана цена</span>
+                    <input style = "width: 33%; text-align: center;" type="number"
+                           class="form-control" min="0"
+                           ng-model="item.price" placeholder=""/>
                 </div>
                 <div style="display: flex;">
                     <span style="width: 50%;">Штрих-код</span>
@@ -80,7 +87,7 @@
                         <span>Секция</span>
                         <item-section-input section="item.section"></item-section-input>
                     </div>
-                    <span style="width:30%; margin-top: 21px;" ng-hide="item.eanSynonym > 0" ng-show="item.id > 0">
+                    <span style="width:30%; margin-top: 21px;" ng-hide="item.eanSynonym > 0 || !item.id > 0">
                         <button class="item-component-modal-open-btn"
                                 ng-click="openItemComponentsModal()">
                             <span ng-show="!cannotBeComposite">Редактировать компоненты товара</span>

@@ -64,6 +64,12 @@ public class ComingItemController {
         return this.comingItemHandler.getComingForSell(filter, stockId);
     }
 
+    @GetMapping(path="/getComingForSellNonComposite") // Map ONLY GET Requests
+    public @ResponseBody ResponseItem getComingForSellNonComposite(@RequestParam String filter,
+                                                        @RequestParam Long stockId) {
+        return this.comingItemHandler.getComingForSellNonComposite(filter, stockId);
+    }
+
     @RequestMapping(value = "/findComingItemByFilter", method = RequestMethod.POST)
     public @ResponseBody ResponseItem<ComingItem> findComingItemByFilter(@RequestBody ComingItemFilter filter) {
         return this.comingItemHandler.findByFilter(filter);

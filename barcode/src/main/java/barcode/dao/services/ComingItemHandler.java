@@ -228,13 +228,15 @@ public class ComingItemHandler extends EntityHandlerImpl {
 //        return comingItemRepository.findAll(spec);
     }
 
-
-    public ResponseItem<ComingItem> getComingForSell(String ean, Long stockId) {
+    private ResponseItem<ComingItem> getComingForSellSelector(String ean, Long stockId, Boolean isCompositeAllowed) {
 
         Item item = itemHandler.getItemByEanSynonym(ean);
 
         if (item == null)
             return new ResponseItem<ComingItem>("не найден товар с заданным ШК: " + ean, false);
+
+        if (!isCompositeAllowed && item.getComponents() != null && item.getComponents().size() > 0)
+            return new ResponseItem<ComingItem>("Неудачно! Запрещен подбор компонентных товаров : " + item.getName(), false);
 
         ComingItem comingItem = new ComingItem();
 
@@ -268,7 +270,19 @@ public class ComingItemHandler extends EntityHandlerImpl {
             return new ResponseItem<ComingItem>("Товара - " + item.getName() + " нет в наличии!", false);
 
         return new ResponseItem<ComingItem>("Товар найден в остатках в количестве - " +
-                                                            comingItem.getCurrentQuantity(),true, comingItem);
+                comingItem.getCurrentQuantity(),true, comingItem);
+    }
+
+
+    public ResponseItem<ComingItem> getComingForSellNonComposite(String ean, Long stockId) {
+
+        return getComingForSellSelector(ean, stockId, false);
+    }
+
+
+    public ResponseItem<ComingItem> getComingForSell(String ean, Long stockId) {
+
+        return getComingForSellSelector(ean, stockId, true);
     }
 
     public ResponseItem addItems(Set<ComingItem> comings) {
@@ -524,7 +538,7 @@ public class ComingItemHandler extends EntityHandlerImpl {
                 = comingItemRepository.findTopPriceOutByItemEanOrderByIdDesc(item.getEan());
 
         if(coming == null)
-            return new DtoItemForNewComing(item, BigDecimal.ZERO, BigDecimal.ZERO);
+            return new DtoItemForNewComing(item, item.getPrice(), item.getPrice());
 
         return new DtoItemForNewComing(coming.getItem(), coming.getPriceIn(), coming.getPriceOut());
     }
@@ -552,6 +566,11 @@ public class ComingItemHandler extends EntityHandlerImpl {
             itemHandler.saveItem(item);
 
         }
+    }
+
+    BigDecimal getAvailQuantityByEan(List<ComingItem> comingItems) {
+
+        return comingItems.stream().map(ComingItem::getCurrentQuantity).reduce(BigDecimal.ZERO, BigDecimal::add);
     }
 
 }

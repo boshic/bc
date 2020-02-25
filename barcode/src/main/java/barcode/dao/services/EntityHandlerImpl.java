@@ -23,7 +23,7 @@ public class EntityHandlerImpl implements EntityHandler{
     static final String COMMENT_TOO_LONG = "";
 
     static final String ELEMENTS_FOUND = "найдены элементы";
-    static final String INSUFFICIENT_QUANTITY_OF_GOODS = "Неудачно! Не хватает количества товара!";
+    static final String INSUFFICIENT_QUANTITY_OF_GOODS = "Неудачно! Не хватает количества товара! ";
     static final String SALE_COMPLETED_SUCCESSFULLY = "Продажа завершена успешно";
     static final String MOVE_COMPLETED_SUCCESSFULLY = "Перемещение завершено успешно";
     static final String SALE_COMMENT = "Продажа";
@@ -39,7 +39,7 @@ public class EntityHandlerImpl implements EntityHandler{
 
     static final String DEAFULT_SECTION_NAME = "Секция не задана ";
     static final String CHECK_ITEM_LOG_MESS = "Товар с именем ";
-    static final String CHECK_SECTION_LOG_MESS = "Товар с именем ";
+    static final String CHECK_SECTION_LOG_MESS = "Секция с именем ";
     static final String SMTH_FOUND = " найден(а)";
     static final String SMTH_CREATED = " создан(а)";
 
@@ -85,6 +85,7 @@ public class EntityHandlerImpl implements EntityHandler{
         return result;
     }
 
+
     public Date getDateOnly(final Date date) {
         final Calendar cal = Calendar.getInstance();
         cal.setTime(date);
@@ -103,6 +104,10 @@ public class EntityHandlerImpl implements EntityHandler{
         cal.set(Calendar.SECOND, 0);
         cal.set(Calendar.MILLISECOND, 0);
         return cal.getTime();
+    }
+
+    String getInsufficientQuantityOfGoodsMessage(BigDecimal reqQuant, BigDecimal availQuant, String itemName) {
+        return  INSUFFICIENT_QUANTITY_OF_GOODS + reqQuant + " из " + availQuant + COMMON_UNIT + itemName;
     }
 
 }

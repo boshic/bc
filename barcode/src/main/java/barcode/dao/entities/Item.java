@@ -30,6 +30,10 @@ public class Item {
     @Column(name = "predefined_quantity", columnDefinition="Decimal(9,2) default '0.00'")
     private BigDecimal predefinedQuantity;
 
+    @Column(name = "price", columnDefinition="Decimal(9,2) default '0.00'")
+    private BigDecimal price;
+
+
     @Column(name = "unit", nullable = false)
     private String unit;
 
@@ -144,6 +148,14 @@ public class Item {
 
     public void setInventoryRows(List<InventoryRow> inventoryRows) {
         this.inventoryRows = inventoryRows;
+    }
+
+    public BigDecimal getPrice() {
+        return price;
+    }
+
+    public void setPrice(BigDecimal price) {
+        this.price = price;
     }
 
     @Override
