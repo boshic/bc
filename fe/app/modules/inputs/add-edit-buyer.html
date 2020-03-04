@@ -67,5 +67,14 @@
                 Продажа по ценам поступления: {{(item.sellByComingPrices) ? "Да" : "Нет"}}
             </label>
         </div>
+        <div style="display: flex;"
+             ng-show = "user.role == 'ROLE_ADMIN'">
+            <input style="zoom: 1.5; position: absolute; margin: auto;"
+                   type="checkbox"
+                   ng-model="item.useForInventory"/>
+            <label style="margin-left: 20px; color: coral;">
+                Использовать для инвентаризации: {{(item.useForInventory) ? "Да" : "Нет"}}
+            </label>
+        </div>
     </div>
 </div>

@@ -120,7 +120,7 @@ public class ComingItemHandler extends EntityHandlerImpl {
 
             responseItem.setText(MAKING_OF_COMING + newComing.getItem().getName() + " номер " + newComing.getId());
 
-            coming.setFactDate(new Date());
+            coming.setDate(new Date());
 
             coming.setComment(
                     this.buildComment(coming.getComments(),

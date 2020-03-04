@@ -161,24 +161,10 @@
                     {{ ($index + 1) + (filter.page - 1)*filter.rowsOnPage }}
                 </td>
                 <td ng-show="!filter.groupByItems">
-                    <span style="position: absolute; cursor: pointer;"
-                          ng-if="((user.role == 'ROLE_ADMIN' || user.actsAllowed.indexOf('changeDateOFSI') > -1)
-                               && (x.quantity > 0))"
-                            ng-show = "requestParams.requestsQuantity === 0">
-                        <div class="dropdown">
-                        <span class="glyphicon glyphicon-pencil"></span>
-                        <ul class="dropdown-menu hoverable comments-container sip-date-changer">
-                            <li>
-                                <input date-input class="form-control" type="datetime-local" ng-model="x.date"/>
-                                <div>
-                                    <button class="glyphicon glyphicon-ok sip-date-changer-ok-btn"
-                                            ng-click="changeItemDate(x)"
-                                            title="Изменить дату!"/>
-                                </div>
-                            </li>
-                        </ul>
-                        </div>
-                    </span>
+                    <pane-date-change-control
+                            user="user" row="x" change-item-date="changeItemDate"
+                        requests-quantity="requestParams.requestsQuantity">
+                    </pane-date-change-control>
                     <span class="clickable-filter-value item-additional-info-on-cp"
                           style="margin-left: 20px;"
                           ng-click = 'filter.fromDate = x.date'>

@@ -53,9 +53,17 @@
             ng-repeat="x in rows track by $index">
             <td class="price-data" title="Номер">{{ ($index + 1) + (filter.page - 1)*filter.rowsOnPage }}</td>
             <td title="Дата">
-                <span class="price-out-on-coming-pane" title="">{{ '№ ' + x.id + ' от '}}</span>
-                <span title="">{{ x.date | date:'dd-MM-yyyy HH:mm' }}</span>
-                <span class="price-out-on-coming-pane" title="">{{ x.user }}</span>
+                <span class="price-out-on-coming-pane" title="">{{ '№ ' + x.id}}</span>
+                <span title="">{{ x.user}}</span>
+                <div>
+                    <span class="price-out-on-coming-pane" style="margin-right: 3px;" title="">
+                    {{ x.date | date:'dd-MM-yyyy HH:mm' }}
+                    </span>
+                    <pane-date-change-control
+                            user="user" row="x" change-item-date="changeItemDate"
+                            requests-quantity="requestParams.requestsQuantity">
+                    </pane-date-change-control>
+                </div>
             </td>
             <td title="Наименование" class="hoverable"
                 ng-click="editItem($index)">{{ x.buyer}}

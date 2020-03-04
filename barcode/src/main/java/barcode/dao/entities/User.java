@@ -1,5 +1,6 @@
 package barcode.dao.entities;
 
+import barcode.dao.entities.basic.BasicNamedEntity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import barcode.dao.entities.embeddable.AllowedStock;
@@ -8,10 +9,7 @@ import javax.persistence.*;
 import java.util.Set;
 
 @Entity // This tells Hibernate to make a table out of this class
-public class User {
-    @Id
-    @GeneratedValue(strategy= GenerationType.AUTO)
-    private Integer id;
+public class User extends BasicNamedEntity{
 
     @JsonIgnore
     private Byte active;
@@ -24,8 +22,6 @@ public class User {
 
     @Column(name = "shade_when_quyering", nullable = false)
     private Boolean shadeWhenQuyering;
-
-    private String name;
 
     private String role;
 
@@ -75,22 +71,8 @@ public class User {
 
     public User() {}
 
-    public Integer getId() {
-        return id;
-    }
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
     public Byte getActive() {return this.active;}
     public void setActive(Byte active) {this.active = active;}
-
-    public String getName() {
-        return name;
-    }
-    public void setName(String name) {
-        this.name = name;
-    }
 
     public String getRole() {return role;}
     public void setRole(String role) {this.role = role;}

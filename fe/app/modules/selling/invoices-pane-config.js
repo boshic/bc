@@ -8,7 +8,7 @@ let invoicesPaneConfig = {
     findItemUrl: 'getInvoicesByFilter',
     paneName: 'Документы расход',
     paneId: 'invoices-pane',
-    doBeforeFindItemsByFilter: () => { return true},
+    doBeforeFindItemsByFilter: () => { return true;},
     resetFilter: (filterFactory, filter) => {
         filterFactory.resetSellingFilter(filter);
     },
@@ -18,6 +18,14 @@ let invoicesPaneConfig = {
     },
     afterSearch: ($s) => {
         $s.focusOnEanInput();
+    },
+    changeItemDate : ($s, config) => {
+
+        config.httpService.addItem({data: config.row, url: 'changeInvoiceDate', requestParams: $s.requestParams})
+            .then(
+                () => { $s.calcTotalsAndRefresh(); },
+                resp => { console.log(resp);}
+            );
     },
     getKeyupCombinations: ($s, keyCodes) => {
         return [

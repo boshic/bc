@@ -1,6 +1,7 @@
 package barcode.dao.repositories;
 
 import barcode.dao.entities.Buyer;
+import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.Predicate;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.Query;
@@ -24,5 +25,7 @@ public interface BuyerRepository extends CrudRepository<Buyer, Long>,
     List<Buyer> findAll(Predicate predicate, Sort sort);
 
     List<Buyer> findByNameIgnoreCase(String name);
+
+    Buyer findOneByUseForInventory(Boolean useForInventory);
 
 }

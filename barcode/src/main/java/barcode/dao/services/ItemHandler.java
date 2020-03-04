@@ -173,13 +173,6 @@ public class ItemHandler {
         return itemRepository.findOne(id);
     }
 
-    public void addItemFromParsedData (String name) {
-
-        Item item = new Item(name);
-
-        itemRepository.save(item);
-    }
-
     void saveItem(Item item) {
         itemRepository.save(item);
     };

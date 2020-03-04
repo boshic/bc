@@ -1,5 +1,7 @@
 package barcode.dao.entities;
 
+import barcode.dao.entities.basic.BasicOperationEntity;
+import barcode.dao.entities.basic.BasicOperationWithCommentEntity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.querydsl.core.annotations.QueryInit;
@@ -7,15 +9,10 @@ import barcode.dao.entities.embeddable.Comment;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
-import java.util.Date;
 import java.util.List;
 
-//@Config(entityAccessors=true)
 @Entity
-public class SoldItem {
-    @Id
-    @GeneratedValue(strategy= GenerationType.AUTO)
-    private Long id;
+public class SoldItem extends BasicOperationWithCommentEntity {
 
     @ManyToOne
     @JoinColumn(name = "user_id")
@@ -41,16 +38,14 @@ public class SoldItem {
 
     @Column(name = "sum", columnDefinition="Decimal(12,2) default '0.00'")
     private BigDecimal sum;
-
-    @Column(name = "comment", nullable = false, columnDefinition="varchar(2500) COLLATE utf8_general_ci")
-    private String comment;
-
-    @ElementCollection
-    @JsonIgnore
-    @JsonProperty("comments")
-    private List<Comment> comments;
-
-    private Date date;
+//
+//    @Column(name = "comment", nullable = false, columnDefinition="varchar(2500) COLLATE utf8_general_ci")
+//    private String comment;
+//
+//    @ElementCollection
+//    @JsonIgnore
+//    @JsonProperty("comments")
+//    private List<Comment> comments;
 
     @Column(columnDefinition="Decimal(19,3)")
     private BigDecimal quantity;
@@ -69,7 +64,7 @@ public class SoldItem {
 
     public SoldItem() {}
     public SoldItem(String comment) {
-        this.comment = comment;
+        super(comment);
     }
     public SoldItem(ComingItem coming, BigDecimal price, BigDecimal quantity, BigDecimal availQuantityByEan) {
         this.coming = coming;
@@ -78,18 +73,8 @@ public class SoldItem {
         this.availQuantityByEan = availQuantityByEan;
     }
 
-    public Long getId() {
-        return id;
-    }
-    public void setId(Long id) {
-        this.id = id;
-    }
-
     public BigDecimal getPrice() { return price; }
     public void setPrice(BigDecimal surname) { this.price = surname;	}
-
-    public Date getDate() { return date; }
-    public void setDate(Date date) { this.date = date; }
 
     public BigDecimal getQuantity() {return quantity;}
     public void setQuantity(BigDecimal quantity) {this.quantity = quantity;}
@@ -105,14 +90,14 @@ public class SoldItem {
 
     public Buyer getBuyer() {return this.buyer;}
     public void setBuyer(Buyer buyer) {this.buyer = buyer;}
-
-    public String getComment() {
-        return comment;
-    }
-
-    public void setComment(String comment) {
-        this.comment = comment;
-    }
+//
+//    public String getComment() {
+//        return comment;
+//    }
+//
+//    public void setComment(String comment) {
+//        this.comment = comment;
+//    }
 
     public BigDecimal getAvailQuantityByEan() {
         return availQuantityByEan;
@@ -121,14 +106,14 @@ public class SoldItem {
     public void setAvailQuantityByEan(BigDecimal availQuantityByEan) {
         this.availQuantityByEan = availQuantityByEan;
     }
-
-    public List<Comment> getComments() {
-        return comments;
-    }
-
-    public void setComments(List<Comment> comments) {
-        this.comments = comments;
-    }
+//
+//    public List<Comment> getComments() {
+//        return comments;
+//    }
+//
+//    public void setComments(List<Comment> comments) {
+//        this.comments = comments;
+//    }
 
     public BigDecimal getVat() {
         return vat;

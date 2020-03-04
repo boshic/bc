@@ -1,38 +1,17 @@
 package barcode.dao.entities;
 
+import barcode.dao.entities.basic.BasicNamedEntity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
 import java.util.Set;
 
 @Entity
-public class ItemSection {
-
-    @Id
-    @GeneratedValue(strategy= GenerationType.AUTO)
-    private Long id;
-
-    private String name;
+public class ItemSection extends BasicNamedEntity{
 
     @OneToMany(mappedBy = "section", cascade = CascadeType.ALL)
     @JsonIgnore
     private Set<Item> items;
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
 
     public Set<Item> getItems() {
         return items;
@@ -46,7 +25,7 @@ public class ItemSection {
 
     public ItemSection(String name) {
 
-        this.name = name;
+        super(name);
     }
 
     @Override

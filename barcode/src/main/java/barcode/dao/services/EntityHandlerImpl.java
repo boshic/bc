@@ -26,6 +26,7 @@ public class EntityHandlerImpl implements EntityHandler{
     static final String INSUFFICIENT_QUANTITY_OF_GOODS = "Неудачно! Не хватает количества товара! ";
     static final String SALE_COMPLETED_SUCCESSFULLY = "Продажа завершена успешно";
     static final String MOVE_COMPLETED_SUCCESSFULLY = "Перемещение завершено успешно";
+    static final String DATE_CHANGED = "Изменена дата";
     static final String SALE_COMMENT = "Продажа";
     static final String MOVE_COMMENT  = "Перемещение";
     static final String RETURN_COMMENT = "Возврат";

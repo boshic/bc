@@ -45,9 +45,10 @@ let soldPaneConfig =
             config.modalFactory.openModal(undefined, [row], $s.textEditModalData);
         },
         makeReturn: ($s, config) => {
-            let row = angular.extend($s.rows[config.index], {comment: '', commentCause:'Возврат'});
+            let row = angular.extend($s.rows[config.index],
+                {comment: '', commentCause:'Возврат', item: $s.rows[config.index].coming.item});
             $s.quantityChangerModalCloseWhenSellingReturns = () => {
-                if(confirm("Подтвердите возврат"))
+                if(confirm("Подтвердите возврат") && row.quantity > 0)
                     config.httpService.addItem({data: row, url: 'returnSoldItem', requestParams: $s.requestParams})
                         .then(
                             (resp) => {

@@ -1,5 +1,7 @@
 package barcode.dao.entities;
 
+import barcode.dao.entities.basic.BasicOperationEntity;
+import barcode.dao.entities.basic.BasicOperationWithCommentEntity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import barcode.dao.entities.embeddable.Comment;
@@ -11,11 +13,7 @@ import java.util.List;
 import java.util.Set;
 
 @Entity
-public class ComingItem {
-
-    @Id
-    @GeneratedValue(strategy= GenerationType.AUTO)
-    private Long id;
+public class ComingItem extends BasicOperationWithCommentEntity{
 
     @Column(columnDefinition="Decimal(19,4)")
     @JsonProperty("price")
@@ -32,12 +30,12 @@ public class ComingItem {
 
     @Column(columnDefinition="Decimal(19,3)")
     private BigDecimal currentQuantity;
-    private Date factDate;
-    private Date lastChangeDate;
 
-    @Column(name = "comment", nullable = false,
-            columnDefinition="varchar(2000) COLLATE utf8_general_ci")
-    private String comment;
+    private Date lastChangeDate;
+//
+//    @Column(name = "comment", nullable = false,
+//            columnDefinition="varchar(2000) COLLATE utf8_general_ci")
+//    private String comment;
 
     @ManyToOne
     @JoinColumn(name = "user_id")
@@ -50,11 +48,11 @@ public class ComingItem {
     @ManyToOne
     @JoinColumn(name = "stock_id")
     private Stock stock;
-
-    @ElementCollection
-    @JsonIgnore
-    @JsonProperty("comments")
-    private List<Comment> comments;
+//
+//    @ElementCollection
+//    @JsonIgnore
+//    @JsonProperty("comments")
+//    private List<Comment> comments;
 
     @ManyToOne
     @JoinColumn(name = "item_id")
@@ -98,13 +96,6 @@ public class ComingItem {
         this.lastChangeDate = lastChangeDate;
     }
 
-    public Long getId() {
-        return id;
-    }
-    public void setId(Long id) {
-        this.id = id;
-    }
-
     public BigDecimal getPriceIn() { return priceIn; }
     public void setPriceIn(BigDecimal priceIn) { this.priceIn = priceIn;	}
 
@@ -122,9 +113,6 @@ public class ComingItem {
 
     public Stock getStock() { return stock; }
     public void setStock( Stock stock ) { this.stock = stock; }
-
-    public Date getFactDate() { return factDate; }
-    public void setFactDate(Date date) { this.factDate = date; }
 
     public Date getLastChangeDate() { return lastChangeDate; }
     public void setLastChangeDate(Date date) { this.lastChangeDate = date; }
@@ -147,23 +135,23 @@ public class ComingItem {
     public Set<SoldItem> getSellings() {return this.sellings;}
     public void setSellings(Set<SoldItem> sellings) {this.sellings = sellings;}
 
-    public String getComment() {
-
-        return comment;
-    }
-
-    public void setComment(String comment) {
-
-        this.comment = comment;
-    }
-
-    public List<Comment> getComments() {
-        return comments;
-    }
-
-    public void setComments(List<Comment> comments) {
-        this.comments = comments;
-    }
+//    public String getComment() {
+//
+//        return comment;
+//    }
+//
+//    public void setComment(String comment) {
+//
+//        this.comment = comment;
+//    }
+//
+//    public List<Comment> getComments() {
+//        return comments;
+//    }
+//
+//    public void setComments(List<Comment> comments) {
+//        this.comments = comments;
+//    }
 
     public BigDecimal getSum() {
         return sum;

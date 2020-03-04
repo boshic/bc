@@ -1,5 +1,7 @@
 package barcode.dao.entities;
 
+import barcode.dao.entities.basic.BasicEntity;
+import barcode.dao.entities.basic.BasicNamedEntity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
@@ -9,19 +11,16 @@ import java.util.Set;
 
 @Entity
 @Table(name = "buyer")
-//@NamedQuery(name = "Buyer.findBuyersSortedBySellingsSize",
-//        query = "SELECT b from barcode.dao.entities.Buyer b ORDER BY b.name DESC")
-public class Buyer {
-    @Id
-    @GeneratedValue(strategy= GenerationType.AUTO)
-    private Long id;
-    private String name;
+public class Buyer extends BasicNamedEntity {
 
     @Column(name = "address", nullable = false)
     private String address;
 
     @Column(name = "sell_by_coming_prices", columnDefinition="tinyint(1) default 0")
     private Boolean sellByComingPrices;
+
+    @Column(name = "use_for_inventory", columnDefinition="tinyint(1) default 0")
+    private Boolean useForInventory;
 
     private BigDecimal debt;
 
@@ -45,20 +44,6 @@ public class Buyer {
     private Bank bank;
 
     public Buyer() {}
-
-    public Long getId() {
-        return id;
-    }
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-    public void setName(String name) {
-        this.name = name;
-    }
 
     public BigDecimal getDebt() {return this.debt;}
     public void setDebt(BigDecimal debt) {this.debt = debt;}
@@ -118,6 +103,14 @@ public class Buyer {
 
     public void setSellByComingPrices(Boolean sellByComingPrices) {
         this.sellByComingPrices = sellByComingPrices;
+    }
+
+    public Boolean getUseForInventory() {
+        return useForInventory;
+    }
+
+    public void setUseForInventory(Boolean useForInventory) {
+        this.useForInventory = useForInventory;
     }
 }
 

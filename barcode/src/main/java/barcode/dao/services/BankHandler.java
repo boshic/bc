@@ -21,7 +21,7 @@ public class BankHandler {
 
     private ResponseItem<Bank> update(Bank newBank, Bank bank) {
 
-        ResponseItem<Bank> responseItem = new ResponseItem<Bank>("Добавление нового банка");
+        ResponseItem<Bank> responseItem = new ResponseItem<Bank>();
 
         bank.setName(newBank.getName());
 

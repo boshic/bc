@@ -1,18 +1,13 @@
 package barcode.dao.entities;
 
+import barcode.dao.entities.basic.BasicNamedEntity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
 import java.util.Set;
 
 @Entity
-public class Stock {
-
-    @Id
-    @GeneratedValue(strategy= GenerationType.AUTO)
-    private Long id;
-
-    private String name;
+public class Stock extends BasicNamedEntity{
 
     private boolean allowAll;
 
@@ -44,12 +39,6 @@ public class Stock {
     public void setAllowAll(boolean allowAll) {
         this.allowAll = allowAll;
     }
-
-    public Long getId() {return this.id;}
-    public void setId(Long id) {this.id = id;}
-
-    public String getName() {return this.name;}
-    public void setName(String name) {this.name = name;}
 
     public Set<ComingItem> getComings() {return this.comings;}
     public void setComings(Set<ComingItem> comings) {this.comings = comings;}

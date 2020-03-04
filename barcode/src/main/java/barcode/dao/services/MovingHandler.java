@@ -90,7 +90,7 @@ public ResponseItem makeMovings(Set<SoldItem> movings, Long stockId) {
 
                         newComing.setUser(moving.getUser());
 
-                        newComing.setFactDate(new Date());
+                        newComing.setDate(new Date());
 
                         newComing.setLastChangeDate(new Date());
 
@@ -334,7 +334,7 @@ public ResponseItem addOneMoving(SoldItem moving, Long stockId) {
 
             newComing.setUser(moving.getUser());
 
-            newComing.setFactDate(new Date());
+            newComing.setDate(new Date());
 
             newComing.setLastChangeDate(new Date());
 

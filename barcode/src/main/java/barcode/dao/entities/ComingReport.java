@@ -1,5 +1,6 @@
 package barcode.dao.entities;
 
+import barcode.dao.entities.basic.BasicOperationEntity;
 import barcode.dao.entities.embeddable.ComingReportRow;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -7,17 +8,8 @@ import javax.persistence.*;
 import java.util.Date;
 import java.util.List;
 
-/**
- * Created by xlinux on 30.10.18.
- */
 @Entity
-public class ComingReport {
-
-    @Id
-    @GeneratedValue(strategy= GenerationType.AUTO)
-    private Long id;
-
-    private Date date;
+public class ComingReport extends BasicOperationEntity{
 
     @ManyToOne
     @JoinColumn(name = "user_id")
@@ -36,23 +28,7 @@ public class ComingReport {
 
     public ComingReport(Date date) {
 
-        this.date = date;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public Date getDate() {
-        return date;
-    }
-
-    public void setDate(Date date) {
-        this.date = date;
+        super(date);
     }
 
     public User getUser() {

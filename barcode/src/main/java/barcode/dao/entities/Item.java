@@ -1,5 +1,7 @@
 package barcode.dao.entities;
 
+import barcode.dao.entities.basic.BasicEntity;
+import barcode.dao.entities.basic.BasicNamedEntity;
 import barcode.dao.entities.embeddable.InventoryRow;
 import barcode.dao.entities.embeddable.ItemComponent;
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -11,13 +13,8 @@ import java.util.List;
 import java.util.Set;
 
 @Entity // This tells Hibernate to make a table out of this class
-public class Item {
+public class Item extends BasicNamedEntity {
 
-    @Id
-    @GeneratedValue(strategy= GenerationType.AUTO)
-    private Long id;
-    private String name;
-//    private BigDecimal price;
     private String ean;
 
     @Column(name = "alter_name", columnDefinition="varchar(250) COLLATE utf8_general_ci default ''")
@@ -52,29 +49,6 @@ public class Item {
     @ElementCollection
     @JsonProperty("inventoryRows")
     private List<InventoryRow> inventoryRows;
-
-//    @Column(name = "can_be_composite", columnDefinition="tinyint(1) default 1")
-//    private Boolean canBeComposite;
-
-    public Item () {
-    }
-
-    public Item(String name) {
-        this.name = name;
-    }
-
-    public Long getId() {
-        return id;
-    }
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getName() { return name; }
-    public void setName(String name) { this.name = name; }
-
-//    public BigDecimal getPrice() { return price; }
-//    public void setPrice(BigDecimal surname) { this.price = surname;	}
 
     public String getEan() { return ean; }
     public void setEan(String ean) { this.ean = ean; }
@@ -125,14 +99,6 @@ public class Item {
     public void setComponents(List<ItemComponent> components) {
         this.components = components;
     }
-
-//    public Boolean getCanBeComposite() {
-//        return canBeComposite;
-//    }
-//
-//    public void setCanBeComposite(Boolean canBeComposite) {
-//        this.canBeComposite = canBeComposite;
-//    }
 
     public String getAlterName() {
         return alterName;

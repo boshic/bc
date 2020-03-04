@@ -8,10 +8,10 @@ import barcode.dto.ResponseItem;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 @Service
@@ -23,22 +23,37 @@ public class BuyerHandler {
     public BuyerHandler(BuyerRepository buyerRepository, BankHandler bankHandler) {
 
         this.bankHandler = bankHandler;
-
         this.buyerRepository = buyerRepository;
     }
 
     private ResponseItem<Buyer> update(Buyer newBuyer, Buyer buyer) {
         newBuyer.setName(buyer.getName());
-        newBuyer.setDebt(buyer.getDebt());
-        newBuyer.setAccount(buyer.getAccount());
+        newBuyer.setDebt(buyer.getDebt() == null ? BigDecimal.ZERO : buyer.getDebt());
+        newBuyer.setAccount(buyer.getAccount() == null? "" : buyer.getAccount());
         newBuyer.setBank(bankHandler.getCheckedItem(buyer.getBank()));
         newBuyer.setUnp(buyer.getUnp() == null ? "" : buyer.getUnp());
         newBuyer.setAddress(buyer.getAddress());
-        newBuyer.setDiscount(buyer.getDiscount());
+        newBuyer.setDiscount(buyer.getDiscount() == null ? 0 : buyer.getDiscount());
         newBuyer.setSellByComingPrices(buyer.getSellByComingPrices() == null ? false : buyer.getSellByComingPrices());
+        newBuyer.setUseForInventory(checkAndGetInventorySign(buyer.getUseForInventory()));
         newBuyer.setLastPayDate(new Date());
         buyerRepository.save(newBuyer);
         return new ResponseItem<Buyer>("Покупатель добавлен/изменен ", true , newBuyer);
+    }
+
+    private synchronized Boolean checkAndGetInventorySign(Boolean useForInventory) {
+
+        if(useForInventory == null)
+            return false;
+
+        if(useForInventory) {
+            Buyer buyer = buyerRepository.findOneByUseForInventory(true);
+            if(buyer != null)
+                buyer.setUseForInventory(false);
+            return true;
+        }
+
+        return useForInventory;
     }
 
     public ResponseItem<Buyer> addBuyer(Buyer buyer) {
@@ -89,7 +104,7 @@ public class BuyerHandler {
                 .collect(Collectors.toList());
     }
 
-    public Buyer getBuyerByName(String name) {
+    Buyer getBuyerByName(String name) {
         List<Buyer> result = buyerRepository.findByNameIgnoreCase(name);
         if(result.size() > 0) {
             return result.get(0);

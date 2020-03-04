@@ -1,5 +1,6 @@
 package barcode.dao.entities;
 
+import barcode.dao.entities.basic.BasicOperationWithCommentEntity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import barcode.dao.entities.embeddable.Comment;
@@ -13,13 +14,7 @@ import java.util.List;
 
 
 @Entity
-public class Invoice {
-
-    @Id
-    @GeneratedValue(strategy= GenerationType.AUTO)
-    private Long id;
-
-    private Date date;
+public class Invoice extends BasicOperationWithCommentEntity {
 
     @ManyToOne
     @JoinColumn(name = "user_id")
@@ -37,10 +32,10 @@ public class Invoice {
     @JsonProperty("rows")
     private List<InvoiceRow> invoiceRows;
 
-    @ElementCollection
-    @JsonIgnore
-    @JsonProperty("comments")
-    private List<Comment> comments;
+//    @ElementCollection
+//    @JsonIgnore
+//    @JsonProperty("comments")
+//    private List<Comment> comments;
 
     @Column(name = "sum", columnDefinition="Decimal(12,2) default '0.00'")
     private BigDecimal sum;
@@ -48,54 +43,27 @@ public class Invoice {
     @Column(name = "is_deleted", columnDefinition="tinyint(1) default 0")
     private Boolean isDeleted;
 
-
-//    @Column(name = "comment", nullable = false)
-//    @Column(name = "comment", columnDefinition="varchar(2000) COLLATE utf8_general_ci default ''")
-    @Transient
-    private String comment = "";
-
-//    @Column(name = "has_stamp", columnDefinition="bit(1) default 0")
-//    private Boolean hasStamp;
-
     public BigDecimal getSumOfRows() {
 
         BigDecimal sum = BigDecimal.ZERO;
 
         for (InvoiceRow invoiceRow: getInvoiceRows())
             sum = sum.add(invoiceRow.getSum());
-//            sum = sum.add(invoiceRow.getQuantity().multiply(invoiceRow.getPrice())).setScale(2, BigDecimal.ROUND_HALF_UP);
 
         return sum;
     }
 
-
     public Invoice() {}
+
     public Invoice(Date date) {
-        this.comments = new ArrayList<>();
-        this.date = date;
+        super(date);
     }
 
     public Invoice(Date date, Stock stock, Buyer buyer, List<InvoiceRow> invoiceRows) {
-        this(date);
+        super(date);
         this.stock = stock;
         this.buyer = buyer;
         this.invoiceRows = invoiceRows;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public Date getDate() {
-        return date;
-    }
-
-    public void setDate(Date date) {
-        this.date = date;
     }
 
     public User getUser() {
@@ -122,28 +90,12 @@ public class Invoice {
         this.buyer = buyer;
     }
 
-    public String getComment() {
-        return comment;
-    }
-
-    public void setComment(String comment) {
-        this.comment = comment;
-    }
-
     public Stock getStock() {
         return stock;
     }
 
     public void setStock(Stock stock) {
         this.stock = stock;
-    }
-
-    public List<Comment> getComments() {
-        return comments;
-    }
-
-    public void setComments(List<Comment> comments) {
-        this.comments = comments;
     }
 
     public BigDecimal getSum() {

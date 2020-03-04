@@ -1,5 +1,7 @@
 package barcode.dao.services;
 
+import barcode.dao.entities.basic.BasicOperationEntity;
+import barcode.dao.entities.embeddable.Comment;
 import barcode.dao.entities.embeddable.InvoiceRow;
 import barcode.dao.entities.Invoice;
 import barcode.dao.entities.QInvoice;
@@ -12,6 +14,7 @@ import barcode.dto.*;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -25,6 +28,8 @@ public class InvoiceHandler extends EntityHandlerImpl {
     public static QInvoice qInvoice = QInvoice.invoice;
 
     private static final String NEW_INVOICE_ADDED = "добавлен отчет";
+
+    private static final String INVOICE_CHANGED = "добавлен изменен";
 
     private static final String WRITE_OFF_CAUSE = "причина списания";
 
@@ -69,14 +74,22 @@ public class InvoiceHandler extends EntityHandlerImpl {
         if(newInvoice.getDeleted() == null)
             newInvoice.setDeleted(false);
 
-        if(invoice.getComments() != null)
-            newInvoice.getComments().addAll(invoice.getComments());
+        if(invoice.getId() == null) {
+
+            newInvoice.setComments(invoice.getComments() != null ? invoice.getComments() : new ArrayList<>());
+            newInvoice.setComment(
+                    this.buildComment(newInvoice.getComments(), invoice.getComment(),
+                            userHandler.checkUser(invoice.getUser(), null).getFullName(),
+                            NEW_INVOICE_ADDED)
+            );
+        }
         else
             newInvoice.setComment(
-                this.buildComment(newInvoice.getComments(), invoice.getComment() ,
-                        userHandler.checkUser(invoice.getUser(), null ).getFullName(),
-                        NEW_INVOICE_ADDED)
+                    this.buildComment(newInvoice.getComments(), invoice.getComment(),
+                            userHandler.checkUser(invoice.getUser(), null ).getFullName(),
+                            INVOICE_CHANGED)
             );
+
 
         invoiceRepository.save(newInvoice);
 
@@ -85,9 +98,9 @@ public class InvoiceHandler extends EntityHandlerImpl {
 
     public ResponseItem<Invoice> addInvoice(Invoice invoice) {
 
-        Invoice newInvoice = new Invoice(new Date());
+//        Invoice newInvoice = new Invoice(new Date());
 
-        return update(newInvoice, invoice);
+        return update(new Invoice(new Date()), invoice);
     }
 
     public Invoice getWriteOffActById(Long id) {
@@ -101,17 +114,7 @@ public class InvoiceHandler extends EntityHandlerImpl {
 
     public Invoice getItemById(Long id) {
 
-        Invoice invoice = invoiceRepository.findOne(id);
-
-//        invoice.setComment(
-//                this.buildComment(invoice.getComments(), invoice.getComment() ,
-//                        userHandler.checkUser(invoice.getUser(), null ).getFullName(),
-//                        "выдан отчет")
-//        );
-//
-//        invoiceRepository.save(invoice);
-
-        return invoice;
+        return invoiceRepository.findOne(id);
     }
 
 //    public Invoice get
@@ -215,11 +218,12 @@ public class InvoiceHandler extends EntityHandlerImpl {
 
         if(sellings.size() > 0) {
 
-            Invoice invoice = new Invoice(new Date(), filter.getStock(), filter.getBuyer(), new ArrayList<InvoiceRow>());
-
-            this.buildComment(invoice.getComments(), "",
-                    userHandler.checkUser(invoice.getUser(), null ).getFullName(),
-                    NEW_INVOICE_ADDED);
+            Invoice invoice = new Invoice(new Date(),
+                    filter.getStock(), filter.getBuyer(), new ArrayList<InvoiceRow>());
+//
+//            this.buildComment(invoice.getComments(), "",
+//                    userHandler.checkUser(invoice.getUser(), null ).getFullName(),
+//                    NEW_INVOICE_ADDED);
 
             for(SoldItem soldItem: sellings)
                 if(soldItem.getQuantity().compareTo(BigDecimal.ZERO) > 0)
@@ -238,7 +242,8 @@ public class InvoiceHandler extends EntityHandlerImpl {
 
         if(sellings.size() > 0) {
 
-            Invoice invoice = new Invoice(new Date(), filter.getStock(), filter.getBuyer(), new ArrayList<InvoiceRow>());
+            Invoice invoice = new Invoice(new Date(),
+                    filter.getStock(), filter.getBuyer(), new ArrayList<InvoiceRow>());
 
             String comment = "с " + DATE_FORMAT_WO_TIME.format(filter.getFromDate()) + " по " +
                     DATE_FORMAT_WO_TIME.format(filter.getToDate());
@@ -258,6 +263,28 @@ public class InvoiceHandler extends EntityHandlerImpl {
 
             return addInvoice(invoice).getEntityItem().getId();
         }
+
+        return null;
+    }
+
+//    <K extends BasicOperationEntity> void changeDateTest(Long id, Date newDate, CrudRepository<K, Long> repository) {
+//
+//        K item = repository.findOne(id);
+//
+//    }
+
+    public synchronized ResponseItem<InvoiceHeader> changeDate(InvoiceHeader invoiceHeader) {
+
+        Invoice changedInvoice = invoiceRepository.findOne(invoiceHeader.getId());
+
+        changedInvoice.setComment(
+                this.buildComment(changedInvoice.getComments(), "",
+                        userHandler.getCurrentUser().getFullName(), DATE_CHANGED)
+        );
+
+        changedInvoice.setDate(invoiceHeader.getDocDate());
+
+        invoiceRepository.save(changedInvoice);
 
         return null;
     }

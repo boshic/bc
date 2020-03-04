@@ -78,4 +78,9 @@ public class InvoiceController {
         invoiceHandler.deleteItem(id);
     }
 
+    @RequestMapping(value = "/changeInvoiceDate", method = RequestMethod.POST)
+    public @ResponseBody ResponseItem changeSoldItemDate(@RequestBody InvoiceHeader invoiceHeader) {
+        return this.invoiceHandler.changeDate(invoiceHeader);
+    }
+
 }

@@ -1,5 +1,6 @@
 package barcode.dao.entities;
 
+import barcode.dao.entities.basic.BasicOperationEntity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -8,14 +9,7 @@ import java.util.Date;
 import java.util.Set;
 
 @Entity
-public class Document {
-    @Id
-    @GeneratedValue(strategy= GenerationType.AUTO)
-    private Long id;
-
-    @JsonProperty("date")
-//    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd.MM.yyyy", timezone = "UTC")
-    private Date date;
+public class Document extends BasicOperationEntity{
 
     private String name;
 
@@ -26,12 +20,6 @@ public class Document {
     @ManyToOne
     @JoinColumn(name = "supplier_id")
     private Supplier supplier;
-
-    public Long getId() {return this.id;}
-    public void setId(Long id) {this.id = id;}
-
-    public Date getDate() {return this.date;}
-    public void setDate(Date date) {this.date = date;}
 
     public String getName() {return this.name;}
     public void setName(String name) {this.name = name;}

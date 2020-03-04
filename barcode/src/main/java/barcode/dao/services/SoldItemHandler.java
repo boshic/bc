@@ -405,9 +405,7 @@ public class SoldItemHandler extends EntityHandlerImpl {
         SoldItem changedSoldItem = soldItemsRepository.findOne(soldItem.getId());
 
         changedSoldItem.setComment(
-                this.buildComment(changedSoldItem.getComments(), "",
-                        userHandler.getCurrentUser().getFullName(),
-                        "Изменена дата")
+                this.buildComment(changedSoldItem.getComments(), "", userHandler.getCurrentUser().getFullName(), DATE_CHANGED)
         );
 
         changedSoldItem.setDate(soldItem.getDate());

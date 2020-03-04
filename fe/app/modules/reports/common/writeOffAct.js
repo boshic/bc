@@ -9,6 +9,7 @@ import '../../../factories/pane-factory';
 import '../../../modules/modals/modals';
 import '../../../modules/common/text-utils';
 import '../../../modules/inputs/inputs';
+import '../../../modules/reports/print-menu';
 import '../../../filters/num-2-phrase';
 
 import '../../../../css/writeOffAct.css';
@@ -35,12 +36,13 @@ let openTextEditModal = ($s, index, modalFactory) => {
             'modals',
             'num-2-phrase',
             'pane-factory',
+            'print-menu',
             'invoice-factory',
             'common-http-service'
         ])
             .controller("ctrlr", ['invoiceFactory', '$location', '$window', 'httpService', '$scope',
-                '$timeout', 'modalFactory',
-                (invoiceFactory, $location, $window, httpService, $scope, $timeout, modalFactory) => {
+                '$timeout', 'modalFactory', 'printFactory',
+                (invoiceFactory, $location, $window, httpService, $scope, $timeout, modalFactory, printFactory) => {
 
                     $scope.reportData = {};
                     $scope.modalData = {hidden : true, row: {}};

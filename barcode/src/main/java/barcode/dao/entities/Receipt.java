@@ -1,5 +1,6 @@
 package barcode.dao.entities;
 
+import barcode.dao.entities.basic.BasicOperationEntity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
@@ -11,10 +12,7 @@ import java.util.Set;
  * Created by xlinux on 27.11.19.
  */
 @Entity
-public class Receipt {
-    @Id
-    @GeneratedValue(strategy= GenerationType.AUTO)
-    private Long id;
+public class Receipt extends BasicOperationEntity{
 
     @Column(name = "sum", columnDefinition="Decimal(12,2) default '0.00'")
     private BigDecimal sum;
@@ -38,21 +36,11 @@ public class Receipt {
 
     public Receipt(Date date, BigDecimal sum, Integer numberOfPositions, User user, Buyer buyer) {
 
-        this.date = date;
+        super(date);
         this.sum = sum;
         this.numberOfPositions = numberOfPositions;
         this.user = user;
         this.buyer = buyer;
-    }
-
-    private Date date;
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
     }
 
     public BigDecimal getSum() {
@@ -61,14 +49,6 @@ public class Receipt {
 
     public void setSum(BigDecimal sum) {
         this.sum = sum;
-    }
-
-    public Date getDate() {
-        return date;
-    }
-
-    public void setDate(Date date) {
-        this.date = date;
     }
 
     public Integer getNumberOfPositions() {

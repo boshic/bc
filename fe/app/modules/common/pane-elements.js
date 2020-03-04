@@ -256,6 +256,34 @@ angular.module('pane-elements', [])
                 "ng-keydown='$ctrl.keypressHandler()($event)'/>",
             controller: function() {}
         })
+     .component( "paneDateChangeControl", {
+        bindings: {
+            user: '<',
+            row: '=',
+            changeItemDate : '&',
+            requestsQuantity:'<'
+        },
+        template:
+        "<span style='position: absolute; cursor: pointer;'" +
+            "ng-if='(($ctrl.user.role == \"ROLE_ADMIN\" || $ctrl.user.actsAllowed.indexOf(allowedActRequired) > -1) " +
+                "&& (($ctrl.row.quantity > 0) || (!$ctrl.row.deleted)))'" +
+            "ng-show = '$ctrl.requestsQuantity === 0'>" +
+            "<div class='dropdown'>" +
+                "<span class='glyphicon glyphicon-pencil'></span>" +
+                    "<ul class='dropdown-menu hoverable comments-container sip-date-changer'>" +
+                        "<li>" +
+                            "<input date-input class='form-control' type='datetime-local' ng-model='$ctrl.row.date'/>" +
+                            "<div>" +
+                                "<button class='glyphicon glyphicon-ok sip-date-changer-ok-btn'" +
+                                    "ng-click='$ctrl.changeItemDate()($ctrl.row)'" +
+                                    "title='Изменить дату!'/>" +
+                            "</div>" +
+                        "</li>" +
+                    "</ul>" +
+            "</div>" +
+        "</span>",
+        controller: function() {}
+        })
         .component( "sortingRow", {
                 bindings: {
                     listeningField: '<',
