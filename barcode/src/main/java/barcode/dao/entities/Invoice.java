@@ -1,14 +1,11 @@
 package barcode.dao.entities;
 
 import barcode.dao.entities.basic.BasicOperationWithCommentEntity;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import barcode.dao.entities.embeddable.Comment;
 import barcode.dao.entities.embeddable.InvoiceRow;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -31,11 +28,6 @@ public class Invoice extends BasicOperationWithCommentEntity {
     @ElementCollection
     @JsonProperty("rows")
     private List<InvoiceRow> invoiceRows;
-
-//    @ElementCollection
-//    @JsonIgnore
-//    @JsonProperty("comments")
-//    private List<Comment> comments;
 
     @Column(name = "sum", columnDefinition="Decimal(12,2) default '0.00'")
     private BigDecimal sum;

@@ -1,15 +1,12 @@
 package barcode.dao.entities;
 
-import barcode.dao.entities.basic.BasicOperationEntity;
 import barcode.dao.entities.basic.BasicOperationWithCommentEntity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import barcode.dao.entities.embeddable.Comment;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
 import java.util.Date;
-import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -32,10 +29,6 @@ public class ComingItem extends BasicOperationWithCommentEntity{
     private BigDecimal currentQuantity;
 
     private Date lastChangeDate;
-//
-//    @Column(name = "comment", nullable = false,
-//            columnDefinition="varchar(2000) COLLATE utf8_general_ci")
-//    private String comment;
 
     @ManyToOne
     @JoinColumn(name = "user_id")
@@ -48,11 +41,6 @@ public class ComingItem extends BasicOperationWithCommentEntity{
     @ManyToOne
     @JoinColumn(name = "stock_id")
     private Stock stock;
-//
-//    @ElementCollection
-//    @JsonIgnore
-//    @JsonProperty("comments")
-//    private List<Comment> comments;
 
     @ManyToOne
     @JoinColumn(name = "item_id")
@@ -134,24 +122,6 @@ public class ComingItem extends BasicOperationWithCommentEntity{
 
     public Set<SoldItem> getSellings() {return this.sellings;}
     public void setSellings(Set<SoldItem> sellings) {this.sellings = sellings;}
-
-//    public String getComment() {
-//
-//        return comment;
-//    }
-//
-//    public void setComment(String comment) {
-//
-//        this.comment = comment;
-//    }
-//
-//    public List<Comment> getComments() {
-//        return comments;
-//    }
-//
-//    public void setComments(List<Comment> comments) {
-//        this.comments = comments;
-//    }
 
     public BigDecimal getSum() {
         return sum;

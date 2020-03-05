@@ -1,6 +1,7 @@
 package barcode.dao.services;
 
 import barcode.dao.entities.basic.BasicOperationEntity;
+import barcode.dao.entities.basic.BasicOperationWithCommentEntity;
 import barcode.dao.entities.embeddable.Comment;
 import barcode.dao.entities.embeddable.InvoiceRow;
 import barcode.dao.entities.Invoice;
@@ -33,7 +34,7 @@ public class InvoiceHandler extends EntityHandlerImpl {
 
     private static final String WRITE_OFF_CAUSE = "причина списания";
 
-    private static final String WRITE_OFF_ACT_ADDED = "добавлен акт на списание";
+    private static final String WRITE_OFF_ACT_ADDED = "акт на списание";
 
     private static InvoicesPredicatesBuilder ipb = new InvoicesPredicatesBuilder();
 
@@ -267,24 +268,10 @@ public class InvoiceHandler extends EntityHandlerImpl {
         return null;
     }
 
-//    <K extends BasicOperationEntity> void changeDateTest(Long id, Date newDate, CrudRepository<K, Long> repository) {
-//
-//        K item = repository.findOne(id);
-//
-//    }
+    public ResponseItem<InvoiceHeader> changeDate(InvoiceHeader invoiceHeader) {
 
-    public synchronized ResponseItem<InvoiceHeader> changeDate(InvoiceHeader invoiceHeader) {
-
-        Invoice changedInvoice = invoiceRepository.findOne(invoiceHeader.getId());
-
-        changedInvoice.setComment(
-                this.buildComment(changedInvoice.getComments(), "",
-                        userHandler.getCurrentUser().getFullName(), DATE_CHANGED)
-        );
-
-        changedInvoice.setDate(invoiceHeader.getDocDate());
-
-        invoiceRepository.save(changedInvoice);
+        this.changeDate(invoiceHeader.getId(), invoiceHeader.getDocDate(),
+                invoiceRepository, userHandler.getCurrentUser().getFullName());
 
         return null;
     }

@@ -3,8 +3,10 @@ package barcode.dao.services;
 
 import barcode.api.EntityHandler;
 import barcode.dao.entities.Item;
+import barcode.dao.entities.basic.BasicOperationWithCommentEntity;
 import barcode.dao.entities.embeddable.Comment;
 import barcode.dao.utils.ComingItemFilter;
+import org.springframework.data.repository.CrudRepository;
 
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
@@ -110,5 +112,19 @@ public class EntityHandlerImpl implements EntityHandler{
     String getInsufficientQuantityOfGoodsMessage(BigDecimal reqQuant, BigDecimal availQuant, String itemName) {
         return  INSUFFICIENT_QUANTITY_OF_GOODS + reqQuant + " из " + availQuant + COMMON_UNIT + itemName;
     }
+
+
+    synchronized <K extends BasicOperationWithCommentEntity>
+    void changeDate(Long id, Date newDate, CrudRepository<K, Long> repository, String username) {
+
+        K item = repository.findOne(id);
+
+        item.setComment(this.buildComment(item.getComments(), "", username, DATE_CHANGED));
+
+        item.setDate(newDate);
+
+        repository.save(item);
+    }
+
 
 }

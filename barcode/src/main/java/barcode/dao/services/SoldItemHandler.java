@@ -400,17 +400,10 @@ public class SoldItemHandler extends EntityHandlerImpl {
         return new ResponseBySoldItems(NOTHING_FOUND, new ArrayList<>(), false, 0);
     }
 
-    public synchronized ResponseItem<SoldItem> changeDate(SoldItem soldItem) {
+    public ResponseItem<SoldItem> changeDate(SoldItem soldItem) {
 
-        SoldItem changedSoldItem = soldItemsRepository.findOne(soldItem.getId());
-
-        changedSoldItem.setComment(
-                this.buildComment(changedSoldItem.getComments(), "", userHandler.getCurrentUser().getFullName(), DATE_CHANGED)
-        );
-
-        changedSoldItem.setDate(soldItem.getDate());
-
-        soldItemsRepository.save(changedSoldItem);
+        this.changeDate(soldItem.getId(), soldItem.getDate(),
+                soldItemsRepository, userHandler.getCurrentUser().getFullName());
 
         return null;
     }

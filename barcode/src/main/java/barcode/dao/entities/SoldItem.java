@@ -1,15 +1,11 @@
 package barcode.dao.entities;
 
-import barcode.dao.entities.basic.BasicOperationEntity;
-import barcode.dao.entities.basic.BasicOperationWithCommentEntity;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.querydsl.core.annotations.QueryInit;
-import barcode.dao.entities.embeddable.Comment;
 
+import barcode.dao.entities.basic.BasicOperationWithCommentEntity;
+import com.querydsl.core.annotations.QueryInit;
 import javax.persistence.*;
 import java.math.BigDecimal;
-import java.util.List;
+
 
 @Entity
 public class SoldItem extends BasicOperationWithCommentEntity {
@@ -38,14 +34,6 @@ public class SoldItem extends BasicOperationWithCommentEntity {
 
     @Column(name = "sum", columnDefinition="Decimal(12,2) default '0.00'")
     private BigDecimal sum;
-//
-//    @Column(name = "comment", nullable = false, columnDefinition="varchar(2500) COLLATE utf8_general_ci")
-//    private String comment;
-//
-//    @ElementCollection
-//    @JsonIgnore
-//    @JsonProperty("comments")
-//    private List<Comment> comments;
 
     @Column(columnDefinition="Decimal(19,3)")
     private BigDecimal quantity;
@@ -90,14 +78,6 @@ public class SoldItem extends BasicOperationWithCommentEntity {
 
     public Buyer getBuyer() {return this.buyer;}
     public void setBuyer(Buyer buyer) {this.buyer = buyer;}
-//
-//    public String getComment() {
-//        return comment;
-//    }
-//
-//    public void setComment(String comment) {
-//        this.comment = comment;
-//    }
 
     public BigDecimal getAvailQuantityByEan() {
         return availQuantityByEan;
@@ -106,14 +86,6 @@ public class SoldItem extends BasicOperationWithCommentEntity {
     public void setAvailQuantityByEan(BigDecimal availQuantityByEan) {
         this.availQuantityByEan = availQuantityByEan;
     }
-//
-//    public List<Comment> getComments() {
-//        return comments;
-//    }
-//
-//    public void setComments(List<Comment> comments) {
-//        this.comments = comments;
-//    }
 
     public BigDecimal getVat() {
         return vat;
