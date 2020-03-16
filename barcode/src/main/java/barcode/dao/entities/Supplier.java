@@ -1,13 +1,13 @@
 package barcode.dao.entities;
 
-import barcode.dao.entities.basic.BasicNamedEntity;
+import barcode.dao.entities.basic.BasicCounterPartyEntity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
 import java.util.Set;
 
 @Entity
-public class Supplier extends BasicNamedEntity{
+public class Supplier extends BasicCounterPartyEntity {
 
     @OneToMany(mappedBy = "supplier", cascade = CascadeType.ALL)
     @JsonIgnore

@@ -1,0 +1,41 @@
+<!--<div ng-show='modalVisible' class='trans-layer'></div>-->
+<!--<div class='modal-container-addeditsupplier' ng-class='{modalactive: modalVisible}'>-->
+    <!--<div class='wrapper'>-->
+        <!--<item-add-edit-controls -->
+        <!--append-data='appendData()' close-modal='closeModal()' item-id='item.id'-->
+        <!--is-ok-active='item.name.length>0'>-->
+        <!--</item-add-edit-controls>-->
+        <!--<div>-->
+            <!--<item-add-edit-name -->
+                <!--name='item.name' requests-quantity='requestParams.requestsQuantity'>-->
+            <!--</item-add-edit-name>-->
+
+        <!--</div>-->
+    <!--</div>-->
+<!--</div>-->
+<div ng-show='modalVisible' class='trans-layer'></div>
+<div class='modal-container-addeditsupplier' ng-class='{ modalactive: modalVisible }'>
+    <div class="wrapper">
+        <item-add-edit-controls
+                append-data='appendData()' close-modal='closeModal()' item-id='item.id'
+                is-ok-active='item.name.length > 0'>
+        </item-add-edit-controls>
+        <div>
+            <div>
+                <common-item-text-input
+                        text="item.name" description="наименование"
+                        requests-quantity = "requestParams.requestsQuantity">
+                </common-item-text-input>
+            </div>
+            <div style='display: flex;' ng-show = 'user.role == "ROLE_ADMIN"'>
+                <input style='zoom: 1.5; position: absolute; margin: auto;'
+                       type='checkbox'
+                       ng-model='item.useForInventory'/>
+                <label style='margin-left: 20px; color: coral;'>
+                    Использовать для инвентаризации: {{(item.useForInventory) ? "Да" : "Нет" }}
+                </label>
+            </div>
+
+        </div>
+    </div>
+</div>

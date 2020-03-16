@@ -19,6 +19,7 @@ import addEditItemTpl from './add-edit-item.html';
 import itemSectionInputTpl from './item-section-input.html';
 import addEditItemSectionTpl from './add-edit-item-section.html';
 import supplierInputTpl from './supplier-input.html';
+import addEditSupplierTpl from './add-edit-supplier.html';
 
 let commonItemCtrlr = ($s, itemFactory, itemConfig) => {
 
@@ -534,22 +535,10 @@ angular.module('inputs', ['asyncFilter'])
     .directive( "addEditSupplier", () => {
         return {
             restrict: 'E',
-            scope: { item: "=supplier", modalVisible: "=", getItems: '&?', requestParams: '='},
+            scope: { item: "=supplier", modalVisible: "=", getItems: '&?',
+                requestParams: '=', user: '=?'},
             transclude: true,
-            template:
-            "<div ng-show='modalVisible' class='trans-layer'></div>" +
-            "<div class='modal-container-addeditsupplier' ng-class='{modalactive: modalVisible}'>" +
-            "<div class='wrapper'>" +
-            "<item-add-edit-controls " +
-                "append-data='appendData()' close-modal='closeModal()' item-id='item.id'" +
-                "is-ok-active='item.name.length>0'>" +
-            "</item-add-edit-controls>" +
-                "<div>" +
-                    "<item-add-edit-name " +
-                        "name='item.name' requests-quantity='requestParams.requestsQuantity'>" +
-                    "</item-add-edit-name>" +
-                "</div>" +
-            "</div>",
+            template: addEditSupplierTpl,
             controller : ($scope, itemFactory) => {
                 return supplierChangeCtrlr($scope, itemFactory);
             }

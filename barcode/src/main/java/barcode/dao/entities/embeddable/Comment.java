@@ -4,6 +4,7 @@ import javax.persistence.Column;
 import javax.persistence.Embeddable;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import java.math.BigDecimal;
 import java.util.Date;
 
 
@@ -26,12 +27,16 @@ public class Comment {
     @Column(name = "date")
     private Date date;
 
+    @Column(name = "quantity", columnDefinition="Decimal(12,2) default '0.00'")
+    private BigDecimal quantity;
+
     public Comment() {}
-    public Comment(String text, String user, String action, Date date) {
+    public Comment(String text, String user, String action, Date date, BigDecimal quantity) {
         this.userName = user;
         this.action = action;
         this.date = date;
         this.text = text;
+        this.quantity = quantity;
     }
 
     public String getText() {

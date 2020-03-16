@@ -1937,3 +1937,9 @@ div.on-pane-totals-container {
     width: 65%;
     text-align: center;
 }
+
+span.comping-pane-ean-on-item-name {
+    font-weight: bold;
+    float: left;
+    font-style: italic;
+}

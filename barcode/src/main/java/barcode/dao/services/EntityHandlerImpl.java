@@ -59,9 +59,9 @@ public class EntityHandlerImpl implements EntityHandler{
                 ((oldComment == null || oldComment.equals("")) ? "" : oldComment + SPACE);
     }
 
-    public String buildComment(List<Comment> comments, String text, String user, String action) {
+    public String buildComment(List<Comment> comments, String text, String user, String action, BigDecimal quantity) {
         if(user.length() > 0)
-            comments.add(new Comment((text == null? "": text), user, action, new Date()));
+            comments.add(new Comment((text == null? "": text), user, action, new Date(), quantity));
         String comment = "";
         comments.sort(Comparator.comparing(Comment::getDate));
         for (Comment c: comments)
@@ -119,7 +119,7 @@ public class EntityHandlerImpl implements EntityHandler{
 
         K item = repository.findOne(id);
 
-        item.setComment(this.buildComment(item.getComments(), "", username, DATE_CHANGED));
+        item.setComment(this.buildComment(item.getComments(), "", username, DATE_CHANGED, BigDecimal.ZERO));
 
         item.setDate(newDate);
 

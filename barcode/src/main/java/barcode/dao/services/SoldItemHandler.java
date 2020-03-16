@@ -1,5 +1,6 @@
 package barcode.dao.services;
 
+import barcode.dao.utils.ComingItemFilter;
 import com.querydsl.core.types.Predicate;
 import barcode.dao.entities.*;
 import barcode.dao.entities.embeddable.Comment;
@@ -215,6 +216,7 @@ public class SoldItemHandler extends EntityHandlerImpl {
                     if (availQuant.compareTo(BigDecimal.ZERO) > 0) { // проверяем на остаток по приходу
 
                         SoldItem newSoldItem = new SoldItem();
+
                         newSoldItem.setComments(new ArrayList<>());
 
                         if(soldItem.getComment() != null)
@@ -224,7 +226,7 @@ public class SoldItemHandler extends EntityHandlerImpl {
                                                     (reqForSell.compareTo(availQuant) > 0) ? availQuant : reqForSell)
                                                     + soldItem.getComment(),
                                             userHandler.checkUser(soldItem.getUser(), null ).getFullName(),
-                                            SALE_COMMENT)
+                                            SALE_COMMENT, newSoldItem.getQuantity())
                             );
 
                         newSoldItem.setAvailQuantityByEan(
@@ -244,7 +246,7 @@ public class SoldItemHandler extends EntityHandlerImpl {
                             newSoldItem.setComment(
                                     this.buildComment(newSoldItem.getComments(), "",
                                             userHandler.getCurrentUser().getFullName(),
-                                            "применена скидка " + discount + "%.")
+                                            "применена скидка " + discount + "%.", newSoldItem.getQuantity())
                             );
 
 
@@ -253,7 +255,7 @@ public class SoldItemHandler extends EntityHandlerImpl {
                                         soldItem.getComment() + " для " + soldItem.getBuyer().getName()
                                                 + getQuantityForComment((reqForSell.compareTo(availQuant) > 0) ? availQuant : reqForSell),
                                         userHandler.checkUser(soldItem.getUser(), null ).getFullName(),
-                                        SALE_COMMENT)
+                                        SALE_COMMENT, coming.getCurrentQuantity())
                         );
 
                         if (reqForSell.compareTo(availQuant) > 0) {
@@ -431,7 +433,7 @@ public class SoldItemHandler extends EntityHandlerImpl {
                         " от " + newSoldItem.getBuyer().getName() +
                                 getQuantityForComment(soldItem.getQuantity())  + soldItem.getComment(),
                         userHandler.checkUser(soldItem.getUser(), null ).getFullName(),
-                        RETURN_COMMENT));
+                        RETURN_COMMENT, comingItem.getCurrentQuantity()));
 
         newSoldItem.setQuantity(newSoldItem.getQuantity().subtract(soldItem.getQuantity()));
 
@@ -444,7 +446,7 @@ public class SoldItemHandler extends EntityHandlerImpl {
                 this.buildComment(newSoldItem.getComments(),
                         getQuantityForComment(soldItem.getQuantity()) + soldItem.getComment(),
                         userHandler.checkUser(soldItem.getUser(), null ).getFullName(),
-                        RETURN_COMMENT));
+                        RETURN_COMMENT, newSoldItem.getQuantity()));
 
         soldItemsRepository.save(newSoldItem);
 
@@ -484,7 +486,7 @@ public ResponseItem addOneSelling(SoldItem soldItem) {
                         soldItem.getComment() + " для " + soldItem.getBuyer().getName()
                                 + getQuantityForComment(soldItem.getQuantity()),
                         userHandler.checkUser(soldItem.getUser(), null ).getFullName(),
-                        SALE_COMMENT)
+                        SALE_COMMENT, comingItem.getCurrentQuantity())
         );
 
         soldItem.setDate(new Date());
@@ -494,7 +496,7 @@ public ResponseItem addOneSelling(SoldItem soldItem) {
                 this.buildComment(soldItem.getComments(), getQuantityForComment(soldItem.getQuantity())
                                 + soldItem.getComment(),
                         userHandler.checkUser(soldItem.getUser(), null ).getFullName(),
-                        SALE_COMMENT)
+                        SALE_COMMENT, soldItem.getQuantity())
         );
 
         soldItem.setPrice(getPriceOfSoldItem(soldItem, comingItem.getPriceIn()));
@@ -523,7 +525,7 @@ public ResponseItem addOneSelling(SoldItem soldItem) {
             soldItem.setComment(
                     this.buildComment(soldItem.getComments(), comment.getText(),
                             userHandler.checkUser(soldItem.getUser(), null ).getFullName(),
-                            comment.getAction())
+                            comment.getAction(), soldItem.getQuantity())
             );
             soldItemsRepository.save(soldItem);
         }
@@ -538,6 +540,48 @@ public ResponseItem addOneSelling(SoldItem soldItem) {
         returnSoldItem(soldItem);
 
         return addSellings(Stream.of(soldItem).collect(Collectors.toList()));
+    }
+
+    public ResponseItem applyInventoryResults(ComingItemFilter filter) {
+
+        List<ComingItem> comings = comingItemHandler.findByFilter(filter).getEntityItems();
+
+        List<SoldItem> sellings = new ArrayList<SoldItem>();
+
+        Buyer buyer = buyerHandler.getBuyerForInventory();
+
+        if(buyer == null)
+            return new ResponseItem("Не задан покупатель для списания излишков!", false);
+
+        comings.forEach(coming -> {
+            if(coming.getQuantity().compareTo(coming.getCurrentQuantity()) > 0) {
+                System.out.println("Недостача");
+
+                sellings.add(new SoldItem(
+                        coming,
+                        coming.getPriceOut(),
+                        coming.getStock().getOrganization().getVatValue(),
+                        coming.getQuantity().subtract(coming.getCurrentQuantity()),
+                        "Списание излишков при инвентаризации",
+                        buyer,
+                        userHandler.getCurrentUser()
+                ));
+
+            }
+
+            if(coming.getCurrentQuantity().compareTo(coming.getQuantity()) > 0) {
+                System.out.println("Излишек");
+            }
+
+
+
+            System.out.println(coming.getItem().getName());
+        });
+
+        if(sellings.size() > 0)
+            addSellings(sellings);
+
+        return new ResponseItem("результаты инвентаризации применены!", true);
     }
 
 }

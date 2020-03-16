@@ -66,6 +66,15 @@ let comingPaneConfig = {
                 },
                 (resp) => {}
             );
+    },
+    applyInventoryResults: ($s, config) => {
+        config.httpService.addItem({data: $s.filter, url: 'applyInventoryResults', requestParams: $s.requestParams})
+            .then(
+                (resp) => {
+                    $s.calcTotalsAndRefresh();
+                    $s.warning = resp.text;
+                }
+            );
     }
 };
 

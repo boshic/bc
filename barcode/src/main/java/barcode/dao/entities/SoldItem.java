@@ -61,6 +61,24 @@ public class SoldItem extends BasicOperationWithCommentEntity {
         this.availQuantityByEan = availQuantityByEan;
     }
 
+    public SoldItem( ComingItem coming,
+                     BigDecimal price,
+                     BigDecimal vat,
+                     BigDecimal quantity,
+                     String comment,
+                     Buyer buyer,
+                     User user) {
+        super(comment);
+        this.coming = coming;
+        this.price = price;
+        this.vat = vat;
+        this.quantity = quantity;
+        this.buyer = buyer;
+        this.user = user;
+
+
+    }
+
     public BigDecimal getPrice() { return price; }
     public void setPrice(BigDecimal surname) { this.price = surname;	}
 

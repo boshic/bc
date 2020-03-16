@@ -17,7 +17,7 @@
     </div>
     <div class="invoice-row-for-printing">
         <span style="font-weight: bold">{{"Заказчик: "}}</span>
-        <span>{{data.buyer.name + ", " + data.buyer.address + ". " + data.comment}}</span>
+        <span>{{data.buyer.name + ", " + data.buyer.address + "."}}</span>
         <span ng-if="data.buyer.unp.length == 9">
             {{", УНП:" + data.buyer.unp}}
         </span>

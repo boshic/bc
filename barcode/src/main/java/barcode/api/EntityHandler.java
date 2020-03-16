@@ -3,6 +3,7 @@ package barcode.api;
 
 import barcode.dao.entities.embeddable.Comment;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 /**
@@ -11,7 +12,7 @@ import java.util.List;
 public interface EntityHandler{
 
     String generateComment(String oldCommentm, String name, String action);
-    String buildComment(List<Comment> comments, String text, String user, String action);
+    String buildComment(List<Comment> comments, String text, String user, String action, BigDecimal quantity);
     String getCommentByAction(List<Comment> comments, String action);
 
 }

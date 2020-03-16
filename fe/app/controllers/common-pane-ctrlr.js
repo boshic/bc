@@ -116,6 +116,10 @@ let commonPaneCtrlr = ($s, filterFactory, paneFactory, printFactory, modalFactor
         config.openQuantityChangerModalInInventoryMode($s, index, modalFactory);
     };
 
+    $s.applyInventoryResults = () => {
+        config.applyInventoryResults($s, {httpService});
+    };
+
 };
 
 module.exports = commonPaneCtrlr;

@@ -256,7 +256,7 @@ angular.module('pane-elements', [])
                 "ng-keydown='$ctrl.keypressHandler()($event)'/>",
             controller: function() {}
         })
-     .component( "paneDateChangeControl", {
+        .component( "paneDateChangeControl", {
         bindings: {
             user: '<',
             row: '=',

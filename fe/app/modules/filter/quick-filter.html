@@ -3,14 +3,16 @@
 <!--</span>-->
 
     <div class="doc-date-pickers">
-    <span>c</span>
+        <span>c</span>
         <!--ng-readonly="filter.calcTotal"-->
-    <input date-input class="form-control" type="date"
-       ng-model="filter.fromDate"/>
-    <span>по</span>
+        <input date-input class="form-control" type="date"
+               ng-readonly = "filter.inventoryModeEnabled"
+                ng-model="filter.fromDate"/>
+        <span>по</span>
         <!--ng-readonly="filter.calcTotal"-->
-    <input date-input class="form-control" type="date"
-       ng-model="filter.toDate"/>
+        <input date-input class="form-control" type="date"
+           ng-readonly = "filter.inventoryModeEnabled"
+        ng-model="filter.toDate"/>
     </div>
 
     <span> {{filter.stock.name}}</span>

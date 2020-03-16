@@ -81,14 +81,14 @@ public class InvoiceHandler extends EntityHandlerImpl {
             newInvoice.setComment(
                     this.buildComment(newInvoice.getComments(), invoice.getComment(),
                             userHandler.checkUser(invoice.getUser(), null).getFullName(),
-                            NEW_INVOICE_ADDED)
+                            NEW_INVOICE_ADDED, BigDecimal.ZERO)
             );
         }
         else
             newInvoice.setComment(
                     this.buildComment(newInvoice.getComments(), invoice.getComment(),
                             userHandler.checkUser(invoice.getUser(), null ).getFullName(),
-                            INVOICE_CHANGED)
+                            INVOICE_CHANGED, BigDecimal.ZERO)
             );
 
 
@@ -251,7 +251,7 @@ public class InvoiceHandler extends EntityHandlerImpl {
 
             this.buildComment(invoice.getComments(), comment,
                     userHandler.checkUser(invoice.getUser(), null ).getFullName(),
-                    WRITE_OFF_ACT_ADDED);
+                    WRITE_OFF_ACT_ADDED, BigDecimal.ZERO);
 
             for(SoldItem soldItem: sellings)
                 if(soldItem.getQuantity().compareTo(BigDecimal.ZERO) > 0)

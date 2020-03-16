@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import barcode.dao.entities.Invoice;
 import barcode.dao.services.EntityHandlerImpl;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -49,7 +50,7 @@ public class DtoInvoice {
 
         this.setStockName(invoice.getStock().getName());
 
-        this.setComment(new EntityHandlerImpl().buildComment(invoice.getComments(), "","",""));
+        this.setComment(new EntityHandlerImpl().buildComment(invoice.getComments(), "","","", BigDecimal.ZERO));
 
         this.setRows(new ArrayList<DtoInvoiceRow>());
     }

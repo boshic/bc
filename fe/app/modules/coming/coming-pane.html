@@ -197,7 +197,7 @@
         </thead>
         <tbody ng-show="rows.length">
             <tr class="hoverable middle-rows"
-                ng-class='{deletedRow: (x.quantity == 0)}'
+                ng-class='{deletedRow: (x.quantity == 0 && !filter.inventoryModeEnabled)}'
                 ng-repeat="x in rows track by $index">
                 <td class="price-data">{{ ($index + 1) + (filter.page - 1)*filter.rowsOnPage }}</td>
                 <td  ng-hide="filter.inventoryModeEnabled">
@@ -220,10 +220,10 @@
                     <div class="dropdown" style="position: absolute;">
                         <span class="glyphicon glyphicon-filter unprintable"></span>
                         <ul class="dropdown-menu hoverable comments-container item-title">
-                            <li class="clickable-filter-value"
-                                ng-click="filter.ean = x.item.ean">
-                                {{x.item.ean}}
-                            </li>
+                            <!--<li class="clickable-filter-value"-->
+                                <!--ng-click="filter.ean = x.item.ean">-->
+                                <!--{{x.item.ean}}-->
+                            <!--</li>-->
                             <phrase-by-word-to-filter
                                     filter="filter.searchString"
                                     comment="x.item.name">
@@ -236,6 +236,10 @@
                     </span>
 
                     <div style="text-align: right; margin-right: 12px;">
+                        <span class="comping-pane-ean-on-item-name clickable-filter-value"
+                              ng-click="filter.ean = x.item.ean">
+                            {{x.item.ean}}
+                        </span>
                         <span class="clickable-filter-value item-additional-info-on-cp"
                               style="margin-left: 3px;"
                               ng-click = 'filter.stock = x.stock'>
@@ -292,23 +296,25 @@
                     </span>
                 </td>
                 <td class="price-data" ng-show = "filter.inventoryModeEnabled">
-                    <span class="price-out-on-coming-pane"
-                          ng-show="(x.currentQuantity * x.sum/x.quantity - x.sum) != 0">
-                        {{ ((x.currentQuantity * (x.sum/x.quantity).toFixed(5)).toFixed(2) - x.sum).toFixed(2)}}
-                        <span style="font-weight: normal">(</span>
-                        <span unit-sensitive unit="x.item.unit" quantity="(x.currentQuantity - x.quantity)">
+                    <span class="price-out-on-coming-pane">
+                        <span ng-show="((x.currentQuantity * x.price).toFixed(2) - x.sum) != 0">
+                            {{ ((x.currentQuantity * x.price).toFixed(2) - x.sum).toFixed(2)}}
+                            <span style="font-weight: normal">(</span>
+                            <span unit-sensitive unit="x.item.unit"
+                                  quantity="(x.currentQuantity - x.quantity)">
+                            </span>
+                            <span style="font-weight: normal">)</span>
                         </span>
-                        <span style="font-weight: normal">)</span>
                     </span>
                     <span class="glyphicon glyphicon-ok inventory-deviation-ok"
-                          ng-show="(x.currentQuantity * x.sum/x.quantity - x.sum) == 0">
+                          ng-show="((x.currentQuantity * x.price).toFixed(2) - x.sum) == 0">
                     </span>
                     <span class="inventory-deviation-shortage"
-                          ng-show="(x.currentQuantity * x.sum/x.quantity - x.sum) < 0">
+                          ng-show="((x.currentQuantity * x.price).toFixed(2) - x.sum) < 0">
                             Недостача
                     </span>
                     <span class="inventory-deviation-surplus"
-                          ng-show="(x.currentQuantity * x.sum/x.quantity - x.sum) > 0">
+                          ng-show="((x.currentQuantity * x.price).toFixed(2) - x.sum) > 0">
                             Излишек
                     </span>
                 </td>

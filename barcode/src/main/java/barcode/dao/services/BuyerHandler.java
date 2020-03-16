@@ -47,13 +47,18 @@ public class BuyerHandler {
             return false;
 
         if(useForInventory) {
-            Buyer buyer = buyerRepository.findOneByUseForInventory(true);
+            Buyer buyer = getBuyerForInventory();
             if(buyer != null)
                 buyer.setUseForInventory(false);
             return true;
         }
 
         return useForInventory;
+    }
+
+    public Buyer getBuyerForInventory() {
+
+        return buyerRepository.findOneByUseForInventory(true);
     }
 
     public ResponseItem<Buyer> addBuyer(Buyer buyer) {

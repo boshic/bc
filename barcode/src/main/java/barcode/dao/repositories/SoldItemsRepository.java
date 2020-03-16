@@ -19,6 +19,7 @@ public interface SoldItemsRepository extends CrudRepository<SoldItem, Long>,
                                                 PagingAndSortingRepository<SoldItem, Long>,
                                                 QueryDslPredicateExecutor<SoldItem> {
     List<SoldItem> findAll();
+    List<SoldItem> findByComingId(Long id);
     List<SoldItem> findAll(Predicate predicate);
     List<SoldItem> findAll(Predicate predicate, Sort sort);
     Page<SoldItem> findAll(Predicate predicate, Pageable pageable);

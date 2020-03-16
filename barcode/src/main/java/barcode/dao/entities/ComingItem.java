@@ -68,20 +68,41 @@ public class ComingItem extends BasicOperationWithCommentEntity{
         this.item = item;
     }
 
-    public ComingItem(Item item, Stock stock, BigDecimal sum, BigDecimal quantity,
-                      BigDecimal currentQuantity, Date lastChangeDate) {
+    public ComingItem(Item item,
+                      Stock stock,
+                      BigDecimal sum,
+                      BigDecimal quantity,
+                      BigDecimal priceIn,
+                      BigDecimal priceOut,
+                      BigDecimal currentQuantity,
+                      Date lastChangeDate) {
 
         this.stock = stock;
-
         this.item = item;
-
         this.sum = sum;
-
         this.quantity = quantity;
-
+        this.priceIn = priceIn;
+        this.priceOut = priceOut;
         this.currentQuantity = currentQuantity;
-
         this.lastChangeDate = lastChangeDate;
+    }
+
+    public ComingItem(BigDecimal priceIn,
+                      BigDecimal priceOut,
+                      BigDecimal quantity,
+                      String comment,
+                      Document document,
+                      Item item,
+                      Stock stock,
+                      User user) {
+        super(comment);
+        this.priceIn = priceIn;
+        this.priceOut = priceOut;
+        this.quantity = quantity;
+        this.doc = document;
+        this.item = item;
+        this.stock = stock;
+        this.user = user;
     }
 
     public BigDecimal getPriceIn() { return priceIn; }

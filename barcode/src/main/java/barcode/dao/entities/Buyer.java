@@ -1,7 +1,6 @@
 package barcode.dao.entities;
 
-import barcode.dao.entities.basic.BasicEntity;
-import barcode.dao.entities.basic.BasicNamedEntity;
+import barcode.dao.entities.basic.BasicCounterPartyEntity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
@@ -11,16 +10,10 @@ import java.util.Set;
 
 @Entity
 @Table(name = "buyer")
-public class Buyer extends BasicNamedEntity {
-
-    @Column(name = "address", nullable = false)
-    private String address;
+public class Buyer extends BasicCounterPartyEntity {
 
     @Column(name = "sell_by_coming_prices", columnDefinition="tinyint(1) default 0")
     private Boolean sellByComingPrices;
-
-    @Column(name = "use_for_inventory", columnDefinition="tinyint(1) default 0")
-    private Boolean useForInventory;
 
     private BigDecimal debt;
 
@@ -32,9 +25,6 @@ public class Buyer extends BasicNamedEntity {
     @OneToMany(mappedBy = "buyer", cascade = CascadeType.ALL)
     @JsonIgnore
     private Set<SoldItem> sellings;
-
-    @Column(columnDefinition="varchar(9) COLLATE utf8_general_ci")
-    private String unp;
 
     @Column(columnDefinition="varchar(28) COLLATE utf8_general_ci")
     private String account;
@@ -58,27 +48,12 @@ public class Buyer extends BasicNamedEntity {
         this.sellings = sellings;
     }
 
-    public String getAddress() {
-        return address;
-    }
-    public void setAddress(String address) {
-        this.address = address;
-    }
-
     public Integer getDiscount() {
         return discount;
     }
 
     public void setDiscount(Integer discount) {
         this.discount = discount;
-    }
-
-    public String getUnp() {
-        return unp;
-    }
-
-    public void setUnp(String unp) {
-        this.unp = unp;
     }
 
     public Bank getBank() {
@@ -105,12 +80,5 @@ public class Buyer extends BasicNamedEntity {
         this.sellByComingPrices = sellByComingPrices;
     }
 
-    public Boolean getUseForInventory() {
-        return useForInventory;
-    }
-
-    public void setUseForInventory(Boolean useForInventory) {
-        this.useForInventory = useForInventory;
-    }
 }
 

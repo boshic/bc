@@ -18,7 +18,7 @@ public class SupplierHandler {
     private ResponseItem<Supplier> update(Supplier newSupplier, Supplier supplier) {
         newSupplier.setName(supplier.getName());
         supplierRepository.save(newSupplier);
-        return new ResponseItem<Supplier>("Создан/изменен новый поставщик ", true, newSupplier);
+        return new ResponseItem<Supplier>("Поставщик создан/изменен ", true, newSupplier);
 
     }
 

@@ -83,9 +83,7 @@ public class ResponseByComingItems extends ResponseItemExt<ComingItem> {
                 currentSum = comings.stream()
                         .map(
                                 c -> c.getCurrentQuantity()
-                                    .multiply(
-                                            c.getSum().divide(c.getQuantity(), 5, RoundingMode.CEILING)
-                                    ).setScale(2, BigDecimal.ROUND_HALF_UP)
+                                        .multiply(c.getPriceIn()).setScale(2, BigDecimal.ROUND_HALF_UP)
                         )
                         .reduce(BigDecimal.ZERO, BigDecimal::add);
 

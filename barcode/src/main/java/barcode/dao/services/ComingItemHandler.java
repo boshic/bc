@@ -1,6 +1,7 @@
 package barcode.dao.services;
 
 import barcode.dao.entities.embeddable.InventoryRow;
+import barcode.dao.repositories.SoldItemsRepository;
 import com.querydsl.core.types.Predicate;
 import barcode.dao.entities.*;
 import barcode.dao.entities.embeddable.Comment;
@@ -19,6 +20,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -48,6 +50,8 @@ public class ComingItemHandler extends EntityHandlerImpl {
 
     private ComingItemRepository comingItemRepository;
 
+    private SoldItemsRepository soldItemsRepository;
+
     private DocumentHandler documentHandler;
 
     private ItemHandler itemHandler;
@@ -65,9 +69,11 @@ public class ComingItemHandler extends EntityHandlerImpl {
     public ComingItemHandler(ComingItemRepository comingItemRepository, DocumentHandler documentHandler,
                              ItemHandler itemHandler, UserHandler userHandler, StockHandler stockHandler,
                              SupplierHandler supplierHandler, ItemSectionHandler itemSectionHandler,
-                             AbstractEntityManager abstractEntityManager) {
+                             AbstractEntityManager abstractEntityManager, SoldItemsRepository soldItemsRepository) {
 
         this.comingItemRepository = comingItemRepository;
+
+        this.soldItemsRepository = soldItemsRepository;
 
         this.documentHandler = documentHandler;
 
@@ -126,7 +132,7 @@ public class ComingItemHandler extends EntityHandlerImpl {
                     this.buildComment(coming.getComments(),
                             newComing.getStock().getName() + getQuantityForComment(newComing.getQuantity()),
                             checkedUser.getFullName(),
-                            MAKING_OF_COMING));
+                            MAKING_OF_COMING, coming.getCurrentQuantity()));
         } else {
 
             if(coming.getSellings() != null && coming.getSellings().size() > 0)
@@ -135,7 +141,7 @@ public class ComingItemHandler extends EntityHandlerImpl {
             coming.setComment(
                     this.buildComment(coming.getComments(), "",
                             checkedUser.getFullName(),
-                            CHANGING_OF_COMING));
+                            CHANGING_OF_COMING, coming.getCurrentQuantity()));
         }
 
         if(coming.getItem().getComponents() != null && coming.getItem().getComponents().size() > 0)
@@ -200,12 +206,12 @@ public class ComingItemHandler extends EntityHandlerImpl {
 
         if (checkedUser != null && checkedUser.getRole().equals("ROLE_ADMIN")) {
 
+            comingItem.setCurrentQuantity(BigDecimal.ZERO);
+
             comingItem.setComment(
                     this.buildComment(comingItem.getComments(),
                             getQuantityForComment(comingItem.getCurrentQuantity()),
-                            checkedUser.getFullName(), "удален "));
-
-            comingItem.setCurrentQuantity(BigDecimal.ZERO);
+                            checkedUser.getFullName(), "удален ", comingItem.getCurrentQuantity()));
 
             comingItem.setQuantity(BigDecimal.ZERO);
 
@@ -451,7 +457,7 @@ public class ComingItemHandler extends EntityHandlerImpl {
         //item, stock, sum, quantity, currentQuantity
         groupedItems.forEach((item, comings) -> {
             InventoryRow inventoryRow = itemHandler.getInventoryRowByStock(item, filter.getStock().getId());
-            result.add(new ComingItem(
+            ComingItem coming = new ComingItem(
                     item,
                     filter.getStock(),
                     comings.stream()
@@ -460,9 +466,17 @@ public class ComingItemHandler extends EntityHandlerImpl {
                     comings.stream()
                             .map(ComingItem::getCurrentQuantity)
                             .reduce(BigDecimal.ZERO, BigDecimal::add),
+                    comings.stream().max(Comparator.comparing(ComingItem::getPriceIn)).get().getPriceIn(),
+                    comings.stream().max(Comparator.comparing(ComingItem::getPriceOut)).get().getPriceOut(),
                     inventoryRow == null ? BigDecimal.ZERO : inventoryRow.getQuantity(),
                     inventoryRow == null ? null : inventoryRow.getDate()
-            ));
+            );
+            if(coming.getSum().compareTo(BigDecimal.ZERO) > 0)
+                coming.setPriceIn(
+                    coming.getQuantity().compareTo(BigDecimal.ZERO) > 0 ?
+                    coming.getSum().divide(coming.getQuantity(), 5, RoundingMode.CEILING) : BigDecimal.ZERO
+                );
+            result.add(coming);
         });
 
         SortGroupedComingItems(result, filter.getSortField(), filter.getSortDirection());

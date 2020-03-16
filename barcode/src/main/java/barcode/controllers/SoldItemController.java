@@ -4,6 +4,7 @@ package barcode.controllers;
 import barcode.dao.entities.embeddable.Comment;
 import barcode.dao.entities.SoldItem;
 import barcode.dao.services.SoldItemHandler;
+import barcode.dao.utils.ComingItemFilter;
 import barcode.dao.utils.SoldItemFilter;
 import barcode.dto.ResponseItem;
 import org.springframework.stereotype.Controller;
@@ -69,6 +70,11 @@ public class SoldItemController {
     @GetMapping(path="/getSoldItemById")
     public @ResponseBody SoldItem getComingById(@RequestParam Long id) {
         return soldItemHandler.getItemById(id);
+    }
+
+    @RequestMapping(value = "/applyInventoryResults", method = RequestMethod.POST)
+    public @ResponseBody ResponseItem applyInventoryResults(@RequestBody ComingItemFilter filter) {
+        return this.soldItemHandler.applyInventoryResults(filter);
     }
 
 
