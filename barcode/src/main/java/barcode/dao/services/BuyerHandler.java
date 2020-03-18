@@ -1,10 +1,13 @@
 package barcode.dao.services;
 
+import barcode.api.EntityHandler;
 import barcode.dao.entities.Buyer;
+import barcode.dao.entities.QBuyer;
 import barcode.dao.predicates.BuyerPredicateBuilder;
 import barcode.dao.repositories.BuyerRepository;
 import barcode.dto.DtoBuyer;
 import barcode.dto.ResponseItem;
+import com.querydsl.core.BooleanBuilder;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
@@ -15,7 +18,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
-public class BuyerHandler {
+public class BuyerHandler extends EntityHandlerImpl{
 
     private BuyerRepository buyerRepository;
     private BankHandler bankHandler;
@@ -43,22 +46,12 @@ public class BuyerHandler {
 
     private synchronized Boolean checkAndGetInventorySign(Boolean useForInventory) {
 
-        if(useForInventory == null)
-            return false;
-
-        if(useForInventory) {
-            Buyer buyer = getBuyerForInventory();
-            if(buyer != null)
-                buyer.setUseForInventory(false);
-            return true;
-        }
-
-        return useForInventory;
+        return checkAndGetInventorySignForEntity(getBuyerForInventory(), useForInventory );
     }
 
-    public Buyer getBuyerForInventory() {
+    Buyer getBuyerForInventory() {
 
-        return buyerRepository.findOneByUseForInventory(true);
+        return getEntityForInventory(buyerRepository, new BooleanBuilder().and(QBuyer.buyer.useForInventory.isTrue()));
     }
 
     public ResponseItem<Buyer> addBuyer(Buyer buyer) {
@@ -67,7 +60,7 @@ public class BuyerHandler {
             return update(newBuyer, buyer);
         }
         buyer.setName("");
-        return new ResponseItem<Buyer>("Не создадим такого покупателя, уже есть в справочнике!", false, buyer);
+        return new ResponseItem<Buyer>("Неудачно! Уже есть в справочнике!", false, buyer);
     }
 
     public ResponseItem updateItem(Buyer buyer) {

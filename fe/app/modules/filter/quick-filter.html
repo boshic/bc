@@ -18,7 +18,7 @@
     <span> {{filter.stock.name}}</span>
 
     <div class="dropdown quick-filter-comment"
-         ng-show="filter.comment.length > 0">
+         ng-show="filter.comment.length > 0 && !filter.inventoryModeEnabled">
         <span>{{filter.comment}}</span>
         <ul class="dropdown-menu hoverable quick-filter-comment-delete background-white">
             <word-from-phrase-eraser
@@ -42,7 +42,7 @@
     </div>
 
     <div class="dropdown quick-filter-comment"
-         ng-show="filter.document.id > 0" >
+         ng-show="filter.document.id > 0 && !filter.inventoryModeEnabled" >
         <span>
             <span>{{filter.document.name + ' от '}}</span>
             <span>{{filter.document.date | date:'dd.MM.yyyy'}}</span>
@@ -56,7 +56,7 @@
     </div>
 
     <div class="dropdown quick-filter-comment"
-         ng-show="filter.supplier.id > 0">
+         ng-show="filter.supplier.id > 0 && !filter.inventoryModeEnabled">
         <span>{{filter.supplier.name}}</span>
         <ul class="dropdown-menu hoverable quick-filter-comment-delete">
             <li ng-click="filter.supplier = getEmptySupplier()">

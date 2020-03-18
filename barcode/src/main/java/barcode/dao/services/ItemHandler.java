@@ -21,13 +21,9 @@ import java.util.Collections;
 import java.util.List;
 
 @Service
-public class ItemHandler {
+public class ItemHandler  extends EntityHandlerImpl{
 
     public static ItemPredicateBuilder ipb = new ItemPredicateBuilder();
-
-    private static final Integer EAN_LENGTH = 13;
-    private static final String BAD_EAN_SYNONYM = "Товар имеет приходы, или указанный ШК уже имеет синоним!";
-    private static final String ITEM_ALREADY_EXIST = "С заданным ШК товар уже существует, добавление не состоится";
 
     private ItemRepository itemRepository;
 

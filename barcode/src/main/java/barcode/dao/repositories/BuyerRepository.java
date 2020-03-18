@@ -24,8 +24,10 @@ public interface BuyerRepository extends CrudRepository<Buyer, Long>,
 
     List<Buyer> findAll(Predicate predicate, Sort sort);
 
+    Buyer findOne(Predicate predicate);
+
     List<Buyer> findByNameIgnoreCase(String name);
 
-    Buyer findOneByUseForInventory(Boolean useForInventory);
+//    Buyer findOneByUseForInventory(Boolean useForInventory);
 
 }

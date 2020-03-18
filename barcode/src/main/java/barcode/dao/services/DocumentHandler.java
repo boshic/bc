@@ -90,17 +90,18 @@ public class DocumentHandler extends EntityHandlerImpl {
     }
 
 
-    public Document findOneDocumentByFilter(DocumentFilter filter) {
+    Document findOneDocumentByFilter(DocumentFilter filter) {
 
         Predicate predicate = qDocument.name.eq(filter.getSearchString())
-                .and(qDocument.date.between(getDateByTime(filter.getFromDate(),0, 0),
+                .and(qDocument.date.between(
+                        getDateByTime(filter.getFromDate(),0, 0),
                         getDateByTime(filter.getToDate(), 23, 59)))
-                .and(qDocument.supplier.name.equalsIgnoreCase(filter.getSupplier().getName()));
+                .and(qDocument.supplier.id.eq(filter.getSupplier().getId()));
 
         return documentRepository.findOne(predicate);
     }
 
-    public void saveDocument(Document document) {
+    void saveDocument(Document document) {
         documentRepository.save(document);
     }
 

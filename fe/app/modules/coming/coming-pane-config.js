@@ -68,7 +68,8 @@ let comingPaneConfig = {
             );
     },
     applyInventoryResults: ($s, config) => {
-        config.httpService.addItem({data: $s.filter, url: 'applyInventoryResults', requestParams: $s.requestParams})
+        if(confirm("Эта операция автоматически спишет излишки и недостачи! Хорошенько подумайте, прежде чем продолжить!"))
+            config.httpService.addItem({data: $s.filter, url: 'applyInventoryResults', requestParams: $s.requestParams})
             .then(
                 (resp) => {
                     $s.calcTotalsAndRefresh();

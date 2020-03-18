@@ -316,16 +316,6 @@ public class SoldItemHandler extends EntityHandlerImpl {
 
     }
 
-    private static void SortSoldItemsList(List<SoldItem> soldItems, String field, String direction) {
-
-        SoldItemFilter.GroupedSoldItemSortingStrategies strategy
-                = SoldItemFilter.GroupedSoldItemSortingStrategies.valueOf(field.replace(".","_").toUpperCase());
-        strategy.sort(soldItems);
-
-        if(direction.equalsIgnoreCase(BasicFilter.SORT_DIRECTION_DESC))
-            Collections.reverse(soldItems);
-    }
-
     private ResponseBySoldItems groupByItems(
             List<SoldItem> soldItems, SoldItemFilter filter) {
 
@@ -357,7 +347,12 @@ public class SoldItemHandler extends EntityHandlerImpl {
                 }
         );
 
-        SortSoldItemsList(result, filter.getSortField(), filter.getSortDirection());
+        sortGroupedItems(result,
+                filter.getSortDirection(),
+                SoldItemFilter.SoldItemSortingStrategies
+                        .valueOf(filter.getSortField()
+                                .replace(".","_")
+                                .toUpperCase()));
 
         PagedListHolder<SoldItem> page = new PagedListHolder<SoldItem>(result);
         page.setPageSize(filter.getRowsOnPage());
@@ -544,25 +539,31 @@ public ResponseItem addOneSelling(SoldItem soldItem) {
 
     public ResponseItem applyInventoryResults(ComingItemFilter filter) {
 
-        List<ComingItem> comings = comingItemHandler.findByFilter(filter).getEntityItems();
+        List<ComingItem> inputComings = comingItemHandler.findByFilter(filter).getEntityItems();
 
         List<SoldItem> sellings = new ArrayList<SoldItem>();
+        List<ComingItem> comings = new ArrayList<ComingItem>();
 
         Buyer buyer = buyerHandler.getBuyerForInventory();
-
         if(buyer == null)
-            return new ResponseItem("Не задан покупатель для списания излишков!", false);
+            return new ResponseItem(BUYER_FOR_INVENTORY_NOT_FOUND, false);
 
-        comings.forEach(coming -> {
+        Document document;
+
+        ResponseItem<Document> documentResponseItem = comingItemHandler.getDocForInventory();
+        if(documentResponseItem.getSuccess())
+            document = documentResponseItem.getEntityItem();
+        else
+            return documentResponseItem;
+
+        inputComings.forEach(coming -> {
             if(coming.getQuantity().compareTo(coming.getCurrentQuantity()) > 0) {
-                System.out.println("Недостача");
-
                 sellings.add(new SoldItem(
                         coming,
                         coming.getPriceOut(),
                         coming.getStock().getOrganization().getVatValue(),
                         coming.getQuantity().subtract(coming.getCurrentQuantity()),
-                        "Списание излишков при инвентаризации",
+                        INVENTORY_SHORTAGE_DETECTED,
                         buyer,
                         userHandler.getCurrentUser()
                 ));
@@ -570,10 +571,28 @@ public ResponseItem addOneSelling(SoldItem soldItem) {
             }
 
             if(coming.getCurrentQuantity().compareTo(coming.getQuantity()) > 0) {
-                System.out.println("Излишек");
+                comings.add(new ComingItem(
+                        coming.getPriceIn(),
+                        coming.getPriceOut(),
+                        coming.getCurrentQuantity().subtract(coming.getQuantity()),
+                        new ArrayList<Comment>() {{
+                                add(new Comment(
+                                    "",
+                                    userHandler.getCurrentUser().getFullName(),
+                                        INVENTORY_SURPLUS_DETECTED,
+                                    new Date(),
+                                    coming.getCurrentQuantity().subtract(coming.getQuantity())
+                                )
+                            );
+                        }}
+                        ,
+                        document,
+                        coming.getItem(),
+                        coming.getStock(),
+                        userHandler.getCurrentUser()
+                ));
+
             }
-
-
 
             System.out.println(coming.getItem().getName());
         });
@@ -581,7 +600,10 @@ public ResponseItem addOneSelling(SoldItem soldItem) {
         if(sellings.size() > 0)
             addSellings(sellings);
 
-        return new ResponseItem("результаты инвентаризации применены!", true);
+        if(comings.size() > 0)
+            comings.forEach(comingItemHandler::addItem);
+
+        return new ResponseItem(INVENTORY_DONE, true);
     }
 
 }

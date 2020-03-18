@@ -21,6 +21,16 @@ public class Document extends BasicOperationEntity{
     @JoinColumn(name = "supplier_id")
     private Supplier supplier;
 
+    public Document() {}
+    public Document(Supplier supplier,
+                    Date date,
+                    String name) {
+        super(date);
+        this.supplier = supplier;
+        this.name = name;
+    }
+
+
     public String getName() {return this.name;}
     public void setName(String name) {this.name = name;}
 

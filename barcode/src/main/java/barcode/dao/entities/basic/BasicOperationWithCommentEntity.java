@@ -22,7 +22,6 @@ public class BasicOperationWithCommentEntity extends BasicOperationEntity {
 
     @ElementCollection
     @JsonIgnore
-    @JsonProperty("comments")
     private List<Comment> comments;
 
     public BasicOperationWithCommentEntity() {}

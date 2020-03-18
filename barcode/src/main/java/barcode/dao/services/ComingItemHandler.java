@@ -27,21 +27,6 @@ import java.util.stream.Collectors;
 @Service
 public class ComingItemHandler extends EntityHandlerImpl {
 
-    private static final String AUTO_COMING_MAKER = "Автоприход";
-
-    private static final String CHECK_COMING_INVALID_DOC=
-            "Приход с указанным товаром, ценой и документом уже содержится! ";
-
-    private static final String ITEM_IS_COMPOSITE_ERROR=
-            "Неудачно! Для компонентных товаров приход создать нельзя! ";
-
-    private static final String TRY_TO_CHANGE_SOLD_COMING_ERROR=
-            "Неудачно! Нельзя изменить приход, который уже продавался! ";
-
-    private static final String MAKING_OF_COMING= "Оприходование ";
-
-    private static final String CHANGING_OF_COMING= "Изменение прихода ";
-
     public static ComingItemPredicatesBuilder cipb = new ComingItemPredicatesBuilder();
 
 //    public static QComingItem qComingItem = QComingItem.comingItem;
@@ -50,7 +35,6 @@ public class ComingItemHandler extends EntityHandlerImpl {
 
     private ComingItemRepository comingItemRepository;
 
-    private SoldItemsRepository soldItemsRepository;
 
     private DocumentHandler documentHandler;
 
@@ -66,71 +50,66 @@ public class ComingItemHandler extends EntityHandlerImpl {
 
     private AbstractEntityManager abstractEntityManager;
 
-    public ComingItemHandler(ComingItemRepository comingItemRepository, DocumentHandler documentHandler,
-                             ItemHandler itemHandler, UserHandler userHandler, StockHandler stockHandler,
-                             SupplierHandler supplierHandler, ItemSectionHandler itemSectionHandler,
-                             AbstractEntityManager abstractEntityManager, SoldItemsRepository soldItemsRepository) {
+    public ComingItemHandler(ComingItemRepository comingItemRepository,
+                             DocumentHandler documentHandler,
+                             ItemHandler itemHandler,
+                             UserHandler userHandler,
+                             StockHandler stockHandler,
+                             SupplierHandler supplierHandler,
+                             ItemSectionHandler itemSectionHandler,
+                             AbstractEntityManager abstractEntityManager) {
 
         this.comingItemRepository = comingItemRepository;
-
-        this.soldItemsRepository = soldItemsRepository;
-
         this.documentHandler = documentHandler;
-
         this.itemHandler = itemHandler;
-
         this.itemSectionHandler = itemSectionHandler;
-
         this.userHandler = userHandler;
-
         this.stockHandler = stockHandler;
-
         this.supplierHandler = supplierHandler;
-
         this.abstractEntityManager = abstractEntityManager;
     }
 
     public void saveComingItem(ComingItem comingItem) { comingItemRepository.save(comingItem);}
 
-    private ResponseItem<ComingItem> update(ComingItem newComing, ComingItem coming) {
+    private ResponseItem<ComingItem> update(ComingItem srcComing, ComingItem coming) {
 
         ResponseItem<ComingItem> responseItem = new ResponseItem<ComingItem>("", false);
 
-        coming.setPriceIn(newComing.getPriceIn());
+        coming.setPriceIn(srcComing.getPriceIn());
 
-        coming.setPriceOut(newComing.getPriceOut());
+        coming.setPriceOut(srcComing.getPriceOut());
 
-        coming.setQuantity(newComing.getQuantity());
+        coming.setQuantity(srcComing.getQuantity());
 
-        coming.setSum(newComing.getSum() == null ?
-                (newComing.getPriceIn().multiply(newComing.getQuantity()))
-                        .setScale(2, BigDecimal.ROUND_HALF_UP) : newComing.getSum());
+        coming.setSum(srcComing.getSum() == null ?
+                (srcComing.getPriceIn().multiply(srcComing.getQuantity()))
+                        .setScale(2, BigDecimal.ROUND_HALF_UP) : srcComing.getSum());
 
         coming.setCurrentQuantity(coming.getQuantity());
 
         coming.setLastChangeDate(new Date());
 
-        coming.setDoc(newComing.getDoc());
+        coming.setDoc(srcComing.getDoc());
 
-        coming.setItem(newComing.getItem());
+        coming.setItem(srcComing.getItem());
 
-        coming.setStock(newComing.getStock());
+        coming.setStock(srcComing.getStock());
 
-        User checkedUser = userHandler.checkUser(newComing.getUser(), AUTO_COMING_MAKER);
+        User checkedUser = userHandler.checkUser(srcComing.getUser(), AUTO_COMING_MAKER);
 
-        responseItem.setText(CHANGING_OF_COMING + newComing.getItem().getName() + " номер " + newComing.getId());
+        responseItem.setText(CHANGING_OF_COMING + srcComing.getItem().getName() + " номер " + srcComing.getId());
 
         if (coming.getId() == null) {
 
-            coming.setComments(new ArrayList<Comment>());
+            coming.setComments(srcComing.getComments() == null? new ArrayList<Comment>() : srcComing.getComments());
 
-            responseItem.setText(MAKING_OF_COMING + newComing.getItem().getName() + " номер " + newComing.getId());
+            responseItem.setText(MAKING_OF_COMING + srcComing.getItem().getName() + " номер " + srcComing.getId());
 
             coming.setDate(new Date());
 
             coming.setComment(
                     this.buildComment(coming.getComments(),
-                            newComing.getStock().getName() + getQuantityForComment(newComing.getQuantity()),
+                            srcComing.getStock().getName() + getQuantityForComment(srcComing.getQuantity()),
                             checkedUser.getFullName(),
                             MAKING_OF_COMING, coming.getCurrentQuantity()));
         } else {
@@ -163,7 +142,7 @@ public class ComingItemHandler extends EntityHandlerImpl {
 
             responseItem.setText("Неудачно! Недостаточно прав для изменения/создания прихода");
 
-            responseItem.setEntityItem(newComing);
+            responseItem.setEntityItem(srcComing);
         }
 
 //        responseItem.packItems();
@@ -410,9 +389,13 @@ public class ComingItemHandler extends EntityHandlerImpl {
         ResponseItem responseBydoc = new ResponseItem("Документ " + coming.getDoc().getName() + " от "
                                                                             + coming.getDoc().getDate() + SMTH_FOUND);
 
-        Document document = documentHandler.findOneDocumentByFilter(new DocumentFilter
-                                                (new BasicFilter(coming.getDoc().getName(),coming.getDoc().getDate(),
-                                                            coming.getDoc().getDate()), coming.getDoc().getSupplier()));
+        Document document = documentHandler
+                .findOneDocumentByFilter(new DocumentFilter
+                                                (new BasicFilter(
+                                                        coming.getDoc().getName(),
+                                                        coming.getDoc().getDate(),
+                                                        coming.getDoc().getDate()),
+                                                        coming.getDoc().getSupplier()));
 
         if (document == null ) {
 
@@ -479,7 +462,14 @@ public class ComingItemHandler extends EntityHandlerImpl {
             result.add(coming);
         });
 
-        SortGroupedComingItems(result, filter.getSortField(), filter.getSortDirection());
+        sortGroupedItems(result,
+                         filter.getSortDirection(),
+                         ComingItemFilter
+                                 .ComingItemSortingStrategies
+                                 .valueOf(filter.getSortField()
+                                         .replace(".","_")
+                                         .toUpperCase()));
+
 //
         PagedListHolder<ComingItem> page = new PagedListHolder<ComingItem>(result);
         page.setPageSize(filter.getRowsOnPage());
@@ -494,17 +484,6 @@ public class ComingItemHandler extends EntityHandlerImpl {
 //
         return ribyci;
     }
-
-    private static void SortGroupedComingItems(List<ComingItem> comingItems, String field, String direction) {
-
-        ComingItemFilter.ComingItemSortingStrategies strategy
-                = ComingItemFilter.ComingItemSortingStrategies.valueOf(field.replace(".","_").toUpperCase());
-        strategy.sort(comingItems);
-
-        if(direction.equalsIgnoreCase(BasicFilter.SORT_DIRECTION_DESC))
-            Collections.reverse(comingItems);
-    }
-
 
     public ResponseByComingItems findByFilter(ComingItemFilter filter) {
 
@@ -580,6 +559,27 @@ public class ComingItemHandler extends EntityHandlerImpl {
             itemHandler.saveItem(item);
 
         }
+    }
+
+    ResponseItem<Document> getDocForInventory() {
+
+        Supplier supplier = supplierHandler.getSupplierForInventory();
+        if(supplier == null)
+            return new ResponseItem<>(SUPPLIER_FOR_INVENTORY_NOT_FOUND, false);
+
+        Document document = documentHandler.findOneDocumentByFilter(
+                new DocumentFilter
+                    (new BasicFilter(
+                            INVENTORY_DOC_NAME,
+                            new Date(),
+                            new Date())
+                                , supplier));
+        if(document == null)
+                document = new Document(supplier, new Date(), INVENTORY_DOC_NAME);
+
+        documentHandler.saveDocument(document);
+
+        return new ResponseItem<>(INVENTORY_DOC_CREATED, true, document);
     }
 
     BigDecimal getAvailQuantityByEan(List<ComingItem> comingItems) {

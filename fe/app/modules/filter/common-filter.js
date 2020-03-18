@@ -132,7 +132,11 @@ import commonFilterTpl from './common-filter.html';
                                     || (key === 'stock') || (key === 'searchString')) {
                                     calcTotalsAndRefresh();
                                 }
-                                if((key === 'page') || (key === 'sortDirection') || (key === 'sortField'))
+                                // if((key === 'fromDate') && (!paneFactory.isEanValid(nv['ean'])))
+                                //     calcTotalsAndRefresh();
+                                if(key === 'page')
+                                    (nv['inventoryModeEnabled']) ? calcTotalsAndRefresh() : findItemsByFilter();
+                                if((key === 'sortDirection') || (key === 'sortField'))
                                     findItemsByFilter();
                                 if((key === 'rowsOnPage') || (key === 'groupByItems'))
                                     (nv['page'] = 1) ? findItemsByFilter() : nv['page'] = 1;

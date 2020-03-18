@@ -9,7 +9,7 @@ import java.util.List;
 
 public class ComingItemFilter extends  BasicFilter {
 
-    public enum ComingItemSortingStrategies {
+    public enum ComingItemSortingStrategies implements SortingStrategy<ComingItem>{
 
         ITEM_NAME {
             @Override
@@ -79,7 +79,7 @@ public class ComingItemFilter extends  BasicFilter {
             public void sort(List<ComingItem> comingItems) {}
         };
 
-        public abstract void sort(List<ComingItem> comingItems);
+//        public abstract void sort(List<ComingItem> comingItems);
     }
 
     private String ean;

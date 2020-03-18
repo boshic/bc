@@ -70,4 +70,12 @@ public class Comment {
     public void setAction(String action) {
         this.action = action;
     }
+
+    public BigDecimal getQuantity() {
+        return quantity;
+    }
+
+    public void setQuantity(BigDecimal quantity) {
+        this.quantity = quantity;
+    }
 }

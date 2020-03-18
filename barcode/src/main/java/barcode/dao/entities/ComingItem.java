@@ -1,12 +1,14 @@
 package barcode.dao.entities;
 
 import barcode.dao.entities.basic.BasicOperationWithCommentEntity;
+import barcode.dao.entities.embeddable.Comment;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -90,12 +92,12 @@ public class ComingItem extends BasicOperationWithCommentEntity{
     public ComingItem(BigDecimal priceIn,
                       BigDecimal priceOut,
                       BigDecimal quantity,
-                      String comment,
+                      List<Comment> comments,
                       Document document,
                       Item item,
                       Stock stock,
                       User user) {
-        super(comment);
+        super(comments);
         this.priceIn = priceIn;
         this.priceOut = priceOut;
         this.quantity = quantity;

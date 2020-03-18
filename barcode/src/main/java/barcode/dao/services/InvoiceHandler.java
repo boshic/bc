@@ -28,13 +28,6 @@ public class InvoiceHandler extends EntityHandlerImpl {
 
     public static QInvoice qInvoice = QInvoice.invoice;
 
-    private static final String NEW_INVOICE_ADDED = "добавлен отчет";
-
-    private static final String INVOICE_CHANGED = "добавлен изменен";
-
-    private static final String WRITE_OFF_CAUSE = "причина списания";
-
-    private static final String WRITE_OFF_ACT_ADDED = "акт на списание";
 
     private static InvoicesPredicatesBuilder ipb = new InvoicesPredicatesBuilder();
 

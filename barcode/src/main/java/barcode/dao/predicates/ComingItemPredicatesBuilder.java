@@ -38,7 +38,7 @@ public class ComingItemPredicatesBuilder {
 //            predicate =
 //                    predicate.and(item.section.name.containsIgnoreCase(filter.getSectionPart()));
 
-        if(filter.getComment() != null) {
+        if(!filter.getInventoryModeEnabled() && filter.getComment() != null) {
             predicate = predicate.and(predicateBuilder
                     .buildByPhraseAndMethod(filter.getComment(), comingItem.comment::containsIgnoreCase));
         }
@@ -53,10 +53,10 @@ public class ComingItemPredicatesBuilder {
             predicate =
                     predicate.and(item.section.id.eq(filter.getSection().getId()));
 
-        if (filter.getSupplier() != null && filter.getSupplier().getId() != null)
+        if (!filter.getInventoryModeEnabled() && filter.getSupplier() != null && filter.getSupplier().getId() != null)
             predicate = predicate.and(doc.supplier.id.eq(filter.getSupplier().getId()));
 
-        if (filter.getDocument() != null && filter.getDocument().getId() != null)
+        if (!filter.getInventoryModeEnabled() && filter.getDocument() != null && filter.getDocument().getId() != null)
             predicate = predicate.and(doc.id.eq(filter.getDocument().getId()));
 
         if(filter.getHideNullQuantity())

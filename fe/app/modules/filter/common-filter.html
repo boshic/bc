@@ -61,7 +61,7 @@
         </label>
     </li>
 
-    <li class="filter-row">
+    <li class="filter-row" ng-hide="filter.inventoryModeEnabled">
         <div style="display: flex;">
             <input class="form-control filter-row-two-elements" type="text"
                    list="commentsList"
@@ -78,7 +78,8 @@
     </li>
 
     <li class="filter-row with-margin-bottom"
-        ng-if = "filter.document != null">
+        ng-if = "filter.document != null"
+        ng-hide="filter.inventoryModeEnabled" >
         <doc-input doc="filter.document"></doc-input>
     </li>
 
@@ -86,7 +87,8 @@
         <buyer-input buyer="filter.buyer" buyers="filter.buyers"></buyer-input>
     </li>
 
-    <li class="filter-row with-margin-bottom" ng-if = "filter.supplier != null">
+    <li class="filter-row with-margin-bottom" ng-if = "filter.supplier != null"
+        ng-hide="filter.inventoryModeEnabled">
         <supplier-input supplier="filter.supplier" suppliers="filter.suppliers"></supplier-input>
     </li>
 

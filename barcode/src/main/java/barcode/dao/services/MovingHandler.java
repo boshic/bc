@@ -16,8 +16,6 @@ import java.util.Set;
 @Service
 public class MovingHandler extends EntityHandlerImpl {
 
-    private static final String AUTO_MOVING_MAKER = "Автоперемещение";
-
     private final ComingItemHandler comingItemHandler;
 
     private StockHandler stockHandler;

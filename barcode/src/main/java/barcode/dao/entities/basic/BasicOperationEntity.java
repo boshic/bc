@@ -14,7 +14,6 @@ public class BasicOperationEntity extends BasicEntity {
 
     private Date date;
 
-
     public BasicOperationEntity() {}
 
     public BasicOperationEntity(Date date) {
