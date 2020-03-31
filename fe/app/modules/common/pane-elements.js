@@ -1,6 +1,7 @@
 import comingPaneTpl from '../coming/coming-pane.html';
 import soldPaneTpl from '../selling/sold-pane.html';
 import invoicesPaneTpl from '../selling/invoices-pane.html';
+import itemRowOnPanesTpl from './item-row-on-panes.html';
 import commonPaneCtrlr from '../../controllers/common-pane-ctrlr';
 
 
@@ -40,7 +41,7 @@ angular.module('pane-elements', [])
             return {
                 restrict: 'E',
                 transclude: true,
-                controller: ['$scope', '$http', function MyTabsController($scope) {
+                controller: ['$scope', '$rootScope', '$http', function MyTabsController($scope) {
                     let panes = $scope.panes = [];
 
                     $scope.select = (pane, e) => {
@@ -256,6 +257,15 @@ angular.module('pane-elements', [])
                 "ng-keydown='$ctrl.keypressHandler()($event)'/>",
             controller: function() {}
         })
+        .component( "itemRowOnPanes", {
+        bindings: {
+            row: '=',
+            filter: '=',
+            editItem:'&?'
+        },
+        template: itemRowOnPanesTpl,
+        controller: function() {}
+    })
         .component( "paneDateChangeControl", {
         bindings: {
             user: '<',

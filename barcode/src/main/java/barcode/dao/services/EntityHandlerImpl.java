@@ -28,6 +28,11 @@ public class EntityHandlerImpl implements EntityHandler{
     private static final String FAILED = "Неудачно! ";
     static final String SMTH_FOUND = " найден(а)";
     static final String SMTH_CREATED = " создан(а)";
+    static final String SMTH_CHANGED = "добавлен(а)/изменен(а)";
+    static final String SMTH_DELETED = "удален(а) ";
+    static final String NUMBER = "номер ";
+
+    static final String ROLE_ADMIN = "ROLE_ADMIN";
 
     static final String INVENTORY_DOC_NAME = "Инвентаризация";
     static final String INVENTORY_DOC_CREATED = "Инвентаризация";
@@ -44,8 +49,18 @@ public class EntityHandlerImpl implements EntityHandler{
     static final String ITEM_ALREADY_EXIST = FAILED +
             "С заданным ШК товар уже существует, добавление не состоится";
 
+    static final String ITEMS_FOUND = "Товар найден в остатках в количестве: ";
+    static final String ITEM_NOT_FOUND_WITH_SUCH_EAN = FAILED + "Не найден товар с заданным ШК: ";
+    static final String NOT_ENOUGH_ITEMS = FAILED + "Товара нет в наличии!";
+    static final String COMPOSITE_ITEMS_CASTING_IS_NOT_ALLOWED = FAILED + "Запрещен подбор компонентных товаров : ";
+    static final String DELETING_FAILED = FAILED + "Удаление не удалось!";
+    static final String CHANGING_DENIED = FAILED + "Нет прав для изменения/ввода данных!";
+
+
+//    "Товар найден в остатках в количестве - "
+
     static final String NEW_INVOICE_ADDED = "добавлен отчет";
-    static final String INVOICE_CHANGED = "добавлен/изменен";
+
     static final String WRITE_OFF_CAUSE = "причина списания";
     static final String WRITE_OFF_ACT_ADDED = "акт на списание";
 

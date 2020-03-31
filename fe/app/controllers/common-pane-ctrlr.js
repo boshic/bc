@@ -88,8 +88,8 @@ let commonPaneCtrlr = ($s, filterFactory, paneFactory, printFactory, modalFactor
         }
     });
 
-    $s.editItem = (index) => {
-        config.editItem($s, {index, httpService });
+    $s.editItem = (row) => {
+        config.editItem($s, {row, httpService });
     };
 
     $s.openTextModal = (x) => {

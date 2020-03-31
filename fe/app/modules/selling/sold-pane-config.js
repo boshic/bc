@@ -77,7 +77,7 @@ let soldPaneConfig =
         },
         editItem: ($s, config) => {
                 config.httpService.getItemById(
-                    {url: 'getSoldItemById', requestParams: $s.requestParams, id: $s.rows[config.index].id}
+                    {url: 'getSoldItemById', requestParams: $s.requestParams, id: config.row.id}
                     )
                     .then(
                         resp => {

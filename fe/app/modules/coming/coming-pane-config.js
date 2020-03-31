@@ -25,7 +25,8 @@ let comingPaneConfig = {
             filterFactory.resetComingFilter(filter);
         },
     editItem: ($s, config) => {
-            let row = $s.rows[config.index];
+            // let row = $s.rows[config.index];
+            let row = config.row;
             if(row.quantity != 0 && !$s.filter.inventoryModeEnabled) {
                 $s.modalConfig.id = ((row) && ('id' in row)) ? row.id : null;
                 $s.modalConfig.hidden = false;

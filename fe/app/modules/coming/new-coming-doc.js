@@ -56,7 +56,7 @@ import newComingDocPaneTpl from './new-coming-doc.html';
                     let item = resp.item;
                     if (item != null) {
 
-                        let index = paneFactory.checkDuplicateRows({item}, $s.rows);
+                        let index = paneFactory.checkDuplicateRowsByItem({item}, $s.rows);
                         if (index < 0) {
                             (resp.priceOut !== 0) ?
                                 $s.rows.splice(0,0, {

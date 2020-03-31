@@ -81,7 +81,7 @@ public class InvoiceHandler extends EntityHandlerImpl {
             newInvoice.setComment(
                     this.buildComment(newInvoice.getComments(), invoice.getComment(),
                             userHandler.checkUser(invoice.getUser(), null ).getFullName(),
-                            INVOICE_CHANGED, BigDecimal.ZERO)
+                            SMTH_CHANGED, BigDecimal.ZERO)
             );
 
 

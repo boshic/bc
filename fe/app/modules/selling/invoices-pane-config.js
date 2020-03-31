@@ -14,7 +14,7 @@ let invoicesPaneConfig = {
     },
     editItem: ($s, config) => {
         $s.modalConfig.hidden = false;
-        $s.invoice = $s.rows[config.index];
+        $s.invoice = config.row;
     },
     afterSearch: ($s) => {
         $s.focusOnEanInput();

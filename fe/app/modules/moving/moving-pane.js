@@ -16,6 +16,7 @@ import movingPaneTpl from './moving-pane.html';
 
         let getItems =(ean) => {
             paneFactory.getItemsForRelease( {filter: ean, stockId: $s.stock.id}, 'getComingForSellNonComposite', $s);
+            // NonComposite
         };
 
         $s.$watchCollection("[rows, stockDest, rows.length]", () => {

@@ -97,13 +97,13 @@ public class ComingItemHandler extends EntityHandlerImpl {
 
         User checkedUser = userHandler.checkUser(srcComing.getUser(), AUTO_COMING_MAKER);
 
-        responseItem.setText(CHANGING_OF_COMING + srcComing.getItem().getName() + " номер " + srcComing.getId());
+        responseItem.setText(CHANGING_OF_COMING + srcComing.getItem().getName() + NUMBER + srcComing.getId());
 
         if (coming.getId() == null) {
 
             coming.setComments(srcComing.getComments() == null? new ArrayList<Comment>() : srcComing.getComments());
 
-            responseItem.setText(MAKING_OF_COMING + srcComing.getItem().getName() + " номер " + srcComing.getId());
+            responseItem.setText(MAKING_OF_COMING + srcComing.getItem().getName() + NUMBER + srcComing.getId());
 
             coming.setDate(new Date());
 
@@ -128,7 +128,7 @@ public class ComingItemHandler extends EntityHandlerImpl {
             return new ResponseItem<>(ITEM_IS_COMPOSITE_ERROR + coming.getItem().getName(), false, coming);
 
 
-        if (checkedUser != null && checkedUser.getRole().equals("ROLE_ADMIN")) {
+        if (checkedUser != null && checkedUser.getRole().equals(ROLE_ADMIN)) {
 
             coming.setUser(checkedUser);
 
@@ -140,7 +140,7 @@ public class ComingItemHandler extends EntityHandlerImpl {
 
         } else {
 
-            responseItem.setText("Неудачно! Недостаточно прав для изменения/создания прихода");
+            responseItem.setText(CHANGING_DENIED);
 
             responseItem.setEntityItem(srcComing);
         }
@@ -183,14 +183,14 @@ public class ComingItemHandler extends EntityHandlerImpl {
 
         User checkedUser = userHandler.checkUser(userHandler.getCurrentUser(), null);
 
-        if (checkedUser != null && checkedUser.getRole().equals("ROLE_ADMIN")) {
+        if (checkedUser != null && checkedUser.getRole().equals(ROLE_ADMIN)) {
 
             comingItem.setCurrentQuantity(BigDecimal.ZERO);
 
             comingItem.setComment(
                     this.buildComment(comingItem.getComments(),
                             getQuantityForComment(comingItem.getCurrentQuantity()),
-                            checkedUser.getFullName(), "удален ", comingItem.getCurrentQuantity()));
+                            checkedUser.getFullName(), SMTH_DELETED, comingItem.getCurrentQuantity()));
 
             comingItem.setQuantity(BigDecimal.ZERO);
 
@@ -200,10 +200,10 @@ public class ComingItemHandler extends EntityHandlerImpl {
 
 //            comingItemRepository.delete(comingItem);
 
-            return new ResponseItem<ComingItem>("Удален ", true, comingItem);
+            return new ResponseItem<ComingItem>(SMTH_DELETED, true, comingItem);
 
         } else
-            return new ResponseItem<ComingItem>("Неудачно. Удаление не удалось!", true, comingItem);
+            return new ResponseItem<ComingItem>(DELETING_FAILED, true, comingItem);
     }
 
     public List<ComingItem> getComingBySpec() {
@@ -213,23 +213,9 @@ public class ComingItemHandler extends EntityHandlerImpl {
 //        return comingItemRepository.findAll(spec);
     }
 
-    private ResponseItem<ComingItem> getComingForSellSelector(String ean, Long stockId, Boolean isCompositeAllowed) {
-
-        Item item = itemHandler.getItemByEanSynonym(ean);
-
-        if (item == null)
-            return new ResponseItem<ComingItem>("не найден товар с заданным ШК: " + ean, false);
-
-        if (!isCompositeAllowed && item.getComponents() != null && item.getComponents().size() > 0)
-            return new ResponseItem<ComingItem>("Неудачно! Запрещен подбор компонентных товаров : " + item.getName(), false);
-
-        ComingItem comingItem = new ComingItem();
-
-        comingItem.setCurrentQuantity(BigDecimal.ZERO);
-
-        comingItem.setPriceOut(new BigDecimal(0));
-
-        comingItem.setItem(item);
+    private void setQuantityAndPriceFromComings(Item item,
+                                                     Long stockId,
+                                                     ComingItem comingItem) {
 
         List<ComingItem> comings = getComingItemByIdAndStockId(item.getId(), stockId);
 
@@ -251,10 +237,68 @@ public class ComingItemHandler extends EntityHandlerImpl {
             }
         }
 
-        if (comingItem.getCurrentQuantity().compareTo(BigDecimal.ZERO) == 0)
-            return new ResponseItem<ComingItem>("Товара - " + item.getName() + " нет в наличии!", false);
+    }
 
-        return new ResponseItem<ComingItem>("Товар найден в остатках в количестве - " +
+    private void
+    setQuantityAndPriceFromComingsForCompositeItem(Long stockId, ComingItem comingItem) {
+        List<ComingItem> componentComings = new ArrayList<>();
+        comingItem.getItem().getComponents().forEach(
+                (component) -> {
+
+                    ComingItem coming =
+                            new ComingItem(component.getItem(), BigDecimal.ZERO, BigDecimal.ZERO);
+
+                    setQuantityAndPriceFromComings(component.getItem(), stockId, coming);
+
+                    coming.setCurrentQuantity(
+                            coming.getCurrentQuantity().divide(component.getQuantity(), 0, RoundingMode.DOWN)
+                    );
+
+                    componentComings.add(coming);
+                }
+        );
+
+        comingItem.setCurrentQuantity(
+                componentComings.stream()
+                        .min(Comparator.comparing(ComingItem::getCurrentQuantity))
+                        .orElse(new ComingItem(comingItem.getItem(), BigDecimal.ZERO, BigDecimal.ZERO))
+                        .getCurrentQuantity()
+        );
+
+    }
+
+    private ResponseItem<ComingItem> getComingForSellSelector(String ean,
+                                                              Long stockId,
+                                                              Boolean isCompositeAllowed) {
+
+        Item item = itemHandler.getItemByEanSynonym(ean);
+
+        if (item == null)
+            return new ResponseItem<ComingItem>(ITEM_NOT_FOUND_WITH_SUCH_EAN + ean, false);
+
+        if (!isCompositeAllowed && item.getComponents() != null && item.getComponents().size() > 0)
+            return new ResponseItem<ComingItem>(COMPOSITE_ITEMS_CASTING_IS_NOT_ALLOWED + item.getName(), false);
+
+        ComingItem comingItem = new ComingItem();
+
+        comingItem.setCurrentQuantity(BigDecimal.ZERO);
+
+        comingItem.setPriceOut(new BigDecimal(0));
+
+        comingItem.setItem(item);
+
+        if (comingItem.getItem().getComponents().size() > 0)
+            setQuantityAndPriceFromComingsForCompositeItem(stockId, comingItem);
+        else
+            setQuantityAndPriceFromComings(item, stockId, comingItem);
+
+        if(comingItem.getItem().getPrice().compareTo(BigDecimal.ZERO) > 0)
+            comingItem.setPriceOut(comingItem.getItem().getPrice());
+
+        if (comingItem.getCurrentQuantity().compareTo(BigDecimal.ZERO) == 0)
+            return new ResponseItem<ComingItem>(item.getName() + NOT_ENOUGH_ITEMS, false);
+
+        return new ResponseItem<ComingItem>(ITEMS_FOUND +
                 comingItem.getCurrentQuantity(),true, comingItem);
     }
 
@@ -476,7 +520,7 @@ public class ComingItemHandler extends EntityHandlerImpl {
         page.setPage(filter.getPage() - 1);
 
         ResponseByComingItems ribyci =
-                new ResponseByComingItems("сгрупированные данные", page.getPageList(),
+                new ResponseByComingItems(ELEMENTS_FOUND, page.getPageList(),
                         true, page.getPageCount());
 
         if(filter.getCalcTotal())
@@ -574,10 +618,10 @@ public class ComingItemHandler extends EntityHandlerImpl {
                             new Date(),
                             new Date())
                                 , supplier));
-        if(document == null)
-                document = new Document(supplier, new Date(), INVENTORY_DOC_NAME);
-
-        documentHandler.saveDocument(document);
+        if(document == null) {
+            document = new Document(supplier, new Date(), INVENTORY_DOC_NAME);
+            documentHandler.saveDocument(document);
+        }
 
         return new ResponseItem<>(INVENTORY_DOC_CREATED, true, document);
     }

@@ -54,6 +54,14 @@ public class ComingItem extends BasicOperationWithCommentEntity{
 
     public ComingItem() {}
 
+    public ComingItem(Item item, BigDecimal currentQuantity, BigDecimal priceOut) {
+
+        this.item = item;
+        this.currentQuantity = currentQuantity;
+        this.priceOut = priceOut;
+
+    }
+
     public ComingItem(ComingItem comingItem) {
 
         this.currentQuantity = comingItem.getCurrentQuantity();

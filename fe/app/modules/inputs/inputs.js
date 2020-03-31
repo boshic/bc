@@ -506,7 +506,7 @@ angular.module('inputs', ['asyncFilter'])
         return {
             restrict: 'E',
             transclude: true,
-            scope: true,
+            // scope: true,
             template: userPickerTpl,
             controller: ($scope, userService) => {
                 $scope.user = { name: "Tes" };
@@ -635,11 +635,14 @@ angular.module('inputs', ['asyncFilter'])
     .component( "itemComponentsPicker", {
         bindings: { item: '=', modalVisible: '='},
         template: itemComponentsPickerTpl,
-        controller: function() {
+        controller: ['paneFactory', function(paneFactory) {
             this.addItemComponent = () => {
-                this.item.components.push({item: this.component, quantity: this.componentQuantity});
+                let component = {item: this.component, quantity: this.componentQuantity};
+                let index = paneFactory.checkDuplicateRowsByItem(component, this.item.components);
+                index < 0 ? this.item.components.push(component)
+                    : this.item.components[index].quantity += component.quantity;
             }
-        }
+        }]
     })
     .factory('itemFactory',['httpService', 'paneFactory', '$filter',
         function (httpService, paneFactory, $filter) {

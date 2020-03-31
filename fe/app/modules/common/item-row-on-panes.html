@@ -1,0 +1,42 @@
+
+        <div class="dropdown" style="position: absolute;">
+            <span class="glyphicon glyphicon-filter unprintable"></span>
+            <ul class="dropdown-menu hoverable comments-container item-title">
+                <phrase-by-word-to-filter
+                    filter="$ctrl.filter.searchString"
+                    comment="$ctrl.row.item.name">
+                </phrase-by-word-to-filter>
+            </ul>
+        </div>
+
+            <span class="item-name-on-coming-item-pane"
+                  ng-click="$ctrl.editItem()($ctrl.row)">
+                        {{ $ctrl.row.item.name }}
+            </span>
+
+        <div style="text-align: right; margin-right: 12px;">
+                        <span class="comping-pane-ean-on-item-name clickable-filter-value"
+                              ng-click="$ctrl.filter.ean = $ctrl.row.item.ean">
+                            {{$ctrl.row.item.ean}}
+                        </span>
+        <span class="clickable-filter-value item-additional-info-on-cp"
+              style="margin-left: 3px;"
+                ng-click = '$ctrl.filter.stock = $ctrl.row.stock'>
+                                {{$ctrl.row.stock.name + '. '}}
+                </span>
+        <span class="clickable-filter-value item-additional-info-on-cp"
+              ng-click = '$ctrl.filter.section = $ctrl.row.item.section'>
+                                    {{$ctrl.row.item.section.name}}
+        </span>
+        <span style="position: absolute;">
+                        <div class="dropdown">
+                                <span class="glyphicon glyphicon-filter unprintable"></span>
+                                <ul class="dropdown-menu hoverable comments-container">
+                                    <phrase-by-word-to-filter
+                                            filter="$ctrl.filter.sectionPart"
+                                            comment="$ctrl.row.item.section.name">
+                                    </phrase-by-word-to-filter>
+                                </ul>
+                            </div>
+        </span>
+        </div>

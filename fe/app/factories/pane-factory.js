@@ -88,7 +88,7 @@ import invoicesPaneConfig from '../modules/selling/invoices-pane-config';
                             return price;
                 };
 
-                let checkDuplicateRows = (value, rows) => {
+                let checkDuplicateRowsByItem = (value, rows) => {
                     if (rows.length > 0) {
                         for ( let i = 0; i < rows.length; i++)  {
                             if (rows[i].item.id === value.item.id) {
@@ -169,7 +169,7 @@ import invoicesPaneConfig from '../modules/selling/invoices-pane-config';
                     generateEan,
                     getDiscountedPrice,
                     getPages,
-                    checkDuplicateRows,
+                    checkDuplicateRowsByItem,
                     calcTotals,
                     checkNumberLimit,
                     getItemsBySearchTermsAndFilter,
@@ -263,7 +263,7 @@ import invoicesPaneConfig from '../modules/selling/invoices-pane-config';
                                     row.price = row.priceOut;
                                     row.vat = $s.stock.organization.vatValue;
 
-                                    let index = checkDuplicateRows(row, $s.rows);
+                                    let index = checkDuplicateRowsByItem(row, $s.rows);
                                     let isFractional = fractionalUnits.indexOf(row.item.unit) >= 0;
                                     let quantity = row.quantity;
 
