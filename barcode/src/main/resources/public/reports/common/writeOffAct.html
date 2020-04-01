@@ -24,7 +24,7 @@
 
             <div style="font-weight: bold; display: flex;">
                 <div style="width: 65%; font-weight: bold; margin-top: 40px; text-align: center;">
-                    <div>{{"АКТ № " + reportData.id}}</div>
+                    <div>{{"АКТ"}}</div>
                     <div>
                         <span>на списание товаров от </span>
                         <span>{{reportData.date | date:'dd.MM.yyyy HH:mm' }}</span>
@@ -72,8 +72,8 @@
                         <td>Номенклатура</td>
                         <td style="width: 5%;">Ед. изм.</td>
                         <td style="width: 7%;">Количество</td>
-                        <td style="width: 7%;">Цена</td>
-                        <td style="width: 8%;">Сумма</td>
+                        <td style="width: 7%;">Цена, руб., коп.</td>
+                        <td style="width: 8%;">Сумма, руб., коп.</td>
                         <td style="width: 25%;">
                             <button class="glyphicon glyphicon-pencil edit-comment unprintable"
                                 ng-click="openCommentModal(undefined)">

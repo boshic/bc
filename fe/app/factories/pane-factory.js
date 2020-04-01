@@ -67,7 +67,7 @@ import invoicesPaneConfig from '../modules/selling/invoices-pane-config';
                 };
 
                 let fixIfFractional = (value, unit) => {
-                    return fractionalUnits.indexOf(unit) >= 0 ? +value.toFixed(3) : +value.toFixed(0);
+                    return fractionalUnits.indexOf(unit) < 0 ? +value.toFixed(0) : +value.toFixed(3);
                 };
 
                 let getPages = numberOfPages => {

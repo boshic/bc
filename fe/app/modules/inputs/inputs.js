@@ -637,7 +637,10 @@ angular.module('inputs', ['asyncFilter'])
         template: itemComponentsPickerTpl,
         controller: ['paneFactory', function(paneFactory) {
             this.addItemComponent = () => {
-                let component = {item: this.component, quantity: this.componentQuantity};
+                let component = {
+                    item: this.component,
+                    quantity: paneFactory.fixIfFractional(this.componentQuantity, this.component.unit)
+                };
                 let index = paneFactory.checkDuplicateRowsByItem(component, this.item.components);
                 index < 0 ? this.item.components.push(component)
                     : this.item.components[index].quantity += component.quantity;

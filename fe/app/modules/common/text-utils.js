@@ -123,10 +123,10 @@
             return {
                 restrict: 'A',
                 scope : { unit: '=', quantity: '='},
-                template: "{{ checkUnits(unit) ? quantity.toFixed(0) : quantity.toFixed(3)}}",
+                template: "{{checkUnits(quantity)}}",
                 controller: ($scope, paneFactory) => {
                     $scope.checkUnits = (value) => {
-                        return (paneFactory.fractionalUnits.indexOf(value) < 0);
+                        return paneFactory.fixIfFractional(value, $scope.unit);
                     };
                 }
             };
