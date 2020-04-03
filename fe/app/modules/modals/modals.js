@@ -120,7 +120,7 @@
                         id: $s.modalConfig.id,
                         coming: coming,
                         item: coming.item,
-                        price: coming.priceOut,
+                        price: coming.item.price > 0 ? coming.item.price : coming.priceOut,
                         vat: paneFactory.user.stock.organization.vatValue,
                         quantity: 1,
                         currentQuantity: coming.currentQuantity

@@ -86,6 +86,21 @@ import commonFilterTpl from './common-filter.html';
                         filter.rowsOnPage = 15;
                 };
 
+                let resetPage = (filter, resetFuction) => {
+                    (filter['page'] = 1) ? resetFuction() : filter['page'] = 1;
+                };
+
+                let execRowsOnPageFilter = (filter, findItemsByFilter) => {
+                    let value = filter['rowsOnPage'];
+                    if(value < 0)
+                        return () => {filter['rowsOnPage'] = 15;};
+                    if(!((value^0) === value))
+                        return () => {filter['rowsOnPage'] = (value^0);};
+                    return () => {
+                        resetPage(filter, findItemsByFilter);
+                    };
+                };
+
                 let changeEan = (filter, calcTotalsAndRefresh) => {
                     if (filter.ean.length > paneFactory.barcodeLength && filter.ean > 0)
                         filter.ean = filter.ean.substring(paneFactory.barcodeLength);
@@ -138,8 +153,10 @@ import commonFilterTpl from './common-filter.html';
                                     (nv['inventoryModeEnabled']) ? calcTotalsAndRefresh() : findItemsByFilter();
                                 if((key === 'sortDirection') || (key === 'sortField'))
                                     findItemsByFilter();
-                                if((key === 'rowsOnPage') || (key === 'groupByItems'))
-                                    (nv['page'] = 1) ? findItemsByFilter() : nv['page'] = 1;
+                                if((key === 'rowsOnPage'))
+                                    execRowsOnPageFilter(nv, findItemsByFilter)();
+                                if(key === 'groupByItems')
+                                    resetPage(nv, findItemsByFilter);
                                 if(key === 'ean')
                                     changeEan(nv, calcTotalsAndRefresh);
                             } else {

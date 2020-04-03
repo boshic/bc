@@ -13,6 +13,7 @@ let sellingPaneCntrlr = ($s, $http, paneFactory, printFactory, modalFactory, ite
         $s.barcode = "";
         $s.warning = "";
         $s.comment = "";
+        $s.searchInputId = paneFactory.generateUuid();
         $s.requestParams = {requestsQuantity: 0};
         $s.canRelease = false;
         $s.totals = {
@@ -21,15 +22,9 @@ let sellingPaneCntrlr = ($s, $http, paneFactory, printFactory, modalFactory, ite
             quantity: 0
         };
 
-        let eanInputElement = document.getElementById('selling-pane');
-
         let getItems =(ean) => {
             paneFactory.getItemsForRelease( {filter: ean, stockId: $s.stock.id}, 'getComingForSell', $s);
         };
-
-        // let setDefaultBuyer = () => {
-        //     $s.buyer = paneFactory.getDefaultBuyer(paneFactory.user.buyer, $s.rows);
-        // };
 
     $s.editItem = (barcode) => {
         $s.item = angular.extend(getEmptyItem(), {name: barcode});
@@ -74,7 +69,6 @@ let sellingPaneCntrlr = ($s, $http, paneFactory, printFactory, modalFactory, ite
                 $s.comment = "";
                 $s.rows=[];
                 $s.buyer = getEmptyBuyer();
-                // setDefaultBuyer();
             }
             $s.blankSearch();
         };
@@ -97,8 +91,6 @@ let sellingPaneCntrlr = ($s, $http, paneFactory, printFactory, modalFactory, ite
 
         $s.$on("tabSelected", (event, data) => {
             if (data.event != null && paneFactory.paneToggler(data.pane) === "Продавать!") {
-                // $s.user = paneFactory.user;
-                // setDefaultBuyer();
                 $s.blankSearch();
             }
         });
@@ -119,16 +111,13 @@ let sellingPaneCntrlr = ($s, $http, paneFactory, printFactory, modalFactory, ite
             $s.barcode = "";
             $s.user = paneFactory.user;
             $s.item = getEmptyItem();
-            paneFactory.changeElementState(eanInputElement, ['focus']);
+            paneFactory.changeElementState(document.getElementById($s.searchInputId), ['focus']);
             if(!angular.isDefined($s.buyer.id) && !$s.rows.length)
                 $s.buyer = itemFactory.buyerConfig.checkAndGetItem(paneFactory.user.buyer);
 
         };
 
         $s.openQuantityChangerModal = (index) => {
-            // let i = typeof index === 'number' ? index : 0;
-            // $s.rows[i].availQuantity = $s.rows[i].limitQuantity = $s.rows[i].currentQuantity;
-            // modalFactory.openModal(index, $s.rows, $s.quantityChangerModalData);
             if($s.rows.length)
                 modalFactory.openModalWithConfig({index, rows: $s.rows,
                     availQuantityField : 'currentQuantity',

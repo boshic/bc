@@ -27,8 +27,13 @@ public class ComingReport extends BasicOperationEntity{
     public ComingReport() {}
 
     public ComingReport(Date date) {
-
         super(date);
+    }
+
+    public ComingReport(Stock stock, List<ComingReportRow> rows) {
+
+        this.stock = stock;
+        this.comingReportRows = rows;
     }
 
     public User getUser() {

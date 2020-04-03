@@ -1,6 +1,7 @@
 package barcode.dao.entities.embeddable;
 
 import barcode.dao.entities.ComingItem;
+import barcode.dao.entities.ComingReport;
 import barcode.dao.entities.Document;
 import barcode.dao.entities.Item;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -35,15 +36,16 @@ public class ComingReportRow {
 
     public ComingReportRow() {}
 
-    public ComingReportRow(ComingItem comingItem) {
+    public ComingReportRow(Item item,
+                           Document document,
+                           BigDecimal quantity,
+                           BigDecimal price) {
 
-        this.item = comingItem.getItem();
+        this.item = item;
+        this.document = document;
+        this.quantity = quantity;
+        this.price = price;
 
-        this.document = comingItem.getDoc();
-
-        this.quantity = comingItem.getCurrentQuantity();
-
-        this.price = comingItem.getPriceOut();
     }
 
     public Item getItem() {

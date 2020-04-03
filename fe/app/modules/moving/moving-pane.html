@@ -3,11 +3,9 @@
      ng-keyup="handleKeyup($event)"
      ng-show="(user.role == 'ROLE_ADMIN' || user.actsAllowed.indexOf('moving') > -1)">
     <div class = "blank-search-row" ng-click="blankSearch()">
-        <input class="searchinput " type="text"
-               id="moving-pane"
-               ng-keyDown="setEanPrefix($event)"
-               ng-model="barcode"
-               name="search" placeholder="Введите штрих-код..."/>
+        <pane-search-input
+                input-value = 'barcode' keypress-handler="setEanPrefix" input-id="searchInputId">
+        </pane-search-input>
         <span style="margin-left: 5px;" class="selling-warning" ng-show="warning.length">{{warning}}</span>
         <pane-request-indicator
                 requests-quantity="requestParams.requestsQuantity">

@@ -40,8 +40,10 @@ let pricesCtrlr = ($location, $window, httpService, $s, $timeout) => {
             httpService.getItemById({id: $location.search().id, url:'getReportById'}).then(
                 resp => {
                     resp.rows.forEach((row) => {
-                        row.rub = Math.trunc(row.price);
-                        let kop = ((row.price - row.rub) * 100).toFixed(0);
+                        // row.item.price > 0 ? row.item.price :
+                        let price = row.price;
+                        row.rub = Math.trunc(price);
+                        let kop = ((price - row.rub) * 100).toFixed(0);
                         row.kop = kop < 10? '0'+ kop : kop;
                     });
                     $s.prices  = resp.rows;

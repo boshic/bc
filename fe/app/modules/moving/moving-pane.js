@@ -13,6 +13,7 @@ import movingPaneTpl from './moving-pane.html';
         $s.canRelease = false;
         $s.quantityChangerModalData = {hidden : true, row: {}};
         $s.totals = { date: new Date, sum: 0, quantity: 0 };
+        $s.searchInputId = paneFactory.generateUuid();
 
         let getItems =(ean) => {
             paneFactory.getItemsForRelease( {filter: ean, stockId: $s.stock.id}, 'getComingForSellNonComposite', $s);
@@ -69,12 +70,10 @@ import movingPaneTpl from './moving-pane.html';
 
         $s.blankSearch = () => {
             $s.barcode = '';
-            paneFactory.changeElementState(document.getElementById('moving-pane'), ['focus']);
+            paneFactory.changeElementState(document.getElementById($s.searchInputId), ['focus']);
         };
 
         $s.openQuantityChangerModal = (index) => {
-            // $s.rows[index].availQuantity = $s.rows[index].limitQuantity = $s.rows[index].currentQuantity;
-            // modalFactory.openModal(index, $s.rows, $s.quantityChangerModalData);
             if($s.rows.length)
                 modalFactory.openModalWithConfig({index, rows: $s.rows,
                     availQuantityField : 'currentQuantity',

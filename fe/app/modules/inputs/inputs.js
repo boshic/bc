@@ -134,6 +134,7 @@ let itemComponentInputCtrlr = ($s, itemFactory) => {
 let itemChangeCtrlr = ($s, itemFactory, paneFactory) => {
 
     $s.eanInputId = itemFactory.generateUuid();
+    $s.priceInputId = itemFactory.generateUuid();
 
     $s.openItemComponentsModal = () => {
         itemFactory.openItemComponentsModal($s);
@@ -149,6 +150,10 @@ let itemChangeCtrlr = ($s, itemFactory, paneFactory) => {
 
     $s.focusOnEan = () => {
         paneFactory.changeElementState(document.getElementById($s.eanInputId), ['select']);
+    };
+
+    $s.focusOnPriceInputId = () => {
+        paneFactory.changeElementState(document.getElementById($s.priceInputId), ['select']);
     };
 
     $s.copyEanToSynonym = () => {

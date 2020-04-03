@@ -577,7 +577,8 @@ public class ComingItemHandler extends EntityHandlerImpl {
         if(coming == null)
             return new DtoItemForNewComing(item, item.getPrice(), item.getPrice());
 
-        return new DtoItemForNewComing(coming.getItem(), coming.getPriceIn(), coming.getPriceOut());
+        return new DtoItemForNewComing(coming.getItem(), coming.getPriceIn(),
+                item.getPrice().compareTo(BigDecimal.ZERO) > 0 ? item.getPrice() : coming.getPriceOut());
     }
 
     public void setInventoryItems(Set<ComingItem> comingItems) {

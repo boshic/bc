@@ -10,6 +10,7 @@ import barcode.dao.utils.ComingItemFilter;
 import barcode.dto.ResponseItem;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -18,7 +19,7 @@ import java.util.List;
  * Created by xlinux on 30.10.18.
  */
 @Service
-public class ComingReportHandler {
+public class ComingReportHandler extends  EntityHandlerImpl {
 
     private ComingReportRepository comingReportRepository;
 
@@ -42,22 +43,24 @@ public class ComingReportHandler {
     }
 
 
-    private ResponseItem<ComingReport> update(ComingReport newComingReport, ComingReport comingReport) {
+    private ResponseItem<ComingReport> update(ComingReport newComingReport, ComingReport srcComingReport) {
 
         newComingReport.setUser(userHandler.getCurrentUser());
 
-        newComingReport.setStock(comingReport.getStock());
+        newComingReport.setDate(new Date());
 
-        newComingReport.setComingReportRows(comingReport.getComingReportRows());
+        newComingReport.setStock(srcComingReport.getStock());
+
+        newComingReport.setComingReportRows(srcComingReport.getComingReportRows());
 
         comingReportRepository.save(newComingReport);
 
-        return new ResponseItem<ComingReport>("Добавлен отчет по приходу", true, newComingReport);
+        return new ResponseItem<ComingReport>(NEW_REPORT_ADDED, true, newComingReport);
     }
 
     public ResponseItem<ComingReport> addItem(ComingReport comingReport) {
 
-        return update(new ComingReport(new Date()), comingReport);
+        return update(new ComingReport(), comingReport);
     }
 
     public ResponseItem<ComingReport> addItemByFilter(ComingItemFilter filter) {
@@ -70,20 +73,21 @@ public class ComingReportHandler {
 
         if(comings.size() > 0) {
 
-            ComingReport comingReport = new ComingReport(new Date());
-
-            comingReport.setStock(filter.getStock());
-
-            comingReport.setComingReportRows(new ArrayList<ComingReportRow>());
-
+            ComingReport comingReport = new ComingReport(filter.getStock(), new ArrayList<ComingReportRow>());
             for(ComingItem comingItem : comings)
-                comingReport.getComingReportRows().add(new ComingReportRow(comingItem));
+                comingReport.getComingReportRows()
+                        .add(new ComingReportRow(
+                                comingItem.getItem(),
+                                comingItem.getDoc(),
+                                comingItem.getCurrentQuantity(),
+                                comingItem.getItem().getPrice().compareTo(BigDecimal.ZERO) > 0 ?
+                                    comingItem.getItem().getPrice() : comingItem.getPriceOut()));
 
             return addItem(comingReport);
 
         }
 
-        return new ResponseItem<ComingReport>("Отчет не добавлен", false, new ComingReport());
+        return new ResponseItem<ComingReport>(NEW_REPORT_ADDING_FAILED, false, new ComingReport());
     }
 
     public ComingReport getItemById(Long id) {

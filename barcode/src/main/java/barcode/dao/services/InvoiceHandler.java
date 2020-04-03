@@ -74,7 +74,7 @@ public class InvoiceHandler extends EntityHandlerImpl {
             newInvoice.setComment(
                     this.buildComment(newInvoice.getComments(), invoice.getComment(),
                             userHandler.checkUser(invoice.getUser(), null).getFullName(),
-                            NEW_INVOICE_ADDED, BigDecimal.ZERO)
+                            NEW_REPORT_ADDED, BigDecimal.ZERO)
             );
         }
         else
@@ -87,7 +87,7 @@ public class InvoiceHandler extends EntityHandlerImpl {
 
         invoiceRepository.save(newInvoice);
 
-        return new ResponseItem<Invoice>(NEW_INVOICE_ADDED, true, newInvoice);
+        return new ResponseItem<Invoice>(NEW_REPORT_ADDED, true, newInvoice);
     }
 
     public ResponseItem<Invoice> addInvoice(Invoice invoice) {
@@ -214,10 +214,6 @@ public class InvoiceHandler extends EntityHandlerImpl {
 
             Invoice invoice = new Invoice(new Date(),
                     filter.getStock(), filter.getBuyer(), new ArrayList<InvoiceRow>());
-//
-//            this.buildComment(invoice.getComments(), "",
-//                    userHandler.checkUser(invoice.getUser(), null ).getFullName(),
-//                    NEW_INVOICE_ADDED);
 
             for(SoldItem soldItem: sellings)
                 if(soldItem.getQuantity().compareTo(BigDecimal.ZERO) > 0)

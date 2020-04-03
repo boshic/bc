@@ -47,8 +47,10 @@
                     <span style="    margin-left: 33%;" class="warning-item-input"
                           ng-hide="item.price >= 0">Неверно указана цена</span>
                     <input style = "width: 33%; text-align: center;" type="number"
+                           id="{{priceInputId}}"
                            class="form-control" min="0"
                            ng-model="item.price" placeholder=""/>
+                    <eraser style="margin-top: 6px;" data="item.price" ng-click="focusOnPriceInputId()"></eraser>
                 </div>
                 <div style="display: flex;">
                     <span style="width: 50%;">Штрих-код</span>

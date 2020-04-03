@@ -13,10 +13,9 @@
 <div class="menu-panel unprintable" ng-keyup="handleKeyup($event)">
 
     <div class = "blank-search-row hoverable" ng-click="blankSearch()">
-        <input class="searchinput" name="search" placeholder="Введите штрих-код..." type="text"
-               id="selling-pane"
-               ng-model="barcode"
-               ng-keydown="setEanPrefix($event)"/>
+        <pane-search-input
+                input-value = 'barcode' keypress-handler="setEanPrefix" input-id="searchInputId">
+        </pane-search-input>
         <pane-request-indicator
                 requests-quantity="requestParams.requestsQuantity">
         </pane-request-indicator>

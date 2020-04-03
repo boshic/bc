@@ -25,15 +25,15 @@ public class ResponseByComingItems extends ResponseItemExt<ComingItem> {
 
         for(ComingItem comingItem: comings)  {
 
-//            suppliers.add(comingItem.getDoc().getSupplier());
-//            sections.add(comingItem.getItem().getSection());
+            BigDecimal priceOut = comingItem.getItem().getPrice().compareTo(BigDecimal.ZERO) > 0 ?
+                    comingItem.getItem().getPrice() : comingItem.getPriceOut();
 
             currentQuantity = currentQuantity.add(comingItem.getCurrentQuantity());
 
             currentSum = currentSum.add(comingItem.getSum());
 
             currentSumOut = currentSumOut
-                    .add(comingItem.getPriceOut().multiply(comingItem.getCurrentQuantity()))
+                    .add(priceOut.multiply(comingItem.getCurrentQuantity()))
                     .setScale(2, BigDecimal.ROUND_HALF_UP);
 
             quantity = quantity.add(comingItem.getQuantity());
@@ -42,7 +42,7 @@ public class ResponseByComingItems extends ResponseItemExt<ComingItem> {
                     .setScale(2, BigDecimal.ROUND_HALF_UP);
 
             sumOut = sumOut
-                    .add(comingItem.getPriceOut().multiply( comingItem.getQuantity()))
+                    .add(priceOut.multiply( comingItem.getQuantity()))
                     .setScale(2, BigDecimal.ROUND_HALF_UP);
         }
 

@@ -5,6 +5,7 @@ import newComingDocPaneTpl from './new-coming-doc.html';
         $s.rows = [];
         $s.allowAllStocks = false;
         $s.itemInputVisible = false;
+        $s.searchInputId = paneFactory.generateUuid();
 
         let getEpmtyItem = itemFactory.itemConfig.getEmptyItem;
         $s.item = getEpmtyItem();
@@ -210,7 +211,7 @@ import newComingDocPaneTpl from './new-coming-doc.html';
             $s.item = getEpmtyItem();
             $s.warning = "";
             $s.itemInputVisible = false;
-            paneFactory.changeElementState(document.getElementById('new-coming-doc'), ['focus']);
+            paneFactory.changeElementState(document.getElementById($s.searchInputId), ['focus']);
             if(!angular.isDefined($s.buyer.id) && !$s.rows.length)
                 $s.buyer = itemFactory.buyerConfig.checkAndGetItem(paneFactory.user.buyer);
         };
@@ -227,7 +228,6 @@ import newComingDocPaneTpl from './new-coming-doc.html';
                 transclude: true,
                 scope: {},
                 template: newComingDocPaneTpl,
-                // templateUrl: 'html/coming/new-coming-doc.html',
                 controller: ($scope, httpService, paneFactory, $element, printFactory, modalFactory, itemFactory) => {
                     return newComingCtrlr($scope, httpService, paneFactory, $element, printFactory, modalFactory, itemFactory);
                 },

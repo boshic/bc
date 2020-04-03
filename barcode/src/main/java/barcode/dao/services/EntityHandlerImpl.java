@@ -59,7 +59,8 @@ public class EntityHandlerImpl implements EntityHandler{
 
 //    "Товар найден в остатках в количестве - "
 
-    static final String NEW_INVOICE_ADDED = "добавлен отчет";
+    static final String NEW_REPORT_ADDED = "Добавлен отчет";
+    static final String NEW_REPORT_ADDING_FAILED = FAILED + "Не удалось добавить отчет!";
 
     static final String WRITE_OFF_CAUSE = "причина списания";
     static final String WRITE_OFF_ACT_ADDED = "акт на списание";
