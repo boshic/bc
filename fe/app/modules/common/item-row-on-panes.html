@@ -6,6 +6,23 @@
                     filter="$ctrl.filter.searchString"
                     comment="$ctrl.row.item.name">
                 </phrase-by-word-to-filter>
+                <li ng-if="$ctrl.filter.buyer != null">
+                    <span class="clickable-filter-value item-additional-info-on-cp"
+                          style="margin-left: 3px;"
+                          ng-click = '$ctrl.filter.supplier = $ctrl.row.doc.supplier'>
+                        {{$ctrl.row.doc.supplier.name}}
+                    </span>
+                </li>
+                <li ng-if="$ctrl.filter.buyer != null">
+                    <span class="clickable-filter-value item-additional-info-on-cp"
+                          style="margin-left: 3px;"
+                          ng-click = '$ctrl.filter.document = $ctrl.row.doc'>
+                        <span>{{$ctrl.row.doc.name + ' '}}</span>
+                        <span>{{'от '}}</span>
+                        <span>{{$ctrl.row.doc.date | date:'dd.MM.yyyy'}}</span>
+                    </span>
+                </li>
+
             </ul>
         </div>
 

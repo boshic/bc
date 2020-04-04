@@ -52,6 +52,7 @@ import commonFilterTpl from './common-filter.html';
 
                 let commonStartDate = new Date(2015,0,1);
                 let toDate;
+                let defaultRowsOnPage = 15;
 
                 let resetCommonFilterFields = (filter) => {
 
@@ -67,14 +68,13 @@ import commonFilterTpl from './common-filter.html';
                     toDate = new Date();
                     filter.ean = "";
                     filter.sortDirection = 'DESC';
-                    // filter.sortDirection = 'ASC';
                     filter.hideNullQuantity = true;
                     filter.sectionPart = "";
                     filter.section = {name:""};
                     filter.supplier = {name:""};
                     filter.page = 1;
                     filter.searchString = "";
-                    filter.rowsOnPage = 15;
+                    filter.rowsOnPage = defaultRowsOnPage;
                     filter.comment = "";
                     filter.document = {name:""};
                     filter.item = {name:""};
@@ -82,8 +82,9 @@ import commonFilterTpl from './common-filter.html';
                 };
 
                 let validate = (filter) => {
-                    if(('rowsOnPage' in filter) && (filter.rowsOnPage === null))
-                        filter.rowsOnPage = 15;
+                    if(('rowsOnPage' in filter)
+                        && (!angular.isDefined(filter.rowsOnPage) || filter.rowsOnPage === null))
+                        filter.rowsOnPage = defaultRowsOnPage;
                 };
 
                 let resetPage = (filter, resetFuction) => {
@@ -92,8 +93,7 @@ import commonFilterTpl from './common-filter.html';
 
                 let execRowsOnPageFilter = (filter, findItemsByFilter) => {
                     let value = filter['rowsOnPage'];
-                    if(value < 0)
-                        return () => {filter['rowsOnPage'] = 15;};
+                    // console.log('execRowsOnPageFilter func: ', value, (value > 0));
                     if(!((value^0) === value))
                         return () => {filter['rowsOnPage'] = (value^0);};
                     return () => {
@@ -117,9 +117,6 @@ import commonFilterTpl from './common-filter.html';
                         resetCommonFilterFields(filter);
 
                         filter.inventoryModeEnabled = false;
-                        // filter.autoOpenQuantityChangerModalInInventoryMode = false;
-
-                        // filter.sortField = 'item.name';
                         filter.sortField = 'doc.date';
                         filter.fromDate = new Date(toDate.getFullYear(), toDate.getMonth(), 1);
 
@@ -160,6 +157,7 @@ import commonFilterTpl from './common-filter.html';
                                 if(key === 'ean')
                                     changeEan(nv, calcTotalsAndRefresh);
                             } else {
+                                // console.log('validate value: ', key, nv[key]);
                                 validate(nv);
                             }
                         }
