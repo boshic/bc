@@ -47,10 +47,8 @@ import commonFilterTpl from './common-filter.html';
                 link: (scope, elem, attrs) => {}
             }
         })
-        .factory('filterFactory',['paneFactory', 'httpService',
-            function (paneFactory, httpService) {
+        .factory('filterFactory',['paneFactory', function (paneFactory) {
 
-                let commonStartDate = new Date(2015,0,1);
                 let toDate;
                 let defaultRowsOnPage = 15;
 
@@ -72,6 +70,7 @@ import commonFilterTpl from './common-filter.html';
                     filter.sectionPart = "";
                     filter.section = {name:""};
                     filter.supplier = {name:""};
+                    filter.calcTotal = true;
                     filter.page = 1;
                     filter.searchString = "";
                     filter.rowsOnPage = defaultRowsOnPage;
@@ -82,9 +81,20 @@ import commonFilterTpl from './common-filter.html';
                 };
 
                 let validate = (filter) => {
-                    if(('rowsOnPage' in filter)
-                        && (!angular.isDefined(filter.rowsOnPage) || filter.rowsOnPage === null))
+                    if(('toDate' in filter) && !(filter.toDate > 0)) {
+                        console.log('validatating toDate!');
+                        filter.toDate =  toDate.setHours(23,59,59,999);
+                    }
+                    if(('fromDate' in filter) && !(filter.fromDate > 0)) {
+                        console.log('validatating fromDate!');
+                        filter.fromDate = angular.isDefined(filter.groupByItems)
+                            ? toDate.setHours(0,0,0,0)
+                            : filter.fromDate = new Date(toDate.getFullYear(), toDate.getMonth(), 1);
+                    }
+                    if(('rowsOnPage' in filter) && !(filter.rowsOnPage > 0)) {
+                        console.log('validatating rowsOnPage!');
                         filter.rowsOnPage = defaultRowsOnPage;
+                    }
                 };
 
                 let resetPage = (filter, resetFuction) => {
@@ -105,10 +115,9 @@ import commonFilterTpl from './common-filter.html';
                     if (filter.ean.length > paneFactory.barcodeLength && filter.ean > 0)
                         filter.ean = filter.ean.substring(paneFactory.barcodeLength);
                     if (filter.ean.length === paneFactory.barcodeLength && filter.ean > 0) {
-                        // if (!filter.visible)
-                        //     filter.fromDate = commonStartDate;
                         calcTotalsAndRefresh();
                     }
+                    filter.calcTotal = true;
                 };
 
                 return {
@@ -156,7 +165,8 @@ import commonFilterTpl from './common-filter.html';
                                     resetPage(nv, findItemsByFilter);
                                 if(key === 'ean')
                                     changeEan(nv, calcTotalsAndRefresh);
-                            } else {
+                            }
+                            else {
                                 // console.log('validate value: ', key, nv[key]);
                                 validate(nv);
                             }

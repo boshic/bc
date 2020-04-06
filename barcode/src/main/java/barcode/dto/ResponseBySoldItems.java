@@ -56,6 +56,10 @@ public class ResponseBySoldItems extends ResponseItemExt<SoldItem> {
                 ("чеков", receipts.size(), "средний" ,
                         receipts.stream().map(Receipt::getSum).reduce(BigDecimal.ZERO, BigDecimal::add)
                                 .divide(new BigDecimal(receipts.size()), 2)));
+        else
+            super.getTotals().add(new ResultRowByItemsCollection<Integer, BigDecimal>
+                    ("чеков", 0, "средний" , BigDecimal.ZERO));
+
 
         super.setBuyers(buyers.stream().sorted(Comparator.comparing(Buyer::getName)).collect(Collectors.toList()));
         super.setSuppliers(suppliers

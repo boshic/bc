@@ -160,10 +160,9 @@ public class SoldItemHandler extends EntityHandlerImpl {
     }
 
     private BigDecimal getPriceOfSoldItem(SoldItem soldItem, BigDecimal priceIn) {
-        if(soldItem.getBuyer().getSellByComingPrices())
-            return priceIn;
-        return soldItem.getPrice();
+        return soldItem.getBuyer().getSellByComingPrices() ? priceIn : soldItem.getPrice();
     }
+
 
     void makeSellingByInvoice(List<SoldItem> sellings) {
 
@@ -180,12 +179,13 @@ public class SoldItemHandler extends EntityHandlerImpl {
 
         Long uuid = new Random().nextLong();
 
-        Receipt receipt = new Receipt(new Date(),
-                soldItems.stream().map(v -> v.getPrice().multiply(v.getQuantity())).reduce(BigDecimal.ZERO, BigDecimal::add),
-                soldItems.size(), soldItems.iterator().next().getUser(), soldItems.iterator().next().getBuyer()
-        );
-
-        receiptHandler.save(receipt);
+        Receipt receipt = receiptHandler
+                            .getReceiptByBuyer(soldItems.iterator().next().getBuyer(),
+                                               soldItems.stream()
+                                                .map(v -> v.getPrice().multiply(v.getQuantity()))
+                                                .reduce(BigDecimal.ZERO, BigDecimal::add),
+                                               soldItems.size(),
+                                               soldItems.iterator().next().getUser());
 
         synchronized (comingItemHandler) {
             for (SoldItem soldItem : soldItems) {
@@ -285,7 +285,9 @@ public class SoldItemHandler extends EntityHandlerImpl {
 
                         newSoldItem.setComing(coming); // - добавляем ссылку на приход новой продажи
 
-                        newSoldItem.setPrice(getPriceOfSoldItem(soldItem, coming.getPriceIn()));
+                        newSoldItem.setPrice(getPriceOfSoldItem(
+                                soldItem, coming.getPriceIn())
+                        );
 
                         newSoldItem.setSum(newSoldItem.getPrice()
                                 .multiply(newSoldItem.getQuantity())
@@ -502,8 +504,8 @@ public ResponseItem addOneSelling(SoldItem soldItem) {
         soldItem.setSum(soldItem.getPrice().multiply(soldItem.getQuantity())
                 .setScale(2, BigDecimal.ROUND_HALF_UP));
 
-        Receipt receipt = new Receipt(new Date(), soldItem.getSum(), 1, soldItem.getUser(), soldItem.getBuyer());
-        receiptHandler.save(receipt);
+        Receipt receipt = receiptHandler
+                .getReceiptByBuyer(soldItem.getBuyer(), soldItem.getSum(), 1, soldItem.getUser());
 
         soldItem.setReceipt(receipt);
 
