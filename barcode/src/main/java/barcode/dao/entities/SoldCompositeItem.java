@@ -33,6 +33,18 @@ public class SoldCompositeItem {
     @JsonIgnore
     private Set<SoldItem> sellings;
 
+    public SoldCompositeItem() {}
+
+    public SoldCompositeItem(Item item,
+                             BigDecimal sum,
+                             BigDecimal price,
+                             BigDecimal quantity) {
+        this.item = item;
+        this.sum = sum;
+        this.price = price;
+        this.quantity = quantity;
+    }
+
     public Long getId() {
         return id;
     }

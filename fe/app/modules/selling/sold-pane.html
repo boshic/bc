@@ -173,6 +173,12 @@
                     <span class="price-out-on-coming-pane" title="Продавец">{{ x.user.name }}</span>
                 </td>
                 <td>
+                    <div class="sold-composite-item-descr">
+                        <span>{{x.soldCompositeItem.id}}</span>
+                            <span>{{x.soldCompositeItem.item.name}}</span>
+                        <span>{{x.soldCompositeItem.quantity}}</span>
+                        <span>{{x.soldCompositeItem.sum}}</span>
+                    </div>
                     <item-row-on-panes row="x.coming" filter="filter"></item-row-on-panes>
                 </td>
                 <td class="price-data"

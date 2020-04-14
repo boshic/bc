@@ -37,6 +37,11 @@ public class ItemController {
         return this.itemHandler.getItemsForComponents(filter);
     }
 
+    @GetMapping(path="/getCompositeItems")
+    public @ResponseBody Iterable<Item> getCompositeItems(@RequestParam String filter) {
+        return this.itemHandler.getCompositeItems(filter);
+    }
+
     @GetMapping(path="/getItemById")
     public @ResponseBody Item getItemById(@RequestParam Long id) {
         return this.itemHandler.getItemById(id);

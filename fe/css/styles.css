@@ -1943,3 +1943,12 @@ span.comping-pane-ean-on-item-name {
     float: left;
     font-style: italic;
 }
+
+div.sold-composite-item-descr {
+    background: coral;
+    color: white;
+    font-weight: bold;
+    text-align: right;
+    margin-left: 5%;
+    border-top-left-radius: 100%;
+}

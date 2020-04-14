@@ -17,6 +17,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -24,12 +25,13 @@ import java.util.stream.Stream;
 @Service
 public class SoldItemHandler extends EntityHandlerImpl {
 
-
     public static SoldItemPredicatesBuilder sipb = new SoldItemPredicatesBuilder();
 
     private SoldItemsRepository soldItemsRepository;
 
     private final ComingItemHandler comingItemHandler;
+
+    private SoldCompositeItemHandler soldCompositeItemHandler;
 
     private UserHandler userHandler;
 
@@ -41,23 +43,23 @@ public class SoldItemHandler extends EntityHandlerImpl {
 
     private ReceiptHandler receiptHandler;
 
-    public SoldItemHandler (SoldItemsRepository soldItemsRepository, ComingItemHandler comingItemHandler,
-                            UserHandler userHandler, StockHandler stockHandler, BuyerHandler buyerHandler,
-                            ReceiptHandler receiptHandler, ItemHandler itemHandler) {
+    public SoldItemHandler (SoldItemsRepository soldItemsRepository,
+                            SoldCompositeItemHandler soldCompositeItemHandler,
+                            ComingItemHandler comingItemHandler,
+                            UserHandler userHandler,
+                            StockHandler stockHandler,
+                            BuyerHandler buyerHandler,
+                            ReceiptHandler receiptHandler,
+                            ItemHandler itemHandler) {
 
         this.soldItemsRepository = soldItemsRepository;
-
         this.comingItemHandler = comingItemHandler;
-
         this.userHandler = userHandler;
-
         this.stockHandler = stockHandler;
-
         this.buyerHandler = buyerHandler;
-
         this.receiptHandler = receiptHandler;
-
         this.itemHandler = itemHandler;
+        this.soldCompositeItemHandler = soldCompositeItemHandler;
     }
 
     public ResponseItem makeAutoSelling(List<SoldItem> sellings) {
@@ -160,7 +162,7 @@ public class SoldItemHandler extends EntityHandlerImpl {
     }
 
     private BigDecimal getPriceOfSoldItem(SoldItem soldItem, BigDecimal priceIn) {
-        return soldItem.getBuyer().getSellByComingPrices() ? priceIn : soldItem.getPrice();
+        return soldItem.getBuyer().getSellByComingPrices() || soldItem.getSoldCompositeItem() != null ? priceIn : soldItem.getPrice();
     }
 
 
@@ -173,9 +175,75 @@ public class SoldItemHandler extends EntityHandlerImpl {
 
     }
 
-    public ResponseItem<SoldItem> addSellings (List<SoldItem> soldItems) {
-//        public synchronized ResponseItem<SoldItem> addSellings (List<SoldItem> soldItems) {
+    private BigDecimal getRequeredQuantityForSell(List<SoldItem> soldItems, String ean) {
 
+        BigDecimal quantity = BigDecimal.ZERO;
+
+        for(SoldItem soldItem : soldItems)
+            if(soldItem.getComing().getItem().getEan().equals(ean))
+                quantity = quantity.add(soldItem.getQuantity());
+
+        return quantity;
+    }
+
+    private ResponseItem<SoldItem> checkSoldItemsForComposites(List<SoldItem> soldItems) {
+
+        List<SoldItem> resultSoldItems = new ArrayList<>();
+
+        soldItems.forEach(soldItem -> {
+
+            if(soldItem.getComing().getItem().getComponents().size() > 0) {
+                SoldCompositeItem soldCompositeItem = new SoldCompositeItem(
+                    soldItem.getComing().getItem(),
+                        soldItem.getBuyer().getSellByComingPrices()
+                                ? BigDecimal.ZERO : soldItem.getPrice().multiply(soldItem.getQuantity()),
+                        soldItem.getBuyer().getSellByComingPrices() ? BigDecimal.ZERO : soldItem.getPrice(),
+                        soldItem.getQuantity()
+                );
+//                soldCompositeItemHandler.save(soldCompositeItem);
+
+//                BigDecimal sum  = soldCompositeItem.getPrice()
+//                        .divide(new BigDecimal(soldItem.getComing().getItem().getComponents().size()), 5, RoundingMode.DOWN);
+
+                soldItem.getComing().getItem().getComponents()
+                        .forEach(component -> {
+                            SoldItem cmpntSoldItem = new SoldItem(
+                                    new ComingItem(component.getItem(),soldItem.getComing().getStock()),
+//                                    sum.divide(component.getQuantity(), 5, RoundingMode.UP),
+                                    BigDecimal.ZERO,
+                                    soldItem.getComing().getStock().getOrganization().getVatValue(),
+                                    soldItem.getQuantity().multiply(component.getQuantity()),
+                                    "",
+                                    soldItem.getBuyer(),
+                                    soldItem.getUser()
+                            );
+                            cmpntSoldItem.setSoldCompositeItem(soldCompositeItem);
+                            resultSoldItems.add( cmpntSoldItem);
+                });
+
+            }
+            else
+                resultSoldItems.add(soldItem);
+        });
+        return new ResponseItem<SoldItem>("", resultSoldItems, true);
+    }
+
+    private void setSumForComposites(SoldItem soldItem) {
+
+        if(soldItem.getSoldCompositeItem() != null && soldItem.getBuyer().getSellByComingPrices()) {
+                soldItem.getSoldCompositeItem()
+                        .setPrice(soldItem.getSoldCompositeItem().getPrice()
+                                .add(
+                                        soldItem.getPrice().multiply(soldItem.getQuantity()
+                                                .divide(soldItem.getSoldCompositeItem().getQuantity(), 3, BigDecimal.ROUND_UP)))
+                        );
+                soldItem.getSoldCompositeItem()
+                        .setSum(soldItem.getSoldCompositeItem().getSum()
+                                .add(soldItem.getSum()));
+        }
+    }
+
+    public ResponseItem<SoldItem> addSellings (List<SoldItem> soldItems) {
 
         Long uuid = new Random().nextLong();
 
@@ -187,15 +255,21 @@ public class SoldItemHandler extends EntityHandlerImpl {
                                                soldItems.size(),
                                                soldItems.iterator().next().getUser());
 
+        ResponseItem<SoldItem> checkedItems = checkSoldItemsForComposites(soldItems);
+        if (!checkedItems.getSuccess())
+            return checkedItems;
+
         synchronized (comingItemHandler) {
-            for (SoldItem soldItem : soldItems) {
+            for (SoldItem soldItem : checkedItems.getEntityItems()) {
 
                 //try get from RE<CominItem> after checking
                 List<ComingItem> comings = this.comingItemHandler.getComingItemByIdAndStockId(
                         soldItem.getComing().getItem().getId(),
                         soldItem.getComing().getStock().getId());
 
-                BigDecimal reqForSell = soldItem.getQuantity();
+//                BigDecimal reqForSell = soldItem.getQuantity();
+                BigDecimal reqForSell = getRequeredQuantityForSell(
+                        checkedItems.getEntityItems(), soldItem.getComing().getItem().getEan());
 
                 BigDecimal availQuantityByEan = comingItemHandler.getAvailQuantityByEan(comings);
 
@@ -277,7 +351,6 @@ public class SoldItemHandler extends EntityHandlerImpl {
                             reqForSell = BigDecimal.ZERO;
                         }
 
-
                         coming.setSum(coming.getPriceIn().multiply(coming.getCurrentQuantity())
                                 .setScale(2, BigDecimal.ROUND_HALF_UP));
 
@@ -285,18 +358,24 @@ public class SoldItemHandler extends EntityHandlerImpl {
 
                         newSoldItem.setComing(coming); // - добавляем ссылку на приход новой продажи
 
-                        newSoldItem.setPrice(getPriceOfSoldItem(
-                                soldItem, coming.getPriceIn())
+                        soldCompositeItemHandler.save(soldItem.getSoldCompositeItem());
+                        newSoldItem.setSoldCompositeItem(soldItem.getSoldCompositeItem());
+
+                        newSoldItem.setPrice(
+                                getPriceOfSoldItem(soldItem, coming.getPriceIn())
                         );
 
-                        newSoldItem.setSum(newSoldItem.getPrice()
+                        newSoldItem.setSum(
+                                newSoldItem.getPrice()
                                 .multiply(newSoldItem.getQuantity())
-                                .setScale(2, BigDecimal.ROUND_HALF_UP));
+                                .setScale(2, BigDecimal.ROUND_HALF_UP)
+                        );
+
+                        setSumForComposites(newSoldItem);
 
                         newSoldItem.setVat(soldItem.getVat());
 
-//                        newSoldItem.setUuid(uuid);
-
+                        receiptHandler.save(receipt);
                         newSoldItem.setReceipt(receipt);
 
                         soldItemsRepository.save(newSoldItem);
@@ -305,11 +384,6 @@ public class SoldItemHandler extends EntityHandlerImpl {
 
                     }
                 }
-
-//                if(reqForSell.compareTo(BigDecimal.ZERO) > 0  || comings.size() == 0)
-//                    return new ResponseItem<SoldItem>(INSUFFICIENT_QUANTITY_OF_GOODS + ": " +reqForSell +
-//                            COMMON_UNIT + soldItem.getComing().getItem().getName(), false);
-
             }
 
             return new ResponseItem<SoldItem>(SALE_COMPLETED_SUCCESSFULLY, true);
@@ -507,6 +581,7 @@ public ResponseItem addOneSelling(SoldItem soldItem) {
         Receipt receipt = receiptHandler
                 .getReceiptByBuyer(soldItem.getBuyer(), soldItem.getSum(), 1, soldItem.getUser());
 
+        receiptHandler.save(receipt);
         soldItem.setReceipt(receipt);
 
         soldItemsRepository.save(soldItem);

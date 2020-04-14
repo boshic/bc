@@ -115,21 +115,6 @@ public class ItemHandler  extends EntityHandlerImpl{
 
     }
 
-    public List<Item> getItems(String filter) {
-
-        List<Item> items = itemRepository.findByEanOrderByNameDesc(filter);
-
-        if(items.size() > 0)
-            return items;
-
-        if(filter != null && filter.length() >= 2)
-            return itemRepository.findAll(ipb.buildByFilter(filter));
-//            return itemRepository.findByNameContainingIgnoreCase(filter);
-
-        return itemRepository.findTop100ByNameContainingIgnoreCase(filter);
-    }
-
-
     Item getItemByEanSynonym (String ean) {
         Item item = itemRepository.findOneByEan(ean);
 
@@ -150,19 +135,36 @@ public class ItemHandler  extends EntityHandlerImpl{
         return item;
     }
 
-    public List<Item> getItemsForComponents(String filter) {
-
-        Item item = checkItemIfItHasSynonymAndGetItForComponents(
-                itemRepository.getItemByEanWithoutComponents(filter));
+    private List<Item> getItemsCommon(String filter, Item item, Predicate predicate) {
 
         if(item != null)
             return Collections.singletonList(item);
 
         if(filter != null && filter.length() >= 2)
-            return itemRepository.findAll(ipb.buildByFilterForComponentsInput(filter));
+            return itemRepository.findAll(predicate);
 
-        return itemRepository.findAll(ipb.buildByFilterForComponentsInput(filter),
-                new PageRequest(0,100)).getContent();
+        return itemRepository.findAll(predicate, new PageRequest(0,100)).getContent();
+    }
+
+    public List<Item> getItems(String filter) {
+
+        return  getItemsCommon(filter, itemRepository.findOneByEan(filter), ipb.buildByFilter(filter));
+
+    }
+
+    public List<Item> getCompositeItems(String filter) {
+
+        return getItemsCommon(filter,
+                itemRepository.findOne(ipb.getPredicateForCompositeItemByEan(filter)),
+                ipb.getPredicateForCompositeItemsByFilter(filter));
+    }
+
+    public List<Item> getItemsForComponents(String filter) {
+
+        return getItemsCommon(filter,
+                checkItemIfItHasSynonymAndGetItForComponents(
+                        itemRepository.getItemByEanWithoutComponents(filter)),
+                ipb.buildByFilterForComponentsInput(filter));
     }
 
     public Item getItemById(Long id) {

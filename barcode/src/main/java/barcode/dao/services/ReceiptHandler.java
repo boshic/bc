@@ -23,8 +23,8 @@ public class ReceiptHandler {
     }
 
     void save (Receipt receipt) {
-
-        receiptRepository.save(receipt);
+        if(receipt != null)
+            receiptRepository.save(receipt);
     }
 
     Receipt getReceiptByBuyer(Buyer buyer,
@@ -35,7 +35,7 @@ public class ReceiptHandler {
         Receipt receipt = null;
         if (!buyer.getSellByComingPrices()) {
             receipt = new Receipt(new Date(), sum, numberOfPositions, user, buyer);
-            receiptRepository.save(receipt);
+//            receiptRepository.save(receipt);
         }
 
         return receipt;

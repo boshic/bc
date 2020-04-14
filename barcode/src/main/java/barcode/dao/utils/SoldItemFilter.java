@@ -60,6 +60,7 @@ public class SoldItemFilter extends ComingItemFilter {
     private Buyer buyer;
     private User user;
     private Boolean groupByItems;
+    private Item compositeItem;
 
     public Buyer getBuyer() {
         return buyer;
@@ -83,5 +84,13 @@ public class SoldItemFilter extends ComingItemFilter {
 
     public void setGroupByItems(Boolean groupByItems) {
         this.groupByItems = groupByItems;
+    }
+
+    public Item getCompositeItem() {
+        return compositeItem;
+    }
+
+    public void setCompositeItem(Item compositeItem) {
+        this.compositeItem = compositeItem;
     }
 }

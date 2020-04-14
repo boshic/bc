@@ -138,6 +138,7 @@ import commonFilterTpl from './common-filter.html';
                         filter.user = {};
                         filter.groupByItems = false;
                         filter.buyer = {name:""};
+                        filter.compositeItem = {name:""};
                         filter.fromDate = toDate.setHours(0,0,0,0);
                     },
                     doFilter : (calcTotalsAndRefresh, findItemsByFilter, nv, ov) => {
@@ -145,12 +146,21 @@ import commonFilterTpl from './common-filter.html';
                             if ((angular.isDefined(ov[key], nv[key])
                                 && ((ov[key] != null) && (nv[key] != null))
                                 && (!paneFactory.compareValues(nv[key], ov[key])))) {
-                                if ((key === 'toDate') || (key === 'fromDate') || (key === 'user')
-                                    || (key === 'comment') || (key === 'document') || (key === 'supplier')
-                                    || (key === 'sectionPart') || (key === 'hideNullQuantity')
+                                if ((key === 'toDate')
+                                    || (key === 'fromDate')
+                                    || (key === 'user')
+                                    || (key === 'comment')
+                                    || (key === 'document')
+                                    || (key === 'supplier')
+                                    || (key === 'sectionPart')
+                                    || (key === 'hideNullQuantity')
                                     || (key === 'inventoryModeEnabled')
-                                    || (key === 'section') || (key === 'item') || (key === 'buyer')
-                                    || (key === 'stock') || (key === 'searchString')) {
+                                    || (key === 'compositeItem')
+                                    || (key === 'section')
+                                    || (key === 'item')
+                                    || (key === 'buyer')
+                                    || (key === 'stock')
+                                    || (key === 'searchString')) {
                                     calcTotalsAndRefresh();
                                 }
                                 // if((key === 'fromDate') && (!paneFactory.isEanValid(nv['ean'])))

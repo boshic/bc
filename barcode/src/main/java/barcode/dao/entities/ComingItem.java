@@ -71,10 +71,10 @@ public class ComingItem extends BasicOperationWithCommentEntity{
         this.quantity = comingItem.getQuantity();
     }
 
-    public ComingItem(Item item, Stock stock) {
+    public ComingItem(Item item,
+                      Stock stock) {
 
         this.stock = stock;
-
         this.item = item;
     }
 

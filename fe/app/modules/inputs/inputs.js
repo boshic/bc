@@ -14,6 +14,7 @@ import addEditBuyerTpl from './add-edit-buyer.html';
 import docInputTpl from './doc-input.html';
 import itemInputTpl from './item-input.html';
 import itemComponentInputTpl from './item-component-input.html';
+import compositeItemInputTpl from './composite-item-input.html';
 import itemComponentsPickerTpl from './item-components-picker.html';
 import addEditItemTpl from './add-edit-item.html';
 import itemSectionInputTpl from './item-section-input.html';
@@ -129,6 +130,11 @@ let itemInputCtrlr = ($s, itemFactory) => {
 let itemComponentInputCtrlr = ($s, itemFactory) => {
 
     return commonItemCtrlr($s, itemFactory, 'itemComponentConfig');
+};
+
+let compositeItemInputCtrlr = ($s, itemFactory) => {
+
+    return commonItemCtrlr($s, itemFactory, 'compositeItemConfig');
 };
 
 let itemChangeCtrlr = ($s, itemFactory, paneFactory) => {
@@ -402,6 +408,17 @@ angular.module('inputs', ['asyncFilter'])
             }
         }
     })
+    .directive( "compositeItemInput", () => {
+        return {
+            restrict: 'E',
+            transclude: true,
+            scope: { item:'=', stock:'<?', getItemsForParent: '&?getItems' },
+            template: compositeItemInputTpl,
+            controller: function ($scope, itemFactory) {
+                return compositeItemInputCtrlr($scope, itemFactory);
+            }
+        }
+    })
     .directive( "addEditItem", () => {
         return {
             restrict: 'E',
@@ -620,7 +637,7 @@ angular.module('inputs', ['asyncFilter'])
         //     "</ul>" +
         // "</div>" +
         "<span class='warning-item-input' ng-hide='$ctrl.item.id>0'>" +
-            "{{'Не выбран(а) ' + $ctrl.title + '!'}}</span>" +
+            "{{'Не выбран(а)(о) ' + $ctrl.title + '!'}}</span>" +
         "<textarea rows='2' title='{{$ctrl.item.ean + \"  \" + $ctrl.item.name}}' type='text' " +
             "class='form-control' placeholder={{$ctrl.title}} id={{$ctrl.inputId}} " +
                 "ng-keydown='$ctrl.keypressHandler()($event, \"name\")'" +
@@ -716,11 +733,15 @@ angular.module('inputs', ['asyncFilter'])
                                  $s.getItemsForParent()($s.item.ean);
                         }
                 },
-                itemComponentConfig :
-                    {
+                itemComponentConfig : {
                         getEmptyItem: getNewItem,
                         getItemsUrl: 'getItemsForComponents',
                         getItemByIdUrl: 'getItemById'
+                },
+                compositeItemConfig : {
+                    getEmptyItem: getNewItem,
+                    getItemsUrl: 'getCompositeItems',
+                    getItemByIdUrl: 'getItemById'
                 },
                 supplierConfig :
                     {

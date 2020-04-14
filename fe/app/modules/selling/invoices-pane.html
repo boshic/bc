@@ -1,8 +1,5 @@
-<div ng-transclude></div>
-<div ng-hide='!filter.calcTotal'
-     ng-if="user.shadeWhenQuyering"
-     class='trans-layer'>
-</div>
+
+<pane-shader active="requestParams.requestsQuantity"></pane-shader>
 <div class="menu-panel hoverable unprintable" ng-keyup="handleKeyup($event)">
     <div class = "blank-search-row" ng-click="blankSearch()">
         <pane-search-input

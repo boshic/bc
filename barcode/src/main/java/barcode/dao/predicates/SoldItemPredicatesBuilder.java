@@ -37,6 +37,9 @@ public class SoldItemPredicatesBuilder {
         if (filter.getItem() != null && filter.getItem().getId() != null)
             predicate = predicate.and(item.id.eq(filter.getItem().getId()));
 
+        if (filter.getCompositeItem() != null && filter.getCompositeItem().getId() != null)
+            predicate = predicate.and(soldItem.soldCompositeItem.item.id.eq(filter.getCompositeItem().getId()));
+
         if (filter.getBuyer().getId() != null)
             predicate = predicate.and(soldItem.buyer.id.eq(filter.getBuyer().getId()));
 

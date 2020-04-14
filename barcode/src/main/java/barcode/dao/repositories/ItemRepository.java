@@ -22,6 +22,7 @@ public interface ItemRepository extends CrudRepository<Item, Long>,
     List<Item> findAll(Predicate predicate);
     Page<Item> findAll(Predicate predicate, Pageable pageable);
     Item findOneByEan(String ean);
+    Item findOne(Predicate predicate);
 
     @Query(value = "SELECT i from barcode.dao.entities.Item i where i.ean=?1 and i.components.size=0")
     Item getItemByEanWithoutComponents(String ean);

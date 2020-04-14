@@ -54,7 +54,11 @@ public class SoldItem extends BasicOperationWithCommentEntity {
     public SoldItem(String comment) {
         super(comment);
     }
-    public SoldItem(ComingItem coming, BigDecimal price, BigDecimal quantity, BigDecimal availQuantityByEan) {
+    public SoldItem(ComingItem coming,
+                    BigDecimal price,
+                    BigDecimal quantity,
+                    BigDecimal availQuantityByEan) {
+
         this.coming = coming;
         this.price = price;
         this.quantity = quantity;

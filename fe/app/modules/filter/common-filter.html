@@ -136,9 +136,17 @@
                 <item-input item="filter.item"></item-input>
             </div>
             <button class='glyphicon glyphicon-arrow-up item-arrow-up-btn'
-                  title="найти по фрагменту"
+                  title="найти по товару"
                   ng-click="filter.searchString = filter.item.name">
             </button>
+        </div>
+    </li>
+
+    <li class="filter-row" ng-if="filter.compositeItem != null">
+        <div style="display: flex;">
+            <div class="filter-row-two-elements">
+                <composite-item-input item="filter.compositeItem"></composite-item-input>
+            </div>
         </div>
     </li>
 

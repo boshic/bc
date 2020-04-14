@@ -78,6 +78,17 @@
     </div>
 
     <div class="dropdown quick-filter-comment"
+         ng-show="filter.compositeItem.id > 0">
+        <span>{{filter.compositeItem.name}}</span>
+        <ul class="dropdown-menu hoverable quick-filter-comment-delete">
+            <li ng-click="filter.compositeItem = getEmptyItem()">
+                <span>Очистить изделие</span>
+                <span class="glyphicon glyphicon-remove"></span>
+            </li>
+        </ul>
+    </div>
+
+    <div class="dropdown quick-filter-comment"
          ng-show="filter.item.id > 0">
         <span>{{filter.item.name}}</span>
         <ul class="dropdown-menu hoverable quick-filter-comment-delete">
