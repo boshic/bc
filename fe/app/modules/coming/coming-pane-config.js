@@ -1,9 +1,38 @@
+let quantityChangerModalEnabled = true;
+
 let afterCloseQuantityChangerModalInInventoryMode = ($s) => {
     let params = $s.quantityChangerModalData.params;
     if(params.quantity != $s.quantityChangerModalData.row.quantity)
         $s.totals=[];
     $s.rows[params.index].currentQuantity = $s.quantityChangerModalData.row.quantity;
-    if($s.rows.length === 1)
+
+    if(toOpenAQuantityModalAfterSearchInInventoryMode($s))
+        nextOpenOfQuantityModalInInventoryModeHandler($s);
+
+};
+
+let refreshAfterSettingInventoryValues = ($s) => {
+    $s.totals = [{}];
+    $s.calcTotalsAndRefresh();
+};
+
+let toOpenAQuantityModalAfterSearchInInventoryMode = ($s) => {
+    return $s.filter.inventoryModeEnabled
+        && $s.rows.length === 1
+        && $s.filter.ean.length
+        && quantityChangerModalEnabled
+        && $s.autoOpenQuantityChangerModalInInventoryMode;
+};
+
+let beforeSearchInInventoryMode = ($s) => {
+    return $s.filter.inventoryModeEnabled && !$s.totals.length && $s.rows.length
+};
+
+let nextOpenOfQuantityModalInInventoryModeHandler = ($s) => {
+    if($s.totals.length === 0) {
+        quantityChangerModalEnabled = false;
+        $s.setInventoryValues();
+    } else
         $s.focusOnEanInput();
 };
 
@@ -17,7 +46,7 @@ let comingPaneConfig = {
         paneName: 'Список',
         paneId: 'coming-pane',
     doBeforeFindItemsByFilter: ($s) => {
-            if($s.filter.inventoryModeEnabled && !$s.totals.length && $s.rows.length)
+            if(beforeSearchInInventoryMode($s))
                 return (confirm("Записать результаты инвентаризации?")) ? $s.setInventoryValues() : true;
             return true;
         },
@@ -47,10 +76,11 @@ let comingPaneConfig = {
             availQuantityField : 'currentQuantity', modalData: $s.quantityChangerModalData});
     },
     afterSearch: ($s) => {
-        if($s.filter.inventoryModeEnabled && $s.rows.length === 1 && $s.autoOpenQuantityChangerModalInInventoryMode)
+        if(toOpenAQuantityModalAfterSearchInInventoryMode($s))
             $s.openQuantityChangerModalInInventoryMode(0);
         else
             $s.focusOnEanInput();
+        quantityChangerModalEnabled = true;
     },
     getKeyupCombinations: ($s, keyCodes) => {
         return [
@@ -61,16 +91,25 @@ let comingPaneConfig = {
     setInventoryValues: ($s, config) => {
         config.httpService.addItem({data: $s.rows, url: 'setInventoryItems', requestParams: $s.requestParams})
             .then(
-                resp => {
-                    $s.totals = [{}];
-                    $s.calcTotalsAndRefresh();
-                },
+                () => { refreshAfterSettingInventoryValues($s); },
                 (resp) => {}
             );
     },
+    setInventoryValuesToZeroes: ($s) => {
+        if(confirm("Установить нулевые остатки по факту в текущей выборке?")) {
+            $s.rows.forEach(row => {
+                row.currentQuantity = 0;
+            });
+            $s.totals=[];
+        }
+    },
     applyInventoryResults: ($s, config) => {
         if(confirm("Эта операция автоматически спишет излишки и недостачи! Хорошенько подумайте, прежде чем продолжить!"))
-            config.httpService.addItem({data: $s.filter, url: 'applyInventoryResults', requestParams: $s.requestParams})
+            config.httpService.addItem({
+                data: $s.filter,
+                url: 'applyInventoryResults',
+                params: {params: { buyerId: $s.inventoryBuyer.id }},
+                requestParams: $s.requestParams})
             .then(
                 (resp) => {
                     $s.calcTotalsAndRefresh();

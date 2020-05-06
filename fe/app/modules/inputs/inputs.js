@@ -615,7 +615,13 @@ angular.module('inputs', ['asyncFilter'])
             "<div style='width: 100%;'><item-add-edit-id item-id='$ctrl.itemId'></item-add-edit-id></div>" +
             "<span title='Закрыть' class='glyphicon glyphicon-remove item-blank'" +
                 "style='margin-top: 4px;' ng-click='$ctrl.closeModal()'></span></div>",
-        controller: function() {}
+        controller: function() {
+            //
+            // this.okAct = () => {
+            //     console.log('isOkActive?');
+            //     return this.isOkActive;
+            // };
+        }
     })
     .component( "itemInputName", {
         bindings: {

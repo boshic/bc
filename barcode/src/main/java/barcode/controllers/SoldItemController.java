@@ -73,8 +73,9 @@ public class SoldItemController {
     }
 
     @RequestMapping(value = "/applyInventoryResults", method = RequestMethod.POST)
-    public @ResponseBody ResponseItem applyInventoryResults(@RequestBody ComingItemFilter filter) {
-        return this.soldItemHandler.applyInventoryResults(filter);
+    public @ResponseBody
+    ResponseItem applyInventoryResults(@RequestBody ComingItemFilter filter, @RequestParam Long buyerId) {
+        return this.soldItemHandler.applyInventoryResults(filter, buyerId);
     }
 
 

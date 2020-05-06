@@ -3,11 +3,13 @@ package barcode.dao.services;
 
 import barcode.api.EntityHandler;
 import barcode.dao.entities.basic.BasicCounterPartyEntity;
+import barcode.dao.entities.basic.BasicNamedEntity;
 import barcode.dao.entities.basic.BasicOperationWithCommentEntity;
 import barcode.dao.entities.embeddable.Comment;
 
 import barcode.dao.utils.BasicFilter;
 import barcode.dao.utils.SortingStrategy;
+import barcode.dto.ResponseItem;
 import com.querydsl.core.types.Predicate;
 import org.springframework.data.querydsl.QueryDslPredicateExecutor;
 import org.springframework.data.repository.CrudRepository;
@@ -15,6 +17,8 @@ import org.springframework.data.repository.CrudRepository;
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * Created by xlinux on 30.07.18.
@@ -26,6 +30,7 @@ public class EntityHandlerImpl implements EntityHandler{
 
     private static final String COMMENT_TOO_LONG = "";
     private static final String FAILED = "Неудачно! ";
+    private static final String SUCCESSFULLY = " успешно! ";
     static final String SMTH_FOUND = " найден(а)";
     static final String SMTH_CREATED = " создан(а)";
     static final String SMTH_CHANGED = "добавлен(а)/изменен(а)";
@@ -34,13 +39,18 @@ public class EntityHandlerImpl implements EntityHandler{
 
     static final String ROLE_ADMIN = "ROLE_ADMIN";
 
+    static final String ENTITY_NAME = "Наименование";
+    static final String ENTITY_DATE = "Дата";
+    static final String ENTITY_BANK_CODE = "БИК";
+
     static final String INVENTORY_DOC_NAME = "Инвентаризация";
-    static final String INVENTORY_DOC_CREATED = "Инвентаризация";
     static final String INVENTORY_SURPLUS_DETECTED = "Излишки при инвентаризации";
     static final String INVENTORY_SHORTAGE_DETECTED = "Недостача при инвентаризации";
     static final String INVENTORY_DONE = "результаты инвентаризации применены!";
     static final String BUYER_FOR_INVENTORY_NOT_FOUND = FAILED +
             "Не задан покупатель для списания недостачи!";
+    static final String INCORRECT_ENTITY_FIELD = FAILED +
+            "Элемент с указанным реквизитом уже содержится в справочнике!";
     static final String SUPPLIER_FOR_INVENTORY_NOT_FOUND = FAILED +
             "Не задан поставщик для документа инвентаризации";
 
@@ -79,8 +89,9 @@ public class EntityHandlerImpl implements EntityHandler{
     static final String CHANGING_OF_COMING= "Изменение прихода ";
     static final String ELEMENTS_FOUND = "найдены элементы";
 
-    static final String SALE_COMPLETED_SUCCESSFULLY = "Продажа завершена успешно";
-    static final String MOVE_COMPLETED_SUCCESSFULLY = "Перемещение завершено успешно";
+    static final String SALE_COMPLETED_SUCCESSFULLY = "Продажа завершена" + SUCCESSFULLY;
+    static final String RETURN_COMPLETED_SUCCESSFULLY = "Возврат завершен" + SUCCESSFULLY;
+    static final String MOVE_COMPLETED_SUCCESSFULLY = "Перемещение завершено" + SUCCESSFULLY;
     static final String DATE_CHANGED = "Изменена дата";
     static final String SALE_COMMENT = "Продажа";
     static final String MOVE_COMMENT  = "Перемещение";
@@ -164,6 +175,14 @@ public class EntityHandlerImpl implements EntityHandler{
         return  INSUFFICIENT_QUANTITY_OF_GOODS + reqQuant + " из " + availQuant + COMMON_UNIT + itemName;
     }
 
+    private String getIncorrectEntityFieldFoundMessage(List<String> fields) {
+        String value = "";
+        for(String f : fields)
+            value = value + f + ", ";
+
+        return "Элемент с указанными реквизитами: " + value + " уже содержится в справочнике";
+    }
+
 
     synchronized <T extends BasicOperationWithCommentEntity>
     void changeDate(Long id, Date newDate, CrudRepository<T, Long> repository, String username) {
@@ -205,6 +224,20 @@ public class EntityHandlerImpl implements EntityHandler{
 
         if(direction.equalsIgnoreCase(BasicFilter.SORT_DIRECTION_DESC))
             Collections.reverse(items);
+    }
+
+    <T extends BasicNamedEntity> ResponseItem<T> setToNameIncorrectEntityFields(T item, List<String> fields) {
+
+        String message = getIncorrectEntityFieldFoundMessage(fields);
+
+        item.setName(message);
+
+        return new ResponseItem<T>(message, false, item);
+    }
+
+    List<String> stringsToList(String ... fields) {
+
+        return Arrays.asList(fields);
     }
 
 }

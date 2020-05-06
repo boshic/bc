@@ -481,12 +481,12 @@ public class SoldItemHandler extends EntityHandlerImpl {
         return null;
     }
 
-    public synchronized ResponseItem returnSoldItem(SoldItem soldItem) {
+    public synchronized ResponseItem<SoldItem> returnSoldItem(SoldItem soldItem) {
 
         SoldItem newSoldItem = soldItemsRepository.findOne(soldItem.getId());
 
         if(soldItem.getQuantity().compareTo(newSoldItem.getQuantity()) > 0)
-            return new ResponseItem(getInsufficientQuantityOfGoodsMessage(
+            return new ResponseItem<SoldItem>(getInsufficientQuantityOfGoodsMessage(
                     soldItem.getQuantity(), newSoldItem.getQuantity(), soldItem.getComing().getItem().getName()
             ), false);
 
@@ -521,7 +521,7 @@ public class SoldItemHandler extends EntityHandlerImpl {
 
         soldItemsRepository.save(newSoldItem);
 
-        return null;
+        return new ResponseItem<>(RETURN_COMPLETED_SUCCESSFULLY, true);
     }
 
 //    public synchronized ResponseItem addOneSelling(SoldItem soldItem) {
@@ -609,19 +609,21 @@ public ResponseItem addOneSelling(SoldItem soldItem) {
 
     public ResponseItem<SoldItem> changeSoldItem (SoldItem soldItem) {
 
-        returnSoldItem(soldItem);
+        ResponseItem<SoldItem> responseItem = returnSoldItem(soldItem);
+        if(!responseItem.getSuccess())
+            return responseItem;
 
         return addSellings(Stream.of(soldItem).collect(Collectors.toList()));
     }
 
-    public ResponseItem applyInventoryResults(ComingItemFilter filter) {
+    public ResponseItem applyInventoryResults(ComingItemFilter filter, Long buyerId) {
 
         List<ComingItem> inputComings = comingItemHandler.findByFilter(filter).getEntityItems();
 
         List<SoldItem> sellings = new ArrayList<SoldItem>();
         List<ComingItem> comings = new ArrayList<ComingItem>();
 
-        Buyer buyer = buyerHandler.getBuyerForInventory();
+        Buyer buyer = buyerHandler.getBuyerById(buyerId);
         if(buyer == null)
             return new ResponseItem(BUYER_FOR_INVENTORY_NOT_FOUND, false);
 

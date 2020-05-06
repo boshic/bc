@@ -15,6 +15,9 @@ public class Buyer extends BasicCounterPartyEntity {
     @Column(name = "sell_by_coming_prices", columnDefinition="tinyint(1) default 0")
     private Boolean sellByComingPrices;
 
+    @Column(name = "exclude_expenses_from_income", columnDefinition="tinyint(1) default 0")
+    private Boolean excludeExpensesFromIncome;
+
     private BigDecimal debt;
 
     @Column(name = "discount")
@@ -80,5 +83,12 @@ public class Buyer extends BasicCounterPartyEntity {
         this.sellByComingPrices = sellByComingPrices;
     }
 
+    public Boolean getExcludeExpensesFromIncome() {
+        return excludeExpensesFromIncome;
+    }
+
+    public void setExcludeExpensesFromIncome(Boolean excludeExpensesFromIncome) {
+        this.excludeExpensesFromIncome = excludeExpensesFromIncome;
+    }
 }
 

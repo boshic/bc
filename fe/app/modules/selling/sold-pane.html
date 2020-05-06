@@ -172,12 +172,23 @@
                     </span>
                     <span class="price-out-on-coming-pane" title="Продавец">{{ x.user.name }}</span>
                 </td>
-                <td>
-                    <div class="sold-composite-item-descr">
-                        <span>{{x.soldCompositeItem.id}}</span>
-                            <span>{{x.soldCompositeItem.item.name}}</span>
-                        <span>{{x.soldCompositeItem.quantity}}</span>
-                        <span>{{x.soldCompositeItem.sum}}</span>
+                <td ng-class
+                            = "{'receipt-bottom-underline': (x.receipt.id > 0 && x.receipt.id != rows[$index + 1].receipt.id),
+                                'sold-composite-item': x.soldCompositeItem.id > 0}">
+                    <div class="sold-receipt-item-descr"
+                         ng-show="x.receipt.id > 0 && x.receipt.id != rows[$index-1].receipt.id">
+                        <span>{{"чек № - " + x.receipt.id}}</span>
+                        <!--<span>{{"чек № - " + rows[$index].receipt.id}}</span>-->
+                        <span>{{x.receipt.date | date:'dd.MM.yyyy HH:mm:ss'}}</span>
+                        <span>{{"на сумму: " + x.receipt.sum.toFixed(2)}}</span>
+                    </div>
+                    <div class="sold-composite-item-descr"
+                         ng-show="x.soldCompositeItem.id > 0 && x.soldCompositeItem.id != rows[$index-1].soldCompositeItem.id">
+                        <span>{{"изделие № -" + x.soldCompositeItem.id}}</span>
+                        <span>{{", " + x.soldCompositeItem.item.name}}</span>
+                        <span>{{", кол-во: " + x.soldCompositeItem.quantity + x.coming.item.unit}}</span>
+                        <span>{{",cd ..
+                            на сумму: " + x.soldCompositeItem.sum}}</span>
                     </div>
                     <item-row-on-panes row="x.coming" filter="filter"></item-row-on-panes>
                 </td>

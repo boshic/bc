@@ -1877,19 +1877,25 @@ span.inventory-deviation-surplus {
 }
 
 button.set-invetnory-values {
-    width: 30%;
+    width: 21%;
 }
 
+button.set-invetnory-values-to-zeroes {
+    width: 21%;
+}
+
+
 button.apply-inventory-results {
-    width: 62%;
+    width: 52%;
 }
 
 button.inventory-button {
-    margin: 1.25%;
+    margin: 2px;
+    margin-top: 7px;
     color: var(--white-color);
     background: var(--main-color);
     border-radius: 10px;
-    font-size: 33px;
+    font-size: 25px;
 }
 
 button.disabled-inventory-btn {
@@ -1944,11 +1950,38 @@ span.comping-pane-ean-on-item-name {
     font-style: italic;
 }
 
-div.sold-composite-item-descr {
+div.sold-receipt-item-descr {
     background: coral;
     color: white;
     font-weight: bold;
     text-align: right;
     margin-left: 5%;
     border-top-left-radius: 100%;
+}
+
+div.sold-composite-item-descr {
+    background: white;
+    color: coral;
+    font-weight: bold;
+    text-align: right;
+    border-top-left-radius: 14px;
+    margin-left: 4%;
+}
+
+td.receipt-bottom-underline {
+    border-bottom: 3px dotted var(--main-color)!important;
+}
+
+td.sold-composite-item:not(:hover) {
+    background: var(--white-color);
+}
+
+div.current-stock-indicator {
+    background: var(--main-color);
+    color: var(--white-color);
+    font-weight: bold;
+    text-align: end;
+    /*border-top: 2px dotted var(--white-color);*/
+    width: 55%;
+    border-top-left-radius: 15px;
 }

@@ -20,7 +20,7 @@ public class DocumentHandler extends EntityHandlerImpl {
 
     private final static Long DAYS_LIMIT = 30L;
 
-    public static QDocument qDocument = QDocument.document;
+    private static QDocument qDocument = QDocument.document;
 
     public DocumentHandler(DocumentRepository documentRepository) {
         this.documentRepository = documentRepository;

@@ -45,7 +45,7 @@
     </div>
 
 </div>
-
+<current-stock-indicator stock="stock"></current-stock-indicator>
 <div class="items-table"
      ng-show="rows.length"
      ng-keydown="handleKeyup($event)">
@@ -91,7 +91,6 @@
                               ng-click="editItem(x.item.name)">
                             {{ x.item.name}}
                         </span>
-                        <span class="stock-name-on-header">{{'(склад: ' + stock.name + ')'}}</span>
                     </a>
                 </td>
                 <td class="hoverable for-sale" title="Пришло">

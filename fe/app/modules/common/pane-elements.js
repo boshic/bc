@@ -96,8 +96,11 @@ angular.module('pane-elements', [])
                 transclude: true,
                 scope: {},
                 template: comingPaneTpl,
-                controller: ($scope, filterFactory, paneFactory, printFactory, modalFactory ) => {
-                    return commonPaneCtrlr($scope , filterFactory, paneFactory, printFactory, modalFactory, 'comingPaneConfig');
+                controller: ($scope, itemFactory, filterFactory, paneFactory, printFactory, modalFactory ) => {
+
+                    $scope.inventoryBuyer = itemFactory.buyerConfig.getEmptyItem();
+
+                    return commonPaneCtrlr($scope, filterFactory, paneFactory, printFactory, modalFactory, 'comingPaneConfig');
                 },
                 link: (scope) => {
                     scope.resetFilter();
@@ -181,38 +184,52 @@ angular.module('pane-elements', [])
         })
         .component( "inventoryPanel", {
             bindings: {
+                buyer: '=',
                 isEnabledApplyInventoryResults: '<',
                 isEnabledSetInventoryValues: '<',
                 setInventoryValues: '&',
                 applyInventoryResults: '&',
+                setInventoryValuesToZeroes: '&?',
                 autoOpenQuantityChangerModal: '=',
             },
             template:
-            "<div style='display: flex;'>" +
-                "<div>" +
-                    "<button class='inventory-button apply-inventory-results'" +
-                        "ng-disabled='!$ctrl.isEnabledApplyInventoryResults'" +
-                        "ng-class='{\"disabled-inventory-btn\": !$ctrl.isEnabledApplyInventoryResults}'" +
-                        "ng-click = '$ctrl.applyInventoryResults()'>" +
-                            "Применить результаты инвентаризации =(?" +
-                    "</button>" +
-                    "<button class='inventory-button set-invetnory-values'" +
-                        "ng-disabled='!$ctrl.isEnabledSetInventoryValues'" +
-                        "ng-class='{\"disabled-inventory-btn\": !$ctrl.isEnabledSetInventoryValues}'" +
-                        "ng-click = '$ctrl.setInventoryValues()'>" +
-                            "Записать остатки" +
-                    "</button>" +
-                "</div>" +
-                "<div style='width: 20%'>" +
-                    "<input class='inventory-checkbox'" +
-                        "type='checkbox' ng-model='$ctrl.autoOpenQuantityChangerModal'/>" +
-                    "<label>" +
-                        "Автом. открытие окна ввода количества: {{($ctrl.autoOpenQuantityChangerModal) ? 'Да' : 'Нет'}}" +
-                    "</label>" +
-                "</div>" +
-            "</div>",
+                "<div style='display: flex;'>" +
+                    "<div style='width: 40%; padding-top: 9px; margin-left: 4px;'>" +
+                        "<buyer-input buyer='$ctrl.buyer'></buyer-input>" +
+                    "</div>"+
+                    "<div style='width: 60%'>" +
+                        "<button class='inventory-button apply-inventory-results'" +
+                            "ng-disabled='$ctrl.applyInventoryResultsDisabled()'" +
+                            "ng-class='{\"disabled-inventory-btn\": $ctrl.applyInventoryResultsDisabled()}'" +
+                            "ng-click = '$ctrl.applyInventoryResults()'>" +
+                                "Применить результаты инвентаризации =(?" +
+                        "</button>" +
+                        "<button class='inventory-button set-invetnory-values-to-zeroes'" +
+                            "ng-click = '$ctrl.setInventoryValuesToZeroes()'>" +
+                                "Занулить факт" +
+                        "</button>" +
+                        "<button class='inventory-button set-invetnory-values'" +
+                            "ng-disabled='!$ctrl.isEnabledSetInventoryValues'" +
+                            "ng-class='{\"disabled-inventory-btn\": !$ctrl.isEnabledSetInventoryValues}'" +
+                            "ng-click = '$ctrl.setInventoryValues()'>" +
+                                "Записать остатки" +
+                        "</button>" +
+                        "<div>" +
+                            "<input class='inventory-checkbox'" +
+                                "type='checkbox' ng-model='$ctrl.autoOpenQuantityChangerModal'/>" +
+                            "<label>" +
+                                "Автом. открытие окна ввода количества: {{($ctrl.autoOpenQuantityChangerModal()) ? 'Да' : 'Нет'}}" +
+                            "</label>" +
+                        "</div>" +
+                    "</div>" +
+                "</div>",
             controller: function() {
                 this.autoOpenQuantityChangerModal = false;
+
+                this.applyInventoryResultsDisabled = () => {
+                    // console.log(this.buyer.id > 0 && this.isEnabledApplyInventoryResults);
+                    return !(this.buyer.id > 0 && this.isEnabledApplyInventoryResults);
+                };
             }
         })
         .component( "paneComment", {
@@ -243,6 +260,14 @@ angular.module('pane-elements', [])
             "</div>",
             controller: function() {}
         })
+        .component( "currentStockIndicator", {
+        bindings: { stock: '='},
+        template: "<div style='display: flex;'>" +
+            "<div style='width: 45%;'></div>" +
+            "<div class='current-stock-indicator'>{{'Склад: ' + $ctrl.stock.name}}</div>" +
+            "</div>",
+        controller: function() {}
+    })
         .component( "paneSearchInput", {
             bindings: {
                 inputId: '<',

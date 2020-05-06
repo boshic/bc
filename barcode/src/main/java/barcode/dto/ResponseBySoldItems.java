@@ -20,7 +20,8 @@ public class ResponseBySoldItems extends ResponseItemExt<SoldItem> {
     @Override
     public void calcTotals(List<SoldItem> soldItemList) {
 
-        BigDecimal quantity = BigDecimal.ZERO, sum = BigDecimal.ZERO, sumByComing = BigDecimal.ZERO;
+        BigDecimal quantity = BigDecimal.ZERO, sum = BigDecimal.ZERO, sumByComing = BigDecimal.ZERO,
+            sumExcludedFromIncome = BigDecimal.ZERO;
         Set<Receipt> receipts = new HashSet<>();
         Set<Buyer> buyers = new HashSet<>();
         Set<Supplier> suppliers = new HashSet<>();
@@ -43,6 +44,9 @@ public class ResponseBySoldItems extends ResponseItemExt<SoldItem> {
 
             sumByComing = sumByComing.add(soldItem.getComing().getPriceIn().multiply(soldItem.getQuantity()))
                     .setScale(2, BigDecimal.ROUND_HALF_UP);
+
+            if(soldItem.getBuyer().getExcludeExpensesFromIncome())
+                sumExcludedFromIncome = sumExcludedFromIncome.add(soldItem.getSum());
         }
 
         super.getTotals().add(new ResultRowByItemsCollection<BigDecimal, BigDecimal>
@@ -50,7 +54,8 @@ public class ResponseBySoldItems extends ResponseItemExt<SoldItem> {
         super.getTotals().add(new ResultRowByItemsCollection<BigDecimal, BigDecimal>
                 ("отпущено по учетной", quantity, "на сумму" , sumByComing));
         super.getTotals().add(new ResultRowByItemsCollection<BigDecimal, BigDecimal>
-                ("выбыло", quantity, "доход" , sum.subtract(sumByComing)));
+                ("выбыло", quantity,
+                        "доход" , sum.subtract(sumByComing.add(sumExcludedFromIncome))));
         if(receipts.size() > 0)
             super.getTotals().add(new ResultRowByItemsCollection<Integer, BigDecimal>
                 ("чеков", receipts.size(), "средний" ,

@@ -624,7 +624,7 @@ public class ComingItemHandler extends EntityHandlerImpl {
             documentHandler.saveDocument(document);
         }
 
-        return new ResponseItem<>(INVENTORY_DOC_CREATED, true, document);
+        return new ResponseItem<>(INVENTORY_DOC_NAME, true, document);
     }
 
     BigDecimal getAvailQuantityByEan(List<ComingItem> comingItems) {

@@ -1,16 +1,14 @@
 package barcode.dao.services;
 
 import barcode.dao.entities.Bank;
-import barcode.dao.entities.Buyer;
 import barcode.dao.repositories.BankRepository;
 import barcode.dto.ResponseItem;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
-public class BankHandler {
+public class BankHandler extends EntityHandlerImpl{
 
     private BankRepository bankRepository;
 
@@ -57,21 +55,18 @@ public class BankHandler {
             return update(newBank, new Bank());
 
         else
-            return new ResponseItem<Bank>("Для банка '" + newBank.getName() +
-                    "' имеется совпадение, измените код или наименование!");
+            return setToNameIncorrectEntityFields(newBank, stringsToList(ENTITY_NAME, ENTITY_BANK_CODE));
     }
 
     public ResponseItem<Bank> updateItem(Bank newBank) {
 
         if((bankRepository.findByNameIgnoreCase(newBank.getName()) != null) &&
                 !bankRepository.findByNameIgnoreCase(newBank.getName()).getId().equals(newBank.getId()))
-                        return new ResponseItem<Bank>("Для банка '" + newBank.getName() +
-                    "' имеется совпадение, измените наименование!");
+                        return setToNameIncorrectEntityFields(newBank, stringsToList(ENTITY_NAME));
 
         if((bankRepository.findByCodeIgnoreCase(newBank.getCode()) != null) &&
                 !bankRepository.findByCodeIgnoreCase(newBank.getCode()).getId().equals(newBank.getId()))
-            return new ResponseItem<Bank>("Для банка '" + newBank.getName() +
-                    "' имеется совпадение, измените БИК!");
+                    return  setToNameIncorrectEntityFields(newBank, stringsToList(ENTITY_BANK_CODE));
 
         return update(newBank, this.getItemById(newBank.getId()));
     }

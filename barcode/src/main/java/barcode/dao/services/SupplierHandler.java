@@ -43,7 +43,7 @@ public class SupplierHandler extends EntityHandlerImpl{
             Supplier newSupplier = new Supplier(supplier.getName());
             return update(newSupplier, supplier);
         }
-            return new ResponseItem<Supplier>("Неудачно! Уже есть в справочнике!", false);
+            return setToNameIncorrectEntityFields(supplier, stringsToList(ENTITY_NAME));
     }
 
     public ResponseItem<Supplier> updateSupplier(Supplier supplier) {

@@ -354,20 +354,22 @@
                     releaseItem: ($s, url, params) => {
                         $s.checkRows();
                         let row =   $s.rows[0];
+                        $s.rows = [];
                         $s.closeModal();
-                        httpService.addItem({data: row, url,
-                            requestParams: $s.modalConfig.parentScope.requestParams, params})
-                            .then(
-                                resp => {
-                                    if(resp.success)
-                                        paneFactory.successSound.play();
-                                    $s.modalConfig.parentScope.warning = resp.text;
-                                    $s.modalConfig.refresh();
-                                },
-                                () => {
-                                    $s.modalConfig.warning = "ошибка при проведении продажи!";
-                                }
-                            );
+                        if($s.canRelease)
+                            httpService.addItem({data: row, url,
+                                requestParams: $s.modalConfig.parentScope.requestParams, params})
+                                .then(
+                                    resp => {
+                                        if(resp.success)
+                                            paneFactory.successSound.play();
+                                        $s.modalConfig.parentScope.warning = resp.text;
+                                        $s.modalConfig.refresh();
+                                    },
+                                    () => {
+                                        $s.modalConfig.warning = "ошибка при проведении продажи!";
+                                    }
+                                );
                     }
                 };
             }

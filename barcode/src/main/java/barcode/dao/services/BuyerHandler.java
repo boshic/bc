@@ -38,7 +38,8 @@ public class BuyerHandler extends EntityHandlerImpl{
         newBuyer.setAddress(buyer.getAddress());
         newBuyer.setDiscount(buyer.getDiscount() == null ? 0 : buyer.getDiscount());
         newBuyer.setSellByComingPrices(buyer.getSellByComingPrices() == null ? false : buyer.getSellByComingPrices());
-        newBuyer.setUseForInventory(checkAndGetInventorySign(buyer.getUseForInventory()));
+        newBuyer.setExcludeExpensesFromIncome(buyer.getExcludeExpensesFromIncome() == null ? false : buyer.getExcludeExpensesFromIncome());
+//        newBuyer.setUseForInventory(checkAndGetInventorySign(buyer.getUseForInventory()));
         newBuyer.setLastPayDate(new Date());
         buyerRepository.save(newBuyer);
         return new ResponseItem<Buyer>("Покупатель добавлен/изменен ", true , newBuyer);
@@ -49,7 +50,7 @@ public class BuyerHandler extends EntityHandlerImpl{
         return checkAndGetInventorySignForEntity(getBuyerForInventory(), useForInventory );
     }
 
-    Buyer getBuyerForInventory() {
+    private Buyer getBuyerForInventory() {
 
         return getEntityForInventory(buyerRepository, new BooleanBuilder().and(QBuyer.buyer.useForInventory.isTrue()));
     }
@@ -59,8 +60,8 @@ public class BuyerHandler extends EntityHandlerImpl{
             Buyer newBuyer = new Buyer();
             return update(newBuyer, buyer);
         }
-        buyer.setName("");
-        return new ResponseItem<Buyer>("Неудачно! Уже есть в справочнике!", false, buyer);
+
+        return setToNameIncorrectEntityFields(buyer, stringsToList(ENTITY_NAME));
     }
 
     public ResponseItem updateItem(Buyer buyer) {

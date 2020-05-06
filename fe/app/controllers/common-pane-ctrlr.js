@@ -19,6 +19,8 @@ let commonPaneCtrlr = ($s, filterFactory, paneFactory, printFactory, modalFactor
     $s.totals = {};
     $s.user = {};
 
+    // $s.inventoryBuyer = itemFactory.buyerConfig.getEmptyItem();
+
     $s.setReports = () => {
         $s.reports = [];
         if(config.checkAddingReportCondition($s))
@@ -46,6 +48,10 @@ let commonPaneCtrlr = ($s, filterFactory, paneFactory, printFactory, modalFactor
 
     $s.setEanPrefix = e => {
         $s.filter.ean = paneFactory.generateEanByKey(e, $s.filter.ean);
+    };
+
+    $s.setInventoryValuesToZeroes = () => {
+        config.setInventoryValuesToZeroes($s);
     };
 
     $s.setInventoryValues = () => {

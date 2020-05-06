@@ -9,7 +9,7 @@ import barcode.dto.ResponseItem;
 import org.springframework.stereotype.Service;
 
 @Service
-public class ItemSectionHandler {
+public class ItemSectionHandler extends EntityHandlerImpl{
 
     private ItemSectionRepository itemSectionRepository;
 
@@ -20,9 +20,11 @@ public class ItemSectionHandler {
     }
 
     private ResponseItem<ItemSection> update(ItemSection newSection, ItemSection section) {
-        ResponseItem<ItemSection> responseItem = new ResponseItem<ItemSection>("Создание новой секции ");
+
         section.setName(newSection.getName());
+
         itemSectionRepository.save(section);
+
         return new ResponseItem<ItemSection>("Создана секция '" + section.getName() + "'", true, section);
     }
 
@@ -30,9 +32,7 @@ public class ItemSectionHandler {
 
         ItemSectionPredicateBuilder ispb = new ItemSectionPredicateBuilder();
 
-//        ispb.test(QItem.item);
         return itemSectionRepository.findAll(ispb.buildByFilter(name));
-//        return itemSectionRepository.findByNameContainingIgnoreCaseOrderByNameAsc(name);
     }
 
     public ItemSection getItemById(Long id) {
@@ -40,7 +40,7 @@ public class ItemSectionHandler {
         return itemSectionRepository.findOne(id);
     }
 
-    public ItemSection getItemByName(String name) {
+    ItemSection getItemByName(String name) {
 
         return itemSectionRepository.findOneByNameIgnoreCase(name);
     }
@@ -53,8 +53,9 @@ public class ItemSectionHandler {
             return update(newSection, section);
 
         else
-            return new ResponseItem<ItemSection>("Для секции '" + newSection.getName() +
-                    "' имеется совпадение, измените наименование!");
+            return setToNameIncorrectEntityFields(newSection, stringsToList(ENTITY_NAME));
+//            return new ResponseItem<ItemSection>("Для секции '" + newSection.getName() +
+//                    "' имеется совпадение, измените наименование!");
     }
 
     public ResponseItem<ItemSection> updateItem(ItemSection newSection) {
@@ -64,15 +65,10 @@ public class ItemSectionHandler {
         if ((itemSectionRepository.findByNameIgnoreCase(newSection.getName()).size() == 0) ||
                 ((itemSectionRepository.findByNameIgnoreCase(newSection.getName()).size() == 1) &&
                         (itemSectionRepository.findByNameIgnoreCase(newSection.getName()).get(0).getId()
-                                .equals(newSection.getId())))) {
+                                .equals(newSection.getId()))))
 
             return update(newSection, section);
-
-        } else {
-
-            return new ResponseItem<ItemSection>("Для секции '" + newSection.getName() +
-                    "' имеется совпадение, измените наименование!");
-
-        }
+         else
+            return setToNameIncorrectEntityFields(newSection, stringsToList(ENTITY_NAME));
     }
 }

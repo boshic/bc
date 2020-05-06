@@ -61,11 +61,13 @@
     <div class="inventory-panel unprintable" ng-show = "filter.inventoryModeEnabled">
 
         <inventory-panel
+                buyer="inventoryBuyer"
                 set-inventory-values = "setInventoryValues()"
                 apply-inventory-results="applyInventoryResults()"
+                set-inventory-values-to-zeroes = "setInventoryValuesToZeroes()"
                 auto-open-quantity-changer-modal="autoOpenQuantityChangerModalInInventoryMode"
                 is-enabled-set-inventory-values = "!totals.length && rows.length"
-                is-enabled-apply-inventory-results = "totals.length && rows.length">
+                is-enabled-apply-inventory-results = "totals.length && rows.length && totals[0].quantValue != 0">
         </inventory-panel>
     </div>
 
