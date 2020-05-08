@@ -11,7 +11,7 @@ import java.util.List;
  */
 public interface EntityHandler{
 
-    String generateComment(String oldCommentm, String name, String action);
+//    String generateComment(String oldCommentm, String name, String action);
     String buildComment(List<Comment> comments, String text, String user, String action, BigDecimal quantity);
     String getCommentByAction(List<Comment> comments, String action);
 

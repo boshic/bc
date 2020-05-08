@@ -35,12 +35,11 @@ public class ComingItemPredicatesBuilder {
             predicate = predicate.and(predicateBuilder
                     .buildByPhraseAndMethod(filter.getSectionPart(), item.section.name::containsIgnoreCase));
 
-//            predicate =
-//                    predicate.and(item.section.name.containsIgnoreCase(filter.getSectionPart()));
-
         if(!filter.getInventoryModeEnabled() && filter.getComment() != null) {
-            predicate = predicate.and(predicateBuilder
-                    .buildByPhraseAndMethod(filter.getComment(), comingItem.comment::containsIgnoreCase));
+            predicate = predicate.andAnyOf(
+                    predicateBuilder.buildByPhraseAndMethod(filter.getComment(), comingItem.comments.any().searchString::containsIgnoreCase),
+                    predicateBuilder.buildByPhraseAndMethod(filter.getComment(), comingItem.comment::containsIgnoreCase));
+
         }
 
         if(filter.getEan() != null && filter.getEan().length() == 13)

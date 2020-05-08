@@ -98,9 +98,7 @@ angular.module('pane-elements', [])
                 template: comingPaneTpl,
                 controller: ($scope, itemFactory, filterFactory, paneFactory, printFactory, modalFactory ) => {
 
-                    $scope.inventoryBuyer = itemFactory.buyerConfig.getEmptyItem();
-
-                    return commonPaneCtrlr($scope, filterFactory, paneFactory, printFactory, modalFactory, 'comingPaneConfig');
+                    return commonPaneCtrlr($scope,  itemFactory, filterFactory, paneFactory, printFactory, modalFactory, 'comingPaneConfig');
                 },
                 link: (scope) => {
                     scope.resetFilter();
@@ -113,8 +111,8 @@ angular.module('pane-elements', [])
                 transclude: true,
                 scope: true,
                 template: soldPaneTpl,
-                controller: ($scope, filterFactory, paneFactory, printFactory, modalFactory) => {
-                    return commonPaneCtrlr($scope, filterFactory, paneFactory, printFactory, modalFactory, 'soldPaneConfig');
+                controller: ($scope,  itemFactory, filterFactory, paneFactory, printFactory, modalFactory) => {
+                    return commonPaneCtrlr($scope,  itemFactory, filterFactory, paneFactory, printFactory, modalFactory, 'soldPaneConfig');
                 },
                 link: (scope) => {
                     scope.resetFilter();
@@ -127,8 +125,8 @@ angular.module('pane-elements', [])
                 transclude: true,
                 scope: true,
                 template: invoicesPaneTpl,
-                controller: ($scope, filterFactory, paneFactory, printFactory, modalFactory) => {
-                    return commonPaneCtrlr($scope, filterFactory, paneFactory, printFactory, modalFactory, 'invoicesPaneConfig');
+                controller: ($scope,  itemFactory, filterFactory, paneFactory, printFactory, modalFactory) => {
+                    return commonPaneCtrlr($scope,  itemFactory, filterFactory, paneFactory, printFactory, modalFactory, 'invoicesPaneConfig');
                 },
                 link: (scope) => {
                     scope.resetFilter();
@@ -199,8 +197,8 @@ angular.module('pane-elements', [])
                     "</div>"+
                     "<div style='width: 60%'>" +
                         "<button class='inventory-button apply-inventory-results'" +
-                            "ng-disabled='$ctrl.applyInventoryResultsDisabled()'" +
-                            "ng-class='{\"disabled-inventory-btn\": $ctrl.applyInventoryResultsDisabled()}'" +
+                            "ng-disabled='!$ctrl.isEnabledApplyInventoryResults'" +
+                            "ng-class='{\"disabled-inventory-btn\": !$ctrl.isEnabledApplyInventoryResults}'" +
                             "ng-click = '$ctrl.applyInventoryResults()'>" +
                                 "Применить результаты инвентаризации =(?" +
                         "</button>" +
@@ -225,11 +223,6 @@ angular.module('pane-elements', [])
                 "</div>",
             controller: function() {
                 this.autoOpenQuantityChangerModal = false;
-
-                this.applyInventoryResultsDisabled = () => {
-                    // console.log(this.buyer.id > 0 && this.isEnabledApplyInventoryResults);
-                    return !(this.buyer.id > 0 && this.isEnabledApplyInventoryResults);
-                };
             }
         })
         .component( "paneComment", {

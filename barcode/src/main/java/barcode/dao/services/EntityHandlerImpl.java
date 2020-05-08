@@ -108,27 +108,27 @@ public class EntityHandlerImpl implements EntityHandler{
     static final String CHECK_ITEM_LOG_MESS = "Товар с именем ";
     static final String CHECK_SECTION_LOG_MESS = "Секция с именем ";
 
-    public String generateComment(String oldComment, String user, String action) {
+    String generateCommentSearchString(String action, String text, String userName, Date date) {
 
-//        (oldComment == null || oldComment.equals("")) ? "" :
-//                (oldComment.length() > 1 && oldComment.substring(oldComment.length() - 2).equals(SEPARATOR)) ?
-//                        oldComment :
-//                        oldComment + SEPARATOR
-//
-
-        return user + " " +DATE_FORMAT_WITH_TIME.format(new Date()) + " "
-                + action + SEPARATOR +
-                ((oldComment == null || oldComment.equals("")) ? "" : oldComment + SPACE);
+        return action + SPACE + text + SPACE + userName + SPACE +  DATE_FORMAT_WITH_TIME.format(date)+SEPARATOR;
     }
 
     public String buildComment(List<Comment> comments, String text, String user, String action, BigDecimal quantity) {
         if(user.length() > 0)
-            comments.add(new Comment((text == null ? "": text), user, action, new Date(), quantity));
+            comments.add(new Comment(
+                    (text == null ? "": text),
+                    user,
+                    action,
+                    generateCommentSearchString(action, text, user, new Date()),
+                    new Date(),
+                    quantity));
+
         String comment = "";
         comments.sort(Comparator.comparing(Comment::getDate));
         for (Comment c: comments)
-            comment += c.getAction() + SPACE + c.getText() + SPACE + c.getUserName() +
-                    SPACE + DATE_FORMAT_WITH_TIME.format(c.getDate())+SEPARATOR;
+            comment += generateCommentSearchString(c.getAction(), c.getText(), c.getUserName(), c.getDate());
+//            comment += c.getAction() + SPACE + c.getText() + SPACE + c.getUserName() +
+//                    SPACE + DATE_FORMAT_WITH_TIME.format(c.getDate())+SEPARATOR;
 
         return comment.length() > MAX_COMMENT_LENGTH ? COMMENT_TOO_LONG : comment;
     }

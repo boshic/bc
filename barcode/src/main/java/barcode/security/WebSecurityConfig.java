@@ -45,7 +45,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
             http.csrf().disable();
             http
                 .authorizeRequests()
-                .antMatchers("/findComingItemByFilter",
+                .antMatchers(
+//                        "/findComingItemByFilter",
                         "/tools/getHashedPass",
                         "/tools/pdfreport",
                         "/makeAutoMovings",

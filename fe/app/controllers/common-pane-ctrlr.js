@@ -1,4 +1,4 @@
-let commonPaneCtrlr = ($s, filterFactory, paneFactory, printFactory, modalFactory, paneConfig) => {
+let commonPaneCtrlr = ($s, itemFactory, filterFactory, paneFactory, printFactory, modalFactory, paneConfig) => {
 
     let config = paneFactory[paneConfig];
     let httpService = paneFactory.getHttpService();
@@ -19,7 +19,7 @@ let commonPaneCtrlr = ($s, filterFactory, paneFactory, printFactory, modalFactor
     $s.totals = {};
     $s.user = {};
 
-    // $s.inventoryBuyer = itemFactory.buyerConfig.getEmptyItem();
+    $s.inventoryBuyer = itemFactory.buyerConfig.getEmptyItem();
 
     $s.setReports = () => {
         $s.reports = [];

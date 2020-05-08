@@ -17,6 +17,9 @@ public class Comment {
     @Column(name = "text", columnDefinition="varchar(2000) COLLATE utf8_general_ci default ''")
     private String text;
 
+    @Column(name = "search_string", columnDefinition="varchar(2800) COLLATE utf8_general_ci default ''")
+    private String searchString;
+
     @Column(name = "user", columnDefinition="varchar(500) COLLATE utf8_general_ci default ''")
     private String userName;
 
@@ -31,12 +34,18 @@ public class Comment {
     private BigDecimal quantity;
 
     public Comment() {}
-    public Comment(String text, String user, String action, Date date, BigDecimal quantity) {
+    public Comment(String text,
+                   String user,
+                   String action,
+                   String searchString,
+                   Date date,
+                   BigDecimal quantity) {
         this.userName = user;
         this.action = action;
         this.date = date;
         this.text = text;
         this.quantity = quantity;
+        this.searchString = searchString;
     }
 
     public String getText() {
@@ -77,5 +86,13 @@ public class Comment {
 
     public void setQuantity(BigDecimal quantity) {
         this.quantity = quantity;
+    }
+
+    public String getSearchString() {
+        return searchString;
+    }
+
+    public void setSearchString(String searchString) {
+        this.searchString = searchString;
     }
 }

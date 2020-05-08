@@ -657,8 +657,9 @@ public ResponseItem addOneSelling(SoldItem soldItem) {
                         new ArrayList<Comment>() {{
                                 add(new Comment(
                                     "",
-                                    userHandler.getCurrentUser().getFullName(),
+                                        userHandler.getCurrentUser().getFullName(),
                                         INVENTORY_SURPLUS_DETECTED,
+                                        generateCommentSearchString(INVENTORY_SURPLUS_DETECTED, "", userHandler.getCurrentUser().getFullName(), new Date()),
                                     new Date(),
                                     coming.getCurrentQuantity().subtract(coming.getQuantity())
                                 )
