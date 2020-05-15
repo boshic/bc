@@ -151,6 +151,17 @@ angular.module('pane-elements', [])
             "<div ng-show='$ctrl.active' class='trans-layer'></div>",
             controller: function() {}
         })
+    .component( "paneRowsEraser", {
+        bindings: {
+            deleteRows: '&', isHidden: '<?'
+        },
+        template:
+        "<a href='#' title='удалить' ng-click='$ctrl.deleteRows()'"+
+            "ng-hide='$ctrl.isHidden'>" +
+            "<span class='glyphicon glyphicon-remove item-blank'></span>" +
+        "</a>",
+        controller: function() {}
+    })
         .component( "onFlyCalcTotals", {
             bindings: {
                 totals: '<',
@@ -254,10 +265,12 @@ angular.module('pane-elements', [])
             controller: function() {}
         })
         .component( "currentStockIndicator", {
-        bindings: { stock: '='},
+        bindings: { stock: '=', descr: '@?'},
         template: "<div style='display: flex;'>" +
             "<div style='width: 45%;'></div>" +
-            "<div class='current-stock-indicator'>{{'Склад: ' + $ctrl.stock.name}}</div>" +
+            "<div class='current-stock-indicator'>{{'Склад: ' + $ctrl.stock.name}}" +
+                "<span ng-show='$ctrl.descr.length'>{{$ctrl.descr}}</span>" +
+            "</div>" +
             "</div>",
         controller: function() {}
     })
@@ -312,18 +325,25 @@ angular.module('pane-elements', [])
         "</span>",
         controller: function() {}
         })
-        .component( "sortingRow", {
+        .component( "sortableColumn", {
                 bindings: {
+                    columnName: '@',
                     listeningField: '<',
-                    field: '<',
-                    sortDirection: '='
+                    field: '=',
+                    reverseOrder: '=?',
+                    sortDirection: '=?'
                 },
                 template:
-                "<button class='glyphicon glyphicon-arrow-up sorting-row' " +
-                    "ng-show='$ctrl.sortDirection===\"ASC\" && $ctrl.field === $ctrl.listeningField'" +
-                    "ng-click = '$ctrl.sortDirection=\"DESC\"'/>" +
-                "<button class='glyphicon glyphicon-arrow-down sorting-row' " +
-                    "ng-show='$ctrl.sortDirection===\"DESC\" && $ctrl.field === $ctrl.listeningField' " +
-                    "ng-click = '$ctrl.sortDirection=\"ASC\"'/>",
+                "<span ng-click='$ctrl.reverseOrder = !$ctrl.reverseOrder; " +
+                    "$ctrl.sortDirection = ($ctrl.sortDirection === \"ASC\") ? \"DESC\" : \"ASC\"'>" +
+                    "<span class='sortable-thead-value' " +
+                        "ng-click='$ctrl.field = $ctrl.listeningField'>" +
+                            "{{$ctrl.columnName}}" +
+                    "</span>" +
+                    "<button class='glyphicon glyphicon-arrow-up sorting-row' " +
+                        "ng-show='$ctrl.sortDirection===\"ASC\" && $ctrl.field === $ctrl.listeningField'/>" +
+                    "<button class='glyphicon glyphicon-arrow-down sorting-row' " +
+                        "ng-show='$ctrl.sortDirection===\"DESC\" && $ctrl.field === $ctrl.listeningField'/>" +
+                "</span>",
                 controller: function() {}
             });

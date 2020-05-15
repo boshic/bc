@@ -90,9 +90,7 @@
                 </span>
             </td>
             <td style="width: 60px;" class="unprintable">
-                <a href="#" title="удалить ВСЕ товары" ng-click="deleteRows()">
-                    <span class="glyphicon glyphicon-remove item-blank"></span>
-                </a>
+                <pane-rows-eraser delete-rows="deleteRows()"></pane-rows-eraser>
             </td>
         </thead>
         <tbody>
@@ -124,7 +122,6 @@
                     <pane-quantity-input value-field="price" read-only="buyer.sellByComingPrices"
                                          input-value="x" change-value="checkRows()"></pane-quantity-input>
                 </td>
-                <!--(x.quantity * x.price).toFixed(2)-->
                 <td class="text-table-row" title="Сумма">{{ (x.quantity * x.price).toFixed(2) }}
                     <div>
                         <span class="price-out-on-coming-pane" title="Сумма со скидкой" ng-if="buyer.discount > 0">
@@ -133,9 +130,7 @@
                     </div>
                 </td>
                 <td>
-                    <a href="#" title="удалить строку" ng-click="deleteRows()">
-                        <span class="glyphicon glyphicon-remove item-blank"></span>
-                    </a>
+                    <pane-rows-eraser delete-rows="deleteRows($index)" is-hidden="x.quantity > 0"></pane-rows-eraser>
                 </td>
             </tr>
         </tbody>

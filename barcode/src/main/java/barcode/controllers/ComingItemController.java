@@ -75,6 +75,12 @@ public class ComingItemController {
         return this.comingItemHandler.findByFilter(filter);
     }
 
+    @RequestMapping(value = "/getComingsForReleaseByFilter", method = RequestMethod.POST)
+    public @ResponseBody ResponseItem<ComingItem>
+    getComingsForReleaseByFilter(@RequestBody ComingItemFilter filter) {
+        return this.comingItemHandler.getComingsForReleaseByFilter(filter);
+    }
+
 
     @GetMapping(path="/getItemForNewComing")
     public @ResponseBody

@@ -70,20 +70,24 @@
         <thead class="pane-thead">
             <td style="width: 60px;">Номер</td>
             <td>
-                Наименование
+                <!--Наименование-->
+                <sortable-column
+                        field = "filter.sortField"
+                        listening-field = "'item.name'"
+                        reverse-order = "filter.reverseOrder"
+                        column-name = "Наименование">
+                </sortable-column>
             </td>
             <td style="width: 100px;">Количество</td>
             <td style="width: 115px;">Приходная</td>
             <td style="width: 160px;">Сумма</td>
             <td style="width: 160px;">Продажи</td>
             <td>
-                <a href="#" title="удалить ВСЕ товары" ng-click="deleteRows()">
-                    <span class="glyphicon glyphicon-remove item-blank"></span>
-                </a>
+                <pane-rows-eraser delete-rows="deleteRows()"></pane-rows-eraser>
             </td>
         </thead>
         <tbody>
-            <tr class="hoverable" ng-repeat="x in rows track by $index">
+        <tr class="hoverable" ng-repeat="x in rows | orderBy:filter.sortField:filter.reverseOrder track by $index">
                 <td class="hoverable" title="Номер">{{ $index + 1 }}</td>
                 <td class="hoverable" title="{{x.item.ean}}">
                     <a href="#" style="color: black; text-decoration: unset;">
@@ -116,9 +120,7 @@
                                          change-value="checkRows()"></pane-quantity-input>
                 </td>
                 <td style="text-align: center; padding-top: 14px;">
-                    <a href="#" title="удалить строку" ng-click="deleteRows()">
-                        <span class="glyphicon glyphicon-remove item-blank"></span>
-                    </a>
+                    <pane-rows-eraser delete-rows="deleteRows($index)" is-hidden="x.quantity > 0"></pane-rows-eraser>
                 </td>
             </tr>
         </tbody>

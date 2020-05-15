@@ -314,10 +314,46 @@ public class ComingItemHandler extends EntityHandlerImpl {
         return getComingForSellSelector(ean, stockId, true);
     }
 
+    private List<ComingItem>
+    getGroupedComingsForRelease(List<ComingItem> comingItems) {
+
+        Map<Item, List<ComingItem>> groupedItems = comingItems.stream()
+                .collect(Collectors.groupingBy(ComingItem::getItem));
+
+        List<ComingItem> result = new ArrayList<ComingItem>();
+
+        //item, stock, priceIn, currentQuantity, quantity
+        groupedItems.forEach((item, comings) -> {
+            ComingItem coming = new ComingItem(
+                    item,
+                    comings.get(0).getStock(),
+                    comings.stream().max(Comparator.comparing(ComingItem::getPriceOut)).get().getPriceOut(),
+                    comings.stream()
+                            .map(ComingItem::getCurrentQuantity)
+                            .reduce(BigDecimal.ZERO, BigDecimal::add),
+                    BigDecimal.ZERO
+            );
+            result.add(coming);
+        });
+
+        return result;
+    };
+
+    public ResponseItem<ComingItem> getComingsForReleaseByFilter(ComingItemFilter filter) {
+
+        List<ComingItem> comings =
+                getGroupedComingsForRelease(comingItemRepository.findAll(cipb.buildByFilterForRelease(filter)));
+
+        if(comings.size() > 0)
+            return new ResponseItem<ComingItem>("", comings, true);
+        else
+            return new ResponseItem<ComingItem>(NOTHING_FOUND, false);
+    }
+
     public ResponseItem addItems(Set<ComingItem> comings) {
 
         ResponseItem<ResponseItem> responseItem =
-                new ResponseItem<ResponseItem>("Обработка приход по нескольким позициям",
+                new ResponseItem<ResponseItem>("Обработка прихода по нескольким позициям",
                                                 new ArrayList<ResponseItem>(), true);
 
         ResponseItem<ResponseItem> responseItemTemp;

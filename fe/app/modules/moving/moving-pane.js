@@ -2,12 +2,12 @@
 
 import movingPaneTpl from './moving-pane.html';
 
-    let movingPaneCntrlr = ($s, $http, paneFactory, elem, modalFactory) => {
+    let movingPaneCntrlr = ($s, $http, paneFactory, elem, modalFactory, filterFactory) => {
 
         $s.rows=[];
-        $s.allowAllStocks = false;
         $s.barcode = "";
         $s.warning = "";
+        $s.filter = {visible: false, allowAllStocks: false, sortField: '$index', reverseOrder: false};
 
         $s.requestParams = {requestsQuantity: 0};
         $s.canRelease = false;
@@ -16,8 +16,17 @@ import movingPaneTpl from './moving-pane.html';
         $s.searchInputId = paneFactory.generateUuid();
 
         let getItems =(ean) => {
-            paneFactory.getItemsForRelease( {filter: ean, stockId: $s.stock.id}, 'getComingForSellNonComposite', $s);
+            paneFactory.getItemsForRelease(
+                {
+                    filter: ean,
+                    stockId: $s.filter.stock.id
+                }, 'getComingForSellNonComposite', $s);
             // NonComposite
+        };
+
+
+        $s.getItemsForReleaseByFilter = () => {
+            paneFactory.getItemsForReleaseByFilter($s);
         };
 
         $s.$watchCollection("[rows, stockDest, rows.length]", () => {
@@ -36,14 +45,8 @@ import movingPaneTpl from './moving-pane.html';
             paneFactory.releaseItems($s, 'makeMovings', { params: { stockId: $s.stockDest.id } });
         };
 
-        $s.deleteRows = function () {
-            if (this.$index >= 0)
-                $s.rows.splice(this.$index,1);
-            else {
-                $s.comment = "";
-                $s.rows=[];
-            }
-            $s.blankSearch();
+        $s.deleteRows =  (index) => {
+            paneFactory.deletePaneRows($s, {index});
         };
 
         $s.checkRows = () => {
@@ -81,6 +84,10 @@ import movingPaneTpl from './moving-pane.html';
                     modalData: $s.quantityChangerModalData});
         };
 
+        $s.resetFilter = () => {
+            filterFactory.resetReleaseFilter($s.filter);
+        };
+
     };
 
     angular.module('moving-pane', [])
@@ -90,11 +97,13 @@ import movingPaneTpl from './moving-pane.html';
                 transclude: true,
                 scope: {},
                 template: movingPaneTpl,
-                controller: ($scope, $http, paneFactory, $element, modalFactory) => {
+                controller: ($scope, $http, paneFactory, $element, modalFactory, filterFactory) => {
 
-                    return movingPaneCntrlr($scope, $http, paneFactory, $element, modalFactory);
+                    return movingPaneCntrlr($scope, $http, paneFactory, $element, modalFactory, filterFactory);
                 },
-                link: (scope,elem) => {}
+                link: (scope) => {
+                        scope.resetFilter();
+                }
             }
         });
 // });

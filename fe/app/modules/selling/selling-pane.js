@@ -62,16 +62,9 @@ let sellingPaneCntrlr = ($s, $http, paneFactory, printFactory, modalFactory, ite
             }
         };
 
-        $s.deleteRows = function () {
-            if (this.$index >= 0)
-                $s.rows.splice(this.$index,1);
-            else {
-                $s.comment = "";
-                $s.rows=[];
-                $s.buyer = getEmptyBuyer();
-            }
-            $s.blankSearch();
-        };
+    $s.deleteRows =  (index) => {
+        paneFactory.deletePaneRows($s, {getEmptyBuyer, index});
+    };
 
         let getRowsForReports =() => {
             return printFactory.getRowsForReports($s, 'price');

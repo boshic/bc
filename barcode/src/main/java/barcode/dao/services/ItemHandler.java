@@ -119,9 +119,18 @@ public class ItemHandler  extends EntityHandlerImpl{
         Item item = itemRepository.findOneByEan(ean);
 
         if(item != null && isEanValid(item.getEanSynonym())) {
-            BigDecimal predefinedQuantity = item.getPredefinedQuantity();
+
+            BigDecimal
+                    predefinedQuantity = item.getPredefinedQuantity(),
+                    price = item.getPrice();
+
             item = itemRepository.findOneByEan(item.getEanSynonym());
+
             item.setPredefinedQuantity(predefinedQuantity);
+
+            if(price.compareTo(BigDecimal.ZERO) > 0)
+                item.setPrice(price);
+
         }
 
         return item;
@@ -148,7 +157,7 @@ public class ItemHandler  extends EntityHandlerImpl{
 
     public List<Item> getItems(String filter) {
 
-        return  getItemsCommon(filter, itemRepository.findOneByEan(filter), ipb.buildByFilter(filter));
+        return  getItemsCommon(filter, getItemByEan(filter), ipb.buildByFilter(filter));
 
     }
 
@@ -191,7 +200,6 @@ public class ItemHandler  extends EntityHandlerImpl{
 
     Item getItemByEan (String ean) {
 
-        System.out.println(ean);
         return  itemRepository.findOneByEan(ean);
     }
 

@@ -1,5 +1,6 @@
 package barcode.dao.services;
 
+import barcode.dao.entities.Item;
 import barcode.dao.entities.ItemSection;
 import barcode.dao.entities.QItem;
 import barcode.dao.entities.QItemSection;
@@ -8,14 +9,21 @@ import barcode.dao.repositories.ItemSectionRepository;
 import barcode.dto.ResponseItem;
 import org.springframework.stereotype.Service;
 
+import java.util.Collections;
+
 @Service
 public class ItemSectionHandler extends EntityHandlerImpl{
 
     private ItemSectionRepository itemSectionRepository;
 
-    public ItemSectionHandler(ItemSectionRepository itemSectionRepository) {
+    private ItemHandler itemHandler;
+
+    public ItemSectionHandler(
+            ItemSectionRepository itemSectionRepository,
+            ItemHandler itemHandler) {
 
         this.itemSectionRepository = itemSectionRepository;
+        this.itemHandler = itemHandler;
 
     }
 
@@ -29,6 +37,10 @@ public class ItemSectionHandler extends EntityHandlerImpl{
     }
 
     public Iterable<ItemSection> getItems(String name) {
+
+        Item item = itemHandler.getItemByEan(name);
+        if(item != null)
+            return Collections.singletonList(item.getSection());
 
         ItemSectionPredicateBuilder ispb = new ItemSectionPredicateBuilder();
 

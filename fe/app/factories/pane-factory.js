@@ -50,8 +50,9 @@ import invoicesPaneConfig from '../modules/selling/invoices-pane-config';
                 let checkRowsBeforeMoving = ($s, user) => {
                     if ($s.rows.length > 0) {
                         for (let row of $s.rows) {
-                            let stockId = angular.isDefined($s.stockDest) ? $s.stockDest.id : row.coming.stock.id;
-                            if (!row.quantity || $s.stock.id === stockId)
+                            let stockDestId = angular.isDefined($s.stockDest) ? $s.stockDest.id : row.coming.stock.id;
+                            let stockId = angular.isDefined($s.stock) ? $s.stock.id : $s.filter.stock.id;
+                            if (!row.quantity || stockId === stockDestId)
                                 return $s.canRelease = false;
                             row.user = user;
                             row.comment = $s.comment;
@@ -250,18 +251,33 @@ import invoicesPaneConfig from '../modules/selling/invoices-pane-config';
                                 );
                         }
                     },
+                    deletePaneRows: ($s, config) => {
+                        if (config.index >= 0)
+                            $s.rows.splice(config.index, 1);
+                        else {
+                            $s.rows=[];
+                            if(angular.isDefined($s.comment))
+                                $s.comment = "";
+                            if(angular.isDefined(config.getEmptyBuyer) && typeof config.getEmptyBuyer === 'function')
+                                $s.buyer = config.getEmptyBuyer();
+                            if(angular.isDefined(config.getEmptyDoc) && typeof config.getEmptyDoc === 'function')
+                                $s.doc = config.getEmptyDoc();
+
+                        }
+                        $s.blankSearch();
+                    },
                     getItemsForRelease: (params, url, $s) => {
                         httpService.getItems({params, url, requestParams:$s.requestParams}).then(
                             resp => {
                                 if (resp.success) {
                                     $s.warning ="";
+                                    let stock = angular.isDefined($s.stock) ? $s.stock : $s.filter.stock;
                                     let row = resp.entityItem;
                                     row.coming = {
-                                        item: row.item,
-                                        stock: $s.stock
+                                        item: row.item, stock
                                     };
                                     row.price = row.priceOut;
-                                    row.vat = $s.stock.organization.vatValue;
+                                    row.vat = stock.organization.vatValue;
 
                                     let index = checkDuplicateRowsByItem(row, $s.rows);
                                     let isFractional = fractionalUnits.indexOf(row.item.unit) >= 0;
@@ -289,6 +305,23 @@ import invoicesPaneConfig from '../modules/selling/invoices-pane-config';
                             },
                             resp => {
                                 console.log("ошибка получения остатка товара!");
+                                console.log(resp);
+                            });
+                    },
+                    getItemsForReleaseByFilter: ($s) => {
+                        httpService.getItemsByFilter(
+                            {filter: $s.filter, url: 'getComingsForReleaseByFilter', requestParams:$s.requestParams}
+                            ).then(
+                            resp => {
+                                if (resp.success) {
+                                    $s.rows = resp.entityItems;
+                                    console.log(resp);
+                                } else {
+                                    $s.warning =resp.text;
+                                }
+                            },
+                            resp => {
+                                console.log("ошибка получения остатков товаров по фильтру!");
                                 console.log(resp);
                             });
                     },

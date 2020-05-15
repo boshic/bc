@@ -68,41 +68,38 @@
     <table class="table table-bordered table-responsive">
         <thead class="pane-thead" ng-show="rows.length">
             <td style="width: 4%;">
-                <span class="sortable-thead-value" ng-click="filter.sortField='id'">Номер</span>
-                <span>
-                    <sorting-row listening-field="'id'" field="filter.sortField"
-                             sort-direction="filter.sortDirection">
-                    </sorting-row>
-                </span>
+                <sortable-column
+                        field="filter.sortField"
+                        listening-field="'id'"
+                        sort-direction="filter.sortDirection"
+                        column-name="Номер">
+                </sortable-column>
             </td>
             <td style="width: 10%;" ng-show="!filter.groupByItems">
-                <span class="sortable-thead-value" ng-click="filter.sortField='date'">Дата</span>
-                <span>
-                    <sorting-row listening-field="'date'" field="filter.sortField"
-                                 sort-direction="filter.sortDirection">
-                    </sorting-row>
-                </span>
+                <sortable-column
+                        field="filter.sortField"
+                        listening-field="'date'"
+                        sort-direction="filter.sortDirection"
+                        column-name="Дата">
+                </sortable-column>
                 <span>, продавец</span>
             </td>
             <td>
-                <span class="sortable-thead-value" ng-click="filter.sortField='coming.item.name'">Наименование</span>
-                <span>
-                    <sorting-row listening-field="'coming.item.name'" field="filter.sortField"
-                             sort-direction="filter.sortDirection">
-                    </sorting-row>
-                </span>
-                <span class="sortable-thead-value" ng-click="filter.sortField='coming.stock.name'">(склад,</span>
-                <span>
-                    <sorting-row listening-field="'coming.stock.name'" field="filter.sortField"
-                             sort-direction="filter.sortDirection">
-                    </sorting-row>
-                </span>
-                <span class="sortable-thead-value" ng-click="filter.sortField='coming.item.section.name'">секция)</span>
-                <span>
-                    <sorting-row listening-field="'coming.item.section.name'" field="filter.sortField"
-                             sort-direction="filter.sortDirection">
-                    </sorting-row>
-                </span>
+                <sortable-column field="filter.sortField"
+                                 listening-field="'coming.item.name'"
+                                 sort-direction="filter.sortDirection"
+                                 column-name="Наименование">
+                </sortable-column>
+                <sortable-column field="filter.sortField"
+                                 listening-field="'coming.stock.name'"
+                                 sort-direction="filter.sortDirection"
+                                 column-name="(склад,">
+                </sortable-column>
+                <sortable-column field="filter.sortField"
+                                 listening-field="'coming.item.section.name'"
+                                 sort-direction="filter.sortDirection"
+                                 column-name="секция)">
+                </sortable-column>
 
                 <div class="page-picker-on-sold-pane unprintable">
                     <div>
@@ -111,46 +108,40 @@
                 </div>
             </td>
             <td style="width: 6%;">
-                <span class="sortable-thead-value" ng-click="filter.sortField='availQuantityByEan'">Остаток</span>
-                <span>
-                    <sorting-row listening-field="'availQuantityByEan'" field="filter.sortField"
-                                 sort-direction="filter.sortDirection">
-                    </sorting-row>
-                </span>
-
+                <sortable-column field="filter.sortField"
+                                 listening-field="'availQuantityByEan'"
+                                 sort-direction="filter.sortDirection"
+                                 column-name="Остаток">
+                </sortable-column>
             </td>
             <td style="width: 6%;">
-                <span class="sortable-thead-value" ng-click="filter.sortField='quantity'">Продано</span>
-                <span>
-                    <sorting-row listening-field="'quantity'" field="filter.sortField"
-                                 sort-direction="filter.sortDirection">
-                    </sorting-row>
-                </span>
+                <sortable-column field="filter.sortField"
+                                 listening-field="'quantity'"
+                                 sort-direction="filter.sortDirection"
+                                 column-name="Продано">
+                </sortable-column>
             </td>
             <td style="width: 6%;">
-                <span class="sortable-thead-value" ng-click="filter.sortField='price'">Цена</span>
-                <span>
-                    <sorting-row listening-field="'price'" field="filter.sortField"
-                                 sort-direction="filter.sortDirection">
-                    </sorting-row>
-                </span>
+                <sortable-column field="filter.sortField"
+                                 listening-field="'price'"
+                                 sort-direction="filter.sortDirection"
+                                 column-name="Цена">
+                </sortable-column>
             </td>
             <!--<td style="width: 6%;" ng-show="!filter.groupByItems">Сумма</td>-->
             <td style="width: 6%;" ng-show="!filter.groupByItems">
-                <span class="sortable-thead-value" ng-click="filter.sortField='sum'">Сумма</span>
-                <span>
-                    <sorting-row listening-field="'sum'" field="filter.sortField"
-                                 sort-direction="filter.sortDirection">
-                    </sorting-row>
-                </span>
+                <sortable-column field="filter.sortField"
+                                 listening-field="'sum'"
+                                 sort-direction="filter.sortDirection"
+                                 column-name="Сумма">
+                </sortable-column>
             </td>
             <td style="width: 11%;" ng-show="!filter.groupByItems">
-                <span class="sortable-thead-value" ng-click="filter.sortField='buyer.name'">Покупатель</span>
-                <span>
-                    <sorting-row listening-field="'buyer.name'" field="filter.sortField"
-                                 sort-direction="filter.sortDirection">
-                    </sorting-row>
-                </span>
+                <sortable-column field="filter.sortField"
+                                 listening-field="'buyer.name'"
+                                 sort-direction="filter.sortDirection"
+                                 column-name="Покупатель">
+                </sortable-column>
             </td>
         </thead>
         <tbody ng-show="rows.length">

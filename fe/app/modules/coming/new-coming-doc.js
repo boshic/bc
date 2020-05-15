@@ -12,6 +12,7 @@ import newComingDocPaneTpl from './new-coming-doc.html';
         $s.buyer = itemFactory.buyerConfig.getEmptyItem();
         $s.quantityChangerModalData = {hidden : true, row: {}};
         $s.requestParams = {requestsQuantity: 0};
+        $s.filter = {visible: false, allowAllStocks: false, sortField: '$index', reverseOrder: false};
 
         $s.barcode = "";
         $s.warning = "";
@@ -172,14 +173,8 @@ import newComingDocPaneTpl from './new-coming-doc.html';
             }
         };
 
-        $s.deleteRows = function () {
-            if(this.$index >= 0) {
-                $s.rows.splice(this.$index,1)
-            } else {
-                $s.rows = [];
-                $s.doc = itemFactory.documentConfig.getEmptyItem();
-            }
-            $s.blankSearch();
+        $s.deleteRows =  (index) => {
+            paneFactory.deletePaneRows($s, {index, getEmptyDoc: itemFactory.documentConfig.getEmptyItem});
         };
 
         $s.makeComing = () => {

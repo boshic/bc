@@ -5,7 +5,7 @@ let commonPaneCtrlr = ($s, itemFactory, filterFactory, paneFactory, printFactory
 
     $s.rows=[];
     $s.reports = [];
-    $s.filter = {visible: false};
+    $s.filter = {visible: false, allowAllStocks: true};
     $s.requestParams = {requestsQuantity: 0};
 
     $s.quantityChangerModalData = { hidden : true, row: {} };

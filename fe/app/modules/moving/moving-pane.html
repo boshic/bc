@@ -2,6 +2,7 @@
 <div class="menu-panel hoverable unprintable"
      ng-keyup="handleKeyup($event)"
      ng-show="(user.role == 'ROLE_ADMIN' || user.actsAllowed.indexOf('moving') > -1)">
+
     <div class = "blank-search-row" ng-click="blankSearch()">
         <pane-search-input
                 input-value = 'barcode' keypress-handler="setEanPrefix" input-id="searchInputId">
@@ -11,11 +12,20 @@
                 requests-quantity="requestParams.requestsQuantity">
         </pane-request-indicator>
     </div>
-    <div class="one-control-on-pane" ng-show="!rows.length">
-        <div class="one-icon-on-control-pane">
-            <stock-picker allow-all="allowAllStocks" stock="stock"></stock-picker>
+    <div class="pane-right-menu"  ng-show="!rows.length">
+        <div class="coming-pane-right-menu-option">
+            <common-filter filter="filter"
+                           reset-filter="resetFilter()">
+            </common-filter>
+        </div>
+        <div class="coming-pane-right-menu-option">
+            <button class="glyphicon glyphicon-magnet"
+                    style="border: none; background: none;"
+                    ng-click="getItemsForReleaseByFilter()">
+            </button>
         </div>
     </div>
+
 </div>
 <div>
     <quantity-changer-modal
@@ -24,6 +34,7 @@
             modal-data="quantityChangerModalData">
     </quantity-changer-modal>
 </div>
+<current-stock-indicator stock="filter.stock" descr=" (Источник)"></current-stock-indicator>
 <div class="items-table table-responsive"
      ng-show="rows.length"
      ng-keyup="handleKeyup($event)">
@@ -40,7 +51,7 @@
             <comment-input ng-model="comment"></comment-input>
         </div>
         <div class="stock-input-on-moving-pane">
-            <stock-picker allow-all="allowAllStocks" stock="stockDest"></stock-picker>
+            <stock-picker allow-all="false" stock="stockDest"></stock-picker>
         </div>
         <div class="total-sum total-sum-on-moving-pane">
             <span style="margin-right: 10%;">{{(totals.quantity.toFixed(2)) + " ед."}}</span>
@@ -48,22 +59,64 @@
         </div>
     </div>
 
+    <current-stock-indicator stock="stockDest"  descr=" (Получатель)"></current-stock-indicator>
+
     <table class="table table-bordered">
             <thead class="pane-thead">
-                <td style="width: 60px;">Номер</td>
-                <td>Наименование</td>
-                <td style="width: 100px;" class="unprintable">Доступно, шт.</td>
-                <td style="width: 115px;">Перемещаем, шт.</td>
-                <td style="width: 100px;">Цена, руб., коп.</td>
-                <td style="width: 100px;">Сумма, руб., коп.</td>
+                <td style="width: 60px;">
+                    <sortable-column
+                            field = "filter.sortField"
+                            listening-field = "'$index'"
+                            reverse-order = "filter.reverseOrder"
+                            column-name = "Номер">
+                    </sortable-column>
+                </td>
+                <td>
+                    <sortable-column
+                            field = "filter.sortField"
+                            listening-field = "'item.name'"
+                            reverse-order = "filter.reverseOrder"
+                            column-name = "Наименование">
+                    </sortable-column>
+                </td>
+                <td style="width: 100px;" class="unprintable">
+                    <sortable-column
+                            field = "filter.sortField"
+                            listening-field = "'currentQuantity'"
+                            reverse-order = "filter.reverseOrder"
+                            column-name = "Доступно, ед.">
+                    </sortable-column>
+                </td>
+                <td style="width: 115px;">
+                    <sortable-column
+                            field = "filter.sortField"
+                            listening-field = "'quantity'"
+                            reverse-order = "filter.reverseOrder"
+                            column-name = "Перемещаем, ед.">
+                    </sortable-column>
+                </td>
+                <td style="width: 100px;">
+                    <sortable-column
+                            field = "filter.sortField"
+                            listening-field = "'price'"
+                            reverse-order = "filter.reverseOrder"
+                            column-name = "Цена, руб., коп.">
+                    </sortable-column>
+                </td>
+                <td style="width: 100px;">
+                    <sortable-column
+                            field = "filter.sortField"
+                            listening-field = "'(quantity * price).toFixed(2)'"
+                            reverse-order = "filter.reverseOrder"
+                            column-name = "Сумма, руб., коп.">
+                    </sortable-column>
+                </td>
                 <td class="unprintable">
-                    <a href="#" title="удалить ВСЕ товары" ng-click="deleteRows()">
-                        <span class="glyphicon glyphicon-remove item-blank"></span>
-                    </a>
+                    <pane-rows-eraser delete-rows="deleteRows()"></pane-rows-eraser>
                 </td>
             </thead>
         <tbody>
-            <tr class="hoverable" ng-repeat="x in rows track by $index">
+            <tr class="hoverable" ng-repeat="x in rows | orderBy:filter.sortField:filter.reverseOrder track by $index">
                 <td class="hoverable" title="Номер">{{ $index + 1 }}</td>
                 <td class="hoverable" title="">{{ x.item.name + "(" + x.item.ean + ")"}}</td>
                 <td class="hoverable current-quantity unprintable text-table-row"
@@ -82,9 +135,7 @@
                 </td>
                 <td class="hoverable text-table-row" title="Сумма">{{ (x.quantity * x.price).toFixed(2) }}</td>
                 <td class="unprintable">
-                    <a href="#" title="удалить строку" ng-click="deleteRows()">
-                        <span class="glyphicon glyphicon-remove item-blank"></span>
-                    </a>
+                    <pane-rows-eraser delete-rows="deleteRows($index)" is-hidden="x.quantity > 0"></pane-rows-eraser>
                 </td>
             </tr>
         </tbody>

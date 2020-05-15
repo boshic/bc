@@ -3,7 +3,7 @@
 
     <li class="filter-row">
         <div class="stock-container-on-coming-filter">
-            <stock-picker allow-all="allowAllStocks" stock="filter.stock"></stock-picker>
+            <stock-picker allow-all="filter.allowAllStocks" stock="filter.stock"></stock-picker>
         </div>
         <button class="ok-btn-on-coming-filter"
                 ng-click="resetFilter()">
@@ -15,7 +15,7 @@
         </button>
     </li>
     <!--ng-readonly="filter.calcTotal"-->
-    <li class="filter-row">
+    <li class="filter-row" ng-if = "filter.fromDate != null && filter.toDate != null">
         <div class="doc-date-pickers">
             <span>c</span>
             <input date-input class="form-control" type="date"
@@ -46,7 +46,7 @@
         </label>
     </li>
 
-    <li class="filter-row" style="display: inline-flex;">
+    <li class="filter-row" style="display: inline-flex;" ng-if = "filter.rowsOnPage != null">
         <input class="form-control" style="width: 30%;" type="number" min="1"
                ng-model="filter.rowsOnPage"/>
         <label style="margin-left: 1%;margin-top: 1%; color: coral;">Количество строк на странице</label>
@@ -60,7 +60,7 @@
         </label>
     </li>
 
-    <li class="filter-row" ng-hide="filter.inventoryModeEnabled">
+    <li class="filter-row" ng-hide="filter.inventoryModeEnabled" ng-if = "filter.comments != null">
         <div style="display: flex;">
             <input class="form-control filter-row-two-elements" type="text"
                    list="commentsList"

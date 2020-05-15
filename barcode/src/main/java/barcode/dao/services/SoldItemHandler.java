@@ -414,9 +414,7 @@ public class SoldItemHandler extends EntityHandlerImpl {
                                     .map(SoldItem::getQuantity)
                                     .reduce(BigDecimal.ZERO, BigDecimal::add),
                             comingItemHandler
-                                    .getComingItemByIdAndStockId(
-                                            item.getId(),
-                                            filter.getStock().getId())
+                                    .getComingItemByIdAndStockId(item.getId(), filter.getStock().getId())
                                     .stream().map(ComingItem::getCurrentQuantity)
                                     .reduce(BigDecimal.ZERO, BigDecimal::add)
                             ));

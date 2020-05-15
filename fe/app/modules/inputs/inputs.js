@@ -840,8 +840,6 @@ angular.module('inputs', ['asyncFilter'])
                 },
                 setEanPrefix : ($s, e, field) => {
                     $s.item[field] = paneFactory.generateEanByKey(e, $s.item[field]);
-                    // if(paneFactory.isEanValid($s.item[field]))
-                    //     $s.getItems();
                 },
                 getSearchTerms: ($s, url) => {
                     let searchTerms = new Subject();

@@ -3,7 +3,7 @@ import commonFilterTpl from './common-filter.html';
 
     let commonFilterCtrlr = ($s, paneFactory, elem) => {
 
-        $s.allowAllStocks = true;
+        // $s.allowAllStocks = true;
 
         $s.handleKeyup = e => {
             paneFactory.keyUpHandler(e, [{keyCode: paneFactory.keyCodes.escKeyCode, doAction: $s.toggleFilter}]);
@@ -52,7 +52,21 @@ import commonFilterTpl from './common-filter.html';
                 let toDate;
                 let defaultRowsOnPage = 15;
 
-                let resetCommonFilterFields = (filter) => {
+                let resetBasicReleaseFilterFields = (filter) => {
+
+                    filter.sectionPart = "";
+                    filter.section = {name:""};
+                    filter.supplier = {name:""};
+                    filter.searchString = "";
+                    filter.document = {name:""};
+                    filter.item = {name:""};
+
+
+                };
+
+                let resetBasicPaneFilterFields = (filter) => {
+
+                    resetBasicReleaseFilterFields(filter);
 
                     filter.comments = [
                         'Оприходован',
@@ -64,19 +78,14 @@ import commonFilterTpl from './common-filter.html';
                     ];
 
                     toDate = new Date();
+                    // filter.allowAllStocks = true;
                     filter.ean = "";
                     filter.sortDirection = 'DESC';
                     filter.hideNullQuantity = true;
-                    filter.sectionPart = "";
-                    filter.section = {name:""};
-                    filter.supplier = {name:""};
                     filter.calcTotal = true;
                     filter.page = 1;
-                    filter.searchString = "";
                     filter.rowsOnPage = defaultRowsOnPage;
                     filter.comment = "";
-                    filter.document = {name:""};
-                    filter.item = {name:""};
                     filter.toDate =  toDate.setHours(23,59,59,999);
                 };
 
@@ -121,9 +130,14 @@ import commonFilterTpl from './common-filter.html';
                 };
 
                 return {
+                    resetReleaseFilter: (filter) => {
+
+                        // filter.allowAllStocks = false;
+                        resetBasicReleaseFilterFields(filter);
+                    },
                     resetComingFilter: (filter) => {
 
-                        resetCommonFilterFields(filter);
+                        resetBasicPaneFilterFields(filter);
 
                         filter.inventoryModeEnabled = false;
                         filter.sortField = 'doc.date';
@@ -132,7 +146,7 @@ import commonFilterTpl from './common-filter.html';
                     },
                     resetSellingFilter: (filter) => {
 
-                        resetCommonFilterFields(filter);
+                        resetBasicPaneFilterFields(filter);
 
                         filter.sortField = 'date';
                         filter.user = {};

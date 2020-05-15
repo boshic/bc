@@ -75,53 +75,49 @@
     <table class="table table-bordered table-responsive">
         <thead class="pane-thead" ng-show="rows.length">
         <td style="width: 4%;">
-            <span class="sortable-thead-value" ng-click="filter.sortField='id'">Номер</span>
-            <span>
-                <sorting-row listening-field="'id'" field="filter.sortField"
-                             sort-direction="filter.sortDirection">
-                </sorting-row>
-            </span>
+            <sortable-column
+                    field="filter.sortField"
+                    listening-field="'id'"
+                    sort-direction="filter.sortDirection"
+                    column-name="Номер">
+            </sortable-column>
         </td>
         <td style="width: 20%;" ng-hide = "filter.inventoryModeEnabled">
-            <span class="sortable-thead-value" ng-click="filter.sortField='doc.date'">Дата</span>
-            <span>
-                <sorting-row listening-field="'doc.date'" field="filter.sortField"
-                             sort-direction="filter.sortDirection">
-                </sorting-row>
-            </span>
-            <span class="sortable-thead-value" ng-click="filter.sortField='doc.name'">, документ,</span>
-            <span>
-                <sorting-row listening-field="'doc.name'" field="filter.sortField"
-                             sort-direction="filter.sortDirection">
-                </sorting-row>
-            </span>
-            <span class="sortable-thead-value" ng-click="filter.sortField='doc.supplier.name'">поставщик</span>
-            <span>
-                <sorting-row listening-field="'doc.supplier.name'" field="filter.sortField"
-                             sort-direction="filter.sortDirection">
-                </sorting-row>
-            </span>
+            <sortable-column
+                    field="filter.sortField"
+                    listening-field="'doc.date'"
+                    sort-direction="filter.sortDirection"
+                    column-name="Дата">
+            </sortable-column>
+            <sortable-column
+                    field="filter.sortField"
+                    listening-field="'doc.name'"
+                    sort-direction="filter.sortDirection"
+                    column-name=", документ,">
+            </sortable-column>
+            <sortable-column
+                    field="filter.sortField"
+                    listening-field="'doc.supplier.name'"
+                    sort-direction="filter.sortDirection"
+                    column-name="поставщик">
+            </sortable-column>
         </td>
         <td>
-            <!--<span class="sortable-thead-value">Наименование (склад, секция)</span>-->
-            <span class="sortable-thead-value" ng-click="filter.sortField='item.name'">Наименование</span>
-            <span>
-                <sorting-row listening-field="'item.name'" field="filter.sortField"
-                             sort-direction="filter.sortDirection">
-                </sorting-row>
-            </span>
-            <span class="sortable-thead-value" ng-click="filter.sortField='stock.name'">(склад,</span>
-            <span>
-                <sorting-row listening-field="'stock.name'" field="filter.sortField"
-                             sort-direction="filter.sortDirection">
-                </sorting-row>
-            </span>
-            <span class="sortable-thead-value" ng-click="filter.sortField='item.section.name'">секция)</span>
-            <span>
-                <sorting-row listening-field="'item.section.name'" field="filter.sortField"
-                             sort-direction="filter.sortDirection">
-                </sorting-row>
-            </span>
+            <sortable-column field="filter.sortField"
+                    listening-field="'item.name'"
+                    sort-direction="filter.sortDirection"
+                    column-name="Наименование">
+            </sortable-column>
+            <sortable-column field="filter.sortField"
+                             listening-field="'stock.name'"
+                             sort-direction="filter.sortDirection"
+                             column-name="(склад,">
+            </sortable-column>
+            <sortable-column field="filter.sortField"
+                             listening-field="'item.section.name'"
+                             sort-direction="filter.sortDirection"
+                             column-name="секция)">
+            </sortable-column>
             <div class="page-picker-on-sold-pane">
                 <div>
                     <page-picker page="filter.page" pages="pages"></page-picker>
@@ -129,70 +125,56 @@
             </div>
         </td>
         <td style="width: 6%;" ng-hide = "filter.inventoryModeEnabled">
-            <span class="sortable-thead-value" ng-click="filter.sortField='currentQuantity'">Факт (</span>
-            <span>
-                <sorting-row listening-field="'currentQuantity'" field="filter.sortField"
-                             sort-direction="filter.sortDirection">
-                </sorting-row>
-            </span>
-            <span class="sortable-thead-value" ng-click="filter.sortField='quantity'">пришло)</span>
-            <span>
-                <sorting-row listening-field="'quantity'" field="filter.sortField"
-                             sort-direction="filter.sortDirection">
-                </sorting-row>
-            </span>
+            <sortable-column field="filter.sortField"
+                             listening-field="'currentQuantity'"
+                             sort-direction="filter.sortDirection"
+                             column-name="Факт (">
+            </sortable-column>
+            <sortable-column field="filter.sortField"
+                             listening-field="'quantity'"
+                             sort-direction="filter.sortDirection"
+                             column-name="пришло)">
+            </sortable-column>
         </td>
         <td style="width: 6%;" ng-hide = "filter.inventoryModeEnabled">
-            <span class="sortable-thead-value" ng-click="filter.sortField='priceIn'">Цена</span>
-            <span>
-                <sorting-row listening-field="'priceIn'" field="filter.sortField"
-                             sort-direction="filter.sortDirection">
-                </sorting-row>
-            </span>
+            <sortable-column field="filter.sortField"
+                             listening-field="'priceIn'"
+                             sort-direction="filter.sortDirection"
+                             column-name="Цена">
+            </sortable-column>
         </td>
         <td style="width: 6%;">
-            <span class="sortable-thead-value" ng-click="filter.sortField='sum'">Сумма</span>
-            <span>
-                <sorting-row listening-field="'sum'" field="filter.sortField"
-                             sort-direction="filter.sortDirection">
-                </sorting-row>
-            </span>
+            <sortable-column field="filter.sortField"
+                             listening-field="'sum'"
+                             sort-direction="filter.sortDirection"
+                             column-name="Сумма">
+            </sortable-column>
         </td>
         <td style="width: 6%;"  ng-show = "filter.inventoryModeEnabled">
-            <span class="sortable-thead-value" ng-click="filter.sortField='quantity'">Количество</span>
-            <span>
-                <sorting-row listening-field="'quantity'" field="filter.sortField"
-                             sort-direction="filter.sortDirection">
-                </sorting-row>
-            </span>
+            <sortable-column field="filter.sortField"
+                             listening-field="'quantity'"
+                             sort-direction="filter.sortDirection"
+                             column-name="Количество">
+            </sortable-column>
         </td>
         <td style="width: 6%;"  ng-show = "filter.inventoryModeEnabled">
-            <span class="sortable-thead-value" ng-click="filter.sortField='currentQuantity'">
-                Факт.кол-во,
-            </span>
-            <span>
-                <sorting-row listening-field="'currentQuantity'" field="filter.sortField"
-                             sort-direction="filter.sortDirection">
-                </sorting-row>
-            </span>
-            <span class="sortable-thead-value" ng-click="filter.sortField='lastChangeDate'">
-                дата ввода
-            </span>
-            <span>
-                <sorting-row listening-field="'lastChangeDate'" field="filter.sortField"
-                             sort-direction="filter.sortDirection">
-                </sorting-row>
-            </span>
+            <sortable-column field="filter.sortField"
+                             listening-field="'currentQuantity'"
+                             sort-direction="filter.sortDirection"
+                             column-name="Факт.кол-во,">
+            </sortable-column>
+            <sortable-column field="filter.sortField"
+                             listening-field="'lastChangeDate'"
+                             sort-direction="filter.sortDirection"
+                             column-name="дата ввода">
+            </sortable-column>
         </td>
         <td style="width: 6%;"  ng-show = "filter.inventoryModeEnabled">
-            <span class="sortable-thead-value" ng-click="filter.sortField='currentSum'">
-                Сумма расхождения
-            </span>
-            <span>
-                <sorting-row listening-field="'currentSum'" field="filter.sortField"
-                             sort-direction="filter.sortDirection">
-                </sorting-row>
-            </span>
+            <sortable-column field="filter.sortField"
+                             listening-field="'currentSum'"
+                             sort-direction="filter.sortDirection"
+                             column-name="Сумма расхождения">
+            </sortable-column>
         </td>
         <td class="unprintable" style="width: 11%;"
             ng-hide="filter.inventoryModeEnabled">Автор, комментарий

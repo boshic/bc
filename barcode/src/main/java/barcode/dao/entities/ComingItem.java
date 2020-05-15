@@ -80,6 +80,21 @@ public class ComingItem extends BasicOperationWithCommentEntity{
 
     public ComingItem(Item item,
                       Stock stock,
+                      BigDecimal priceIn,
+                      BigDecimal currentQuantity,
+                      BigDecimal quantity
+                      ) {
+
+        this.item = item;
+        this.stock = stock;
+        this.currentQuantity = currentQuantity;
+        this.quantity = quantity;
+        this.priceIn = priceIn;
+
+    }
+
+    public ComingItem(Item item,
+                      Stock stock,
                       BigDecimal sum,
                       BigDecimal quantity,
                       BigDecimal priceIn,

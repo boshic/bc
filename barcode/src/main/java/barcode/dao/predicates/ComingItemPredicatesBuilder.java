@@ -21,7 +21,7 @@ public class ComingItemPredicatesBuilder {
 
         BooleanBuilder predicate = new BooleanBuilder();
 
-        if(!filter.getInventoryModeEnabled())
+        if(filter.getInventoryModeEnabled() !=null && !filter.getInventoryModeEnabled())
             predicate = predicate.and(doc.date.between(filter.getFromDate(), filter.getToDate()));
 
         if (filter.getStock() != null && !filter.getStock().isAllowAll())
@@ -64,10 +64,43 @@ public class ComingItemPredicatesBuilder {
         return predicate;
     }
 
+    public Predicate buildByFilterForRelease(ComingItemFilter filter) {
+
+        BooleanBuilder predicate = new BooleanBuilder();
+
+        if (filter.getStock() != null && !filter.getStock().isAllowAll())
+            predicate = predicate.and(comingItem.stock.id.eq(filter.getStock().getId()));
+
+        if(filter.getSearchString() != null)
+            predicate = predicate.and(predicateBuilder
+                    .buildByPhraseAndMethod(filter.getSearchString(), item.name::containsIgnoreCase));
+
+        if(filter.getSectionPart() != null)
+            predicate = predicate.and(predicateBuilder
+                    .buildByPhraseAndMethod(filter.getSectionPart(), item.section.name::containsIgnoreCase));
+
+        if(filter.getItem() != null && filter.getItem().getId() != null)
+            predicate = predicate.and(item.id.eq(filter.getItem().getId()));
+
+        if (filter.getSection() != null && filter.getSection().getId() != null)
+            predicate =
+                    predicate.and(item.section.id.eq(filter.getSection().getId()));
+
+        if (filter.getSupplier() != null && filter.getSupplier().getId() != null)
+            predicate = predicate.and(doc.supplier.id.eq(filter.getSupplier().getId()));
+
+        if (filter.getDocument() != null && filter.getDocument().getId() != null)
+            predicate = predicate.and(doc.id.eq(filter.getDocument().getId()));
+
+        return predicate;
+    }
+
     public BooleanExpression getAvailableItemsByStock(Long itemId, Stock stock) {
 
-        BooleanExpression predicate = comingItem.stock.id.eq(stock.getId())
-                .and(comingItem.item.id.eq(itemId));
+        BooleanExpression predicate = comingItem.item.id.eq(itemId);
+
+        if(!stock.isAllowAll())
+            predicate = predicate.and(comingItem.stock.id.eq(stock.getId()));
 
         if(stock.isPriceByAvailable())
             predicate = predicate.and(comingItem.currentQuantity.gt(0));
