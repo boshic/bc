@@ -12,7 +12,7 @@ import './modules/filter/common-filter';
 import './modules/reports/print-menu';
 import './modules/coming/coming-item';
 import './modules/coming/new-coming-doc';
-import './modules/moving/moving-pane';
+// import './modules/moving/moving-pane';
 import './modules/selling/selling-pane';
 
 import './factories/http-service';
@@ -24,8 +24,7 @@ import './factories/pane-factory';
     'common-http-service', 'user-service', 'pane-factory', 'buyer-factory',
     'inputs', 'modals', 'common-filter',
     'pane-elements', 'text-utils', 'print-menu',
-    'selling-pane',
-    'coming-item', 'new-coming-doc', 'moving-pane'
+    'selling-pane', 'coming-item', 'new-coming-doc'
 ]);
 
 console.log('starting');

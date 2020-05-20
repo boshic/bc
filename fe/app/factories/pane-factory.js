@@ -4,6 +4,7 @@ import { BehaviorSubject, of, Subject, from } from 'rxjs';
 import { filter, tap, map, debounceTime, distinctUntilChanged, switchMap } from 'rxjs/operators';
 
 import comingPaneConfig from '../modules/coming/coming-pane-config';
+import movingPaneConfig from '../modules/moving/moving-pane-config';
 import soldPaneConfig from '../modules/selling/sold-pane-config';
 import invoicesPaneConfig from '../modules/selling/invoices-pane-config';
 
@@ -18,6 +19,8 @@ import invoicesPaneConfig from '../modules/selling/invoices-pane-config';
                 let escKeyCode = 27;
                 let enterKeyCode = 13;
 
+                let keyCodes = {escKeyCode, enterKeyCode, backSpaceKeyCode};
+
                 let focusTimeout = 200;
                 let successSound =  new Audio(snd);
 
@@ -31,6 +34,7 @@ import invoicesPaneConfig from '../modules/selling/invoices-pane-config';
                     }
                     return ean;
                 };
+
 
                 let checkRowsBeforeSelling = ($s, user) => {
                     if (angular.isDefined($s.buyer.id) && ($s.rows.length)) {
@@ -89,10 +93,10 @@ import invoicesPaneConfig from '../modules/selling/invoices-pane-config';
                             return price;
                 };
 
-                let checkDuplicateRowsByItem = (value, rows) => {
+                let checkDuplicateRowsByItem = (itemId, rows) => {
                     if (rows.length > 0) {
                         for ( let i = 0; i < rows.length; i++)  {
-                            if (rows[i].item.id === value.item.id) {
+                            if (rows[i].item.id === itemId) {
                                 return i;
                             }
                         }
@@ -161,11 +165,27 @@ import invoicesPaneConfig from '../modules/selling/invoices-pane-config';
                     term.next(JSON.stringify(filter));
                 };
 
+                let generateUuid = () => {
+                    return Math.random().toString(36).substring(2, 15)
+                        + Math.random().toString(36).substring(2, 15)
+                };
+
+                let keyUpHandler = (e, combinations) => {
+                    combinations.forEach((comb) => {
+                        if((e.keyCode === comb.keyCode)
+                            && (!(comb.ctrlReq) || (comb.ctrlReq && e.ctrlKey)))
+                            comb.doAction();
+                    });
+                };
+
                 return {
                     fractionalUnits,
                     successSound,
                     barcodeLength,
+                    keyCodes,
                     isEanValid,
+                    keyUpHandler,
+                    generateUuid,
                     fixIfFractional,
                     generateEan,
                     getDiscountedPrice,
@@ -177,6 +197,7 @@ import invoicesPaneConfig from '../modules/selling/invoices-pane-config';
                     getSearchTermsForGetItemsByFilter,
                     invoicesPaneConfig,
                     comingPaneConfig,
+                    movingPaneConfig,
                     soldPaneConfig,
                     getHttpService: () => {return httpService;},
                     getItemByBarcode : (ean, getItems) => {
@@ -185,7 +206,22 @@ import invoicesPaneConfig from '../modules/selling/invoices-pane-config';
                             return true;
                         }
                     },
-                    keyCodes: {escKeyCode, enterKeyCode, backSpaceKeyCode},
+                    setPaneDefaults: ($s, params) => {
+
+                        $s.rows = [];
+                        $s.warning = '';
+                        $s.searchInputId = generateUuid();
+                        $s.quantityChangerModalData = { hidden : true, row: {} };
+                        $s.requestParams = {requestsQuantity: 0};
+                        $s.handleKeyup = e => {
+                            keyUpHandler(e, params.config.getKeyupCombinations($s, keyCodes));
+                        };
+                        $s.resetFilter = () => {
+                            params.config.resetFilter(params.filterFactory, $s.filter);
+                        };
+
+                    },
+                    // keyCodes: {escKeyCode, enterKeyCode, backSpaceKeyCode},
                     eanPrefix : {value: "000000000", keyCode: generateEanKeyCode},
                     generateEanByKey: (e, ean) => {
                         if (e.ctrlKey && e.keyCode === generateEanKeyCode)
@@ -193,10 +229,6 @@ import invoicesPaneConfig from '../modules/selling/invoices-pane-config';
                         return ean;
                     },
                     user : { name:"emptyUser" },
-                    generateUuid: () => {
-                        return Math.random().toString(36).substring(2, 15)
-                            + Math.random().toString(36).substring(2, 15)
-                    },
                     paneToggler: (pane) => {
                         for(let p of pane.$$childTail.panes) {
                             if(p.selected)
@@ -219,13 +251,6 @@ import invoicesPaneConfig from '../modules/selling/invoices-pane-config';
                                     }
                                 }.bind(element), focusTimeout);
                             });
-                    },
-                    keyUpHandler: (e, combinations) => {
-                        combinations.forEach((comb) => {
-                            if((e.keyCode === comb.keyCode)
-                                && (!(comb.ctrlReq) || (comb.ctrlReq && e.ctrlKey)))
-                                comb.doAction();
-                        });
                     },
                     calcTotalsAndRefresh : (filter, findItems) => {
                         filter.calcTotal = true;
@@ -252,8 +277,9 @@ import invoicesPaneConfig from '../modules/selling/invoices-pane-config';
                         }
                     },
                     deletePaneRows: ($s, config) => {
-                        if (config.index >= 0)
-                            $s.rows.splice(config.index, 1);
+                        let i = config.itemId > 0 ? checkDuplicateRowsByItem(config.itemId, $s.rows) : -1;
+                        if (i >= 0)
+                            $s.rows.splice(i, 1);
                         else {
                             $s.rows=[];
                             if(angular.isDefined($s.comment))
@@ -279,7 +305,7 @@ import invoicesPaneConfig from '../modules/selling/invoices-pane-config';
                                     row.price = row.priceOut;
                                     row.vat = stock.organization.vatValue;
 
-                                    let index = checkDuplicateRowsByItem(row, $s.rows);
+                                    let index = checkDuplicateRowsByItem(row.item.id, $s.rows);
                                     let isFractional = fractionalUnits.indexOf(row.item.unit) >= 0;
                                     let quantity = row.quantity;
 
@@ -297,7 +323,7 @@ import invoicesPaneConfig from '../modules/selling/invoices-pane-config';
 
                                     if(isFractional && !quantity) {
                                         // $s.rows[index].quantity = 0;
-                                        $s.openQuantityChangerModal(index);
+                                        $s.openQuantityChangerModal(row.item.id);
                                     }
                                 } else {
                                     $s.warning =resp.text + "-" + params.filter;

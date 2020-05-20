@@ -58,13 +58,13 @@ import newComingDocPaneTpl from './new-coming-doc.html';
                     let item = resp.item;
                     if (item != null) {
 
-                        let index = paneFactory.checkDuplicateRowsByItem({item}, $s.rows);
+                        let index = paneFactory.checkDuplicateRowsByItem(item.id, $s.rows);
                         if (index < 0) {
                             (resp.priceOut !== 0) ?
                                 $s.rows.splice(0,0, {
                                         item: item,
                                         doc: {name:""},
-                                        quantity: 1,
+                                        quantity: 0, //1
                                         sum: resp.price,
                                         price: resp.price,
                                         priceOut: resp.priceOut
@@ -76,13 +76,13 @@ import newComingDocPaneTpl from './new-coming-doc.html';
                             index = 0;
                         } else {
                             $s.rows[index].item = item;
-                            $s.rows[index].quantity += 1;
+                            // $s.rows[index].quantity += 1;
                         }
                         $s.checkRows();
-                        if(paneFactory.fractionalUnits.indexOf(item.unit) >= 0) {
-                            $s.rows[index].quantity = 0;
-                        }
-                        $s.openQuantityChangerModal(index);
+                        // if(paneFactory.fractionalUnits.indexOf(item.unit) >= 0) {
+                        //     $s.rows[index].quantity = 0;
+                        // }
+                        $s.openQuantityChangerModal(item.id);
 
                     } else {
                         $s.warning = "Такого товара нет, нужно добавить!";
@@ -173,8 +173,8 @@ import newComingDocPaneTpl from './new-coming-doc.html';
             }
         };
 
-        $s.deleteRows =  (index) => {
-            paneFactory.deletePaneRows($s, {index, getEmptyDoc: itemFactory.documentConfig.getEmptyItem});
+        $s.deleteRows =  (itemId) => {
+            paneFactory.deletePaneRows($s, {itemId, getEmptyDoc: itemFactory.documentConfig.getEmptyItem});
         };
 
         $s.makeComing = () => {
@@ -211,8 +211,14 @@ import newComingDocPaneTpl from './new-coming-doc.html';
                 $s.buyer = itemFactory.buyerConfig.checkAndGetItem(paneFactory.user.buyer);
         };
 
-        $s.openQuantityChangerModal = (index) => {
-            modalFactory.openModal(index, $s.rows, $s.quantityChangerModalData);
+        $s.openQuantityChangerModal = (itemId) => {
+            // openModalWithConfig
+            // modalFactory.openModal(index, $s.rows, $s.quantityChangerModalData);
+            if($s.rows.length)
+                modalFactory.openModalWithConfig({itemId, rows: $s.rows,
+                    availQuantityField : 'currentQuantity',
+                    limitQuantityField : 'currentQuantity',
+                    modalData: $s.quantityChangerModalData});
         };
     };
 

@@ -100,7 +100,7 @@
                 <td class="hoverable for-sale" title="Пришло">
                     <div>
                         <button class='change-quantity-btn'
-                                ng-click='openQuantityChangerModal($index)'>
+                                ng-click='openQuantityChangerModal(x.item.id)'>
                             <span unit-sensitive unit="x.item.unit" quantity="x.quantity"></span>
                         </button>
                     </div>
@@ -120,7 +120,7 @@
                                          change-value="checkRows()"></pane-quantity-input>
                 </td>
                 <td style="text-align: center; padding-top: 14px;">
-                    <pane-rows-eraser delete-rows="deleteRows($index)" is-hidden="x.quantity > 0"></pane-rows-eraser>
+                    <pane-rows-eraser delete-rows="deleteRows(x.item.id)" is-hidden="x.quantity > 0"></pane-rows-eraser>
                 </td>
             </tr>
         </tbody>

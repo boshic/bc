@@ -60,7 +60,7 @@ let soldPaneConfig =
                         );
                 else $s.calcTotalsAndRefresh();
             };
-            config.modalFactory.openModalWithConfig({undefined, rows: [row],
+            config.modalFactory.openModalWithConfig({rows: [row],
                 availQuantityField : 'quantity',
                 limitQuantityField : 'quantity',
                 modalData: $s.quantityChangerModalData});

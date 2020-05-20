@@ -1,8 +1,10 @@
 import comingPaneTpl from '../coming/coming-pane.html';
 import soldPaneTpl from '../selling/sold-pane.html';
+import movingPaneTpl from '../moving/moving-pane.html';
 import invoicesPaneTpl from '../selling/invoices-pane.html';
 import itemRowOnPanesTpl from './item-row-on-panes.html';
 import commonPaneCtrlr from '../../controllers/common-pane-ctrlr';
+import commonReleasePaneCtrlr from '../../controllers/common-pane-release-ctrlr.js';
 
 
 angular.module('pane-elements', [])
@@ -105,6 +107,21 @@ angular.module('pane-elements', [])
                 }
             }
         })
+    .directive( "movingPane", () => {
+        return {
+            restrict: 'E',
+            transclude: true,
+            scope: {},
+            template: movingPaneTpl,
+            controller: ($scope, itemFactory, filterFactory, paneFactory, printFactory, modalFactory ) => {
+
+                return commonReleasePaneCtrlr($scope,  itemFactory, filterFactory, paneFactory, printFactory, modalFactory, 'movingPaneConfig');
+            },
+            link: (scope) => {
+                scope.resetFilter();
+            }
+        }
+    })
         .directive( "soldPane", () => {
             return {
                 restrict: 'E',
@@ -227,7 +244,7 @@ angular.module('pane-elements', [])
                             "<input class='inventory-checkbox'" +
                                 "type='checkbox' ng-model='$ctrl.autoOpenQuantityChangerModal'/>" +
                             "<label>" +
-                                "Автом. открытие окна ввода количества: {{($ctrl.autoOpenQuantityChangerModal()) ? 'Да' : 'Нет'}}" +
+                                "Автом. открытие окна ввода количества: {{($ctrl.autoOpenQuantityChangerModal) ? 'Да' : 'Нет'}}" +
                             "</label>" +
                         "</div>" +
                     "</div>" +
@@ -266,7 +283,7 @@ angular.module('pane-elements', [])
         })
         .component( "currentStockIndicator", {
         bindings: { stock: '=', descr: '@?'},
-        template: "<div style='display: flex;'>" +
+        template: "<div style='display: flex; margin-top: 2px; margin-bottom: 2px;'>" +
             "<div style='width: 45%;'></div>" +
             "<div class='current-stock-indicator'>{{'Склад: ' + $ctrl.stock.name}}" +
                 "<span ng-show='$ctrl.descr.length'>{{$ctrl.descr}}</span>" +

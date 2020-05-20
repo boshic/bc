@@ -62,8 +62,8 @@ let sellingPaneCntrlr = ($s, $http, paneFactory, printFactory, modalFactory, ite
             }
         };
 
-    $s.deleteRows =  (index) => {
-        paneFactory.deletePaneRows($s, {getEmptyBuyer, index});
+    $s.deleteRows =  (itemId) => {
+        paneFactory.deletePaneRows($s, {getEmptyBuyer, itemId});
     };
 
         let getRowsForReports =() => {
@@ -110,9 +110,9 @@ let sellingPaneCntrlr = ($s, $http, paneFactory, printFactory, modalFactory, ite
 
         };
 
-        $s.openQuantityChangerModal = (index) => {
+        $s.openQuantityChangerModal = (itemId) => {
             if($s.rows.length)
-                modalFactory.openModalWithConfig({index, rows: $s.rows,
+                modalFactory.openModalWithConfig({itemId, rows: $s.rows,
                     availQuantityField : 'currentQuantity',
                     limitQuantityField : 'currentQuantity',
                     modalData: $s.quantityChangerModalData});

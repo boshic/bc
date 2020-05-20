@@ -335,7 +335,7 @@
                     openModalWithConfig: (config) => {
                         if(config.rows.length)
                             config.modalData.hidden = false;
-                        let i = config.index >= 0 ? config.index : 0;
+                        let i = config.itemId > 0 ? paneFactory.checkDuplicateRowsByItem(config.itemId, config.rows) : 0;
                         if(angular.isDefined(config.availQuantityField))
                             config.rows[i].availQuantity = config.rows[i][config.availQuantityField];
                         if(angular.isDefined(config.limitQuantityField))

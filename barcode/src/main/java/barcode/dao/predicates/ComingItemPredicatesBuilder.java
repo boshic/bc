@@ -68,6 +68,8 @@ public class ComingItemPredicatesBuilder {
 
         BooleanBuilder predicate = new BooleanBuilder();
 
+        predicate = predicate.and(comingItem.currentQuantity.gt(0));
+
         if (filter.getStock() != null && !filter.getStock().isAllowAll())
             predicate = predicate.and(comingItem.stock.id.eq(filter.getStock().getId()));
 

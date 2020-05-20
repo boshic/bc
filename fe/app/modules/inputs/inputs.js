@@ -669,7 +669,7 @@ angular.module('inputs', ['asyncFilter'])
                     item: this.component,
                     quantity: paneFactory.fixIfFractional(this.componentQuantity, this.component.unit)
                 };
-                let index = paneFactory.checkDuplicateRowsByItem(component, this.item.components);
+                let index = paneFactory.checkDuplicateRowsByItem(component.item.id, this.item.components);
                 index < 0 ? this.item.components.push(component)
                     : this.item.components[index].quantity += component.quantity;
             }

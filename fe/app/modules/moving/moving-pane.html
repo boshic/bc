@@ -1,4 +1,8 @@
 <div ng-transclude></div>
+<div class="item-input-on-panes"
+     ng-show="item.name.length > 0">
+    <item-input item="item" get-items="getItemsWithItemInput"></item-input>
+</div>
 <div class="menu-panel hoverable unprintable"
      ng-keyup="handleKeyup($event)"
      ng-show="(user.role == 'ROLE_ADMIN' || user.actsAllowed.indexOf('moving') > -1)">
@@ -12,7 +16,14 @@
                 requests-quantity="requestParams.requestsQuantity">
         </pane-request-indicator>
     </div>
-    <div class="pane-right-menu"  ng-show="!rows.length">
+
+    <button class='glyphicon glyphicon-arrow-up pane-searchinput-btn'
+            title="искать по наименованию"
+            ng-disabled = "barcode.length === 0"
+            ng-click="editItem(barcode)">
+    </button>
+    <div class="pane-right-menu"  ng-hide="rows.length || requestParams.requestsQuantity > 0">
+
         <div class="coming-pane-right-menu-option">
             <common-filter filter="filter"
                            reset-filter="resetFilter()">
@@ -124,7 +135,7 @@
                 <td class="hoverable for-sale" title="К перемещению">
                     <div>
                         <button class='change-quantity-btn'
-                                ng-click='openQuantityChangerModal($index)'>
+                                ng-click='openQuantityChangerModal(x.item.id)'>
                             <span unit-sensitive unit="x.item.unit" quantity="x.quantity"></span>
                         </button>
                     </div>
@@ -135,7 +146,7 @@
                 </td>
                 <td class="hoverable text-table-row" title="Сумма">{{ (x.quantity * x.price).toFixed(2) }}</td>
                 <td class="unprintable">
-                    <pane-rows-eraser delete-rows="deleteRows($index)" is-hidden="x.quantity > 0"></pane-rows-eraser>
+                    <pane-rows-eraser delete-rows="deleteRows(x.item.id)" is-hidden="x.quantity > 0"></pane-rows-eraser>
                 </td>
             </tr>
         </tbody>

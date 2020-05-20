@@ -1,21 +1,20 @@
+// import basicPaneCtrlr from './basic-pane-ctrlr';
+
 let commonPaneCtrlr = ($s, itemFactory, filterFactory, paneFactory, printFactory, modalFactory, paneConfig) => {
 
     let config = paneFactory[paneConfig];
     let httpService = paneFactory.getHttpService();
 
-    $s.rows=[];
     $s.reports = [];
     $s.filter = {visible: false, allowAllStocks: true};
-    $s.requestParams = {requestsQuantity: 0};
 
-    $s.quantityChangerModalData = { hidden : true, row: {} };
+    paneFactory.setPaneDefaults($s, {config, filterFactory});
+
     $s.sellingModalConfig = {hidden : true, row: {}};
     $s.textEditModalData = {hidden : true, row: {}};
     $s.movingModalConfig = {hidden : true, row: {}};
     $s.modalConfig = {};
 
-    $s.searchInputId = paneFactory.generateUuid();
-    $s.warning = "";
     $s.totals = {};
     $s.user = {};
 
@@ -40,10 +39,6 @@ let commonPaneCtrlr = ($s, itemFactory, filterFactory, paneFactory, printFactory
 
     $s.calcTotalsAndRefresh = () => {
         return paneFactory.calcTotalsAndRefresh($s.filter, findItemsByFilter);
-    };
-
-    $s.resetFilter = () => {
-        config.resetFilter(filterFactory, $s.filter);
     };
 
     $s.setEanPrefix = e => {
@@ -75,10 +70,6 @@ let commonPaneCtrlr = ($s, itemFactory, filterFactory, paneFactory, printFactory
 
     $s.afterSearch = () => {
         return config.afterSearch($s);
-    };
-
-    $s.handleKeyup = e => {
-        paneFactory.keyUpHandler(e, config.getKeyupCombinations($s, paneFactory.keyCodes));
     };
 
     $s.blankSearch = () => {
@@ -118,8 +109,8 @@ let commonPaneCtrlr = ($s, itemFactory, filterFactory, paneFactory, printFactory
         angular.extend($s.movingModalConfig, {hidden: false, data, parentScope: $s});
     };
 
-    $s.openQuantityChangerModalInInventoryMode = (index) => {
-        config.openQuantityChangerModalInInventoryMode($s, index, modalFactory);
+    $s.openQuantityChangerModalInInventoryMode = (itemId) => {
+        config.openQuantityChangerModalInInventoryMode($s, itemId, modalFactory);
     };
 
     $s.applyInventoryResults = () => {
@@ -128,4 +119,4 @@ let commonPaneCtrlr = ($s, itemFactory, filterFactory, paneFactory, printFactory
 
 };
 
-module.exports = commonPaneCtrlr;
+export default commonPaneCtrlr;

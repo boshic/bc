@@ -40,11 +40,10 @@ let comingPaneConfig = {
     getReportsParams: ($s) => {
             return [{type: 'prices', data: $s.filter, method: 'addComingReportByFilter'}];
         },
-        checkAddingReportCondition: () => {return true;},
-        // eanInputElementId: 'coming-pane-2',
-        findItemUrl: 'findComingItemByFilter',
-        paneName: 'Список',
-        paneId: 'coming-pane',
+    checkAddingReportCondition: () => {return true;},
+    findItemUrl: 'findComingItemByFilter',
+    paneName: 'Список',
+    paneId: 'coming-pane',
     doBeforeFindItemsByFilter: ($s) => {
             if(beforeSearchInInventoryMode($s))
                 return (confirm("Записать результаты инвентаризации?")) ? $s.setInventoryValues() : true;
@@ -72,7 +71,7 @@ let comingPaneConfig = {
         row.quantity = currentQuantity;
         row.currentQuantity = quantity;
         $s.quantityChangerModalData.params = {index, quantity: currentQuantity};
-            modalFactory.openModalWithConfig({undefined, rows: [row],
+        modalFactory.openModalWithConfig({rows: [row],
             availQuantityField : 'currentQuantity', modalData: $s.quantityChangerModalData});
     },
     afterSearch: ($s) => {
