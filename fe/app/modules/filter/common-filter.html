@@ -46,6 +46,14 @@
         </label>
     </li>
 
+    <li class="filter-row"
+        ng-if = "filter.alwaysOpenQuantityChangerModal != null">
+        <input class="filter-checkbox-input" type="checkbox" ng-model="filter.alwaysOpenQuantityChangerModal"/>
+        <label style="margin-left: 5%" class="filter-checkbox-name">
+            Всегда открывать окно подбора: {{(filter.alwaysOpenQuantityChangerModal) ? "Да" : "Нет"}}
+        </label>
+    </li>
+
     <li class="filter-row" style="display: inline-flex;" ng-if = "filter.rowsOnPage != null">
         <input class="form-control" style="width: 30%;" type="number" min="1"
                ng-model="filter.rowsOnPage"/>
@@ -74,6 +82,15 @@
             </datalist>
             <eraser class="filter-eraser" data="filter.comment"></eraser>
         </div>
+    </li>
+
+
+    <li class="filter-row"
+        ng-if = "filter.strictCommentSearch != null">
+        <input class="filter-checkbox-input" type="checkbox" ng-model="filter.strictCommentSearch"/>
+        <label style="margin-left: 5%" class="filter-checkbox-name">
+            Строгое совпадение комментария: {{(filter.strictCommentSearch) ? "Да" : "Нет"}}
+        </label>
     </li>
 
     <li class="filter-row with-margin-bottom"

@@ -17,7 +17,7 @@ let movingPaneConfig = {
         return {filter: ean, stockId: $s.filter.stock.id};
     },
     resetFilter: (filterFactory, filter) => {
-        filterFactory.resetReleaseFilter(filter);
+        filterFactory.resetMovingFilter(filter);
     },
     getKeyupCombinations: ($s, keyCodes) => {
         return [

@@ -1,12 +1,9 @@
 package barcode.dao.predicates;
 
-import barcode.dao.entities.QComingItem;
-import barcode.dao.entities.QDocument;
-import barcode.dao.entities.QItem;
+import barcode.dao.entities.*;
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.Predicate;
 import com.querydsl.core.types.dsl.BooleanExpression;
-import barcode.dao.entities.Stock;
 import barcode.dao.utils.ComingItemFilter;
 
 public class ComingItemPredicatesBuilder {
@@ -15,7 +12,7 @@ public class ComingItemPredicatesBuilder {
     private QItem item  = comingItem.item;
     private QDocument doc = comingItem.doc;
 
-    private PredicateBuilder predicateBuilder = new PredicateBuilderImpl();
+    private PredicateBuilder predicateBuilder = new PredicateBuilder();
 
     public Predicate buildByFilter(ComingItemFilter filter) {
 
@@ -35,12 +32,9 @@ public class ComingItemPredicatesBuilder {
             predicate = predicate.and(predicateBuilder
                     .buildByPhraseAndMethod(filter.getSectionPart(), item.section.name::containsIgnoreCase));
 
-        if(!filter.getInventoryModeEnabled() && filter.getComment() != null) {
-            predicate = predicate.andAnyOf(
-                    predicateBuilder.buildByPhraseAndMethod(filter.getComment(), comingItem.comments.any().searchString::containsIgnoreCase),
-                    predicateBuilder.buildByPhraseAndMethod(filter.getComment(), comingItem.comment::containsIgnoreCase));
-
-        }
+        if(!filter.getInventoryModeEnabled() && filter.getComment() != null && filter.getStrictCommentSearch() != null)
+            predicate = predicate.and(predicateBuilder
+                    .buildCommentPredicate(filter, comingItem.comments.any().searchString::containsIgnoreCase));
 
         if(filter.getEan() != null && filter.getEan().length() == 13)
             predicate = predicate.and(item.ean.eq(filter.getEan()));

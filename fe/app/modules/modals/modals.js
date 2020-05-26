@@ -216,10 +216,13 @@
                             "</div>"+
                             "<div class='quantity-rest-container'>" +
                                 "<span ng-show='$ctrl.modalData.row.availQuantity > 0'>" +
-                                    "<span>из:</span>" +
+                                    "<span>из: </span>" +
                                     "<span>" +
-            "{{' ' + $ctrl.modalData.row.availQuantity + ($ctrl.modalData.row.item.unit || $ctrl.modalData.row.coming.item.unit)}}" +
+                                        "{{$ctrl.modalData.row.availQuantity}}" +
                                     "</span>" +
+                                "</span>" +
+                                "<span ng-show='$ctrl.modalData.row.item.unit.length > 0 || $ctrl.modalData.row.coming.item.unit.length > 0'>" +
+                                    "{{($ctrl.modalData.row.item.unit || $ctrl.modalData.row.coming.item.unit)}}" +
                                 "</span>" +
                             "</div>" +
                         "</div>"+

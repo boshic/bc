@@ -10,7 +10,7 @@ public class BuyerPredicateBuilder {
 
     private QBuyer buyer = QBuyer.buyer;
 
-    private PredicateBuilder predicateBuilder = new PredicateBuilderImpl();
+    private PredicateBuilder predicateBuilder = new PredicateBuilder();
 
     public Predicate buildByFilter(String filter) {
 

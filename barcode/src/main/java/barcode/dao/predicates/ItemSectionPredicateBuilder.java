@@ -14,7 +14,7 @@ public class ItemSectionPredicateBuilder {
 
     private QItemSection qItemSection = QItemSection.itemSection;
 
-    private PredicateBuilder predicateBuilder = new PredicateBuilderImpl();
+    private PredicateBuilder predicateBuilder = new PredicateBuilder();
 
     public Predicate buildByFilter(String filter) {
 

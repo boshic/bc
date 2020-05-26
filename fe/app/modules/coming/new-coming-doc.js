@@ -25,7 +25,7 @@ import newComingDocPaneTpl from './new-coming-doc.html';
             if($s.rows.length)
                 return {sum: $s.rows[0].sum, price: $s.rows[0].price,
                             quantity: 0, priceOut: $s.rows[0].priceOut};
-            return {quantity: 1, sum:0, price: 0, priceOut: 0};
+            return {quantity: 0, sum:0, price: 0, priceOut: 0};
         };
 
         let getRowsForReports =() => {
@@ -212,8 +212,6 @@ import newComingDocPaneTpl from './new-coming-doc.html';
         };
 
         $s.openQuantityChangerModal = (itemId) => {
-            // openModalWithConfig
-            // modalFactory.openModal(index, $s.rows, $s.quantityChangerModalData);
             if($s.rows.length)
                 modalFactory.openModalWithConfig({itemId, rows: $s.rows,
                     availQuantityField : 'currentQuantity',

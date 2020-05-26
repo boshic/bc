@@ -95,6 +95,7 @@ public class ComingItemFilter extends  BasicFilter {
     private Boolean calcTotal;
     private Boolean hideNullQuantity;
     private Boolean inventoryModeEnabled;
+    private Boolean strictCommentSearch;
 
     public ComingItemFilter() {}
 
@@ -209,6 +210,14 @@ public class ComingItemFilter extends  BasicFilter {
 
     public void setInventoryModeEnabled(Boolean inventoryModeEnabled) {
         this.inventoryModeEnabled = inventoryModeEnabled;
+    }
+
+    public Boolean getStrictCommentSearch() {
+        return strictCommentSearch;
+    }
+
+    public void setStrictCommentSearch(Boolean strictCommentSearch) {
+        this.strictCommentSearch = strictCommentSearch;
     }
 
     @Override

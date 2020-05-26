@@ -86,6 +86,7 @@ import commonFilterTpl from './common-filter.html';
                     filter.page = 1;
                     filter.rowsOnPage = defaultRowsOnPage;
                     filter.comment = "";
+                    filter.strictCommentSearch = false;
                     filter.toDate =  toDate.setHours(23,59,59,999);
                 };
 
@@ -112,7 +113,6 @@ import commonFilterTpl from './common-filter.html';
 
                 let execRowsOnPageFilter = (filter, findItemsByFilter) => {
                     let value = filter['rowsOnPage'];
-                    // console.log('execRowsOnPageFilter func: ', value, (value > 0));
                     if(!((value^0) === value))
                         return () => {filter['rowsOnPage'] = (value^0);};
                     return () => {
@@ -130,9 +130,10 @@ import commonFilterTpl from './common-filter.html';
                 };
 
                 return {
-                    resetReleaseFilter: (filter) => {
+                    resetMovingFilter: (filter) => {
 
                         // filter.allowAllStocks = false;
+                        filter.alwaysOpenQuantityChangerModal = true;
                         resetBasicReleaseFilterFields(filter);
                     },
                     resetComingFilter: (filter) => {
@@ -167,6 +168,7 @@ import commonFilterTpl from './common-filter.html';
                                     || (key === 'document')
                                     || (key === 'supplier')
                                     || (key === 'sectionPart')
+                                    || (key === 'strictCommentSearch')
                                     || (key === 'hideNullQuantity')
                                     || (key === 'inventoryModeEnabled')
                                     || (key === 'compositeItem')

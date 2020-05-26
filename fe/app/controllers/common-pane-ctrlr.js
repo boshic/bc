@@ -1,5 +1,3 @@
-// import basicPaneCtrlr from './basic-pane-ctrlr';
-
 let commonPaneCtrlr = ($s, itemFactory, filterFactory, paneFactory, printFactory, modalFactory, paneConfig) => {
 
     let config = paneFactory[paneConfig];

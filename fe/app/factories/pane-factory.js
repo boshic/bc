@@ -321,8 +321,9 @@ import invoicesPaneConfig from '../modules/selling/invoices-pane-config';
 
                                     $s.checkRows();
 
-                                    if(isFractional && !quantity) {
-                                        // $s.rows[index].quantity = 0;
+                                    if(((angular.isDefined($s.filter) && $s.filter.alwaysOpenQuantityChangerModal)
+                                        || isFractional)
+                                        && !quantity) {
                                         $s.openQuantityChangerModal(row.item.id);
                                     }
                                 } else {
