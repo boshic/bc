@@ -16,18 +16,21 @@
     </li>
     <!--ng-readonly="filter.calcTotal"-->
     <li class="filter-row" ng-if = "filter.fromDate != null && filter.toDate != null">
-        <div class="doc-date-pickers">
-            <span>c</span>
-            <input date-input class="form-control" type="date"
-                   ng-readonly = "filter.inventoryModeEnabled"
-                   id="filter-input"
-                   ng-model="filter.fromDate"/>
-            <span>по</span>
-            <!--ng-readonly="filter.calcTotal"-->
-            <input date-input class="form-control" type="date"
-                   ng-readonly = "filter.inventoryModeEnabled"
-                   ng-model="filter.toDate"/>
-        </div>
+        <!--<div class="doc-date-pickers">-->
+            <!--<span>c</span>-->
+            <!--<input date-input class="form-control" type="date"-->
+                   <!--ng-readonly = "filter.inventoryModeEnabled"-->
+                   <!--id="filter-input"-->
+                   <!--ng-model="filter.fromDate"/>-->
+            <!--<span>по</span>-->
+            <!--&lt;!&ndash;ng-readonly="filter.calcTotal"&ndash;&gt;-->
+            <!--<input date-input class="form-control" type="date"-->
+                   <!--ng-readonly = "filter.inventoryModeEnabled"-->
+                   <!--ng-model="filter.toDate"/>-->
+        <!--</div>-->
+        <date-interval-picker from-date="filter.fromDate"
+                              to-date="filter.toDate" picker-enabled="filter.inventoryModeEnabled">
+        </date-interval-picker>
     </li>
 
     <li class="filter-row"

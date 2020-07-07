@@ -1,21 +1,28 @@
-<div class="dropdown" style="display: inherit;">
-    <button class="dropdown-toggle user-select" type="button" data-toggle="dropdown">
+    <button class="user-select" type="button"
+            ng-click="showMenu = !showMenu">
         {{user.name}}
         <span class="caret-left"></span>
     </button>
-    <ul class="dropdown-menu user-dropdown">
-        <li>
+    <div class="user-dropdown" ng-show="showMenu">
+        <div>
             <span>НДС: </span>
             <input type="text" ng-model="user.stock.organization.vatValue"/>
-        </li>
-        <li>
+        </div>
+        <div style="border-bottom: 1px solid lightgray; margin-top: 20px;">
+            <btn-checkbox-toggler
+                    checking-value = 'searchInputAutoFocusEnabled'
+                    toggler-descr = 'Автофокус в строке поиска:'
+                    toggler-function = 'searchInputAutoFocusToggle()'>
+            </btn-checkbox-toggler>
+        </div>
+        <div>
             <span>rxjs test input: </span>
             <autocomplete></autocomplete>
-        </li>
-        <li>
+        </div>
+        <div>
             <form action="/logout" method="post">
                 <input type="submit" value="Выйти" class = "hoverable logout-btn"/>
             </form>
-        </li>
-    </ul>
-</div>
+        </div>
+    </div>
+

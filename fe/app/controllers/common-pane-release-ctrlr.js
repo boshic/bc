@@ -77,7 +77,8 @@ let commonPaneReleaseCtrlr = ($s, itemFactory, filterFactory, paneFactory, print
         $s.warning = '';
         $s.barcode = '';
         $s.item = getEmptyItem();
-        paneFactory.changeElementState(document.getElementById($s.searchInputId), ['focus']);
+        if(paneFactory.searchInputAutoFocusEnabled)
+            paneFactory.changeElementState(document.getElementById($s.searchInputId), ['focus']);
     };
 
     $s.openQuantityChangerModal = (itemId) => {

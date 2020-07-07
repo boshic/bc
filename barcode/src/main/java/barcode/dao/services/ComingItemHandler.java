@@ -575,12 +575,14 @@ public class ComingItemHandler extends EntityHandlerImpl {
 
         Sort sort = new Sort(Sort.Direction.fromStringOrNull(filter.getSortDirection()), filter.getSortField());
 
+        Predicate predicate = cipb.buildByFilter(filter, abstractEntityManager);
+
         if(filter.getInventoryModeEnabled())
-                    return getInventoryItems(comingItemRepository.findAll(cipb.buildByFilter(filter)), filter);
+                    return getInventoryItems(comingItemRepository.findAll(predicate), filter);
 
         PageRequest pageRequest = new PageRequest(filter.getPage() - 1, filter.getRowsOnPage(), sort);
 
-        Page<ComingItem> page =  comingItemRepository.findAll(cipb.buildByFilter(filter), pageRequest);
+        Page<ComingItem> page =  comingItemRepository.findAll(predicate, pageRequest);
 
         List<ComingItem> result = page.getContent();
 
@@ -591,7 +593,7 @@ public class ComingItemHandler extends EntityHandlerImpl {
 
             if(filter.getCalcTotal()) {
 
-                ribyci.calcTotals(comingItemRepository.findAll(cipb.buildByFilter(filter)));
+                ribyci.calcTotals(comingItemRepository.findAll(predicate));
             }
 
             return ribyci;
@@ -613,8 +615,7 @@ public class ComingItemHandler extends EntityHandlerImpl {
         if(coming == null)
             return new DtoItemForNewComing(item, item.getPrice(), item.getPrice());
 
-        return new DtoItemForNewComing(coming.getItem(), coming.getPriceIn(),
-                item.getPrice().compareTo(BigDecimal.ZERO) > 0 ? item.getPrice() : coming.getPriceOut());
+        return new DtoItemForNewComing(coming.getItem(), coming.getPriceIn(), getComingPrice(coming));
     }
 
     public void setInventoryItems(Set<ComingItem> comingItems) {
@@ -666,6 +667,10 @@ public class ComingItemHandler extends EntityHandlerImpl {
     BigDecimal getAvailQuantityByEan(List<ComingItem> comingItems) {
 
         return comingItems.stream().map(ComingItem::getCurrentQuantity).reduce(BigDecimal.ZERO, BigDecimal::add);
+    }
+
+    public static BigDecimal getComingPrice(ComingItem coming) {
+        return coming.getItem().getPrice().compareTo(BigDecimal.ZERO) > 0 ? coming.getItem().getPrice() : coming.getPriceOut();
     }
 
 }

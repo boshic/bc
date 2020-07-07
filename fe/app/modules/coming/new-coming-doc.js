@@ -206,7 +206,8 @@ import newComingDocPaneTpl from './new-coming-doc.html';
             $s.item = getEpmtyItem();
             $s.warning = "";
             $s.itemInputVisible = false;
-            paneFactory.changeElementState(document.getElementById($s.searchInputId), ['focus']);
+            if(paneFactory.searchInputAutoFocusEnabled)
+                paneFactory.changeElementState(document.getElementById($s.searchInputId), ['focus']);
             if(!angular.isDefined($s.buyer.id) && !$s.rows.length)
                 $s.buyer = itemFactory.buyerConfig.checkAndGetItem(paneFactory.user.buyer);
         };

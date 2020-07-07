@@ -42,31 +42,18 @@
     display: none;
 }
 
-/*@media print { @page { margin: 2cm; }}*/
-
-
-/*#result {*/
-	/*font-family: verdana;*/
-	/*font-size: 1.5em;*/
-	/*text-align: center;	*/
-/*}*/
-
-/*#barcode {*/
-	/*position: relative;*/
-	/*text-align: center;	*/
-/*}	*/
-
-/*#barcodecanvas {*/
-	/*display: none;*/
-/*}*/
-
-/*a.close-modal {*/
-    /*margin-top:15px;*/
-    /*margin-right:15px;*/
-/*}*/
-
 div.items-table {
     overflow-x: unset;
+}
+
+input, button {
+    border: none;
+}
+
+
+:focus {
+    border: none;
+    outline: 2px solid lightgray;
 }
 
 .dropdown > .hoverable {
@@ -168,6 +155,7 @@ div.tab button.active {
 /*/--------------------------------Animated Search input--------------*/
 
 .searchinput {
+    /*border: none;*/
     width: 150px;
     height: 40px;
     margin-top: 2px;
@@ -189,6 +177,7 @@ div.tab button.active {
 }
 
 .searchinput:focus {
+    /*border: none;*/
     width: 40%;
 }
 /* Add Animation */
@@ -906,7 +895,7 @@ td.sold {
 
 .coming-filter-settings-list {
     z-index: 1;
-    min-width: 450px;
+    min-width: 570px;
     list-style: none;
     position: absolute;
     right: 2%;
@@ -919,14 +908,6 @@ td.sold {
 
 .root-container {
     margin: 1%;
-}
-
-.ok-btn-on-coming-filter {
-    width: 100%;
-    color: var(--white-color);
-    background: var(--main-color);
-    padding: 0px;
-    font-size: 25px;
 }
 
 .ok-btn-on-selling-filter {
@@ -946,7 +927,7 @@ td.sold {
 }
 
 .ok-btn-on-coming-filter {
-    width: 81%;
+    width: 83%;
     color: var(--white-color);
     background: var(--main-color);
     padding: 0px;
@@ -1046,10 +1027,16 @@ button.user-select {
 }
 
 .user-dropdown {
-    width: 210px;
-    margin-top: -21px;
-    padding: 0px;
-    margin-left: -209px;
+    font-size: 20px;
+    position: relative;
+    list-style: none;
+    background: var(--white-color);
+    border: 1px solid var(--gray-color);
+    padding: 5px;
+    margin-left: -283px;
+    margin-right: 12px;
+    z-index: 1;
+    min-height: 245px;
 }
 
 .supplier-container-on-doc {
@@ -1102,7 +1089,7 @@ button.user-select {
 .stock-container-on-coming-filter {
     display: inline-block;
     float: left;
-    margin-top: 1px;
+    margin-top: -1px;
 }
 
 .total-quantity-on-sold-pane {
@@ -1313,9 +1300,12 @@ td.price-data {
 }
 
 .invoice-stamp {
+    /*position: absolute;*/
+    /*left: 104px;*/
+    /*margin-top: -6px;*/
     position: absolute;
-    left: 104px;
-    margin-top: -6px;
+    margin-left: -419px;
+    margin-top: -10px;
 }
 
 .print-icon {
@@ -1419,11 +1409,15 @@ td.price-data {
 }
 
 .btn-on-pane {
+    border: 1px solid var(--gray-color);
     color: var(--main-color);
     padding: 2px;
     font-size: 15px;
     border-radius: 5px;
     font-weight: bold;
+}
+.btn-on-pane:hover {
+    border-color: var(--main-color);
 }
 
 .comments-container {
@@ -1568,7 +1562,7 @@ td.quick-filter {
     padding: 3px;
     font-family: var(--main-font);
     font-size: large;
-    width: 44%;
+    width: 50%;
 }
 
 .item-input-filter {
@@ -1623,10 +1617,11 @@ td.quick-filter {
 }
 
 .overhead-percentage {
+    border: 1px solid;
     border-radius: 3px;
     padding: 1px;
     font-size: 12px;
-    position: absolute;
+    /*position: absolute;*/
     background: var(--main-color);
     font-weight: bold;
     color: var(--white-color);
@@ -1938,7 +1933,7 @@ div.item-components-picker-wrapper {
 }
 
 div.on-pane-totals-container {
-    width: 65%;
+    width: 50%;
     text-align: center;
 }
 
@@ -1982,4 +1977,36 @@ div.current-stock-indicator {
     /*border-top: 2px dotted var(--white-color);*/
     width: 55%;
     border-top-left-radius: 15px;
+}
+
+button.btn-checkbox-toggler-btn {
+    border: 1px solid;
+    vertical-align: text-bottom;
+}
+
+.btn-checkbox-toggler-btn-ok {
+ color: var(--main-color);
+}
+
+.btn-checkbox-toggler-btn-no {
+    color: var(--gray-color);
+}
+
+.coming-pane-priceout-attention {
+    margin-top: 8px;
+}
+
+.priceout-on-coming-pane-from-item {
+    padding: 3px;
+    border-radius: 5px;
+    border-bottom: 4px solid var(--main-color);
+}
+
+.date-picker-cmpnt {
+    width: 50%;
+}
+
+.date-picker-interval-notice {
+    font-weight: bold;
+    margin: 2px;
 }

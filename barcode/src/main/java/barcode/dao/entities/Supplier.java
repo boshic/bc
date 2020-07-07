@@ -28,7 +28,7 @@ public class Supplier extends BasicCounterPartyEntity {
 
     @Override
     public int hashCode() {
-        int result = getId().hashCode();
+        int result = getId() != null ? getId().hashCode() : 31;
         result = 31 * result + (getName() != null ? getName().hashCode() : 0);
 //        result = 31 * result + (getDocuments() != null ? getDocuments().hashCode() : 0);
         return result;

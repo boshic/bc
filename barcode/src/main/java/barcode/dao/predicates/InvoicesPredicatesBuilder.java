@@ -19,8 +19,7 @@ public class InvoicesPredicatesBuilder {
         QInvoiceRow qInvoiceRow = QInvoiceRow.invoiceRow;
         QInvoice invoice = InvoiceHandler.qInvoice;
 
-        BooleanExpression predicate
-                = (invoice.date.between(filter.getFromDate(), filter.getToDate()));
+        BooleanExpression predicate = (invoice.date.between(filter.getFromDate(), filter.getToDate()));
 
 
         ///!!!! Yes

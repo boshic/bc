@@ -37,7 +37,6 @@ public class MovingHandler extends EntityHandlerImpl {
         return userHandler.checkUser(user, AUTO_MOVING_MAKER).getFullName();
     }
 
-//    public synchronized ResponseItem makeMovings(Set<SoldItem> movings, Long stockId) {
 public ResponseItem makeMovings(Set<SoldItem> movings, Long stockId) {
 
         synchronized (comingItemHandler) {
@@ -54,8 +53,6 @@ public ResponseItem makeMovings(Set<SoldItem> movings, Long stockId) {
                 BigDecimal totalQuantity;
 
                 BigDecimal availQuantityByEan = comingItemHandler.getAvailQuantityByEan(comings);
-//                        comings.stream().map(ComingItem::getCurrentQuantity)
-//                                .reduce(BigDecimal.ZERO, BigDecimal::add);
 
                 if(reqForMove.compareTo(availQuantityByEan) > 0  || comings.size() == 0)
                     return new ResponseItem<SoldItem>(getInsufficientQuantityOfGoodsMessage(
@@ -82,7 +79,7 @@ public ResponseItem makeMovings(Set<SoldItem> movings, Long stockId) {
                                         "c " + coming.getStock().getName() +
                                                 " на " + this.stockHandler.getStockById(stockId).getName() +
                                                 getQuantityForComment(moving.getQuantity())
-                                                + moving.getComment(),
+                                                + (moving.getComment() == null ? "": moving.getComment()),
                                         getCheckedUserName(moving.getUser()),
                                         MOVE_COMMENT, newComing.getCurrentQuantity()));
 
@@ -143,7 +140,8 @@ public ResponseItem makeMovings(Set<SoldItem> movings, Long stockId) {
                                     this.buildComment(coming.getComments(),
                                             "c " + coming.getStock().getName() +
                                                     " на " + this.stockHandler.getStockById(stockId).getName() +
-                                                    getQuantityForComment(moving.getQuantity()) + moving.getComment(),
+                                                    getQuantityForComment(moving.getQuantity())
+                                                    + (moving.getComment() == null ? "": moving.getComment()),
                                             getCheckedUserName(moving.getUser()),
                                             MOVE_COMMENT, coming.getCurrentQuantity()));
 
@@ -167,7 +165,8 @@ public ResponseItem makeMovings(Set<SoldItem> movings, Long stockId) {
                                     this.buildComment(coming.getComments(),
                                             "c " + coming.getStock().getName() +
                                                     " на " + this.stockHandler.getStockById(stockId).getName()
-                                                    + getQuantityForComment(moving.getQuantity()) + moving.getComment(),
+                                                    + getQuantityForComment(moving.getQuantity())
+                                                    + (moving.getComment() == null ? "": moving.getComment()),
                                             getCheckedUserName(moving.getUser()),
                                             MOVE_COMMENT, coming.getCurrentQuantity()));
 
@@ -282,7 +281,8 @@ public ResponseItem addOneMoving(SoldItem moving, Long stockId) {
                     this.buildComment(coming.getComments(),
                             "c " + coming.getStock().getName() +
                                     " на " + this.stockHandler.getStockById(stockId).getName()
-                                    + getQuantityForComment(moving.getQuantity()) + moving.getComment(),
+                                    + getQuantityForComment(moving.getQuantity())
+                                    + (moving.getComment() == null ? "": moving.getComment()),
                             getCheckedUserName(moving.getUser()),
                             MOVE_COMMENT, coming.getCurrentQuantity()));
 
@@ -312,7 +312,8 @@ public ResponseItem addOneMoving(SoldItem moving, Long stockId) {
                     this.buildComment(coming.getComments(),
                             "c " + coming.getStock().getName() +
                                     " на " + this.stockHandler.getStockById(stockId).getName()
-                                    + getQuantityForComment(moving.getQuantity()) + moving.getComment(),
+                                    + getQuantityForComment(moving.getQuantity())
+                                    + (moving.getComment() == null ? "": moving.getComment()),
                             getCheckedUserName(moving.getUser()),
                             MOVE_COMMENT, coming.getCurrentQuantity()));
 
@@ -320,7 +321,8 @@ public ResponseItem addOneMoving(SoldItem moving, Long stockId) {
                     this.buildComment(newComing.getComments(),
                             "c " + coming.getStock().getName() +
                                     " на " + this.stockHandler.getStockById(stockId).getName() +
-                                    getQuantityForComment(moving.getQuantity()) + moving.getComment(),
+                                    getQuantityForComment(moving.getQuantity())
+                                    + (moving.getComment() == null ? "": moving.getComment()),
                             getCheckedUserName(moving.getUser()),
                             MOVE_COMMENT, newComing.getCurrentQuantity()));
 

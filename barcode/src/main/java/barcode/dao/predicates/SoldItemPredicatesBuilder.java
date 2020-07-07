@@ -23,7 +23,9 @@ public class SoldItemPredicatesBuilder {
         if (filter.getStock() != null && !filter.getStock().isAllowAll())
             predicate = predicate.and(comingItem.stock.id.eq(filter.getStock().getId()));
 
-        if(filter.getComment() != null && filter.getStrictCommentSearch() != null)
+        if(filter.getComment() != null
+                && filter.getStrictCommentSearch() != null
+                && filter.getComment().length() > 0)
             predicate = predicate.and(predicateBuilder
                     .buildCommentPredicate(filter, soldItem.comments.any().searchString::containsIgnoreCase));
 

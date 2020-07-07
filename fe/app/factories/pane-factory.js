@@ -19,6 +19,8 @@ import invoicesPaneConfig from '../modules/selling/invoices-pane-config';
                 let escKeyCode = 27;
                 let enterKeyCode = 13;
 
+                let searchInputAutoFocusEnabled = true;
+
                 let keyCodes = {escKeyCode, enterKeyCode, backSpaceKeyCode};
 
                 let focusTimeout = 200;
@@ -182,6 +184,7 @@ import invoicesPaneConfig from '../modules/selling/invoices-pane-config';
                     fractionalUnits,
                     successSound,
                     barcodeLength,
+                    searchInputAutoFocusEnabled,
                     keyCodes,
                     isEanValid,
                     keyUpHandler,
@@ -342,6 +345,9 @@ import invoicesPaneConfig from '../modules/selling/invoices-pane-config';
                             resp => {
                                 if (resp.success) {
                                     $s.rows = resp.entityItems;
+                                    $s.rows.forEach(row => {
+                                        row.coming = {item : row.item, stock: row.stock};
+                                    });
                                     console.log(resp);
                                 } else {
                                     $s.warning =resp.text;

@@ -305,6 +305,25 @@ angular.module('pane-elements', [])
                 "ng-keydown='$ctrl.keypressHandler()($event)'/>",
             controller: function() {}
         })
+    .component( "btnCheckboxToggler", {
+        bindings: {
+            checkingValue: '=',
+            togglerDescr: '@',
+            togglerFunction: '&'
+        },
+        template:
+        "<button class = 'glyphicon glyphicon-ok btn-checkbox-toggler-btn btn-checkbox-toggler-btn-ok' ng-show = '$ctrl.checkingValue'" +
+            "ng-click = '$ctrl.togglerFunction()'></button>" +
+        "<button class='glyphicon glyphicon-remove btn-checkbox-toggler-btn btn-checkbox-toggler-btn-no' ng-hide='$ctrl.checkingValue'" +
+            "ng-click = '$ctrl.togglerFunction()'>" +
+                "</button>" +
+                "<span> </span>" +
+                "<span>{{ $ctrl.togglerDescr }}</span>" +
+                "<span> </span>" +
+        "<span class='btn-checkbox-toggler-btn-ok' ng-show='$ctrl.checkingValue'>Да</span>" +
+        "<span class='btn-checkbox-toggler-btn-no' ng-hide='$ctrl.checkingValue'>Нет</span>",
+        controller: function() {}
+    })
         .component( "itemRowOnPanes", {
         bindings: {
             row: '=',
@@ -314,7 +333,18 @@ angular.module('pane-elements', [])
         template: itemRowOnPanesTpl,
         controller: function() {}
     })
-        .component( "paneDateChangeControl", {
+    .component( "overheadPercentageIndicator", {
+        bindings: {
+            priceOut: '<',
+            price: '<'
+        },
+        template:
+        "<span class='overhead-percentage'" +
+            "ng-show='$ctrl.price > 0 && $ctrl.priceOut > 0'>" +
+                "{{ ((100 * $ctrl.priceOut / $ctrl.price)-100).toFixed(1) + '%'}}</span>",
+        controller: function() {}
+    })
+    .component( "paneDateChangeControl", {
         bindings: {
             user: '<',
             row: '=',
@@ -323,14 +353,15 @@ angular.module('pane-elements', [])
         },
         template:
         "<span style='position: absolute; cursor: pointer;'" +
-            "ng-if='(($ctrl.user.role == \"ROLE_ADMIN\" || $ctrl.user.actsAllowed.indexOf(allowedActRequired) > -1) " +
-                "&& (($ctrl.row.quantity > 0) || (!$ctrl.row.deleted)))'" +
+            "ng-if='(($ctrl.user.role == \"ROLE_ADMIN\" " +
+                        "|| $ctrl.user.actsAllowed.indexOf(allowedActRequired) > -1) " +
+                        "&& (($ctrl.row.quantity > 0) || (!$ctrl.row.deleted)))'" +
             "ng-show = '$ctrl.requestsQuantity === 0'>" +
             "<div class='dropdown'>" +
                 "<span class='glyphicon glyphicon-pencil'></span>" +
                     "<ul class='dropdown-menu hoverable comments-container sip-date-changer'>" +
                         "<li>" +
-                            "<input date-input class='form-control' type='datetime-local' ng-model='$ctrl.row.date'/>" +
+                            "<date-picker date-value='$ctrl.row.date'></date-picker>" +
                             "<div>" +
                                 "<button class='glyphicon glyphicon-ok sip-date-changer-ok-btn'" +
                                     "ng-click='$ctrl.changeItemDate()($ctrl.row)'" +

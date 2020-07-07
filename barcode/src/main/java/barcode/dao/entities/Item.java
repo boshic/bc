@@ -47,7 +47,8 @@ public class Item extends BasicNamedEntity {
     private List<ItemComponent> components;
 
     @ElementCollection
-    @JsonProperty("inventoryRows")
+//    @JsonProperty("inventoryRows")
+    @JsonIgnore
     private List<InventoryRow> inventoryRows;
 
     public String getEan() { return ean; }
@@ -135,7 +136,7 @@ public class Item extends BasicNamedEntity {
 
     @Override
     public int hashCode() {
-        int result = getId() != null ? getId().hashCode() : 0;
+        int result = getId() != null ? getId().hashCode() : 31;
         result = 31 * result + (getName() != null ? getName().hashCode() : 0);
         result = 31 * result + (getEan() != null ? getEan().hashCode() : 0);
         result = 31 * result + (getUnit() != null ? getUnit().hashCode() : 0);

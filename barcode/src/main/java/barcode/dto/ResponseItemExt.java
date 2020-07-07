@@ -15,6 +15,19 @@ import java.util.stream.Stream;
  */
 public abstract class ResponseItemExt<T> extends ResponseItem<T> {
 
+    final String
+    SUMM = "Сумма",
+    PRICE = " цена",
+    SOLD = "выбыло",
+    QUANTITY = "кол-во",
+    PRICE_IN = PRICE + " учетн.",
+    PRICE_OUT = PRICE + " отп.",
+    BY_FACT = " по факту",
+    BY_SELECTION = " по выборке",
+    SOLD_BY_PRICE_IN = SOLD + PRICE_IN,
+    SOLD_BY_PRICE_OUT = SOLD + PRICE_OUT;
+
+
     private Integer numberOfPages;
     private List<ResultRowByItemsCollection> totals = new ArrayList<ResultRowByItemsCollection>();
     private List<Buyer> buyers;

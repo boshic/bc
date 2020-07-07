@@ -52,7 +52,7 @@ let commonPaneCtrlr = ($s, itemFactory, filterFactory, paneFactory, printFactory
     };
 
     $s.focusOnEanInput = () => {
-        if(!$s.filter.visible)
+        if(!$s.filter.visible && paneFactory.searchInputAutoFocusEnabled)
             paneFactory.changeElementState( document.getElementById($s.searchInputId), ['focus']);
     };
 

@@ -106,11 +106,12 @@
                     </div>
                 </td>
                 <td class="hoverable new-coming-doc-pricein" title="Цена прихода">
-                    {{x.price}}
-                    <span class="overhead-percentage"
-                        ng-show="x.price > 0 && x.priceOut > 0">
-                        {{ ((100 * x.priceOut / x.price)-100).toFixed(1) + '%'}}
+                    <span style="position: absolute;  margin-left: 68px; margin-top: -16px;">
+                        <overhead-percentage-indicator
+                            price-out="x.priceOut" price="x.price">
+                        </overhead-percentage-indicator>
                     </span>
+                    {{x.price}}
                 </td>
                 <td class="hoverable common-number-input" title="Сумма">
                     <pane-quantity-input value-field="sum" input-value="x"></pane-quantity-input>

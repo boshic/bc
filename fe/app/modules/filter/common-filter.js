@@ -87,13 +87,13 @@ import commonFilterTpl from './common-filter.html';
                     filter.rowsOnPage = defaultRowsOnPage;
                     filter.comment = "";
                     filter.strictCommentSearch = false;
-                    filter.toDate =  toDate.setHours(23,59,59,999);
+                    filter.toDate =  toDate.setHours(23,59,0,0);
                 };
 
                 let validate = (filter) => {
                     if(('toDate' in filter) && !(filter.toDate > 0)) {
                         console.log('validatating toDate!');
-                        filter.toDate =  toDate.setHours(23,59,59,999);
+                        filter.toDate =  toDate.setHours(23,59,0,0);
                     }
                     if(('fromDate' in filter) && !(filter.fromDate > 0)) {
                         console.log('validatating fromDate!');

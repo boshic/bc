@@ -224,46 +224,50 @@ public class ComingItemFilter extends  BasicFilter {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof ComingItemFilter)) return false;
-
-        BasicFilter superThat = (BasicFilter) o;
+        if (!super.equals(o)) return false;
 
         ComingItemFilter that = (ComingItemFilter) o;
 
-        if (!super.equals(superThat)) return false;
-
-        if (!getEan().equals(that.getEan())) return false;
+        if (getEan() != null ? !getEan().equals(that.getEan()) : that.getEan() != null) return false;
         if (getComment() != null ? !getComment().equals(that.getComment()) : that.getComment() != null) return false;
         if (getSectionPart() != null ? !getSectionPart().equals(that.getSectionPart()) : that.getSectionPart() != null)
             return false;
         if (getItem() != null ? !getItem().equals(that.getItem()) : that.getItem() != null) return false;
-        if (getSection() != null ? !getSection().equals(that.getSection()) : that.getSection() != null)
-            return false;
+        if (getSection() != null ? !getSection().equals(that.getSection()) : that.getSection() != null) return false;
         if (getStock() != null ? !getStock().equals(that.getStock()) : that.getStock() != null) return false;
-        if (!getPage().equals(that.getPage())) return false;
-        if (!getRowsOnPage().equals(that.getRowsOnPage())) return false;
+        if (getPage() != null ? !getPage().equals(that.getPage()) : that.getPage() != null) return false;
+        if (getRowsOnPage() != null ? !getRowsOnPage().equals(that.getRowsOnPage()) : that.getRowsOnPage() != null)
+            return false;
         if (getDocument() != null ? !getDocument().equals(that.getDocument()) : that.getDocument() != null)
             return false;
         if (getSupplier() != null ? !getSupplier().equals(that.getSupplier()) : that.getSupplier() != null)
             return false;
-        if (!getCalcTotal().equals(that.getCalcTotal())) return false;
-
-        return getHideNullQuantity().equals(that.getHideNullQuantity());
+        if (getCalcTotal() != null ? !getCalcTotal().equals(that.getCalcTotal()) : that.getCalcTotal() != null)
+            return false;
+        if (getHideNullQuantity() != null ? !getHideNullQuantity().equals(that.getHideNullQuantity()) : that.getHideNullQuantity() != null)
+            return false;
+        if (getInventoryModeEnabled() != null ? !getInventoryModeEnabled().equals(that.getInventoryModeEnabled()) : that.getInventoryModeEnabled() != null)
+            return false;
+        return getStrictCommentSearch() != null ? getStrictCommentSearch().equals(that.getStrictCommentSearch()) : that.getStrictCommentSearch() == null;
     }
 
     @Override
     public int hashCode() {
-        int result = getEan().hashCode();
+        int result = super.hashCode();
+        result = 31 * result + (getEan() != null ? getEan().hashCode() : 0);
         result = 31 * result + (getComment() != null ? getComment().hashCode() : 0);
         result = 31 * result + (getSectionPart() != null ? getSectionPart().hashCode() : 0);
         result = 31 * result + (getItem() != null ? getItem().hashCode() : 0);
         result = 31 * result + (getSection() != null ? getSection().hashCode() : 0);
         result = 31 * result + (getStock() != null ? getStock().hashCode() : 0);
-        result = 31 * result + getPage().hashCode();
-        result = 31 * result + getRowsOnPage().hashCode();
+        result = 31 * result + (getPage() != null ? getPage().hashCode() : 0);
+        result = 31 * result + (getRowsOnPage() != null ? getRowsOnPage().hashCode() : 0);
         result = 31 * result + (getDocument() != null ? getDocument().hashCode() : 0);
         result = 31 * result + (getSupplier() != null ? getSupplier().hashCode() : 0);
-        result = 31 * result + getCalcTotal().hashCode();
-        result = 31 * result + getHideNullQuantity().hashCode();
+        result = 31 * result + (getCalcTotal() != null ? getCalcTotal().hashCode() : 0);
+        result = 31 * result + (getHideNullQuantity() != null ? getHideNullQuantity().hashCode() : 0);
+        result = 31 * result + (getInventoryModeEnabled() != null ? getInventoryModeEnabled().hashCode() : 0);
+        result = 31 * result + (getStrictCommentSearch() != null ? getStrictCommentSearch().hashCode() : 0);
         return result;
     }
 }

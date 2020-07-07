@@ -175,12 +175,12 @@ let docCtrlr = ($s, httpService, itemFactory) => {
     $s.dateFrom = new Date(2015,0,1);
     $s.dateTo = new Date();
     $s.docs = [];
-    // $s.requestsInProgress = 0;
+
     $s.requestParams = {requestsQuantity: 0};
     $s.getEmptyItem = itemFactory.documentConfig.getEmptyItem;
     $s.doc = $s.getEmptyItem();
 
-    $s.newDoc = angular.extend($s.getEmptyItem(), {date: new Date().toLocaleDateString()});
+    $s.newDoc = angular.extend($s.getEmptyItem(), {date: new Date()});
 
     $s.docsListVisible = false;
     $s.datePickerVisible = false;
@@ -197,7 +197,7 @@ let docCtrlr = ($s, httpService, itemFactory) => {
     });
 
     $s.checkDoc = () => {
-        (($s.newDoc.date) && ($s.newDoc.name) && ($s.newDoc.supplier.name)) ?
+        (($s.newDoc.date > 0) && ($s.newDoc.name.length > 0) && ($s.newDoc.supplier.id > 0)) ?
             $s.canChange = true : $s.canChange = false;
     };
 
@@ -246,8 +246,12 @@ let docCtrlr = ($s, httpService, itemFactory) => {
         $s.addingVisible = true;
         if (this.$index >= 0)
             $s.newDoc = this.x;
-        else
-            $s.newDoc = angular.extend($s.getEmptyItem(), {date: new Date()});
+        else {
+            let date = new Date();
+            $s.newDoc = angular.extend($s.getEmptyItem(),
+                {date: new Date(date.getFullYear(), date.getMonth(), date.getDate(), date.getHours(), date.getMinutes())});
+
+        }
         $s.checkDoc();
     };
 
@@ -530,13 +534,22 @@ angular.module('inputs', ['asyncFilter'])
             transclude: true,
             // scope: true,
             template: userPickerTpl,
-            controller: ($scope, userService) => {
+            controller: ($scope, userService, paneFactory) => {
+
                 $scope.user = { name: "Tes" };
+                $scope.searchInputAutoFocusEnabled = paneFactory.searchInputAutoFocusEnabled;
+                $scope.showMenu = false;
+
 
                 userService.getUser().then(
                     resp => {$scope.user = resp;},
                     resp => {$scope.user.name = resp;}
                 );
+
+                $scope.searchInputAutoFocusToggle = () => {
+                    $scope.searchInputAutoFocusEnabled = !$scope.searchInputAutoFocusEnabled;
+                    paneFactory.searchInputAutoFocusEnabled = $scope.searchInputAutoFocusEnabled;
+                };
             }
         }
     })
@@ -597,6 +610,39 @@ angular.module('inputs', ['asyncFilter'])
         "<input type='text' class='form-control' ng-model='$ctrl.text'" +
         "ng-readonly='$ctrl.requestsQuantity'" +
         "placeholder=''/>",
+        controller: function() {}
+    })
+    .component( "datePicker", {
+        bindings: {
+            dateValue: '=',
+            changeValue: '&?',
+            readOnly: '<?'
+        },
+        template:
+            "<input date-input class='form-control' type='datetime-local'" +
+                "ng-readonly = '$ctrl.readOnly'" +
+                "ng-change = '$ctrl.changeValue()'" +
+                "ng-model='$ctrl.dateValue'/>",
+        controller: function() {}
+    })
+
+    .component( "dateIntervalPicker", {
+        bindings: {
+            fromDate: '=',
+            toDate: '=',
+            pickerEnabled: '<?'
+        },
+        template:
+        "<div style='display: flex;'>" +
+            "<span class='date-picker-interval-notice'>c</span>" +
+            "<div style='width: 50%;'>" +
+               "<date-picker date-value='$ctrl.fromDate' read-only='$ctrl.pickerEnabled'></date-picker>" +
+            "</div>" +
+            "<span class='date-picker-interval-notice'>по</span>" +
+            "<div style='width: 50%;'>" +
+               "<date-picker date-value='$ctrl.toDate' read-only='$ctrl.pickerEnabled'></date-picker>" +
+            "</div>" +
+        "</div>",
         controller: function() {}
     })
     .component( "itemAddEditControls", {
@@ -716,9 +762,12 @@ angular.module('inputs', ['asyncFilter'])
                         addItemUrl: 'addBuyer',
                         getItemByIdUrl: 'getBuyerById',
                         checkAndGetItem: (buyer) => {
-                            if(angular.isDefined(buyer) && typeof buyer === 'object' && buyer !=null && buyer.id > 0)
+                            if(angular.isDefined(buyer)
+                                && typeof buyer === 'object'
+                                && buyer !=null
+                                && buyer.id > 0)
                                 return buyer;
-                            return getNewBuyer;
+                            return getNewBuyer();
                         }
                 },
                 documentConfig :

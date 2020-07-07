@@ -42,10 +42,7 @@
                 <tr ng-show="addingVisible">
                     <td colspan="4">
                         <div style="display: flex; margin-bottom: 1%;">
-                            <input date-input class="form-control" type="date"
-                               style="width: 45%;"
-                               ng-model="newDoc.date"
-                               ng-change="checkDoc()"/>
+                            <date-picker date-value="newDoc.date" change-value="checkDoc()"></date-picker>
                           <input class="form-control" placeholder="Документ"
                                style="width: 55%;"
                                title="Документ" type="text"

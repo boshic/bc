@@ -20,6 +20,8 @@ public class ResponseBySoldItems extends ResponseItemExt<SoldItem> {
     @Override
     public void calcTotals(List<SoldItem> soldItemList) {
 
+        final String INCOME = "доход", RECEIPTS = "чеков", AVERAGE = "средний";
+
         BigDecimal quantity = BigDecimal.ZERO, sum = BigDecimal.ZERO, sumByComing = BigDecimal.ZERO,
             sumExcludedFromIncome = BigDecimal.ZERO;
         Set<Receipt> receipts = new HashSet<>();
@@ -50,20 +52,20 @@ public class ResponseBySoldItems extends ResponseItemExt<SoldItem> {
         }
 
         super.getTotals().add(new ResultRowByItemsCollection<BigDecimal, BigDecimal>
-                ("отпущено", quantity, "на сумму" , sum));
+                (SOLD, quantity, SUMM , sum));
         super.getTotals().add(new ResultRowByItemsCollection<BigDecimal, BigDecimal>
-                ("отпущено по учетной", quantity, "на сумму" , sumByComing));
+                (SOLD_BY_PRICE_IN, quantity, SUMM , sumByComing));
         super.getTotals().add(new ResultRowByItemsCollection<BigDecimal, BigDecimal>
-                ("выбыло", quantity,
-                        "доход" , sum.subtract(sumByComing.add(sumExcludedFromIncome))));
+                (SOLD, quantity,
+                        INCOME , sum.subtract(sumByComing.add(sumExcludedFromIncome))));
         if(receipts.size() > 0)
             super.getTotals().add(new ResultRowByItemsCollection<Integer, BigDecimal>
-                ("чеков", receipts.size(), "средний" ,
+                (RECEIPTS, receipts.size(), AVERAGE ,
                         receipts.stream().map(Receipt::getSum).reduce(BigDecimal.ZERO, BigDecimal::add)
                                 .divide(new BigDecimal(receipts.size()), 2)));
         else
             super.getTotals().add(new ResultRowByItemsCollection<Integer, BigDecimal>
-                    ("чеков", 0, "средний" , BigDecimal.ZERO));
+                    (RECEIPTS, 0, AVERAGE , BigDecimal.ZERO));
 
 
         super.setBuyers(buyers.stream().sorted(Comparator.comparing(Buyer::getName)).collect(Collectors.toList()));

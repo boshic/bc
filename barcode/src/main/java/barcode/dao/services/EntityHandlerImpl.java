@@ -95,7 +95,7 @@ public class EntityHandlerImpl implements EntityHandler{
     static final String DATE_CHANGED = "Изменена дата";
     static final String SALE_COMMENT = "Продажа";
     static final String MOVE_COMMENT  = "Перемещение";
-    static final String RETURN_COMMENT = "Возврат";
+    public static final String RETURN_COMMENT = "Возврат";
     static final String COMMON_UNIT = " ед. ";
     static final String NOTHING_FOUND = "ничего не найдено";
     static final SimpleDateFormat DATE_FORMAT_WITH_TIME = new SimpleDateFormat("dd.MM.yyyy HH:mm");

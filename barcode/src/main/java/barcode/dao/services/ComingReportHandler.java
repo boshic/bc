@@ -29,9 +29,13 @@ public class ComingReportHandler extends  EntityHandlerImpl {
 
     private ItemHandler itemHandler;
 
+    private AbstractEntityManager abstractEntityManager;
+
     public ComingReportHandler(ComingReportRepository comingReportRepository,
                                ComingItemRepository comingItemRepository,
-                               UserHandler userHandler, ItemHandler itemHandler) {
+                               UserHandler userHandler, ItemHandler itemHandler,
+                               AbstractEntityManager abstractEntityManager
+    ) {
 
         this.comingReportRepository = comingReportRepository;
 
@@ -40,6 +44,8 @@ public class ComingReportHandler extends  EntityHandlerImpl {
         this.userHandler = userHandler;
 
         this.itemHandler = itemHandler;
+
+        this.abstractEntityManager = abstractEntityManager;
     }
 
 
@@ -67,7 +73,7 @@ public class ComingReportHandler extends  EntityHandlerImpl {
 
         itemHandler.checkEanInFilter(filter);
 
-        Predicate predicate = ComingItemHandler.cipb.buildByFilter(filter);
+        Predicate predicate = ComingItemHandler.cipb.buildByFilter(filter, abstractEntityManager);
 
         List<ComingItem> comings = comingItemRepository.findAll(predicate);
 
