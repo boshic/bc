@@ -248,8 +248,7 @@ let docCtrlr = ($s, httpService, itemFactory) => {
             $s.newDoc = this.x;
         else {
             let date = new Date();
-            $s.newDoc = angular.extend($s.getEmptyItem(),
-                {date: new Date(date.getFullYear(), date.getMonth(), date.getDate(), date.getHours(), date.getMinutes())});
+            $s.newDoc = angular.extend($s.getEmptyItem(), {date: new Date()});
 
         }
         $s.checkDoc();

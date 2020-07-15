@@ -66,9 +66,12 @@
         </div>
     </div>
     <current-stock-indicator stock="filter.stock"></current-stock-indicator>
-    <table class="table table-bordered table-responsive">
+    <!--table table-responsive table-bordered-->
+    <!--fixed-head-table-->
+    <table ng-class = "{'fixed-head-table': filter.showInScrollMode,
+                        'table table-responsive table-bordered' : !filter.showInScrollMode}">
         <thead class="pane-thead" ng-show="rows.length">
-            <td style="width: 4%;">
+            <td style="width: 4vw;">
                 <sortable-column
                         field="filter.sortField"
                         listening-field="'id'"
@@ -76,7 +79,7 @@
                         column-name="Номер">
                 </sortable-column>
             </td>
-            <td style="width: 10%;" ng-show="!filter.groupByItems">
+            <td style="width: 8vw;" ng-show="!filter.groupByItems">
                 <sortable-column
                         field="filter.sortField"
                         listening-field="'date'"
@@ -85,7 +88,8 @@
                 </sortable-column>
                 <span>, продавец</span>
             </td>
-            <td>
+            <!--style="min-width: 49vw;" ng-class = "{'group-by-items-name': filter.groupByItems}"-->
+            <td style="min-width: 49vw;" ng-class = "{'group-by-items-name': filter.groupByItems}">
                 <sortable-column field="filter.sortField"
                                  listening-field="'coming.item.name'"
                                  sort-direction="filter.sortDirection"
@@ -108,36 +112,35 @@
                     </div>
                 </div>
             </td>
-            <td style="width: 6%;">
+            <td style="width: 7vw;">
                 <sortable-column field="filter.sortField"
                                  listening-field="'availQuantityByEan'"
                                  sort-direction="filter.sortDirection"
                                  column-name="Остаток">
                 </sortable-column>
             </td>
-            <td style="width: 6%;">
+            <td style="width: 6vw;">
                 <sortable-column field="filter.sortField"
                                  listening-field="'quantity'"
                                  sort-direction="filter.sortDirection"
                                  column-name="Продано">
                 </sortable-column>
             </td>
-            <td style="width: 6%;">
+            <td style="width: 8vw;">
                 <sortable-column field="filter.sortField"
                                  listening-field="'price'"
                                  sort-direction="filter.sortDirection"
                                  column-name="Цена">
                 </sortable-column>
             </td>
-            <!--<td style="width: 6%;" ng-show="!filter.groupByItems">Сумма</td>-->
-            <td style="width: 6%;" ng-show="!filter.groupByItems">
+            <td style="width: 5vw;" ng-show="!filter.groupByItems">
                 <sortable-column field="filter.sortField"
                                  listening-field="'sum'"
                                  sort-direction="filter.sortDirection"
                                  column-name="Сумма">
                 </sortable-column>
             </td>
-            <td style="width: 11%;" ng-show="!filter.groupByItems">
+            <td style="width: 11vw;" ng-show="!filter.groupByItems">
                 <sortable-column field="filter.sortField"
                                  listening-field="'buyer.name'"
                                  sort-direction="filter.sortDirection"
@@ -149,10 +152,10 @@
             <tr class="hoverable middle-rows"
                 ng-class='{deletedRow: (x.quantity == 0)}'
                 ng-repeat="x in rows track by $index">
-                <td class="price-data" title="Номер">
+                <td  style="width: 4vw;" class="price-data" title="Номер">
                     {{ ($index + 1) + (filter.page - 1)*filter.rowsOnPage }}
                 </td>
-                <td ng-show="!filter.groupByItems">
+                <td  style="width: 8vw;" ng-show="!filter.groupByItems">
                     <pane-date-change-control
                             user="user" row="x" change-item-date="changeItemDate"
                         requests-quantity="requestParams.requestsQuantity">
@@ -164,9 +167,12 @@
                     </span>
                     <span class="price-out-on-coming-pane" title="Продавец">{{ x.user.name }}</span>
                 </td>
-                <td ng-class
-                            = "{'receipt-bottom-underline': (x.receipt.id > 0 && x.receipt.id != rows[$index + 1].receipt.id),
-                                'sold-composite-item': x.soldCompositeItem.id > 0}">
+                <!--style="min-width: 49vw;"-->
+                <!--'group-by-items-name': filter.groupByItems,-->
+                <td style="min-width: 49vw;"
+                    ng-class = "{'receipt-bottom-underline': (x.receipt.id > 0 && x.receipt.id != rows[$index + 1].receipt.id),
+                                 'group-by-items-name': filter.groupByItems,
+                                 'sold-composite-item': x.soldCompositeItem.id > 0}">
                     <div class="sold-receipt-item-descr"
                          ng-show="x.receipt.id > 0 && x.receipt.id != rows[$index-1].receipt.id">
                         <span>{{"чек № - " + x.receipt.id}}</span>
@@ -184,7 +190,7 @@
                     </div>
                     <item-row-on-panes row="x.coming" filter="filter"></item-row-on-panes>
                 </td>
-                <td class="price-data"
+                <td style="width: 7vw;" class="price-data"
                     ng-class="{'available-by-ean': (x.availQuantityByEan <= 3) && (x.quantity > 0)}">
                     <span ng-if="x.availQuantityByEan!=null">
                         <span style="font-weight: bold;">
@@ -193,15 +199,13 @@
                         <span style="font-size: 16px;">{{' ' + x.coming.item.unit}}</span>
                     </span>
                 </td>
-                <!--ng-class= "{'receipt-bottom-underline': (x.availQuantityByEan > 0 && x.availQuantityByEan == rows[$index - 1].availQuantityByEan)}"                -->
-                <td class="price-data"
-                    style="font-size: 30px;">{{ x.quantity }}</td>
-                <td class="price-data" style="font-size: 30px; font-style: italic;" title="Цена">{{ x.price }}</td>
-                <td class="price-data" style="text-decoration: underline; font-style: italic;"
+                <td style="width: 6vw; font-size: 30px;" class="price-data">{{ x.quantity }}</td>
+                <td style="width: 8vw; font-size: 30px; font-style: italic;"  class="price-data"title="Цена">{{ x.price }}</td>
+                <td style="width: 5vw; text-decoration: underline; font-style: italic;" class="price-data"
                     title="Сумма" ng-show="!filter.groupByItems">
                     {{ x.sum }}
                 </td>
-                <td style="text-align: end; line-height: 1.1;"  ng-show="!filter.groupByItems">
+                <td style="width: 11vw; text-align: end; line-height: 1.1;"  ng-show="!filter.groupByItems">
                     <!--<div class="dropdown hoverable" style=" position: absolute;">-->
                         <div class="unprintable" style="text-align: left;"
                              ng-if="(user.role == 'ROLE_ADMIN' || user.actsAllowed.indexOf('return') > -1)">

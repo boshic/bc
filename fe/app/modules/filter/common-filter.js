@@ -79,6 +79,7 @@ import commonFilterTpl from './common-filter.html';
 
                     toDate = new Date();
                     // filter.allowAllStocks = true;
+                    filter.showInScrollMode = false;
                     filter.ean = "";
                     filter.sortDirection = 'DESC';
                     filter.hideNullQuantity = true;

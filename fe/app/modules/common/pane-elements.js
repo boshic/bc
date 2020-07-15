@@ -352,12 +352,12 @@ angular.module('pane-elements', [])
             requestsQuantity:'<'
         },
         template:
-        "<span style='position: absolute; cursor: pointer;'" +
+        "<span style='cursor: pointer;'" +
             "ng-if='(($ctrl.user.role == \"ROLE_ADMIN\" " +
                         "|| $ctrl.user.actsAllowed.indexOf(allowedActRequired) > -1) " +
                         "&& (($ctrl.row.quantity > 0) || (!$ctrl.row.deleted)))'" +
             "ng-show = '$ctrl.requestsQuantity === 0'>" +
-            "<div class='dropdown'>" +
+            "<div class='dropdown item-details-filter'>" +
                 "<span class='glyphicon glyphicon-pencil'></span>" +
                     "<ul class='dropdown-menu hoverable comments-container sip-date-changer'>" +
                         "<li>" +

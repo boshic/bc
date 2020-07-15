@@ -91,7 +91,12 @@
                 restrict: 'A',
                 require: 'ngModel',
                 link: (scope, element, attrs, ngModel) => {
-                    ngModel.$formatters.push(value => new Date(value));
+
+                    ngModel.$formatters.push(value => {
+                        let date = new Date(value);
+                        return new Date(date.getFullYear(), date.getMonth(), date.getDate(), date.getHours(), date.getMinutes());
+                    });
+                    // ngModel.$formatters.push(value => new Date(value));
                 }
             };
         })

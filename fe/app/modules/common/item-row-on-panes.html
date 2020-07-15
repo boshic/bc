@@ -1,5 +1,6 @@
 
-        <div class="dropdown" style="position: absolute;">
+        <span>
+        <div class="dropdown item-details-filter">
             <span class="glyphicon glyphicon-filter unprintable"></span>
             <ul class="dropdown-menu hoverable comments-container item-title">
                 <phrase-by-word-to-filter
@@ -25,6 +26,7 @@
 
             </ul>
         </div>
+        </span>
 
             <span class="item-name-on-coming-item-pane"
                   ng-click="$ctrl.editItem()($ctrl.row)">
@@ -45,15 +47,15 @@
               ng-click = '$ctrl.filter.section = $ctrl.row.item.section'>
                                     {{$ctrl.row.item.section.name}}
         </span>
-        <span style="position: absolute;">
-                        <div class="dropdown">
-                                <span class="glyphicon glyphicon-filter unprintable"></span>
-                                <ul class="dropdown-menu hoverable comments-container">
-                                    <phrase-by-word-to-filter
-                                            filter="$ctrl.filter.sectionPart"
-                                            comment="$ctrl.row.item.section.name">
-                                    </phrase-by-word-to-filter>
-                                </ul>
-                            </div>
+        <span>
+            <div class="dropdown item-details-filter">
+                <span class="glyphicon glyphicon-filter unprintable"></span>
+                    <ul class="dropdown-menu hoverable comments-container">
+                        <phrase-by-word-to-filter
+                                filter="$ctrl.filter.sectionPart"
+                                comment="$ctrl.row.item.section.name">
+                        </phrase-by-word-to-filter>
+                    </ul>
+            </div>
         </span>
         </div>

@@ -16,21 +16,20 @@
     </li>
     <!--ng-readonly="filter.calcTotal"-->
     <li class="filter-row" ng-if = "filter.fromDate != null && filter.toDate != null">
-        <!--<div class="doc-date-pickers">-->
-            <!--<span>c</span>-->
-            <!--<input date-input class="form-control" type="date"-->
-                   <!--ng-readonly = "filter.inventoryModeEnabled"-->
-                   <!--id="filter-input"-->
-                   <!--ng-model="filter.fromDate"/>-->
-            <!--<span>по</span>-->
-            <!--&lt;!&ndash;ng-readonly="filter.calcTotal"&ndash;&gt;-->
-            <!--<input date-input class="form-control" type="date"-->
-                   <!--ng-readonly = "filter.inventoryModeEnabled"-->
-                   <!--ng-model="filter.toDate"/>-->
-        <!--</div>-->
+
         <date-interval-picker from-date="filter.fromDate"
                               to-date="filter.toDate" picker-enabled="filter.inventoryModeEnabled">
         </date-interval-picker>
+    </li>
+
+
+    <!--showInScrollMode-->
+    <li class="filter-row"
+        ng-if = "filter.showInScrollMode != null">
+        <input class="filter-checkbox-input" type="checkbox" ng-model="filter.showInScrollMode"/>
+        <label style="margin-left: 5%" class="filter-checkbox-name">
+            Режим прокрутки: {{(filter.showInScrollMode) ? "Да" : "Нет"}}
+        </label>
     </li>
 
     <li class="filter-row"

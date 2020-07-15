@@ -67,6 +67,8 @@ let soldPaneConfig =
         },
 
         changeItemDate : ($s, config) => {
+            // let date = config.row.date;
+            // config.row.date = new Date(date.getFullYear(), date.getMonth(), date.getDate(), date.getHours(), date.getMinutes());
             config.httpService.addItem({data: config.row, url: 'changeSoldItemDate', requestParams: $s.requestParams})
                 .then(
                 () => {

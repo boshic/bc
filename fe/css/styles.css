@@ -625,8 +625,7 @@ div.selectedpane {
     font-weight: bold;
     background: var(--white-color);
     color: black;
-    font-size: 16px;
-}
+    font-size: 16px; }
 
 .form-control {
     font-size: var(--common-font-size);
@@ -1385,6 +1384,7 @@ td.price-data {
 }
 
 .middle-rows > td {
+    background: var(--gray-color);
     vertical-align: middle!important;
     padding: 4px!important;
 }
@@ -2010,3 +2010,48 @@ button.btn-checkbox-toggler-btn {
     font-weight: bold;
     margin: 2px;
 }
+
+.item-details-filter {
+    display: inherit;
+}
+
+/*https://ru.stackoverflow.com/questions/213756/%D0%A4%D0%B8%D0%BA%D1%81%D0%B8%D1%80%D0%BE%D0%B2%D0%B0%D0%BD%D0%BD%D1%8B%D0%B9-thead-%D1%81-%D0%BF%D1%80%D0%BE%D0%BA%D1%80%D1%83%D1%82%D0%BA%D0%BE%D0%B9-tbody*/
+
+.fixed-head-table {
+
+    table-layout: fixed;
+    border-collapse: collapse;
+    /*height: 50vh;*/
+}
+
+.fixed-head-table thead tr {
+    width: calc(95vw - 13px);
+    display: block;
+    position: relative;
+    padding-bottom: 5px;
+}
+
+.fixed-head-table tbody {
+    display: block;
+    overflow: auto;
+    width: 100%;
+    height: 55vh;
+    background: var(--white-color);
+    /*height: calc(100vh - 0px);*/
+}
+
+.fixed-head-table td {
+
+    border: 1px dotted var(--white-color);
+}
+
+td.group-by-items-name {
+    min-width: 70vw!important;
+}
+
+
+td.inventory-mode-item-name {
+    min-width: 63vw!important;
+}
+
+/*Фиксированный thead end*/
