@@ -370,7 +370,7 @@
                                         $s.modalConfig.refresh();
                                     },
                                     () => {
-                                        $s.modalConfig.warning = "ошибка при проведении продажи!";
+                                        $s.modalConfig.parentScope.warning = "ошибка при проведении продажи!";
                                     }
                                 );
                     }

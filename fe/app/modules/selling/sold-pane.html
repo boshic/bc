@@ -89,7 +89,7 @@
                 <span>, продавец</span>
             </td>
             <!--style="min-width: 49vw;" ng-class = "{'group-by-items-name': filter.groupByItems}"-->
-            <td style="min-width: 49vw;" ng-class = "{'group-by-items-name': filter.groupByItems}">
+            <td class="sold-pane-name" ng-class = "{'group-by-items-name': filter.groupByItems}">
                 <sortable-column field="filter.sortField"
                                  listening-field="'coming.item.name'"
                                  sort-direction="filter.sortDirection"
@@ -169,7 +169,7 @@
                 </td>
                 <!--style="min-width: 49vw;"-->
                 <!--'group-by-items-name': filter.groupByItems,-->
-                <td style="min-width: 49vw;"
+                <td  class="sold-pane-name"
                     ng-class = "{'receipt-bottom-underline': (x.receipt.id > 0 && x.receipt.id != rows[$index + 1].receipt.id),
                                  'group-by-items-name': filter.groupByItems,
                                  'sold-composite-item': x.soldCompositeItem.id > 0}">

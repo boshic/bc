@@ -2031,6 +2031,15 @@ button.btn-checkbox-toggler-btn {
     padding-bottom: 5px;
 }
 
+@media only screen and (hover: none) and (pointer: coarse) {
+
+    .fixed-head-table thead tr {
+        width: 96vw!important;
+    }
+    /* Regular CSS rules here*/
+
+}
+
 .fixed-head-table tbody {
     display: block;
     overflow: auto;
@@ -2040,17 +2049,30 @@ button.btn-checkbox-toggler-btn {
     /*height: calc(100vh - 0px);*/
 }
 
-.fixed-head-table td {
+.fixed-head-table thead td {
+    word-break: break-all;
+}
 
+.fixed-head-table td {
     border: 1px dotted var(--white-color);
 }
 
-td.group-by-items-name {
+
+.fixed-head-table td.coming-pane-name {
+    min-width: 49vw;
+}
+
+.fixed-head-table td.sold-pane-name {
+    min-width: 49vw;
+}
+
+
+.fixed-head-table td.group-by-items-name {
     min-width: 70vw!important;
 }
 
 
-td.inventory-mode-item-name {
+.fixed-head-table td.inventory-mode-item-name {
     min-width: 63vw!important;
 }
 

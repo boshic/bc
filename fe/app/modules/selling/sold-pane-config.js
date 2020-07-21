@@ -56,7 +56,10 @@ let soldPaneConfig =
                                     $s.warning = resp.text;
                                 $s.calcTotalsAndRefresh();
                             },
-                            () => {console.log('return failed');}
+                            () => {
+                              $s.warning = 'ошибка проведения операции!';
+                              console.log('return failed');
+                            }
                         );
                 else $s.calcTotalsAndRefresh();
             };
@@ -85,7 +88,8 @@ let soldPaneConfig =
                         resp => {
                             let data = angular.extend(resp.coming, {
                                 currentQuantity: resp.quantity, priceOut: resp.price, buyer: resp.buyer});
-                            angular.extend($s.sellingModalConfig, {url: 'changeSoldItem', id: resp.id,
+                            angular.extend($s.sellingModalConfig,
+                              {url: 'changeSoldItem', id: resp.id,
                                 refresh: $s.calcTotalsAndRefresh, hidden: false, data, parentScope: $s});
                         },
                         resp => {
