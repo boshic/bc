@@ -12,6 +12,8 @@ import barcode.dao.repositories.InvoiceRepository;
 import barcode.dao.utils.BasicFilter;
 import barcode.dao.utils.SoldItemFilter;
 import barcode.dto.*;
+import barcode.enums.CommentAction;
+import barcode.enums.SystemMessage;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -74,20 +76,20 @@ public class InvoiceHandler extends EntityHandlerImpl {
             newInvoice.setComment(
                     this.buildComment(newInvoice.getComments(), invoice.getComment(),
                             userHandler.checkUser(invoice.getUser(), null).getFullName(),
-                            NEW_REPORT_ADDED, BigDecimal.ZERO)
+                        CommentAction.NEW_REPORT_ADDED.getAction(), BigDecimal.ZERO)
             );
         }
         else
             newInvoice.setComment(
                     this.buildComment(newInvoice.getComments(), invoice.getComment(),
                             userHandler.checkUser(invoice.getUser(), null ).getFullName(),
-                            SMTH_CHANGED, BigDecimal.ZERO)
+                        CommentAction.SMTH_CHANGED.getAction(), BigDecimal.ZERO)
             );
 
 
         invoiceRepository.save(newInvoice);
 
-        return new ResponseItem<Invoice>(NEW_REPORT_ADDED, true, newInvoice);
+        return new ResponseItem<Invoice>(SystemMessage.NEW_REPORT_ADDED.getMessage(), true, newInvoice);
     }
 
     public ResponseItem<Invoice> addInvoice(Invoice invoice) {
@@ -101,7 +103,8 @@ public class InvoiceHandler extends EntityHandlerImpl {
 
         Invoice invoice = invoiceRepository.findOne(id);
 
-        invoice.setComment(this.getCommentByAction(invoice.getComments(), WRITE_OFF_ACT_ADDED));
+        invoice.setComment(this.getCommentByAction(invoice.getComments(),
+            CommentAction.WRITE_OFF_ACT_ADDED.getAction()));
 
         return invoice;
     }
@@ -240,7 +243,7 @@ public class InvoiceHandler extends EntityHandlerImpl {
 
             this.buildComment(invoice.getComments(), comment,
                     userHandler.checkUser(invoice.getUser(), null ).getFullName(),
-                    WRITE_OFF_ACT_ADDED, BigDecimal.ZERO);
+                CommentAction.WRITE_OFF_ACT_ADDED.getAction(), BigDecimal.ZERO);
 
             for(SoldItem soldItem: sellings)
                 if(soldItem.getQuantity().compareTo(BigDecimal.ZERO) > 0)

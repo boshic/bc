@@ -108,6 +108,10 @@ tr.hoverable:hover {
     background: rgba(0, 0, 255, 0.11);
 }
 
+li.hoverable:hover {
+    background: rgba(0, 0, 255, 0.11);
+}
+
 td.hoverable:hover, span.hoverable:hover   {
     background: var(--main-color);
     color: var(--white-color);
@@ -1128,8 +1132,20 @@ button.user-select {
     position: absolute;
     overflow-y: auto;
     max-height: 200px;
-    margin-left: 15%;
     min-width: 50px;
+}
+
+.page-picker-list-page-value {
+    list-style: none;
+    font-size: 24px;
+    text-align: center;
+    border-bottom: 1px dotted var(--gray-color);
+}
+
+.page-picker-list-page-value:hover {
+    background: var(--main-color);
+    color: var(--white-color);
+    cursor: pointer;
 }
 
 .page-control {
@@ -2015,12 +2031,18 @@ button.btn-checkbox-toggler-btn {
     display: inherit;
 }
 
+td.buyer-name {
+    text-align: end;
+    line-height: 1.1;
+}
+
 /*https://ru.stackoverflow.com/questions/213756/%D0%A4%D0%B8%D0%BA%D1%81%D0%B8%D1%80%D0%BE%D0%B2%D0%B0%D0%BD%D0%BD%D1%8B%D0%B9-thead-%D1%81-%D0%BF%D1%80%D0%BE%D0%BA%D1%80%D1%83%D1%82%D0%BA%D0%BE%D0%B9-tbody*/
 
 .fixed-head-table {
 
     table-layout: fixed;
     border-collapse: collapse;
+    /*overflow-wrap: anywhere;*/
     /*height: 50vh;*/
 }
 
@@ -2074,6 +2096,10 @@ button.btn-checkbox-toggler-btn {
 
 .fixed-head-table td.inventory-mode-item-name {
     min-width: 63vw!important;
+}
+
+.fixed-head-table td.buyer-name {
+    word-break: break-all;
 }
 
 /*Фиксированный thead end*/

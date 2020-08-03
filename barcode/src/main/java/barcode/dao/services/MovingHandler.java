@@ -5,6 +5,7 @@ import barcode.dao.entities.SoldItem;
 import barcode.dao.entities.Stock;
 import barcode.dao.entities.User;
 import barcode.dto.ResponseItem;
+import barcode.enums.CommentAction;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -81,7 +82,7 @@ public ResponseItem makeMovings(Set<SoldItem> movings, Long stockId) {
                                                 getQuantityForComment(moving.getQuantity())
                                                 + (moving.getComment() == null ? "": moving.getComment()),
                                         getCheckedUserName(moving.getUser()),
-                                        MOVE_COMMENT, newComing.getCurrentQuantity()));
+                                    CommentAction.MOVE_COMMENT.getAction(), newComing.getCurrentQuantity()));
 
                         newComing.setUser(moving.getUser());
 
@@ -143,7 +144,7 @@ public ResponseItem makeMovings(Set<SoldItem> movings, Long stockId) {
                                                     getQuantityForComment(moving.getQuantity())
                                                     + (moving.getComment() == null ? "": moving.getComment()),
                                             getCheckedUserName(moving.getUser()),
-                                            MOVE_COMMENT, coming.getCurrentQuantity()));
+                                        CommentAction.MOVE_COMMENT.getAction(), coming.getCurrentQuantity()));
 
                             coming.setStock(this.stockHandler.getStockById(stockId));
 
@@ -168,7 +169,7 @@ public ResponseItem makeMovings(Set<SoldItem> movings, Long stockId) {
                                                     + getQuantityForComment(moving.getQuantity())
                                                     + (moving.getComment() == null ? "": moving.getComment()),
                                             getCheckedUserName(moving.getUser()),
-                                            MOVE_COMMENT, coming.getCurrentQuantity()));
+                                        CommentAction.MOVE_COMMENT.getAction(), coming.getCurrentQuantity()));
 
                             comingItemHandler.saveComingItem(newComing);
                         }
@@ -284,7 +285,7 @@ public ResponseItem addOneMoving(SoldItem moving, Long stockId) {
                                     + getQuantityForComment(moving.getQuantity())
                                     + (moving.getComment() == null ? "": moving.getComment()),
                             getCheckedUserName(moving.getUser()),
-                            MOVE_COMMENT, coming.getCurrentQuantity()));
+                        CommentAction.MOVE_COMMENT.getAction(), coming.getCurrentQuantity()));
 
             coming.setStock(this.stockHandler.getStockById(stockId));
 
@@ -315,7 +316,7 @@ public ResponseItem addOneMoving(SoldItem moving, Long stockId) {
                                     + getQuantityForComment(moving.getQuantity())
                                     + (moving.getComment() == null ? "": moving.getComment()),
                             getCheckedUserName(moving.getUser()),
-                            MOVE_COMMENT, coming.getCurrentQuantity()));
+                        CommentAction.MOVE_COMMENT.getAction(), coming.getCurrentQuantity()));
 
             newComing.setComment(
                     this.buildComment(newComing.getComments(),
@@ -324,7 +325,7 @@ public ResponseItem addOneMoving(SoldItem moving, Long stockId) {
                                     getQuantityForComment(moving.getQuantity())
                                     + (moving.getComment() == null ? "": moving.getComment()),
                             getCheckedUserName(moving.getUser()),
-                            MOVE_COMMENT, newComing.getCurrentQuantity()));
+                        CommentAction.MOVE_COMMENT.getAction(), newComing.getCurrentQuantity()));
 
             newComing.setStock(this.stockHandler.getStockById(stockId));
 

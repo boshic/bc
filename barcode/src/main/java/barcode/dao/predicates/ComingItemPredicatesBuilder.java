@@ -5,6 +5,7 @@ import barcode.dao.entities.*;
 import barcode.dao.entities.embeddable.QComment;
 import barcode.dao.services.AbstractEntityManager;
 import barcode.dao.services.EntityHandlerImpl;
+import barcode.enums.CommentAction;
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.Predicate;
 import com.querydsl.core.types.dsl.BooleanExpression;
@@ -36,7 +37,7 @@ public class ComingItemPredicatesBuilder {
 //                abstractEntityManager.getEntityManager())
 //                    .select(comingItem)
 //                    .from(comingItem).innerJoin(comingItem.comments, qComment)
-//                        .where(qComment.action.eq(EntityHandlerImpl.RETURN_COMMENT)
+//                        .where(qComment.action.eq(CommentAction.MOVE_COMMENT.getAction())
 //                                .and(qComment.date.between(filter.getFromDate(), filter.getToDate()))
 //                        )
 //            .fetch();
@@ -47,11 +48,6 @@ public class ComingItemPredicatesBuilder {
 
         if(filter.getInventoryModeEnabled() != null && !filter.getInventoryModeEnabled())
             predicate  = predicate.andAnyOf(predicates.stream().toArray(Predicate[]::new));
-//            predicate = predicate.andAnyOf(
-//                    doc.date.between(filter.getFromDate(), filter.getToDate()),
-//                    comingItem.in(comings)
-//                    );
-//            predicate = predicate.and(doc.date.between(filter.getFromDate(), filter.getToDate()));
 
         if (filter.getStock() != null && !filter.getStock().isAllowAll())
             predicate = predicate.and(comingItem.stock.id.eq(filter.getStock().getId()));

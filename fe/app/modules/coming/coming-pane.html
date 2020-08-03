@@ -69,7 +69,7 @@
                 auto-open-quantity-changer-modal="autoOpenQuantityChangerModalInInventoryMode"
                 is-enabled-set-inventory-values = "!totals.length && rows.length"
                 is-enabled-apply-inventory-results
-                        = "totals.length && rows.length && totals[0].quantValue != 0 && inventoryBuyer.id > 0">
+                        = "totals.length && rows.length && totals[0].quantValue != 0 && inventoryBuyer.id > 0 && user.role == 'ROLE_ADMIN'">
         </inventory-panel>
     </div>
 

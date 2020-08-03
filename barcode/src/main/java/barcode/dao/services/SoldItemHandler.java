@@ -1,6 +1,7 @@
 package barcode.dao.services;
 
 import barcode.dao.utils.ComingItemFilter;
+import barcode.enums.CommentAction;
 import com.querydsl.core.types.Predicate;
 import barcode.dao.entities.*;
 import barcode.dao.entities.embeddable.Comment;
@@ -300,7 +301,7 @@ public class SoldItemHandler extends EntityHandlerImpl {
                                                     (reqForSell.compareTo(availQuant) > 0) ? availQuant : reqForSell)
                                                     + soldItem.getComment(),
                                             userHandler.checkUser(soldItem.getUser(), null ).getFullName(),
-                                            SALE_COMMENT, newSoldItem.getQuantity())
+                                            CommentAction.SALE_COMMENT.getAction(), newSoldItem.getQuantity())
                             );
 
                         newSoldItem.setAvailQuantityByEan(
@@ -329,7 +330,7 @@ public class SoldItemHandler extends EntityHandlerImpl {
                                         soldItem.getComment() + " для " + soldItem.getBuyer().getName()
                                                 + getQuantityForComment((reqForSell.compareTo(availQuant) > 0) ? availQuant : reqForSell),
                                         userHandler.checkUser(soldItem.getUser(), null ).getFullName(),
-                                        SALE_COMMENT, coming.getCurrentQuantity())
+                                    CommentAction.SALE_COMMENT.getAction(), coming.getCurrentQuantity())
                         );
 
                         if (reqForSell.compareTo(availQuant) > 0) {
@@ -502,7 +503,7 @@ public class SoldItemHandler extends EntityHandlerImpl {
                         " от " + newSoldItem.getBuyer().getName() +
                                 getQuantityForComment(soldItem.getQuantity())  + soldItem.getComment(),
                         userHandler.checkUser(soldItem.getUser(), null ).getFullName(),
-                        RETURN_COMMENT, comingItem.getCurrentQuantity()));
+                    CommentAction.RETURN_COMMENT.getAction(), comingItem.getCurrentQuantity()));
 
         newSoldItem.setQuantity(newSoldItem.getQuantity().subtract(soldItem.getQuantity()));
 
@@ -515,7 +516,7 @@ public class SoldItemHandler extends EntityHandlerImpl {
                 this.buildComment(newSoldItem.getComments(),
                         getQuantityForComment(soldItem.getQuantity()) + soldItem.getComment(),
                         userHandler.checkUser(soldItem.getUser(), null ).getFullName(),
-                        RETURN_COMMENT, newSoldItem.getQuantity()));
+                    CommentAction.RETURN_COMMENT.getAction(), newSoldItem.getQuantity()));
 
         soldItemsRepository.save(newSoldItem);
 
@@ -555,7 +556,7 @@ public ResponseItem addOneSelling(SoldItem soldItem) {
                         soldItem.getComment() + " для " + soldItem.getBuyer().getName()
                                 + getQuantityForComment(soldItem.getQuantity()),
                         userHandler.checkUser(soldItem.getUser(), null ).getFullName(),
-                        SALE_COMMENT, comingItem.getCurrentQuantity())
+                    CommentAction.SALE_COMMENT.getAction(), comingItem.getCurrentQuantity())
         );
 
         soldItem.setDate(new Date());
@@ -565,7 +566,7 @@ public ResponseItem addOneSelling(SoldItem soldItem) {
                 this.buildComment(soldItem.getComments(), getQuantityForComment(soldItem.getQuantity())
                                 + soldItem.getComment(),
                         userHandler.checkUser(soldItem.getUser(), null ).getFullName(),
-                        SALE_COMMENT, soldItem.getQuantity())
+                    CommentAction.SALE_COMMENT.getAction(), soldItem.getQuantity())
         );
 
         soldItem.setPrice(getPriceOfSoldItem(soldItem, comingItem.getPriceIn()));
@@ -640,7 +641,7 @@ public ResponseItem addOneSelling(SoldItem soldItem) {
                         coming.getPriceOut(),
                         coming.getStock().getOrganization().getVatValue(),
                         coming.getQuantity().subtract(coming.getCurrentQuantity()),
-                        INVENTORY_SHORTAGE_DETECTED,
+                    CommentAction.INVENTORY_SHORTAGE_DETECTED.getAction(),
                         buyer,
                         userHandler.getCurrentUser()
                 ));
@@ -656,8 +657,8 @@ public ResponseItem addOneSelling(SoldItem soldItem) {
                                 add(new Comment(
                                     "",
                                         userHandler.getCurrentUser().getFullName(),
-                                        INVENTORY_SURPLUS_DETECTED,
-                                        generateCommentSearchString(INVENTORY_SURPLUS_DETECTED, "", userHandler.getCurrentUser().getFullName(), new Date()),
+                                    CommentAction.INVENTORY_SURPLUS_DETECTED.getAction(),
+                                        generateCommentSearchString(CommentAction.INVENTORY_SURPLUS_DETECTED.getAction(), "", userHandler.getCurrentUser().getFullName(), new Date()),
                                     new Date(),
                                     coming.getCurrentQuantity().subtract(coming.getQuantity())
                                 )

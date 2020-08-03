@@ -10,14 +10,8 @@
                         <span class="caret"></span>
             </button>
             <ul class="dropdown-menu page-picker-list-of-pages" ng-show="pagePickerVisible">
-                <li style="list-style: none;">
-                    <table class="table">
-                        <tbody>
-                        <tr class="hoverable" ng-repeat="x in pages">
-                            <td class="hoverable" ng-click="selectPage()">{{x}}</td>
-                        </tr>
-                        </tbody>
-                    </table>
+                <li class="page-picker-list-page-value" ng-repeat="x in pages" ng-click="selectPage()">
+                    {{x}}
                 </li>
             </ul>
         </div>

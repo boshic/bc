@@ -2,6 +2,8 @@ package barcode.dao.services;
 
 import barcode.dao.entities.embeddable.InventoryRow;
 import barcode.dao.repositories.SoldItemsRepository;
+import barcode.enums.CommentAction;
+import barcode.enums.SystemMessage;
 import com.querydsl.core.types.Predicate;
 import barcode.dao.entities.*;
 import barcode.dao.entities.embeddable.Comment;
@@ -97,13 +99,14 @@ public class ComingItemHandler extends EntityHandlerImpl {
 
         User checkedUser = userHandler.checkUser(srcComing.getUser(), AUTO_COMING_MAKER);
 
-        responseItem.setText(CHANGING_OF_COMING + srcComing.getItem().getName() + NUMBER + srcComing.getId());
+        responseItem.setText(SystemMessage.CHANGING_OF_COMING.getMessage() + srcComing.getItem().getName() + NUMBER + srcComing.getId());
 
         if (coming.getId() == null) {
 
             coming.setComments(srcComing.getComments() == null? new ArrayList<Comment>() : srcComing.getComments());
 
-            responseItem.setText(MAKING_OF_COMING + srcComing.getItem().getName() + NUMBER + srcComing.getId());
+            responseItem.setText(
+                SystemMessage.MAKING_OF_COMING.getMessage() + srcComing.getItem().getName() + NUMBER + srcComing.getId());
 
             coming.setDate(new Date());
 
@@ -111,7 +114,7 @@ public class ComingItemHandler extends EntityHandlerImpl {
                     this.buildComment(coming.getComments(),
                             srcComing.getStock().getName() + getQuantityForComment(srcComing.getQuantity()),
                             checkedUser.getFullName(),
-                            MAKING_OF_COMING, coming.getCurrentQuantity()));
+                            CommentAction.MAKING_OF_COMING.getAction(), coming.getCurrentQuantity()));
         } else {
 
             if(coming.getSellings() != null && coming.getSellings().size() > 0)
@@ -120,7 +123,7 @@ public class ComingItemHandler extends EntityHandlerImpl {
             coming.setComment(
                     this.buildComment(coming.getComments(), "",
                             checkedUser.getFullName(),
-                            CHANGING_OF_COMING, coming.getCurrentQuantity()));
+                        CommentAction.CHANGING_OF_COMING.getAction(), coming.getCurrentQuantity()));
         }
 
         if(coming.getItem().getComponents() != null && coming.getItem().getComponents().size() > 0)
@@ -190,7 +193,9 @@ public class ComingItemHandler extends EntityHandlerImpl {
             comingItem.setComment(
                     this.buildComment(comingItem.getComments(),
                             getQuantityForComment(comingItem.getCurrentQuantity()),
-                            checkedUser.getFullName(), SMTH_DELETED, comingItem.getCurrentQuantity()));
+                            checkedUser.getFullName(),
+                            CommentAction.SMTH_DELETED.getAction(),
+                            comingItem.getCurrentQuantity()));
 
             comingItem.setQuantity(BigDecimal.ZERO);
 
@@ -200,7 +205,7 @@ public class ComingItemHandler extends EntityHandlerImpl {
 
 //            comingItemRepository.delete(comingItem);
 
-            return new ResponseItem<ComingItem>(SMTH_DELETED, true, comingItem);
+            return new ResponseItem<ComingItem>(SystemMessage.SMTH_DELETED.getMessage(), true, comingItem);
 
         } else
             return new ResponseItem<ComingItem>(DELETING_FAILED, true, comingItem);

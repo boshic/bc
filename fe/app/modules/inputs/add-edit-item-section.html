@@ -3,6 +3,7 @@
     <div class="wrapper">
         <item-add-edit-controls
                 append-data='appendData()' close-modal='closeModal()' item-id='item.id'
+                is-close-hidden="requestParams.requestsQuantity > 0"
                 is-ok-active='item.name.length>0'>
         </item-add-edit-controls>
         <div>

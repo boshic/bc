@@ -1,5 +1,6 @@
 package barcode.dao.services;
 
+import barcode.enums.SystemMessage;
 import com.querydsl.core.types.Predicate;
 import barcode.dao.entities.ComingItem;
 import barcode.dao.entities.ComingReport;
@@ -61,7 +62,7 @@ public class ComingReportHandler extends  EntityHandlerImpl {
 
         comingReportRepository.save(newComingReport);
 
-        return new ResponseItem<ComingReport>(NEW_REPORT_ADDED, true, newComingReport);
+        return new ResponseItem<ComingReport>(SystemMessage.NEW_REPORT_ADDED.getMessage(), true, newComingReport);
     }
 
     public ResponseItem<ComingReport> addItem(ComingReport comingReport) {

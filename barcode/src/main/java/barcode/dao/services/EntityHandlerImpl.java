@@ -10,6 +10,8 @@ import barcode.dao.entities.embeddable.Comment;
 import barcode.dao.utils.BasicFilter;
 import barcode.dao.utils.SortingStrategy;
 import barcode.dto.ResponseItem;
+import barcode.enums.CommentAction;
+import barcode.enums.SystemMessage;
 import com.querydsl.core.types.Predicate;
 import org.springframework.data.querydsl.QueryDslPredicateExecutor;
 import org.springframework.data.repository.CrudRepository;
@@ -23,7 +25,7 @@ import java.util.stream.Stream;
 /**
  * Created by xlinux on 30.07.18.
  */
-public class EntityHandlerImpl implements EntityHandler{
+public class EntityHandlerImpl implements EntityHandler {
 
     private static final Integer MAX_COMMENT_LENGTH = 2000;
     static final Integer EAN_LENGTH = 13;
@@ -31,10 +33,10 @@ public class EntityHandlerImpl implements EntityHandler{
     private static final String COMMENT_TOO_LONG = "";
     private static final String FAILED = "Неудачно! ";
     private static final String SUCCESSFULLY = " успешно! ";
+
     static final String SMTH_FOUND = " найден(а)";
     static final String SMTH_CREATED = " создан(а)";
-    static final String SMTH_CHANGED = "добавлен(а)/изменен(а)";
-    static final String SMTH_DELETED = "удален(а) ";
+
     static final String NUMBER = "номер ";
 
     static final String ROLE_ADMIN = "ROLE_ADMIN";
@@ -44,8 +46,7 @@ public class EntityHandlerImpl implements EntityHandler{
     static final String ENTITY_BANK_CODE = "БИК";
 
     static final String INVENTORY_DOC_NAME = "Инвентаризация";
-    static final String INVENTORY_SURPLUS_DETECTED = "Излишки при инвентаризации";
-    static final String INVENTORY_SHORTAGE_DETECTED = "Недостача при инвентаризации";
+
     static final String INVENTORY_DONE = "результаты инвентаризации применены!";
     static final String BUYER_FOR_INVENTORY_NOT_FOUND = FAILED +
             "Не задан покупатель для списания недостачи!";
@@ -66,14 +67,9 @@ public class EntityHandlerImpl implements EntityHandler{
     static final String DELETING_FAILED = FAILED + "Удаление не удалось!";
     static final String CHANGING_DENIED = FAILED + "Нет прав для изменения/ввода данных!";
 
-
-//    "Товар найден в остатках в количестве - "
-
-    static final String NEW_REPORT_ADDED = "Добавлен отчет";
     static final String NEW_REPORT_ADDING_FAILED = FAILED + "Не удалось добавить отчет!";
 
     static final String WRITE_OFF_CAUSE = "причина списания";
-    static final String WRITE_OFF_ACT_ADDED = "акт на списание";
 
     static final String AUTO_COMING_MAKER = "Автоприход";
     static final String AUTO_MOVING_MAKER = "Автоперемещение";
@@ -85,17 +81,12 @@ public class EntityHandlerImpl implements EntityHandler{
             "Нельзя изменить приход, который уже продавался! ";
     static final String INSUFFICIENT_QUANTITY_OF_GOODS = FAILED + "Не хватает количества товара! ";
 
-    static final String MAKING_OF_COMING= "Оприходование ";
-    static final String CHANGING_OF_COMING= "Изменение прихода ";
     static final String ELEMENTS_FOUND = "найдены элементы";
 
     static final String SALE_COMPLETED_SUCCESSFULLY = "Продажа завершена" + SUCCESSFULLY;
     static final String RETURN_COMPLETED_SUCCESSFULLY = "Возврат завершен" + SUCCESSFULLY;
     static final String MOVE_COMPLETED_SUCCESSFULLY = "Перемещение завершено" + SUCCESSFULLY;
-    static final String DATE_CHANGED = "Изменена дата";
-    static final String SALE_COMMENT = "Продажа";
-    static final String MOVE_COMMENT  = "Перемещение";
-    public static final String RETURN_COMMENT = "Возврат";
+
     static final String COMMON_UNIT = " ед. ";
     static final String NOTHING_FOUND = "ничего не найдено";
     static final SimpleDateFormat DATE_FORMAT_WITH_TIME = new SimpleDateFormat("dd.MM.yyyy HH:mm");
@@ -127,8 +118,6 @@ public class EntityHandlerImpl implements EntityHandler{
         comments.sort(Comparator.comparing(Comment::getDate));
         for (Comment c: comments)
             comment += generateCommentSearchString(c.getAction(), c.getText(), c.getUserName(), c.getDate());
-//            comment += c.getAction() + SPACE + c.getText() + SPACE + c.getUserName() +
-//                    SPACE + DATE_FORMAT_WITH_TIME.format(c.getDate())+SEPARATOR;
 
         return comment.length() > MAX_COMMENT_LENGTH ? COMMENT_TOO_LONG : comment;
     }
@@ -189,7 +178,10 @@ public class EntityHandlerImpl implements EntityHandler{
 
         T item = repository.findOne(id);
 
-        item.setComment(this.buildComment(item.getComments(), "", username, DATE_CHANGED, BigDecimal.ZERO));
+        item.setComment(this.buildComment(item.getComments(),
+            "",
+            username,
+            CommentAction.DATE_CHANGED.getAction(), BigDecimal.ZERO));
 
         item.setDate(newDate);
 
