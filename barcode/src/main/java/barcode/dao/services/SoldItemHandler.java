@@ -1,5 +1,6 @@
 package barcode.dao.services;
 
+import barcode.dao.entities.embeddable.ItemComponent;
 import barcode.dao.utils.ComingItemFilter;
 import barcode.enums.CommentAction;
 import com.querydsl.core.types.Predicate;
@@ -163,7 +164,7 @@ public class SoldItemHandler extends EntityHandlerImpl {
     }
 
     private BigDecimal getPriceOfSoldItem(SoldItem soldItem, BigDecimal priceIn) {
-        return soldItem.getBuyer().getSellByComingPrices() || soldItem.getSoldCompositeItem() != null ? priceIn : soldItem.getPrice();
+        return soldItem.getBuyer().getSellByComingPrices() ? priceIn : soldItem.getPrice();
     }
 
 
@@ -201,17 +202,13 @@ public class SoldItemHandler extends EntityHandlerImpl {
                         soldItem.getBuyer().getSellByComingPrices() ? BigDecimal.ZERO : soldItem.getPrice(),
                         soldItem.getQuantity()
                 );
-//                soldCompositeItemHandler.save(soldCompositeItem);
 
-//                BigDecimal sum  = soldCompositeItem.getPrice()
-//                        .divide(new BigDecimal(soldItem.getComing().getItem().getComponents().size()), 5, RoundingMode.DOWN);
-
-                soldItem.getComing().getItem().getComponents()
-                        .forEach(component -> {
+               List<ItemComponent> components = soldItem.getComing().getItem().getComponents();
+               components.sort(Comparator.comparing(ItemComponent::getQuantity).reversed());
+               components.forEach(component -> {
                             SoldItem cmpntSoldItem = new SoldItem(
                                     new ComingItem(component.getItem(),soldItem.getComing().getStock()),
-//                                    sum.divide(component.getQuantity(), 5, RoundingMode.UP),
-                                    BigDecimal.ZERO,
+                                    getComponentPrice(component, soldItem.getPrice(), components),
                                     soldItem.getComing().getStock().getOrganization().getVatValue(),
                                     soldItem.getQuantity().multiply(component.getQuantity()),
                                     "",
@@ -227,6 +224,33 @@ public class SoldItemHandler extends EntityHandlerImpl {
                 resultSoldItems.add(soldItem);
         });
         return new ResponseItem<SoldItem>("", resultSoldItems, true);
+    }
+
+    private BigDecimal getComponentPrice (ItemComponent component, BigDecimal price, List<ItemComponent> components) {
+
+        BigDecimal componentsQuantity = components.stream()
+            .map(ItemComponent::getQuantity)
+            .reduce(BigDecimal.ZERO, BigDecimal::add);
+
+        int componentNumber = 0;
+
+        for(ItemComponent c : components) {
+            componentNumber += 1;
+           if (c.getItem().getId().equals(component.getItem().getId()))
+               break;
+        };
+
+        BigDecimal componentPrice = price.divide(componentsQuantity, 2, RoundingMode.CEILING);
+
+        if(componentPrice.multiply(componentsQuantity).compareTo(price) != 0
+            && componentNumber == components.size())
+            return price
+                .subtract(componentPrice
+                    .multiply(componentsQuantity
+                        .subtract(component.getQuantity())))
+                .divide(component.getQuantity(), 2, RoundingMode.DOWN);
+
+        return componentPrice;
     }
 
     private void setSumForComposites(SoldItem soldItem) {
@@ -352,7 +376,9 @@ public class SoldItemHandler extends EntityHandlerImpl {
                             reqForSell = BigDecimal.ZERO;
                         }
 
-                        coming.setSum(coming.getPriceIn().multiply(coming.getCurrentQuantity())
+                        coming.setSum(
+                            coming.getPriceIn()
+                                .multiply(coming.getCurrentQuantity())
                                 .setScale(2, BigDecimal.ROUND_HALF_UP));
 
                         coming.setLastChangeDate(newSoldItem.getDate());
@@ -362,9 +388,7 @@ public class SoldItemHandler extends EntityHandlerImpl {
                         soldCompositeItemHandler.save(soldItem.getSoldCompositeItem());
                         newSoldItem.setSoldCompositeItem(soldItem.getSoldCompositeItem());
 
-                        newSoldItem.setPrice(
-                                getPriceOfSoldItem(soldItem, coming.getPriceIn())
-                        );
+                        newSoldItem.setPrice(getPriceOfSoldItem(soldItem, coming.getPriceIn()));
 
                         newSoldItem.setSum(
                                 newSoldItem.getPrice()
