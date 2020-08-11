@@ -96,6 +96,7 @@
                     },
                     getRowsForReports: ($s, priceField) => {
                         let rows = [];
+                        let stock = angular.isDefined($s.stock) ? $s.stock : $s.filter.stock;
                         $s.rows.forEach((row) => {
                             rows.push({
                                 item: row.item,
@@ -104,7 +105,7 @@
                                 sum: (row[priceField] * row.quantity).toFixed(2),
                                 doc: $s.doc,
                                 price: row[priceField],
-                                vat: $s.stock.organization.vatValue
+                                vat: stock.organization.vatValue
                             });
                         });
                         return rows;

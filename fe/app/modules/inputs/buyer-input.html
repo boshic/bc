@@ -1,24 +1,43 @@
-<div class="dropdown">
+<!--<div class="dropdown">-->
 
-    <item-input-name input-id='inputId' item="item" input-name="Покупатель"
-                     requests-quantity="requestParams.requestsQuantity" items="items"
-                     get-items="getItems()">
-    </item-input-name>
-    <div class="buyer-debt" style="top: 0px; right: 0px;">
-        <span ng-show="item.debt">Долг:<span>{{item.debt}}</span></span>
-    </div>
-    <div class="buyer-debt" style="top: 40px;">
+<!--    <item-input-name input-id='inputId' item="item" input-name="Покупатель"-->
+<!--                     requests-quantity="requestParams.requestsQuantity" items="items"-->
+<!--                     get-items="getItems()">-->
+<!--    </item-input-name>-->
+<!--    <div class="buyer-debt" style="top: 0px; right: 0px;">-->
+<!--        <span ng-show="item.debt">Долг:<span>{{item.debt}}</span></span>-->
+<!--    </div>-->
+<!--    <div class="buyer-debt" style="top: 40px;">-->
+<!--        <span ng-show="item.sellByComingPrices">-->
+<!--            этому покупателю списывается по учетным ценам!-->
+<!--        </span>-->
+<!--    </div>-->
+<!--    <ul class="dropdown-menu hoverable item-input-dropdown">-->
+<!--        <item-input-items ng-hide="requestParams.requestsQuantity > 0"-->
+<!--                items="items" clear-item="clearItem()"-->
+<!--                select-item="selectItem" change-item="changeItem">-->
+<!--        </item-input-items>-->
+<!--    </ul>-->
+<!--</div>-->
+
+<item-input-items-block
+        input-id="inputId" item = "item" items = "items"
+        requests-quantity ="requestParams.requestsQuantity"
+        get-items= "getItems()"
+        clear-item= "clearItem()"
+        select-item= "selectItem"
+        change-item= "changeItem"
+        input-name="Покупатель">
+</item-input-items-block>
+<div class="input-notification" style="right: 0;">
+    <span ng-show="item.debt">Долг:<span>{{item.debt}}</span></span>
+</div>
+<div class="input-notification">
         <span ng-show="item.sellByComingPrices">
             этому покупателю списывается по учетным ценам!
         </span>
-    </div>
-    <ul class="dropdown-menu hoverable item-input-dropdown">
-        <item-input-items
-                items="items" clear-item="clearItem()"
-                select-item="selectItem" change-item="changeItem">
-        </item-input-items>
-    </ul>
 </div>
+
 <add-edit-buyer
         buyer="item" modal-visible="addEditModalVisible"
         user="user" get-items="selectItem" request-params="requestParams">

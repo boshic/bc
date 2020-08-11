@@ -132,12 +132,18 @@ import commonFilterTpl from './common-filter.html';
                 };
 
                 return {
-                    resetMovingFilter: (filter) => {
+                  resetMovingFilter: (filter) => {
 
-                        // filter.allowAllStocks = false;
                         filter.alwaysOpenQuantityChangerModal = true;
                         resetBasicReleaseFilterFields(filter);
                     },
+
+                  resetSellingPaneFilter: (filter) => {
+
+                    // filter.allowAllStocks = false;
+                    filter.alwaysOpenQuantityChangerModal = false;
+                    resetBasicReleaseFilterFields(filter);
+                  },
                     resetComingFilter: (filter) => {
 
                         resetBasicPaneFilterFields(filter);
@@ -147,7 +153,7 @@ import commonFilterTpl from './common-filter.html';
                         filter.fromDate = new Date(toDate.getFullYear(), toDate.getMonth(), 1);
 
                     },
-                    resetSellingFilter: (filter) => {
+                    resetSoldPaneFilter: (filter) => {
 
                         resetBasicPaneFilterFields(filter);
 

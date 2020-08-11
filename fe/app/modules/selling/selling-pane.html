@@ -1,7 +1,7 @@
 <div ng-transclude></div>
 <div class="item-input-on-panes"
         ng-show="item.name.length > 0">
-    <item-input item="item" stock="stock" get-items="getItems"></item-input>
+    <item-input item="item" stock="stock" get-items="getItemsWithItemInput"></item-input>
 </div>
 <div>
     <quantity-changer-modal
@@ -31,15 +31,33 @@
             ng-click="editItem(barcode)">
     </button>
 
-    <!--&& (user.role == 'ROLE_ADMIN' || user.actsAllowed.indexOf('sellFromAllStocks')>-1)-->
-    <div class="one-control-on-pane"
-         ng-show="!rows.length && (user.role == 'ROLE_ADMIN' || user.actsAllowed.indexOf('sellFromAllStocks')>-1)">
-        <div class="one-icon-on-control-pane">
-            <stock-picker allow-all="allowAllStocks" stock="stock"></stock-picker>
+    <div class="pane-right-menu"
+         ng-show="!rows.length
+         && requestParams.requestsQuantity == 0
+         && (user.role == 'ROLE_ADMIN' || user.actsAllowed.indexOf('sellFromAllStocks')>-1)">
+
+        <div class="coming-pane-right-menu-option">
+            <common-filter filter="filter"
+                           reset-filter="resetFilter()">
+            </common-filter>
+        </div>
+        <div class="coming-pane-right-menu-option">
+            <button class="glyphicon glyphicon-magnet"
+                    style="border: none; background: none;"
+                    ng-click="getItemsForReleaseByFilter()">
+            </button>
         </div>
     </div>
+
+    <!--&& (user.role == 'ROLE_ADMIN' || user.actsAllowed.indexOf('sellFromAllStocks')>-1)-->
+<!--    <div class="one-control-on-pane"-->
+<!--         ng-show="!rows.length && (user.role == 'ROLE_ADMIN' || user.actsAllowed.indexOf('sellFromAllStocks')>-1)">-->
+<!--        <div class="one-icon-on-control-pane">-->
+<!--            <stock-picker allow-all="false" stock="stock"></stock-picker>-->
+<!--        </div>-->
+<!--    </div>-->
 </div>
-<current-stock-indicator stock="stock"></current-stock-indicator>
+<current-stock-indicator stock="filter.stock"></current-stock-indicator>
 <div class="items-table"
      ng-show="rows.length"
      ng-keyup="handleKeyup($event)">

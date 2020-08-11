@@ -503,7 +503,10 @@ ul.buyer-dropdown {
     /*left: -45%;*/
 }
 
-div.buyer-debt {
+div.input-notification {
+    border-radius: 4px;
+    z-index: 1;
+    margin-top: -20px;
     position: absolute;
     background: brown;
     color: aliceblue;
@@ -534,6 +537,7 @@ div.locked {
 }
 
 input.common-number {
+    height: 44px;
     font-size: inherit;
     text-align: inherit;
     background: inherit;

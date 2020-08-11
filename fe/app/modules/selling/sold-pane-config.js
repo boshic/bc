@@ -23,7 +23,7 @@ let soldPaneConfig =
             ];
         },
         resetFilter: (filterFactory, filter) => {
-            filterFactory.resetSellingFilter(filter);
+            filterFactory.resetSoldPaneFilter(filter);
         },
         checkAddingReportCondition: ($s) => {return $s.filter.buyer.id > 0;},
         doBeforeFindItemsByFilter: () => { return true},

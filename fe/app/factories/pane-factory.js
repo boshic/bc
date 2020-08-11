@@ -5,6 +5,7 @@ import { filter, tap, map, debounceTime, distinctUntilChanged, switchMap } from 
 
 import comingPaneConfig from '../modules/coming/coming-pane-config';
 import movingPaneConfig from '../modules/moving/moving-pane-config';
+import sellingPaneConfig from '../modules/selling/selling-pane-config';
 import soldPaneConfig from '../modules/selling/sold-pane-config';
 import invoicesPaneConfig from '../modules/selling/invoices-pane-config';
 
@@ -200,6 +201,7 @@ import invoicesPaneConfig from '../modules/selling/invoices-pane-config';
                     getSearchTermsForGetItemsByFilter,
                     invoicesPaneConfig,
                     comingPaneConfig,
+                    sellingPaneConfig,
                     movingPaneConfig,
                     soldPaneConfig,
                     getHttpService: () => {return httpService;},
@@ -212,6 +214,7 @@ import invoicesPaneConfig from '../modules/selling/invoices-pane-config';
                     setPaneDefaults: ($s, params) => {
 
                         $s.rows = [];
+                        $s.comment = '';
                         $s.warning = '';
                         $s.searchInputId = generateUuid();
                         $s.quantityChangerModalData = { hidden : true, row: {} };

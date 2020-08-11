@@ -1,15 +1,28 @@
-<div class="dropdown">
-    <item-input-name input-id='inputId' item="item" input-name="Секция"
-                     requests-quantity="requestParams.requestsQuantity" items="items"
-                     get-items="getItems()" keypress-handler='setEanPrefix'>
-    </item-input-name>
-    <ul class="dropdown-menu hoverable item-input-dropdown">
-        <item-input-items
-                items="items" clear-item="clearItem()"
-                select-item="selectItem" change-item="changeItem">
-        </item-input-items>
-    </ul>
-</div>
+<!--<div class="dropdown">-->
+<!--    <item-input-name input-id='inputId' item="item" input-name="Секция"-->
+<!--                     requests-quantity="requestParams.requestsQuantity" items="items"-->
+<!--                     get-items="getItems()" keypress-handler='setEanPrefix'>-->
+<!--    </item-input-name>-->
+<!--    <ul class="dropdown-menu hoverable item-input-dropdown">-->
+<!--        <item-input-items ng-hide="requestParams.requestsQuantity > 0"-->
+<!--                items="items" clear-item="clearItem()"-->
+<!--                select-item="selectItem" change-item="changeItem">-->
+<!--        </item-input-items>-->
+<!--    </ul>-->
+<!--</div>-->
+
+<item-input-items-block
+        input-id="inputId"
+        item = "item" items = "items"
+        requests-quantity ="requestParams.requestsQuantity"
+        get-items= "getItems()"
+        keypress-handler= "setEanPrefix"
+        clear-item= "clearItem()"
+        select-item= "selectItem"
+        change-item= "changeItem"
+        input-name="Секция">
+</item-input-items-block>
+
 <add-edit-item-section
         request-params="requestParams"
         section="item" modal-visible="addEditModalVisible"

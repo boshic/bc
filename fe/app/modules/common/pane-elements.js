@@ -1,6 +1,7 @@
 import comingPaneTpl from '../coming/coming-pane.html';
 import soldPaneTpl from '../selling/sold-pane.html';
 import movingPaneTpl from '../moving/moving-pane.html';
+import sellingPaneTpl from '../selling/selling-pane.html';
 import invoicesPaneTpl from '../selling/invoices-pane.html';
 import itemRowOnPanesTpl from './item-row-on-panes.html';
 import commonPaneCtrlr from '../../controllers/common-pane-ctrlr';
@@ -107,8 +108,22 @@ angular.module('pane-elements', [])
                 }
             }
         })
-    .directive( "movingPane", () => {
-        return {
+        .directive( "sellingPane", () => {
+          return {
+            restrict: 'E',
+            transclude: true,
+            scope: {},
+            template: sellingPaneTpl,
+            controller: ($scope, itemFactory, filterFactory, paneFactory, printFactory, modalFactory ) => {
+              return commonReleasePaneCtrlr($scope,  itemFactory, filterFactory, paneFactory, printFactory, modalFactory, 'sellingPaneConfig');
+            },
+            link: (scope) => {
+              scope.resetFilter();
+            }
+          }
+        })
+        .directive( "movingPane", () => {
+          return {
             restrict: 'E',
             transclude: true,
             scope: {},
@@ -120,8 +135,8 @@ angular.module('pane-elements', [])
             link: (scope) => {
                 scope.resetFilter();
             }
-        }
-    })
+          }
+      })
         .directive( "soldPane", () => {
             return {
                 restrict: 'E',

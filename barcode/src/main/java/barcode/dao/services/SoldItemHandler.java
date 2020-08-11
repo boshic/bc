@@ -211,7 +211,7 @@ public class SoldItemHandler extends EntityHandlerImpl {
                                     getComponentPrice(component, soldItem.getPrice(), components),
                                     soldItem.getComing().getStock().getOrganization().getVatValue(),
                                     soldItem.getQuantity().multiply(component.getQuantity()),
-                                    "",
+                                    soldItem.getComment(),
                                     soldItem.getBuyer(),
                                     soldItem.getUser()
                             );

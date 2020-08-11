@@ -4,6 +4,7 @@ let commonPaneReleaseCtrlr = ($s, itemFactory, filterFactory, paneFactory, print
     let httpService = paneFactory.getHttpService();
 
     let getEmptyItem = itemFactory.itemConfig.getEmptyItem;
+    let getEmptyBuyer = itemFactory.buyerConfig.getEmptyItem;
     $s.item = getEmptyItem();
 
     $s.barcode = '';
@@ -23,11 +24,8 @@ let commonPaneReleaseCtrlr = ($s, itemFactory, filterFactory, paneFactory, print
         paneFactory.getItemsForReleaseByFilter($s);
     };
 
-    $s.$watchCollection(config.watchingCollectionValue, () => {
-        if ($s.rows.length) {
-            $s.checkRows();
-            $s.blankSearch();
-        }
+    $s.$watchCollection(config.watchingCollectionValue, (nv, ov) => {
+      config.watchingCollectionFunc($s, nv, ov);
     }, true);
 
     $s.$watch('barcode', (nv) => {
@@ -39,15 +37,22 @@ let commonPaneReleaseCtrlr = ($s, itemFactory, filterFactory, paneFactory, print
         if(paneFactory.getItemByBarcode(ean, getItems))
             $s.blankSearch();
         console.log('got items for parent');
-
     };
 
     $s.moveThis = () => {
         paneFactory.releaseItems($s, config.moveItemsUrl, config.getMoveItemsParams($s));
     };
 
+    $s.sellThis = () => {
+      if($s.canRelease) {
+        for (let row of $s.rows)
+          row.price = paneFactory.getDiscountedPrice(row.price, $s.buyer.discount);
+        paneFactory.releaseItems($s, config.sellItemsUrl);
+      }
+    };
+
     $s.deleteRows =  (itemId) => {
-        paneFactory.deletePaneRows($s, {itemId});
+        paneFactory.deletePaneRows($s, config.getDeleteRowsConfig({getEmptyBuyer, itemId}));
     };
 
     $s.checkRows = () => {
@@ -73,12 +78,18 @@ let commonPaneReleaseCtrlr = ($s, itemFactory, filterFactory, paneFactory, print
         $s.item = angular.extend(getEmptyItem(), {name: barcode});
     };
 
+    $s.setReportData = () => {
+        config.setReportData($s, {printFactory});
+    };
+
     $s.blankSearch = () => {
         $s.warning = '';
         $s.barcode = '';
         $s.item = getEmptyItem();
         if(paneFactory.searchInputAutoFocusEnabled)
             paneFactory.changeElementState(document.getElementById($s.searchInputId), ['focus']);
+        if(typeof config.doAfterBlankSearch === 'function')
+          config.doAfterBlankSearch($s, {itemFactory, paneFactory});
     };
 
     $s.openQuantityChangerModal = (itemId) => {

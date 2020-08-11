@@ -700,6 +700,34 @@ angular.module('inputs', ['asyncFilter'])
         template: itemInputItemsTpl,
         controller: function() {}
     })
+  .component( "itemInputItemsBlock", {
+    bindings: {
+      item: '<',
+      items: '<',
+      inputId: '<',
+      requestsQuantity: '<',
+      inputName: '@',
+      getItems: '&',
+      keypressHandler: '&?',
+      clearItem: '&',
+      selectItem: '&',
+      changeItem: '&'
+    },
+    template:
+      "<div class='dropdown'>" +
+      "    <item-input-name input-id='$ctrl.inputId' item='$ctrl.item' input-name='{{$ctrl.inputName}}'" +
+      "                     requests-quantity='$ctrl.requestsQuantity' items='$ctrl.items'" +
+      "                     get-items='$ctrl.getItems()' keypress-handler='$ctrl.keypressHandler()'>" +
+      "    </item-input-name>" +
+      "    <ul class='dropdown-menu hoverable item-input-dropdown'>" +
+      "        <item-input-items ng-hide='$ctrl.requestParams.requestsQuantity > 0'" +
+      "                items='$ctrl.items' clear-item='$ctrl.clearItem()'" +
+      "                select-item='$ctrl.selectItem()' change-item='$ctrl.changeItem()'>" +
+      "        </item-input-items>" +
+      "    </ul>" +
+      "</div>",
+    controller: function() {}
+  })
     .component( "itemComponentsPicker", {
         bindings: { item: '=', modalVisible: '='},
         template: itemComponentsPickerTpl,

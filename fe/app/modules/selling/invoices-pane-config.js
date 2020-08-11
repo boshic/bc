@@ -10,7 +10,7 @@ let invoicesPaneConfig = {
     paneId: 'invoices-pane',
     doBeforeFindItemsByFilter: () => { return true;},
     resetFilter: (filterFactory, filter) => {
-        filterFactory.resetSellingFilter(filter);
+        filterFactory.resetSoldPaneFilter(filter);
     },
     editItem: ($s, config) => {
         $s.modalConfig.hidden = false;

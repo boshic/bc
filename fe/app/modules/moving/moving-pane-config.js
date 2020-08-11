@@ -1,6 +1,3 @@
-/**
- * Created by xlinux on 19.05.20.
- */
 
 let movingPaneConfig = {
 
@@ -13,6 +10,12 @@ let movingPaneConfig = {
     paneName: 'Перемещение',
     paneId: 'moving-pane',
     watchingCollectionValue : '[rows, stockDest, rows.length]',
+    watchingCollectionFunc : ($s, nv, ov) => {
+      if ($s.rows.length) {
+          $s.checkRows();
+          $s.blankSearch();
+      }
+    },
     getFindItemParams: (ean, $s) => {
         return {filter: ean, stockId: $s.filter.stock.id};
     },
@@ -25,6 +28,9 @@ let movingPaneConfig = {
             {keyCode: keyCodes.enterKeyCode, doAction: $s.moveThis, ctrlReq: true}
         ];
     },
+    getDeleteRowsConfig : (params) => {
+      return {itemId: params.itemId };
+    }
 
 };
 
