@@ -22,21 +22,14 @@
             ng-disabled = "barcode.length === 0"
             ng-click="editItem(barcode)">
     </button>
-    <div class="pane-right-menu"  ng-hide="rows.length || requestParams.requestsQuantity > 0">
-
-        <div class="coming-pane-right-menu-option">
-            <common-filter filter="filter"
-                           reset-filter="resetFilter()">
-            </common-filter>
-        </div>
-        <div class="coming-pane-right-menu-option">
-            <button class="glyphicon glyphicon-magnet"
-                    style="border: none; background: none;"
-                    ng-click="getItemsForReleaseByFilter()">
-            </button>
+    <div>
+        <div>
+            <filter-panel-on-release-pane
+                    pane-is-visible = "!rows.length && requestParams.requestsQuantity == 0"
+                    filter = 'filter' reset-filter = 'resetFilter()' get-items = 'getItemsForReleaseByFilter()'>
+            </filter-panel-on-release-pane>
         </div>
     </div>
-
 </div>
 <div>
     <quantity-changer-modal

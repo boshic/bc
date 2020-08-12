@@ -8,7 +8,7 @@ import commonPaneCtrlr from '../../controllers/common-pane-ctrlr';
 import commonReleasePaneCtrlr from '../../controllers/common-pane-release-ctrlr.js';
 
 
-angular.module('pane-elements', [])
+    angular.module('pane-elements', [])
         .directive("totals", () => {
             return {
                 restrict: 'E',
@@ -183,7 +183,7 @@ angular.module('pane-elements', [])
             "<div ng-show='$ctrl.active' class='trans-layer'></div>",
             controller: function() {}
         })
-    .component( "paneRowsEraser", {
+        .component( "paneRowsEraser", {
         bindings: {
             deleteRows: '&', isHidden: '<?'
         },
@@ -296,16 +296,46 @@ angular.module('pane-elements', [])
             "</div>",
             controller: function() {}
         })
+        .component( "filterPanelOnReleasePane", {
+           bindings: {
+            paneIsVisible: '<',
+            filter: '=',
+            resetFilter: '&',
+            getItems: '&'
+          },
+          template:
+            "<div class=\"pane-right-menu\" ng-show='$ctrl.paneIsVisible'>" +
+            "            <div class=\"coming-pane-right-menu-option\">\n" +
+            "                <common-filter filter=\"$ctrl.filter\"\n" +
+            "                               reset-filter=\"$ctrl.resetFilter()\">\n" +
+            "                </common-filter>\n" +
+            "            </div>\n" +
+            "            <div class=\"coming-pane-right-menu-option\">\n" +
+            "                <button class=\"glyphicon glyphicon-magnet\"\n" +
+            "                        ng-disabled='" +
+            "!($ctrl.filter.document.id > 0) " +
+            "&& $ctrl.filter.sectionPart.length == 0 " +
+            "&& !($ctrl.filter.section.id > 0) " +
+            "&& !($ctrl.filter.supplier.id > 0) " +
+            "&& $ctrl.filter.searchString.length == 0 " +
+            "&& !($ctrl.filter.item.id > 0)'\n" +
+            "                        style=\"border: none; background: none;\"\n" +
+            "                        ng-click=\"$ctrl.getItems()\">\n" +
+            "                </button>\n" +
+            "            </div>\n" +
+            "</div>",
+          controller: function() {}
+        })
         .component( "currentStockIndicator", {
-        bindings: { stock: '=', descr: '@?'},
-        template: "<div style='display: flex; margin-top: 2px; margin-bottom: 2px;'>" +
+          bindings: { stock: '=', descr: '@?'},
+          template: "<div style='display: flex; margin-top: 2px; margin-bottom: 2px;'>" +
             "<div style='width: 45%;'></div>" +
             "<div class='current-stock-indicator'>{{'Склад: ' + $ctrl.stock.name}}" +
                 "<span ng-show='$ctrl.descr.length'>{{$ctrl.descr}}</span>" +
             "</div>" +
             "</div>",
-        controller: function() {}
-    })
+          controller: function() {}
+        })
         .component( "paneSearchInput", {
             bindings: {
                 inputId: '<',
@@ -320,7 +350,7 @@ angular.module('pane-elements', [])
                 "ng-keydown='$ctrl.keypressHandler()($event)'/>",
             controller: function() {}
         })
-    .component( "btnCheckboxToggler", {
+        .component( "btnCheckboxToggler", {
         bindings: {
             checkingValue: '=',
             togglerDescr: '@',
@@ -348,7 +378,7 @@ angular.module('pane-elements', [])
         template: itemRowOnPanesTpl,
         controller: function() {}
     })
-    .component( "overheadPercentageIndicator", {
+        .component( "overheadPercentageIndicator", {
         bindings: {
             priceOut: '<',
             price: '<'
@@ -359,7 +389,7 @@ angular.module('pane-elements', [])
                 "{{ ((100 * $ctrl.priceOut / $ctrl.price)-100).toFixed(1) + '%'}}</span>",
         controller: function() {}
     })
-    .component( "paneDateChangeControl", {
+        .component( "paneDateChangeControl", {
         bindings: {
             user: '<',
             row: '=',

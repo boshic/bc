@@ -31,31 +31,13 @@
             ng-click="editItem(barcode)">
     </button>
 
-    <div class="pane-right-menu"
-         ng-show="!rows.length
-         && requestParams.requestsQuantity == 0
-         && (user.role == 'ROLE_ADMIN' || user.actsAllowed.indexOf('sellFromAllStocks')>-1)">
-
-        <div class="coming-pane-right-menu-option">
-            <common-filter filter="filter"
-                           reset-filter="resetFilter()">
-            </common-filter>
-        </div>
-        <div class="coming-pane-right-menu-option">
-            <button class="glyphicon glyphicon-magnet"
-                    style="border: none; background: none;"
-                    ng-click="getItemsForReleaseByFilter()">
-            </button>
-        </div>
+    <div>
+        <filter-panel-on-release-pane
+                pane-is-visible = "!rows.length && requestParams.requestsQuantity == 0
+                        && (user.role == 'ROLE_ADMIN' || user.actsAllowed.indexOf('sellFromAllStocks')>-1)"
+                filter = 'filter' reset-filter = 'resetFilter()' get-items = 'getItemsForReleaseByFilter()'>
+        </filter-panel-on-release-pane>
     </div>
-
-    <!--&& (user.role == 'ROLE_ADMIN' || user.actsAllowed.indexOf('sellFromAllStocks')>-1)-->
-<!--    <div class="one-control-on-pane"-->
-<!--         ng-show="!rows.length && (user.role == 'ROLE_ADMIN' || user.actsAllowed.indexOf('sellFromAllStocks')>-1)">-->
-<!--        <div class="one-icon-on-control-pane">-->
-<!--            <stock-picker allow-all="false" stock="stock"></stock-picker>-->
-<!--        </div>-->
-<!--    </div>-->
 </div>
 <current-stock-indicator stock="filter.stock"></current-stock-indicator>
 <div class="items-table"

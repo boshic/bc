@@ -40,7 +40,7 @@ let sellingPaneConfig = {
 
   setReportData : ($s, params) => {
     let data = {
-      stock: $s.stock,
+      stock: $s.filter.stock,
       buyer: $s.buyer,
       comment: $s.comment,
       rows: params.printFactory.getRowsForReports($s, 'price')

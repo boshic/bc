@@ -350,8 +350,8 @@ import invoicesPaneConfig from '../modules/selling/invoices-pane-config';
                                     $s.rows = resp.entityItems;
                                     $s.rows.forEach(row => {
                                         row.coming = {item : row.item, stock: row.stock};
+                                        row.vat = row.stock.organization.vatValue;
                                     });
-                                    console.log(resp);
                                 } else {
                                     $s.warning =resp.text;
                                 }

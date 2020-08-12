@@ -4,6 +4,8 @@ angular.module('common-http-service', [])
         .factory('httpService',['$http', '$q',
             function ($http, $q) {
 
+
+
                 let checkRequestParams = (requestParams) => {
                     return angular.isObject(requestParams);
                 };
@@ -35,20 +37,35 @@ angular.module('common-http-service', [])
                     decreaseRequestsQuantity(opts.requestParams);
                 };
 
+              let incompatableReqSymbols = ['%'];
+              let checkReqForIncompatableSymbols = (request) => {
+                if(typeof request === 'string') {
+                  incompatableReqSymbols.forEach(symbol => {
+                    let pos = request.indexOf(symbol);
+                    while (pos > -1) {
+                      request = request.replace(symbol, "");
+                      pos = request.indexOf(symbol);
+                    }
+                  });
+                }
+                return request;
+              };
+
+
                 return {
                     getItemsRx: (opts) => {
                         addRequestsQuantity(opts.requestParams);
                         return new Observable((observer) => {
-                            $http.get('/'+ opts.url + opts.params)
-                                 .then(resp => {
-                                     observer.next(resp.data);
-                                     decreaseRequestsQuantity(opts.requestParams);
-                                     observer.complete();
-                                 })
-                                .catch(eroror => {
-                                    decreaseRequestsQuantity(opts.requestParams);
-                                    observer.error();
-                                });
+                            $http.get('/'+ opts.url + checkReqForIncompatableSymbols(opts.params))
+                              .then(resp => {
+                                observer.next(resp.data);
+                                decreaseRequestsQuantity(opts.requestParams);
+                                observer.complete();
+                              })
+                              .catch(eroror => {
+                                decreaseRequestsQuantity(opts.requestParams);
+                                observer.error();
+                              });
                         });
                     },
                     addItem: (opts) => {
