@@ -50,7 +50,7 @@ import newComingDocPaneTpl from './new-coming-doc.html';
         let getItems = ean => {
             $s.warning="";
 
-            httpService.getItems({params: {filter: ean},
+            httpService.getItems({params: {filter: ean, stockId: $s.stock.id},
                     url: 'getItemForNewComing', requestParams:$s.requestParams})
                 .then(
                 resp => {

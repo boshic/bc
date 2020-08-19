@@ -313,7 +313,8 @@ import commonReleasePaneCtrlr from '../../controllers/common-pane-release-ctrlr.
             "            <div class=\"coming-pane-right-menu-option\">\n" +
             "                <button class=\"glyphicon glyphicon-magnet\"\n" +
             "                        ng-disabled='" +
-            "!($ctrl.filter.document.id > 0) " +
+            "!($ctrl.filter.allowUploadingWithBlankFilter) " +
+            "&& !($ctrl.filter.document.id > 0) " +
             "&& $ctrl.filter.sectionPart.length == 0 " +
             "&& !($ctrl.filter.section.id > 0) " +
             "&& !($ctrl.filter.supplier.id > 0) " +

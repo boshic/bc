@@ -135,12 +135,13 @@ import commonFilterTpl from './common-filter.html';
                   resetMovingFilter: (filter) => {
 
                         filter.alwaysOpenQuantityChangerModal = true;
+                        filter.allowUploadingWithBlankFilter = true;
                         resetBasicReleaseFilterFields(filter);
                     },
 
                   resetSellingPaneFilter: (filter) => {
 
-                    // filter.allowAllStocks = false;
+                    filter.allowUploadingWithBlankFilter = false;
                     filter.alwaysOpenQuantityChangerModal = false;
                     resetBasicReleaseFilterFields(filter);
                   },

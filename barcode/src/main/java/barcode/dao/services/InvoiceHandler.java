@@ -176,8 +176,8 @@ public class InvoiceHandler extends EntityHandlerImpl {
                     new ResponseByInvoices<Invoice>(
                             ELEMENTS_FOUND, result, true, page.getTotalPages());
 
-            if(filter.getCalcTotal())
-                ribyi.calcTotals(invoiceRepository.findAll(ipb.buildByFilter(filter, abstractEntityManager)));
+//            if(filter.getCalcTotal())
+//                ribyi.calcTotals(invoiceRepository.findAll(ipb.buildByFilter(filter, abstractEntityManager)));
 
             return ribyi;
         }

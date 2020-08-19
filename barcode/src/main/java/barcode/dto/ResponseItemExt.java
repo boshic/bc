@@ -1,6 +1,8 @@
 package barcode.dto;
 
 import barcode.dao.entities.*;
+import barcode.dao.services.AbstractEntityManager;
+import com.querydsl.core.BooleanBuilder;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -36,7 +38,8 @@ public abstract class ResponseItemExt<T> extends ResponseItem<T> {
 
     private List<Item> goods;
 
-    public abstract void calcTotals(List<T> items);
+//    public abstract void calcTotals(List<T> items);
+    public abstract void calcTotals(AbstractEntityManager abstractEntityManager, BooleanBuilder predicate);
 
     ResponseItemExt() {}
     ResponseItemExt(String text, List<T> items, Boolean success, Integer number) {
@@ -44,15 +47,17 @@ public abstract class ResponseItemExt<T> extends ResponseItem<T> {
         this.numberOfPages = number;
     }
 
-    void setSuppliersByComings(List<ComingItem> comings) {
-        this.setSuppliers(comings
-                        .stream()
-                        .map(s -> s.getDoc().getSupplier()).collect(Collectors.toSet())
-                        .stream()
-                        .sorted(Comparator.comparing(Supplier::getName))
-                        .collect(Collectors.toList()));
-    }
+    //_deprecated. must be deleted1
+//    void setSuppliersByComings(List<ComingItem> comings) {
+//        this.setSuppliers(comings
+//                        .stream()
+//                        .map(s -> s.getDoc().getSupplier()).collect(Collectors.toSet())
+//                        .stream()
+//                        .sorted(Comparator.comparing(Supplier::getName))
+//                        .collect(Collectors.toList()));
+//    }
 
+    //_deprecated. must be deleted1
     void setSectionsByComings(List<ComingItem> comings) {
         this.setSections(comings
                 .stream()
@@ -62,22 +67,13 @@ public abstract class ResponseItemExt<T> extends ResponseItem<T> {
                 .collect(Collectors.toList()));
     }
 
-    void setGoodsBySellings(List<SoldItem> sellings) {
-        this.setGoods(sellings
-                .stream()
-                .map(s -> s.getComing().getItem()).collect(Collectors.toSet())
-                .stream()
-                .sorted(Comparator.comparing(Item::getName))
-                .collect(Collectors.toList()));
-    }
-
-//    <V> void setSuppliersMethod(List<T> rows, java.util.function.Supplier<V> getField) {
-//        this.setSuppliers(rows
+//    void setGoodsBySellings(List<SoldItem> sellings) {
+//        this.setGoods(sellings
 //                .stream()
-//                .map(c -> getField.get()).collect(Collectors.toSet());
-////                .stream()
-//////                .sorted(Comparator.comparing(Supplier::getName))
-////                .collect(Collectors.toList()));
+//                .map(s -> s.getComing().getItem()).collect(Collectors.toSet())
+//                .stream()
+//                .sorted(Comparator.comparing(Item::getName))
+//                .collect(Collectors.toList()));
 //    }
 
     public Integer getNumberOfPages() {

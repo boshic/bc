@@ -63,17 +63,13 @@ public class ComingItem extends BasicOperationWithCommentEntity{
     }
 
     public ComingItem(ComingItem comingItem) {
-
         this.currentQuantity = comingItem.getCurrentQuantity();
-
         this.sum = comingItem.getSum();
-
         this.quantity = comingItem.getQuantity();
     }
 
     public ComingItem(Item item,
                       Stock stock) {
-
         this.stock = stock;
         this.item = item;
     }

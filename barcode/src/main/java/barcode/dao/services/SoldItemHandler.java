@@ -2,8 +2,12 @@ package barcode.dao.services;
 
 import barcode.dao.entities.embeddable.ItemComponent;
 import barcode.dao.utils.ComingItemFilter;
+import barcode.dto.DtoComingItemWithItemAndStock;
+import barcode.dto.DtoForGroupedSoldItemsByItem;
 import barcode.enums.CommentAction;
-import com.querydsl.core.types.Predicate;
+import com.querydsl.core.BooleanBuilder;
+import com.querydsl.core.Tuple;
+import com.querydsl.core.types.*;
 import barcode.dao.entities.*;
 import barcode.dao.entities.embeddable.Comment;
 import barcode.dao.predicates.SoldItemPredicatesBuilder;
@@ -12,8 +16,15 @@ import barcode.dao.utils.BasicFilter;
 import barcode.dao.utils.SoldItemFilter;
 import barcode.dto.ResponseBySoldItems;
 import barcode.dto.ResponseItem;
+import com.querydsl.core.types.dsl.BooleanPath;
+import com.querydsl.core.types.dsl.Expressions;
+import com.querydsl.core.types.dsl.PathBuilder;
+import com.querydsl.core.types.dsl.PathBuilderFactory;
+import com.querydsl.jpa.impl.JPAQuery;
+import org.hibernate.loader.PropertyPath;
 import org.springframework.beans.support.PagedListHolder;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
@@ -44,6 +55,8 @@ public class SoldItemHandler extends EntityHandlerImpl {
     private ItemHandler itemHandler;
 
     private ReceiptHandler receiptHandler;
+    private AbstractEntityManager abstractEntityManager;
+
 
     public SoldItemHandler (SoldItemsRepository soldItemsRepository,
                             SoldCompositeItemHandler soldCompositeItemHandler,
@@ -52,7 +65,8 @@ public class SoldItemHandler extends EntityHandlerImpl {
                             StockHandler stockHandler,
                             BuyerHandler buyerHandler,
                             ReceiptHandler receiptHandler,
-                            ItemHandler itemHandler) {
+                            ItemHandler itemHandler,
+                            AbstractEntityManager abstractEntityManager) {
 
         this.soldItemsRepository = soldItemsRepository;
         this.comingItemHandler = comingItemHandler;
@@ -62,6 +76,7 @@ public class SoldItemHandler extends EntityHandlerImpl {
         this.receiptHandler = receiptHandler;
         this.itemHandler = itemHandler;
         this.soldCompositeItemHandler = soldCompositeItemHandler;
+        this.abstractEntityManager = abstractEntityManager;
     }
 
     public ResponseItem makeAutoSelling(List<SoldItem> sellings) {
@@ -414,55 +429,138 @@ public class SoldItemHandler extends EntityHandlerImpl {
             return new ResponseItem<SoldItem>(SALE_COMPLETED_SUCCESSFULLY, true);
         }
 
-
     }
 
-    private ResponseBySoldItems groupByItems(
-            List<SoldItem> soldItems, SoldItemFilter filter) {
+//    private ResponseBySoldItems groupByItems(
+//            List<SoldItem> soldItems, SoldItemFilter filter) {
+//
+//        Map<Item, List<SoldItem>> groupedSoldItems =
+//                soldItems.stream()
+//                        .collect(Collectors.groupingBy(n -> n.getComing().getItem()));
+//
+//        List<SoldItem> result = new ArrayList<SoldItem>();
+//
+//        groupedSoldItems.forEach(
+//                (item, sellings) -> {
+//                    result.add(new SoldItem(
+//                            new ComingItem(item, filter.getStock()),
+//                            sellings
+//                                    .stream()
+//                                    .map(SoldItem::getPrice)
+//                                    .reduce(BigDecimal::max).get(),
+//                            sellings
+//                                    .stream()
+//                                    .map(SoldItem::getQuantity)
+//                                    .reduce(BigDecimal.ZERO, BigDecimal::add),
+//                            comingItemHandler
+//                                    .getComingItemByIdAndStockId(item.getId(), filter.getStock().getId())
+//                                    .stream().map(ComingItem::getCurrentQuantity)
+//                                    .reduce(BigDecimal.ZERO, BigDecimal::add)
+//                            ));
+//                }
+//        );
+//
+//        sortGroupedItems(result, filter.getSortDirection(),
+//                SoldItemFilter.SoldItemSortingStrategies
+//                        .valueOf(filter.getSortField()
+//                                .replace(".","_")
+//                                .toUpperCase()));
+//
+//        PagedListHolder<SoldItem> page = new PagedListHolder<SoldItem>(result);
+//        page.setPageSize(filter.getRowsOnPage());
+//        page.setPage(filter.getPage() - 1);
+//
+//        ResponseBySoldItems<SoldItem> ribysi =
+//                new ResponseBySoldItems<SoldItem>("сгрупированные данные", page.getPageList(),
+//                        true, page.getPageCount());
+//
+//        if(filter.getCalcTotal())
+//            ribysi.calcTotalsDepr(soldItems);
+//
+//        return ribysi;
+//    }
 
-        Map<Item, List<SoldItem>> groupedSoldItems =
-                soldItems.stream()
-                        .collect(Collectors.groupingBy(n -> n.getComing().getItem()));
+    private ResponseBySoldItems groupByItemsNew(
+        AbstractEntityManager abstractEntityManager,
+        BooleanBuilder predicate,
+        SoldItemFilter filter) {
 
-        List<SoldItem> result = new ArrayList<SoldItem>();
+        List<DtoForGroupedSoldItemsByItem> result = new ArrayList<>();
+        QSoldItem soldItem = QSoldItem.soldItem;
+        QComingItem coming = QSoldItem.soldItem.coming;
+        QComingItem comingItem = QComingItem.comingItem;
 
-        groupedSoldItems.forEach(
-                (item, sellings) -> {
-                    result.add(new SoldItem(
-                            new ComingItem(item, filter.getStock()),
-                            sellings
-                                    .stream()
-                                    .map(SoldItem::getPrice)
-                                    .reduce(BigDecimal::max).get(),
-                            sellings
-                                    .stream()
-                                    .map(SoldItem::getQuantity)
-                                    .reduce(BigDecimal.ZERO, BigDecimal::add),
-                            comingItemHandler
-                                    .getComingItemByIdAndStockId(item.getId(), filter.getStock().getId())
-                                    .stream().map(ComingItem::getCurrentQuantity)
-                                    .reduce(BigDecimal.ZERO, BigDecimal::add)
-                            ));
-                }
-        );
+//        Path<Object> fieldPath =  Expressions.path(Object.class, soldItem, filter.getSortField());
+//        PathBuilder<T> fieldPath = new PathBuilder<T>(objectClass, filter.get);
+//        Order order = Order.valueOf(filter.getSortDirection());
+//        BooleanPath fieldPath = Expressions.booleanPath(filter.getSortField());
+//        OrderSpecifier<?> orderSpecifier = fieldPath;
 
-        sortGroupedItems(result,
-                filter.getSortDirection(),
-                SoldItemFilter.SoldItemSortingStrategies
-                        .valueOf(filter.getSortField()
-                                .replace(".","_")
-                                .toUpperCase()));
+//        Expression<?> sortPropertyExpression = new PathBuilderFactory().create(typeInfo.getType());
+//        String dotPath = aliasRegistry.getDotPath(sort);
+//        PropertyPath path = PropertyPath.from(dotPath, typeInfo);
+//        sortPropertyExpression = Expressions.path(path.getType(), (Path<?>) sortPropertyExpression, path.toDotPath());
+//
+//        PathBuilder<SoldItem> fieldPath = new PathBuilder<SoldItem>(SoldItem.class, "soldItem");
+//        OrderSpecifier<?> orderSpecifier = new OrderSpecifier(order, fieldPath.get(filter.getSortField()));
+//            fieldPath.getComparable(filter.getSortField(), Comparable.class).asc();
 
-        PagedListHolder<SoldItem> page = new PagedListHolder<SoldItem>(result);
+
+//        Map<Item, List<SoldItem>> groupedSoldItems =
+//            new JPAQuery<>(abstractEntityManager.getEntityManager())
+//                .from(soldItem).where(predicate)
+//                .groupBy(soldItem.coming.item)
+//                .select(soldItem.coming.item, list(soldItem))
+//                .offset(0L)
+//                .limit(2L)
+//                .transform(groupBy(soldItem.coming.item).as(list(soldItem)));
+
+//                .stream()
+//                .collect(Collectors.groupingBy(n -> n.getComing().getItem()));
+
+        JPAQuery<BigDecimal> availQuantityByEan =  new JPAQuery<BigDecimal>(abstractEntityManager.getEntityManager())
+            .select(comingItem.currentQuantity.sum())
+            .from(comingItem)
+            .where(coming.item.id.eq(comingItem.item.id).and(coming.stock.id.eq(filter.getStock().getId())));
+
+        JPAQuery<Tuple> query =  new JPAQuery<Tuple>(abstractEntityManager.getEntityManager())
+            .select(coming.item, soldItem.quantity.sum(), soldItem.price.max(), availQuantityByEan)
+            .from(soldItem).where(predicate)
+            .groupBy(coming.item);
+//            .orderBy(availQuantityByEan.exists().asc());
+//            .offset(pageRequest.getOffset())
+//            .limit(pageRequest.getPageSize());
+
+        List<Tuple> groupedSoldItems = query.fetch();
+
+        groupedSoldItems.forEach(item -> {
+            result.add(
+                new DtoForGroupedSoldItemsByItem(
+                    new DtoComingItemWithItemAndStock(item.get(coming.item), filter.getStock()),
+                    item.get(soldItem.price.max()),
+                    item.get(soldItem.quantity.sum()),
+                    item.get(availQuantityByEan)
+                )
+            );
+        });
+
+        sortGroupedItems(
+            result,
+            filter.getSortDirection(),
+            SoldItemFilter
+                .SoldItemSortingStrategies
+                .valueOf(filter.getSortField().replace(".","_").toUpperCase()));
+
+        PagedListHolder<DtoForGroupedSoldItemsByItem> page = new PagedListHolder<>(result);
         page.setPageSize(filter.getRowsOnPage());
         page.setPage(filter.getPage() - 1);
 
-        ResponseBySoldItems ribysi =
-                new ResponseBySoldItems("сгрупированные данные", page.getPageList(),
-                        true, page.getPageCount());
+        ResponseBySoldItems<DtoForGroupedSoldItemsByItem> ribysi =
+            new ResponseBySoldItems<>("сгрупированные данные", page.getPageList(),
+                true, page.getPageCount());
 
         if(filter.getCalcTotal())
-            ribysi.calcTotals(soldItems);
+            ribysi.calcTotals(abstractEntityManager, predicate);
 
         return ribysi;
     }
@@ -470,30 +568,29 @@ public class SoldItemHandler extends EntityHandlerImpl {
     public ResponseBySoldItems findByFilter(SoldItemFilter filter) {
 
         itemHandler.checkEanInFilter(filter);
-
+        BooleanBuilder predicate = sipb.buildByFilter(filter);
         Sort sort = new Sort(Sort.Direction.fromStringOrNull(filter.getSortDirection()), filter.getSortField());
-
-        if(filter.getGroupByItems())
-            return groupByItems(soldItemsRepository.findAll(sipb.buildByFilter(filter), sort), filter);
-
         PageRequest pageRequest = new PageRequest(filter.getPage() - 1, filter.getRowsOnPage(), sort);
 
-        Page<SoldItem> page =  soldItemsRepository.findAll(sipb.buildByFilter(filter), pageRequest);
+        if(filter.getGroupByItems())
+            return groupByItemsNew(abstractEntityManager, predicate , filter);
+
+        Page<SoldItem> page =  soldItemsRepository.findAll(predicate, pageRequest);
 
         List<SoldItem> result = page.getContent();
 
         if (result.size() > 0) {
 
-            ResponseBySoldItems ribysi =
-                    new ResponseBySoldItems(ELEMENTS_FOUND, result, true, page.getTotalPages());
+            ResponseBySoldItems<SoldItem> ribysi =
+                    new ResponseBySoldItems<>(ELEMENTS_FOUND, result, true, page.getTotalPages());
 
             if(filter.getCalcTotal())
-                ribysi.calcTotals(soldItemsRepository.findAll(sipb.buildByFilter(filter)));
+                ribysi.calcTotals(abstractEntityManager, sipb.buildByFilter(filter));
 
             return ribysi;
         }
 
-        return new ResponseBySoldItems(NOTHING_FOUND, new ArrayList<>(), false, 0);
+        return new ResponseBySoldItems<SoldItem>(NOTHING_FOUND, new ArrayList<>(), false, 0);
     }
 
     public ResponseItem<SoldItem> changeDate(SoldItem soldItem) {

@@ -24,7 +24,7 @@ public class ComingItemPredicatesBuilder {
 
     private PredicateBuilder predicateBuilder = new PredicateBuilder();
 
-    public Predicate buildByFilter(ComingItemFilter filter, AbstractEntityManager abstractEntityManager) {
+    public BooleanBuilder buildByFilter(ComingItemFilter filter, AbstractEntityManager abstractEntityManager) {
 
         BooleanBuilder predicate = new BooleanBuilder();
 

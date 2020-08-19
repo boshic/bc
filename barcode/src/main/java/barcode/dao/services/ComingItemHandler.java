@@ -4,6 +4,7 @@ import barcode.dao.entities.embeddable.InventoryRow;
 import barcode.dao.repositories.SoldItemsRepository;
 import barcode.enums.CommentAction;
 import barcode.enums.SystemMessage;
+import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.Predicate;
 import barcode.dao.entities.*;
 import barcode.dao.entities.embeddable.Comment;
@@ -580,7 +581,7 @@ public class ComingItemHandler extends EntityHandlerImpl {
 
         Sort sort = new Sort(Sort.Direction.fromStringOrNull(filter.getSortDirection()), filter.getSortField());
 
-        Predicate predicate = cipb.buildByFilter(filter, abstractEntityManager);
+        BooleanBuilder predicate = cipb.buildByFilter(filter, abstractEntityManager);
 
         if(filter.getInventoryModeEnabled())
                     return getInventoryItems(comingItemRepository.findAll(predicate), filter);
@@ -598,7 +599,8 @@ public class ComingItemHandler extends EntityHandlerImpl {
 
             if(filter.getCalcTotal()) {
 
-                ribyci.calcTotals(comingItemRepository.findAll(predicate));
+                ribyci.calcTotals(abstractEntityManager, predicate);
+//                ribyci.calcTotals(comingItemRepository.findAll(predicate));
             }
 
             return ribyci;
@@ -608,14 +610,15 @@ public class ComingItemHandler extends EntityHandlerImpl {
     }
 
 
-    public DtoItemForNewComing getItemForNewComing(String ean) {
+    public DtoItemForNewComing getItemForNewComing(String ean, Long stockId) {
 
         Item item = itemHandler.getItemByEanSynonym(ean);
         if(item == null)
             return new DtoItemForNewComing(null, BigDecimal.ZERO, BigDecimal.ZERO);
 
         ComingItem coming
-                = comingItemRepository.findTopPriceOutByItemEanOrderByIdDesc(item.getEan());
+                = comingItemRepository
+            .findTopPriceOutByItemEanAndStockIdOrderByIdDesc(item.getEan(), stockId);
 
         if(coming == null)
             return new DtoItemForNewComing(item, item.getPrice(), item.getPrice());

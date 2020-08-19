@@ -1,10 +1,12 @@
 package barcode.httpUtils;
 
-
 import org.springframework.context.event.EventListener;
 import org.springframework.security.core.session.SessionRegistry;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.support.RequestHandledEvent;
+
+import java.sql.Timestamp;
+import java.util.Date;
 
 @Component
 public class RequestEventListener {
@@ -21,8 +23,9 @@ public class RequestEventListener {
 //                .getSessionInformation(event.getSession().getId()) : null);
 //        final ServletContext context = getServletContext();
 //        final HttpSession session = (HttpSession) context.getAttribute(sessionId);
+        Date date = new Date();
 
-        System.out.println("-- RequestHandledEvent --");
+        System.out.println(new Timestamp(date.getTime()));
         System.out.println(e);
     }
 }

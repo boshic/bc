@@ -746,6 +746,20 @@ angular.module('inputs', ['asyncFilter'])
     .factory('itemFactory',['httpService', 'paneFactory', '$filter',
         function (httpService, paneFactory, $filter) {
 
+          let incompatableReqSymbols = ['%'];
+          let checkReqForIncompatableSymbols = (request) => {
+            if(typeof request === 'string') {
+              incompatableReqSymbols.forEach(symbol => {
+                let pos = request.indexOf(symbol);
+                while (pos > -1) {
+                  request = request.replace(symbol, "");
+                  pos = request.indexOf(symbol);
+                }
+              });
+            }
+            return request;
+          };
+
             let getNewBank = () => {return {name: ''};};
             let getNewSupplier = () => { return {name: ''};};
             let getNewBuyer = () => {return {name: '', bank: getNewBank()};};

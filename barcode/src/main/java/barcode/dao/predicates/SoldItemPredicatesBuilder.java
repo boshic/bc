@@ -4,6 +4,7 @@ import barcode.dao.entities.QComingItem;
 import barcode.dao.entities.QDocument;
 import barcode.dao.entities.QItem;
 import barcode.dao.entities.QSoldItem;
+import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import barcode.dao.utils.SoldItemFilter;
 
@@ -16,9 +17,11 @@ public class SoldItemPredicatesBuilder {
 
     private PredicateBuilder predicateBuilder = new PredicateBuilder();
 
-    public BooleanExpression buildByFilter(SoldItemFilter filter) {
+    public BooleanBuilder buildByFilter(SoldItemFilter filter) {
 
-        BooleanExpression predicate = soldItem.date.between(filter.getFromDate(), filter.getToDate());
+        BooleanBuilder predicate = new BooleanBuilder();
+
+            predicate.and(soldItem.date.between(filter.getFromDate(), filter.getToDate()));
 
         if (filter.getStock() != null && !filter.getStock().isAllowAll())
             predicate = predicate.and(comingItem.stock.id.eq(filter.getStock().getId()));

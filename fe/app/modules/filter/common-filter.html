@@ -1,9 +1,12 @@
 <span class="glyphicon glyphicon-filter" ng-click="toggleFilter()"></span>
 <ul class="coming-filter-settings-list" ng-show="filter.visible" ng-keyup="handleKeyup($event)">
 
-    <li class="filter-row">
+    <li style="text-align: right;" class="filter-row">
         <div class="stock-container-on-coming-filter">
-            <stock-picker allow-all="filter.allowAllStocks" stock="filter.stock"></stock-picker>
+            <stock-picker ng-hide="filter.inventoryModeEnabled"
+                    allow-all="filter.allowAllStocks"
+                          stock="filter.stock">
+            </stock-picker>
         </div>
         <button class="ok-btn-on-coming-filter"
                 ng-click="resetFilter()">
@@ -14,16 +17,13 @@
             Х
         </button>
     </li>
-    <!--ng-readonly="filter.calcTotal"-->
-    <li class="filter-row" ng-if = "filter.fromDate != null && filter.toDate != null">
 
+    <li class="filter-row" ng-if = "filter.fromDate != null && filter.toDate != null">
         <date-interval-picker from-date="filter.fromDate"
                               to-date="filter.toDate" picker-enabled="filter.inventoryModeEnabled">
         </date-interval-picker>
     </li>
 
-
-    <!--showInScrollMode-->
     <li class="filter-row"
         ng-if = "filter.showInScrollMode != null">
         <input class="filter-checkbox-input" type="checkbox" ng-model="filter.showInScrollMode"/>
@@ -56,6 +56,15 @@
         </label>
     </li>
 
+    <li class="filter-row"
+        ng-if = "filter.allowUploadingWithBlankFilter != null">
+        <input class="filter-checkbox-input" type="checkbox" ng-model="filter.allowUploadingWithBlankFilter"/>
+        <label style="margin-left: 5%" class="filter-checkbox-name">
+            Разрешить автоподбор с пустым фильтром: {{(filter.allowUploadingWithBlankFilter) ? "Да" : "Нет"}}
+        </label>
+    </li>
+
+
     <li class="filter-row" style="display: inline-flex;" ng-if = "filter.rowsOnPage != null">
         <input class="form-control" style="width: 30%;" type="number" min="1"
                ng-model="filter.rowsOnPage"/>
@@ -63,6 +72,7 @@
     </li>
 
     <li class="filter-row"
+        ng-hide="filter.stock.allowAll"
         ng-if = "filter.inventoryModeEnabled != null">
         <input class="filter-checkbox-input" type="checkbox" ng-model="filter.inventoryModeEnabled"/>
         <label style="margin-left: 5%" class="filter-checkbox-name">

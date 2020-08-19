@@ -84,8 +84,9 @@ public class ComingItemController {
 
     @GetMapping(path="/getItemForNewComing")
     public @ResponseBody
-    DtoItemForNewComing getItemForNewComing(@RequestParam String filter) {
-        return comingItemHandler.getItemForNewComing(filter);
+    DtoItemForNewComing getItemForNewComing(@RequestParam String filter,
+                                            @RequestParam Long stockId) {
+        return comingItemHandler.getItemForNewComing(filter, stockId);
     }
 
     // end c of coming API
