@@ -1,8 +1,6 @@
 package barcode.dao.predicates;
 
-import barcode.dao.entities.ComingItem;
-import barcode.dao.utils.ComingItemFilter;
-import barcode.dao.utils.SoldItemFilter;
+import barcode.utils.ComingItemFilter;
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.Predicate;
 

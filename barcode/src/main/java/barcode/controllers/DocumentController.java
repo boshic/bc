@@ -3,7 +3,7 @@ package barcode.controllers;
 
 import barcode.dao.entities.Document;
 import barcode.dao.services.DocumentHandler;
-import barcode.dao.utils.BasicFilter;
+import barcode.utils.BasicFilter;
 import barcode.dto.ResponseItem;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;

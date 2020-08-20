@@ -1,4 +1,4 @@
-package barcode.dao.utils;
+package barcode.utils;
 
 import barcode.dao.entities.*;
 

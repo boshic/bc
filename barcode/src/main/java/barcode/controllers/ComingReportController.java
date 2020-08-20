@@ -2,7 +2,7 @@ package barcode.controllers;
 
 import barcode.dao.entities.ComingReport;
 import barcode.dao.services.ComingReportHandler;
-import barcode.dao.utils.ComingItemFilter;
+import barcode.utils.ComingItemFilter;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 

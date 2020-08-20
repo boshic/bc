@@ -1,7 +1,6 @@
 package barcode.dao.services;
 
 import barcode.dao.entities.embeddable.InventoryRow;
-import barcode.dao.repositories.SoldItemsRepository;
 import barcode.enums.CommentAction;
 import barcode.enums.SystemMessage;
 import com.querydsl.core.BooleanBuilder;
@@ -10,9 +9,9 @@ import barcode.dao.entities.*;
 import barcode.dao.entities.embeddable.Comment;
 import barcode.dao.predicates.ComingItemPredicatesBuilder;
 import barcode.dao.repositories.ComingItemRepository;
-import barcode.dao.utils.BasicFilter;
-import barcode.dao.utils.ComingItemFilter;
-import barcode.dao.utils.DocumentFilter;
+import barcode.utils.BasicFilter;
+import barcode.utils.ComingItemFilter;
+import barcode.utils.DocumentFilter;
 import barcode.dto.DtoItemForNewComing;
 import barcode.dto.ResponseByComingItems;
 import barcode.dto.ResponseItem;

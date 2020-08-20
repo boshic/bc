@@ -5,8 +5,7 @@ import barcode.dao.entities.QDocument;
 import barcode.dao.entities.QItem;
 import barcode.dao.entities.QSoldItem;
 import com.querydsl.core.BooleanBuilder;
-import com.querydsl.core.types.dsl.BooleanExpression;
-import barcode.dao.utils.SoldItemFilter;
+import barcode.utils.SoldItemFilter;
 
 public class SoldItemPredicatesBuilder {
 

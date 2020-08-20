@@ -1,4 +1,4 @@
-package barcode.dao.utils;
+package barcode.utils;
 
 public class SearchCriteria {
     private String key;

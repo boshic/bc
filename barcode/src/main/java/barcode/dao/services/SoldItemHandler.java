@@ -1,10 +1,9 @@
 package barcode.dao.services;
 
 import barcode.dao.entities.embeddable.ItemComponent;
-import barcode.dao.utils.ComingItemFilter;
-import barcode.dto.DtoComingItemWithItemAndStock;
-import barcode.dto.DtoForGroupedSoldItemsByItem;
+import barcode.utils.ComingItemFilter;
 import barcode.enums.CommentAction;
+import barcode.utils.CommonUtils;
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.Tuple;
 import com.querydsl.core.types.*;
@@ -12,17 +11,12 @@ import barcode.dao.entities.*;
 import barcode.dao.entities.embeddable.Comment;
 import barcode.dao.predicates.SoldItemPredicatesBuilder;
 import barcode.dao.repositories.SoldItemsRepository;
-import barcode.dao.utils.BasicFilter;
-import barcode.dao.utils.SoldItemFilter;
+import barcode.utils.SoldItemFilter;
 import barcode.dto.ResponseBySoldItems;
 import barcode.dto.ResponseItem;
-import com.querydsl.core.types.dsl.BooleanPath;
-import com.querydsl.core.types.dsl.Expressions;
-import com.querydsl.core.types.dsl.PathBuilder;
-import com.querydsl.core.types.dsl.PathBuilderFactory;
+import com.querydsl.core.types.dsl.*;
+import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQuery;
-import org.hibernate.loader.PropertyPath;
-import org.springframework.beans.support.PagedListHolder;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
@@ -34,6 +28,8 @@ import java.math.RoundingMode;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+
+import static com.querydsl.core.types.dsl.Expressions.stringPath;
 
 @Service
 public class SoldItemHandler extends EntityHandlerImpl {
@@ -431,133 +427,74 @@ public class SoldItemHandler extends EntityHandlerImpl {
 
     }
 
-//    private ResponseBySoldItems groupByItems(
-//            List<SoldItem> soldItems, SoldItemFilter filter) {
-//
-//        Map<Item, List<SoldItem>> groupedSoldItems =
-//                soldItems.stream()
-//                        .collect(Collectors.groupingBy(n -> n.getComing().getItem()));
-//
-//        List<SoldItem> result = new ArrayList<SoldItem>();
-//
-//        groupedSoldItems.forEach(
-//                (item, sellings) -> {
-//                    result.add(new SoldItem(
-//                            new ComingItem(item, filter.getStock()),
-//                            sellings
-//                                    .stream()
-//                                    .map(SoldItem::getPrice)
-//                                    .reduce(BigDecimal::max).get(),
-//                            sellings
-//                                    .stream()
-//                                    .map(SoldItem::getQuantity)
-//                                    .reduce(BigDecimal.ZERO, BigDecimal::add),
-//                            comingItemHandler
-//                                    .getComingItemByIdAndStockId(item.getId(), filter.getStock().getId())
-//                                    .stream().map(ComingItem::getCurrentQuantity)
-//                                    .reduce(BigDecimal.ZERO, BigDecimal::add)
-//                            ));
-//                }
-//        );
-//
-//        sortGroupedItems(result, filter.getSortDirection(),
-//                SoldItemFilter.SoldItemSortingStrategies
-//                        .valueOf(filter.getSortField()
-//                                .replace(".","_")
-//                                .toUpperCase()));
-//
-//        PagedListHolder<SoldItem> page = new PagedListHolder<SoldItem>(result);
-//        page.setPageSize(filter.getRowsOnPage());
-//        page.setPage(filter.getPage() - 1);
-//
-//        ResponseBySoldItems<SoldItem> ribysi =
-//                new ResponseBySoldItems<SoldItem>("сгрупированные данные", page.getPageList(),
-//                        true, page.getPageCount());
-//
-//        if(filter.getCalcTotal())
-//            ribysi.calcTotalsDepr(soldItems);
-//
-//        return ribysi;
-//    }
-
     private ResponseBySoldItems groupByItemsNew(
-        AbstractEntityManager abstractEntityManager,
         BooleanBuilder predicate,
-        SoldItemFilter filter) {
+        SoldItemFilter filter,
+        PageRequest pageRequest) {
 
-        List<DtoForGroupedSoldItemsByItem> result = new ArrayList<>();
+        List<SoldItem> result = new ArrayList<>();
         QSoldItem soldItem = QSoldItem.soldItem;
         QComingItem coming = QSoldItem.soldItem.coming;
         QComingItem comingItem = QComingItem.comingItem;
 
-//        Path<Object> fieldPath =  Expressions.path(Object.class, soldItem, filter.getSortField());
-//        PathBuilder<T> fieldPath = new PathBuilder<T>(objectClass, filter.get);
-//        Order order = Order.valueOf(filter.getSortDirection());
-//        BooleanPath fieldPath = Expressions.booleanPath(filter.getSortField());
-//        OrderSpecifier<?> orderSpecifier = fieldPath;
+        Path<SoldItem> fieldPath =  Expressions.path(SoldItem.class, soldItem, filter.getSortField());
+        Order order = Order.valueOf(filter.getSortDirection());
+        OrderSpecifier orderSpecifier;
 
-//        Expression<?> sortPropertyExpression = new PathBuilderFactory().create(typeInfo.getType());
-//        String dotPath = aliasRegistry.getDotPath(sort);
-//        PropertyPath path = PropertyPath.from(dotPath, typeInfo);
-//        sortPropertyExpression = Expressions.path(path.getType(), (Path<?>) sortPropertyExpression, path.toDotPath());
-//
-//        PathBuilder<SoldItem> fieldPath = new PathBuilder<SoldItem>(SoldItem.class, "soldItem");
-//        OrderSpecifier<?> orderSpecifier = new OrderSpecifier(order, fieldPath.get(filter.getSortField()));
-//            fieldPath.getComparable(filter.getSortField(), Comparable.class).asc();
+        try {
+            SoldItemFilter.SortingFieldsForGroupedByItemSoldItems
+                .valueOf(CommonUtils.toEnumStyle(filter.getSortField()));
+        } catch (IllegalArgumentException e) {
+            filter.setSortField(
+                SoldItemFilter.SortingFieldsForGroupedByItemSoldItems.AVAILQUANTITYBYEAN.getValue());
+        }
 
-
-//        Map<Item, List<SoldItem>> groupedSoldItems =
-//            new JPAQuery<>(abstractEntityManager.getEntityManager())
-//                .from(soldItem).where(predicate)
-//                .groupBy(soldItem.coming.item)
-//                .select(soldItem.coming.item, list(soldItem))
-//                .offset(0L)
-//                .limit(2L)
-//                .transform(groupBy(soldItem.coming.item).as(list(soldItem)));
-
-//                .stream()
-//                .collect(Collectors.groupingBy(n -> n.getComing().getItem()));
-
-        JPAQuery<BigDecimal> availQuantityByEan =  new JPAQuery<BigDecimal>(abstractEntityManager.getEntityManager())
-            .select(comingItem.currentQuantity.sum())
-            .from(comingItem)
-            .where(coming.item.id.eq(comingItem.item.id).and(coming.stock.id.eq(filter.getStock().getId())));
+        orderSpecifier = (filter.getSortField().contains(".")) ?
+            new OrderSpecifier(order, fieldPath)
+            : new OrderSpecifier(order, stringPath(filter.getSortField()));
 
         JPAQuery<Tuple> query =  new JPAQuery<Tuple>(abstractEntityManager.getEntityManager())
-            .select(coming.item, soldItem.quantity.sum(), soldItem.price.max(), availQuantityByEan)
+            .select(
+                coming.item,
+                soldItem.quantity.sum().as(SoldItemFilter.SortingFieldsForGroupedByItemSoldItems.QUANTITY.getValue()),
+                soldItem.price.max().as(SoldItemFilter.SortingFieldsForGroupedByItemSoldItems.PRICE.getValue()),
+                ExpressionUtils.as(
+                    JPAExpressions
+                        .select(comingItem.currentQuantity.sum()).from(comingItem)
+                        .where(coming.item.id.eq(comingItem.item.id)),
+                    SoldItemFilter.SortingFieldsForGroupedByItemSoldItems.AVAILQUANTITYBYEAN.getValue()
+                )
+            )
             .from(soldItem).where(predicate)
-            .groupBy(coming.item);
-//            .orderBy(availQuantityByEan.exists().asc());
-//            .offset(pageRequest.getOffset())
-//            .limit(pageRequest.getPageSize());
+            .groupBy(coming.item)
+            .orderBy(orderSpecifier)
+            .offset(pageRequest.getOffset())
+            .limit(pageRequest.getPageSize());
 
         List<Tuple> groupedSoldItems = query.fetch();
 
         groupedSoldItems.forEach(item -> {
             result.add(
-                new DtoForGroupedSoldItemsByItem(
-                    new DtoComingItemWithItemAndStock(item.get(coming.item), filter.getStock()),
-                    item.get(soldItem.price.max()),
-                    item.get(soldItem.quantity.sum()),
-                    item.get(availQuantityByEan)
+                new SoldItem(
+                    new ComingItem(
+                        item.get(coming.item), filter.getStock()),
+                    item.get(2, BigDecimal.class),
+                    item.get(1, BigDecimal.class),
+                    item.get(3, BigDecimal.class)
                 )
             );
         });
 
-        sortGroupedItems(
-            result,
-            filter.getSortDirection(),
-            SoldItemFilter
-                .SoldItemSortingStrategies
-                .valueOf(filter.getSortField().replace(".","_").toUpperCase()));
+        return getResults(new PageImpl<SoldItem>(result, pageRequest, query.fetchCount()), filter, predicate);
+    }
 
-        PagedListHolder<DtoForGroupedSoldItemsByItem> page = new PagedListHolder<>(result);
-        page.setPageSize(filter.getRowsOnPage());
-        page.setPage(filter.getPage() - 1);
+    private ResponseBySoldItems<SoldItem>
+    getResults(Page<SoldItem> page,
+               SoldItemFilter filter,
+               BooleanBuilder predicate) {
 
-        ResponseBySoldItems<DtoForGroupedSoldItemsByItem> ribysi =
-            new ResponseBySoldItems<>("сгрупированные данные", page.getPageList(),
-                true, page.getPageCount());
+        ResponseBySoldItems<SoldItem> ribysi =
+            new ResponseBySoldItems<>(ELEMENTS_FOUND, page.getContent(), true, page.getTotalPages());
 
         if(filter.getCalcTotal())
             ribysi.calcTotals(abstractEntityManager, predicate);
@@ -573,7 +510,7 @@ public class SoldItemHandler extends EntityHandlerImpl {
         PageRequest pageRequest = new PageRequest(filter.getPage() - 1, filter.getRowsOnPage(), sort);
 
         if(filter.getGroupByItems())
-            return groupByItemsNew(abstractEntityManager, predicate , filter);
+            return groupByItemsNew(predicate , filter, pageRequest);
 
         Page<SoldItem> page =  soldItemsRepository.findAll(predicate, pageRequest);
 
@@ -581,13 +518,15 @@ public class SoldItemHandler extends EntityHandlerImpl {
 
         if (result.size() > 0) {
 
-            ResponseBySoldItems<SoldItem> ribysi =
-                    new ResponseBySoldItems<>(ELEMENTS_FOUND, result, true, page.getTotalPages());
+            return getResults(page, filter, predicate);
 
-            if(filter.getCalcTotal())
-                ribysi.calcTotals(abstractEntityManager, sipb.buildByFilter(filter));
-
-            return ribysi;
+//            ResponseBySoldItems<SoldItem> ribysi =
+//                    new ResponseBySoldItems<>(ELEMENTS_FOUND, result, true, page.getTotalPages());
+//
+//            if(filter.getCalcTotal())
+//                ribysi.calcTotals(abstractEntityManager, predicate);
+//
+//            return ribysi;
         }
 
         return new ResponseBySoldItems<SoldItem>(NOTHING_FOUND, new ArrayList<>(), false, 0);

@@ -4,14 +4,13 @@ package barcode.controllers;
 import barcode.dao.entities.embeddable.Comment;
 import barcode.dao.entities.SoldItem;
 import barcode.dao.services.SoldItemHandler;
-import barcode.dao.utils.ComingItemFilter;
-import barcode.dao.utils.SoldItemFilter;
+import barcode.utils.ComingItemFilter;
+import barcode.utils.SoldItemFilter;
 import barcode.dto.ResponseItem;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Set;
 
 @Controller
 @RequestMapping(path="/")

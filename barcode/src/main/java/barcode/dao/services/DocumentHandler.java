@@ -5,8 +5,8 @@ import barcode.dao.entities.Bank;
 import barcode.dao.entities.Document;
 import barcode.dao.entities.QDocument;
 import barcode.dao.repositories.DocumentRepository;
-import barcode.dao.utils.BasicFilter;
-import barcode.dao.utils.DocumentFilter;
+import barcode.utils.BasicFilter;
+import barcode.utils.DocumentFilter;
 import barcode.dto.ResponseItem;
 import org.springframework.stereotype.Service;
 

@@ -2,8 +2,8 @@ package barcode.controllers;
 
 import barcode.dao.entities.Invoice;
 import barcode.dao.services.InvoiceHandler;
-import barcode.dao.utils.BasicFilter;
-import barcode.dao.utils.SoldItemFilter;
+import barcode.utils.BasicFilter;
+import barcode.utils.SoldItemFilter;
 import barcode.dto.DtoInvoice;
 import barcode.dto.InvoiceHeader;
 import barcode.dto.ResponseItem;

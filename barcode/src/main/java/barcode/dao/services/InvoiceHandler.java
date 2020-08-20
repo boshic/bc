@@ -1,23 +1,19 @@
 package barcode.dao.services;
 
-import barcode.dao.entities.basic.BasicOperationEntity;
-import barcode.dao.entities.basic.BasicOperationWithCommentEntity;
-import barcode.dao.entities.embeddable.Comment;
 import barcode.dao.entities.embeddable.InvoiceRow;
 import barcode.dao.entities.Invoice;
 import barcode.dao.entities.QInvoice;
 import barcode.dao.entities.SoldItem;
 import barcode.dao.predicates.InvoicesPredicatesBuilder;
 import barcode.dao.repositories.InvoiceRepository;
-import barcode.dao.utils.BasicFilter;
-import barcode.dao.utils.SoldItemFilter;
+import barcode.utils.BasicFilter;
+import barcode.utils.SoldItemFilter;
 import barcode.dto.*;
 import barcode.enums.CommentAction;
 import barcode.enums.SystemMessage;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
-import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;

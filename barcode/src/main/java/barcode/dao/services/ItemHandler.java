@@ -5,18 +5,15 @@ import barcode.dao.entities.QComingItem;
 import barcode.dao.entities.QItem;
 import barcode.dao.entities.embeddable.InventoryRow;
 import barcode.dao.predicates.ItemPredicateBuilder;
-import barcode.dao.predicates.ItemSectionPredicateBuilder;
 import barcode.dao.repositories.ComingItemRepository;
 import barcode.dao.repositories.ItemRepository;
-import barcode.dao.utils.ComingItemFilter;
+import barcode.utils.ComingItemFilter;
 import barcode.dto.ResponseItem;
 import com.querydsl.core.types.Predicate;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 

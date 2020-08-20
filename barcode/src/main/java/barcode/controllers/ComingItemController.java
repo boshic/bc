@@ -2,7 +2,7 @@ package barcode.controllers;
 
 import barcode.dao.entities.ComingItem;
 import barcode.dao.services.ComingItemHandler;
-import barcode.dao.utils.ComingItemFilter;
+import barcode.utils.ComingItemFilter;
 import barcode.dto.DtoItemForNewComing;
 import barcode.dto.ResponseItem;
 import org.springframework.stereotype.Controller;

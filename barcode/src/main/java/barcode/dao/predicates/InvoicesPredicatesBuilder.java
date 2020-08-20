@@ -6,7 +6,7 @@ import barcode.dao.entities.embeddable.QInvoiceRow;
 import barcode.dao.services.AbstractEntityManager;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import barcode.dao.services.InvoiceHandler;
-import barcode.dao.utils.SoldItemFilter;
+import barcode.utils.SoldItemFilter;
 
 /**
  * Created by xlinux on 20.11.18.

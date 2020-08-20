@@ -7,7 +7,7 @@ import barcode.dao.entities.ComingReport;
 import barcode.dao.entities.embeddable.ComingReportRow;
 import barcode.dao.repositories.ComingItemRepository;
 import barcode.dao.repositories.ComingReportRepository;
-import barcode.dao.utils.ComingItemFilter;
+import barcode.utils.ComingItemFilter;
 import barcode.dto.ResponseItem;
 import org.springframework.stereotype.Service;
 

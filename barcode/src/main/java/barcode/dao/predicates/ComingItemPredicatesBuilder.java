@@ -1,16 +1,12 @@
 package barcode.dao.predicates;
 
-import barcode.api.EntityHandler;
 import barcode.dao.entities.*;
 import barcode.dao.entities.embeddable.QComment;
 import barcode.dao.services.AbstractEntityManager;
-import barcode.dao.services.EntityHandlerImpl;
-import barcode.enums.CommentAction;
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.Predicate;
 import com.querydsl.core.types.dsl.BooleanExpression;
-import barcode.dao.utils.ComingItemFilter;
-import com.querydsl.jpa.impl.JPAQuery;
+import barcode.utils.ComingItemFilter;
 
 import java.util.ArrayList;
 import java.util.List;

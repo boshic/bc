@@ -2,7 +2,7 @@ package barcode.tools.filter;
 
 import barcode.dao.entities.ComingItem;
 import barcode.dao.entities.Supplier;
-import barcode.dao.utils.SearchCriteria;
+import barcode.utils.SearchCriteria;
 import org.springframework.data.jpa.domain.Specification;
 
 import javax.persistence.criteria.*;

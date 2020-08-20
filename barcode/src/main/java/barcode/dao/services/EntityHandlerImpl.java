@@ -7,11 +7,10 @@ import barcode.dao.entities.basic.BasicNamedEntity;
 import barcode.dao.entities.basic.BasicOperationWithCommentEntity;
 import barcode.dao.entities.embeddable.Comment;
 
-import barcode.dao.utils.BasicFilter;
-import barcode.dao.utils.SortingStrategy;
+import barcode.utils.BasicFilter;
+import barcode.utils.SortingStrategy;
 import barcode.dto.ResponseItem;
 import barcode.enums.CommentAction;
-import barcode.enums.SystemMessage;
 import com.querydsl.core.types.Predicate;
 import org.springframework.data.querydsl.QueryDslPredicateExecutor;
 import org.springframework.data.repository.CrudRepository;
@@ -19,8 +18,6 @@ import org.springframework.data.repository.CrudRepository;
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.*;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 /**
  * Created by xlinux on 30.07.18.
