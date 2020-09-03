@@ -1,3 +1,8 @@
+<span  class="input-notification"
+       ng-show="item.debt">Долг:<span>{{item.debt}}</span></span>
+<span  class="input-notification" ng-show="item.sellByComingPrices">
+            этому покупателю списывается по учетным ценам!
+</span>
 <item-input-items-block
         input-id="inputId" item = "item" items = "items"
         requests-quantity ="requestParams.requestsQuantity"
@@ -7,15 +12,6 @@
         change-item= "changeItem"
         input-name="Покупатель">
 </item-input-items-block>
-<div class="input-notification" style="right: 0;">
-    <span ng-show="item.debt">Долг:<span>{{item.debt}}</span></span>
-</div>
-<div class="input-notification">
-        <span ng-show="item.sellByComingPrices">
-            этому покупателю списывается по учетным ценам!
-        </span>
-</div>
-
 <add-edit-buyer
         buyer="item" modal-visible="addEditModalVisible"
         user="user" get-items="selectItem" request-params="requestParams">

@@ -5,7 +5,8 @@ import java.util.List;
 /**
  * Created by xlinux on 18.03.20.
  */
-public interface SortingStrategy<T> {
+public interface SortingStrategy {
 
-    void sort(List<T> items);
+    void checkSortField(String field);
+//    void sort(List<T> items);
 }

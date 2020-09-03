@@ -27,6 +27,9 @@ public class ComingItem extends BasicOperationWithCommentEntity{
     @Column(name = "sum", columnDefinition="Decimal(12,2) default '0.00'")
     private BigDecimal sum;
 
+    @Transient
+    private BigDecimal inventorySum;
+
     @Column(columnDefinition="Decimal(19,3)")
     private BigDecimal currentQuantity;
 
@@ -93,18 +96,16 @@ public class ComingItem extends BasicOperationWithCommentEntity{
                       Stock stock,
                       BigDecimal sum,
                       BigDecimal quantity,
-                      BigDecimal priceIn,
-                      BigDecimal priceOut,
                       BigDecimal currentQuantity,
+                      BigDecimal inventorySum,
                       Date lastChangeDate) {
 
         this.stock = stock;
         this.item = item;
         this.sum = sum;
         this.quantity = quantity;
-        this.priceIn = priceIn;
-        this.priceOut = priceOut;
         this.currentQuantity = currentQuantity;
+        this.inventorySum = inventorySum;
         this.lastChangeDate = lastChangeDate;
     }
 
@@ -171,5 +172,13 @@ public class ComingItem extends BasicOperationWithCommentEntity{
 
     public void setSum(BigDecimal sum) {
         this.sum = sum;
+    }
+
+    public BigDecimal getInventorySum() {
+        return inventorySum;
+    }
+
+    public void setInventorySum(BigDecimal inventorySum) {
+        this.inventorySum = inventorySum;
     }
 }

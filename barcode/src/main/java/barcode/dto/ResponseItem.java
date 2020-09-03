@@ -1,9 +1,4 @@
 package barcode.dto;
-
-import barcode.dao.entities.ComingItem;
-import barcode.dao.entities.Invoice;
-import barcode.dao.entities.SoldItem;
-
 import java.util.List;
 
 public class ResponseItem<T> {
@@ -25,47 +20,47 @@ public class ResponseItem<T> {
 
     public ResponseItem(String text, List<T> entityItems, Boolean success) {
         this(text, success);
-        prepareItemsForTransfer(entityItems);
+//        prepareItemsForTransfer(entityItems);
         this.entityItems = entityItems;
     }
 
     public ResponseItem(String text, Boolean success, T entityItem) {
         this(text, success);
-        prepareItemForTransfer(entityItem);
+//        prepareItemForTransfer(entityItem);
         this.entityItem = entityItem;
     }
 
-    public void packItems() {
+//    public void packItems() {
+//
+//        if(this.entityItem != null)
+//            prepareItemForTransfer(this.entityItem);
+//
+//        if(this.entityItems != null && this.entityItems.size() > 0)
+//            prepareItemsForTransfer(this.entityItems);
+//
+//    }
 
-        if(this.entityItem != null)
-            prepareItemForTransfer(this.entityItem);
+//    private void prepareItemsForTransfer (List<T> objs) {
+//
+//        for(Object o: objs)
+//            prepareItemForTransfer(o);
+//
+//    }
 
-        if(this.entityItems != null && this.entityItems.size() > 0)
-            prepareItemsForTransfer(this.entityItems);
-
-    }
-
-    private void prepareItemsForTransfer (List<T> objs) {
-
-        for(Object o: objs)
-            prepareItemForTransfer(o);
-
-    }
-
-    private void prepareItemForTransfer(Object o) {
-
-        if (o instanceof ComingItem)
-            if (((ComingItem) o).getUser() != null)
-                ((ComingItem) o).getUser().setStamp(null);
-
-        if (o instanceof SoldItem)
-            if (((SoldItem) o).getUser() != null)
-                ((SoldItem) o).getUser().setStamp(null);
-
-        if (o instanceof Invoice)
-            if (((Invoice) o).getUser() != null)
-            ((Invoice) o).getUser().setStamp(null);
-    }
+//    private void prepareItemForTransfer(Object o) {
+//
+////        if (o instanceof ComingItem)
+////            if (((ComingItem) o).getUser() != null)
+////                ((ComingItem) o).getUser().setStamp(null);
+////
+////        if (o instanceof SoldItem)
+////            if (((SoldItem) o).getUser() != null)
+////                ((SoldItem) o).getUser().setStamp(null);
+////
+////        if (o instanceof Invoice)
+////            if (((Invoice) o).getUser() != null)
+////            ((Invoice) o).getUser().setStamp(null);
+//    }
 
 
     public String getText() {return this.text;}

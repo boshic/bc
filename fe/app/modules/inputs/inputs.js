@@ -624,7 +624,6 @@ angular.module('inputs', ['asyncFilter'])
                 "ng-model='$ctrl.dateValue'/>",
         controller: function() {}
     })
-
     .component( "dateIntervalPicker", {
         bindings: {
             fromDate: '=',

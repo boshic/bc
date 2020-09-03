@@ -9,77 +9,95 @@ import java.util.List;
 
 public class ComingItemFilter extends  BasicFilter {
 
-    public enum ComingItemSortingStrategies implements SortingStrategy<ComingItem>{
+//    public enum ComingItemSortingStrategies implements SortingStrategy<ComingItem>{
+//
+//        ITEM_NAME {
+//            @Override
+//            public void sort(List<ComingItem> comingItems) {
+//                comingItems.sort(Comparator.comparing(ComingItem::getItem, (i1, i2) -> {
+//                    return i1.getName().compareToIgnoreCase(i2.getName());
+//                }));
+//            }
+//        },
+//        ITEM_SECTION_NAME {
+//            @Override
+//            public void sort(List<ComingItem> comingItems) {
+//                comingItems.sort(Comparator.comparing(ComingItem::getItem, (i1, i2) -> {
+//                    return i1.getSection().getName().compareToIgnoreCase(i2.getSection().getName());
+//                }));
+//            }
+//        },
+//        STOCK_NAME {
+//            @Override
+//            public void sort(List<ComingItem> comingItems) {
+//                comingItems.sort(Comparator.comparing(ComingItem::getStock, (s1, s2) -> {
+//                    return s1.getName().compareToIgnoreCase(s2.getName());
+//                }));
+//            }
+//        },
+//        SUM {
+//            @Override
+//            public void sort(List<ComingItem> comingItems) {
+//                comingItems.sort(Comparator.comparing(ComingItem::getSum));
+//            }
+//        },
+//        QUANTITY {
+//            @Override
+//            public void sort(List<ComingItem> comingItems) {
+//                comingItems.sort(Comparator.comparing(ComingItem::getQuantity));
+//            }
+//        },
+//        CURRENTQUANTITY {
+//            @Override
+//            public void sort(List<ComingItem> comingItems) {
+//                comingItems.sort(Comparator.comparing(ComingItem::getCurrentQuantity));
+//            }
+//        },
+//        CURRENTSUM {
+//            @Override
+//            public void sort(List<ComingItem> comingItems) {
+//                comingItems.sort(Comparator.comparing(ComingItem::new, (c1, c2) -> {
+//                    return (c1.getCurrentQuantity()
+//                                .multiply(c1.getSum().divide(c1.getQuantity(), 5, RoundingMode.CEILING))
+//                                .setScale(2, BigDecimal.ROUND_HALF_UP).subtract(c1.getSum()))
+//                            .compareTo(
+//                                    (c2.getCurrentQuantity()
+//                                        .multiply(c2.getSum().divide(c2.getQuantity(), 5, RoundingMode.CEILING))
+//                                            .setScale(2, BigDecimal.ROUND_HALF_UP).subtract(c2.getSum())
+//                            ));
+//                }));
+//            }
+//        },
+//        LASTCHANGEDATE {
+//            @Override
+//            public void sort(List<ComingItem> comingItems) {
+//                comingItems.sort(Comparator.comparing(ComingItem::getLastChangeDate));
+//            }
+//        },
+//        DOC_DATE {
+//            @Override
+//            public void sort(List<ComingItem> comingItems) {}
+//        };
+//    }
 
-        ITEM_NAME {
-            @Override
-            public void sort(List<ComingItem> comingItems) {
-                comingItems.sort(Comparator.comparing(ComingItem::getItem, (i1, i2) -> {
-                    return i1.getName().compareToIgnoreCase(i2.getName());
-                }));
-            }
-        },
-        ITEM_SECTION_NAME {
-            @Override
-            public void sort(List<ComingItem> comingItems) {
-                comingItems.sort(Comparator.comparing(ComingItem::getItem, (i1, i2) -> {
-                    return i1.getSection().getName().compareToIgnoreCase(i2.getSection().getName());
-                }));
-            }
-        },
-        STOCK_NAME {
-            @Override
-            public void sort(List<ComingItem> comingItems) {
-                comingItems.sort(Comparator.comparing(ComingItem::getStock, (s1, s2) -> {
-                    return s1.getName().compareToIgnoreCase(s2.getName());
-                }));
-            }
-        },
-        SUM {
-            @Override
-            public void sort(List<ComingItem> comingItems) {
-                comingItems.sort(Comparator.comparing(ComingItem::getSum));
-            }
-        },
-        QUANTITY {
-            @Override
-            public void sort(List<ComingItem> comingItems) {
-                comingItems.sort(Comparator.comparing(ComingItem::getQuantity));
-            }
-        },
-        CURRENTQUANTITY {
-            @Override
-            public void sort(List<ComingItem> comingItems) {
-                comingItems.sort(Comparator.comparing(ComingItem::getCurrentQuantity));
-            }
-        },
-        CURRENTSUM {
-            @Override
-            public void sort(List<ComingItem> comingItems) {
-                comingItems.sort(Comparator.comparing(ComingItem::new, (c1, c2) -> {
-                    return (c1.getCurrentQuantity()
-                                .multiply(c1.getSum().divide(c1.getQuantity(), 5, RoundingMode.CEILING))
-                                .setScale(2, BigDecimal.ROUND_HALF_UP).subtract(c1.getSum()))
-                            .compareTo(
-                                    (c2.getCurrentQuantity()
-                                        .multiply(c2.getSum().divide(c2.getQuantity(), 5, RoundingMode.CEILING))
-                                            .setScale(2, BigDecimal.ROUND_HALF_UP).subtract(c2.getSum())
-                            ));
-                }));
-            }
-        },
-        LASTCHANGEDATE {
-            @Override
-            public void sort(List<ComingItem> comingItems) {
-                comingItems.sort(Comparator.comparing(ComingItem::getLastChangeDate));
-            }
-        },
-        DOC_DATE {
-            @Override
-            public void sort(List<ComingItem> comingItems) {}
-        };
+    public enum SortingFieldsForInventoryRows implements SortingStrategy{
+        ITEM_NAME("item.name"),
+        STOCK_NAME("stock.name"),
+        ITEM_SECTION_NAME("item.section.name"),
+        SUMM("summ"),
+        CURRENTQUANTITY("currentQuantity"),
+        QUANTITY("quantity"),
+        LASTINVENTORYCHANGEDATE("lastInventoryChangeDate"),
+        INVENTORYSUM("inventorySum");
 
-//        public abstract void sort(List<ComingItem> comingItems);
+        private String value;
+        SortingFieldsForInventoryRows(String value) {this.value = value;}
+        public String getValue() {return this.value;}
+
+        @Override
+        public void checkSortField (String field) {
+            SortingFieldsForInventoryRows.valueOf(CommonUtils.toEnumStyle(field));
+        }
     }
 
     private String ean;

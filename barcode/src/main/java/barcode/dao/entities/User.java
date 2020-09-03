@@ -1,6 +1,7 @@
 package barcode.dao.entities;
 
 import barcode.dao.entities.basic.BasicNamedEntity;
+import barcode.dao.entities.embeddable.InventoryRow;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import barcode.dao.entities.embeddable.AllowedStock;
@@ -35,6 +36,10 @@ public class User extends BasicNamedEntity{
     @JsonIgnore
     private Set<SoldItem> sellings;
 
+//    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+//    @JsonIgnore
+//    private Set<InventoryRow> inventoryRows;
+
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     @JsonIgnore
     private Set<Invoice> invoices;
@@ -58,8 +63,11 @@ public class User extends BasicNamedEntity{
 
     @Lob
     @Column(name = "stamp_image", columnDefinition="mediumblob")
-//    @JsonIgnore
+    @JsonIgnore
     private byte[] stamp;
+
+    @Transient
+    private byte[] stampForInvoices;
 
     public byte[] getStamp() {
         return stamp;
@@ -162,5 +170,17 @@ public class User extends BasicNamedEntity{
 
     public String getVendor() {
         return vendor;
+    }
+
+    public void setVendor(String vendor) {
+        this.vendor = vendor;
+    }
+
+    public byte[] getStampForInvoices() {
+        return stampForInvoices;
+    }
+
+    public void setStampForInvoices(byte[] stampForInvoices) {
+        this.stampForInvoices = stampForInvoices;
     }
 }

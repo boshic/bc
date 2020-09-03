@@ -1,10 +1,14 @@
 package barcode.dao.services;
 
 import barcode.dao.entities.embeddable.InventoryRow;
+import barcode.dao.entities.embeddable.QInventoryRow;
+import barcode.dao.entities.embeddable.QInvoiceRow;
 import barcode.enums.CommentAction;
 import barcode.enums.SystemMessage;
+import barcode.utils.CommonUtils;
 import com.querydsl.core.BooleanBuilder;
-import com.querydsl.core.types.Predicate;
+import com.querydsl.core.Tuple;
+import com.querydsl.core.types.*;
 import barcode.dao.entities.*;
 import barcode.dao.entities.embeddable.Comment;
 import barcode.dao.predicates.ComingItemPredicatesBuilder;
@@ -15,23 +19,30 @@ import barcode.utils.DocumentFilter;
 import barcode.dto.DtoItemForNewComing;
 import barcode.dto.ResponseByComingItems;
 import barcode.dto.ResponseItem;
+import com.querydsl.core.types.dsl.*;
+import com.querydsl.jpa.JPAExpressions;
+import com.querydsl.jpa.JPQLQuery;
+import com.querydsl.jpa.impl.JPAQuery;
 import org.springframework.beans.support.PagedListHolder;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.EntityManager;
+import javax.persistence.Query;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import static com.querydsl.core.types.dsl.Expressions.stringPath;
+
 @Service
 public class ComingItemHandler extends EntityHandlerImpl {
 
     public static ComingItemPredicatesBuilder cipb = new ComingItemPredicatesBuilder();
-
-//    public static QComingItem qComingItem = QComingItem.comingItem;
 
     private BasicFilter filter;
 
@@ -515,80 +526,157 @@ public class ComingItemHandler extends EntityHandlerImpl {
         return responseItem;
     }
 
-    private ResponseByComingItems getInventoryItems(List<ComingItem> comingItems, ComingItemFilter filter) {
+//    private ResponseByComingItems getInventoryItems(List<ComingItem> comingItems, ComingItemFilter filter) {
+//
+//        Map<Item, List<ComingItem>> groupedItems = comingItems.stream()
+//                                                    .collect(Collectors.groupingBy(ComingItem::getItem));
+//
+//        List<ComingItem> result = new ArrayList<ComingItem>();
+//
+//        //item, stock, sum, quantity, currentQuantity
+//        groupedItems.forEach((item, comings) -> {
+//            InventoryRow inventoryRow
+//                = itemHandler.getInventoryRowByStock(item, filter.getStock().getId());
+//            ComingItem coming = new ComingItem(
+//                    item,
+//                    filter.getStock(),
+//                    comings.stream()
+//                            .map(ComingItem::getSum)
+//                            .reduce(BigDecimal.ZERO, BigDecimal::add),
+//                    comings.stream()
+//                            .map(ComingItem::getCurrentQuantity)
+//                            .reduce(BigDecimal.ZERO, BigDecimal::add),
+//                    comings.stream().max(Comparator.comparing(ComingItem::getPriceIn)).get().getPriceIn(),
+//                    comings.stream().max(Comparator.comparing(ComingItem::getPriceOut)).get().getPriceOut(),
+//                    inventoryRow == null ? BigDecimal.ZERO : inventoryRow.getQuantity(),
+//                    inventoryRow == null ? null : inventoryRow.getDate()
+//            );
+//
+//            if(coming.getSum().compareTo(BigDecimal.ZERO) > 0)
+//                coming.setPriceIn(
+//                    coming.getQuantity().compareTo(BigDecimal.ZERO) > 0 ?
+//                    coming.getSum().divide(coming.getQuantity(), 5, RoundingMode.CEILING)
+//                        : BigDecimal.ZERO
+//                );
+//            result.add(coming);
+//        });
+//
+//        sortGroupedItems(result,
+//                         filter.getSortDirection(),
+//                         ComingItemFilter
+//                                 .ComingItemSortingStrategies
+//                                 .valueOf(filter.getSortField()
+//                                         .replace(".","_")
+//                                         .toUpperCase()));
+//
+////
+//        PagedListHolder<ComingItem> page = new PagedListHolder<ComingItem>(result);
+//        page.setPageSize(filter.getRowsOnPage());
+//        page.setPage(filter.getPage() - 1);
+//
+//        ResponseByComingItems ribyci =
+//                new ResponseByComingItems(ELEMENTS_FOUND, page.getPageList(),
+//                        true, page.getPageCount());
+//
+//        if(filter.getCalcTotal())
+//            ribyci.calcInventoryTotals(result);
+////
+//        return ribyci;
+//    }
 
-        Map<Item, List<ComingItem>> groupedItems = comingItems.stream()
-                                                    .collect(Collectors.groupingBy(ComingItem::getItem));
+    private ResponseByComingItems getInventoryItemsNew(
+        BooleanBuilder predicate,
+        ComingItemFilter filter,
+        PageRequest pageRequest) {
 
-        List<ComingItem> result = new ArrayList<ComingItem>();
+        List<ComingItem> result = new ArrayList<>();
+        Long stockId = filter.getStock().getId();
 
-        //item, stock, sum, quantity, currentQuantity
-        groupedItems.forEach((item, comings) -> {
-            InventoryRow inventoryRow = itemHandler.getInventoryRowByStock(item, filter.getStock().getId());
-            ComingItem coming = new ComingItem(
-                    item,
+        QComingItem comingItem = QComingItem.comingItem;
+        QInventoryRow inventoryRow = QInventoryRow.inventoryRow;
+
+        EntityManager em = abstractEntityManager.getEntityManager();
+
+        Expression<BigDecimal> casePriceIn = new CaseBuilder()
+            .when(comingItem.sum.sum().gt(0)
+                .and(comingItem.currentQuantity.sum().gt(0)))
+            .then(comingItem.sum.sum().divide(comingItem.currentQuantity.sum()))
+            .when(comingItem.sum.sum().gt(0)
+                .and(comingItem.currentQuantity.sum().loe(0)))
+            .then(BigDecimal.ZERO)
+            .otherwise(comingItem.priceIn.max());
+
+//        try {
+//            ComingItemFilter.SortingFieldsForInventoryRows.valueOf(CommonUtils.toEnumStyle(filter.getSortField()));
+//        } catch (IllegalArgumentException e) {
+//            filter.setSortField(ComingItemFilter.SortingFieldsForInventoryRows.INVENTORYSUM.getValue());
+//        }
+
+        filter.validateFilterSortField(filter, filter.getSortField(),
+            ComingItemFilter.SortingFieldsForInventoryRows.INVENTORYSUM.getValue(),
+            ComingItemFilter.SortingFieldsForInventoryRows.SUMM);
+
+
+        OrderSpecifier orderSpecifier = filter.getOrderSpec(filter.getSortField(),
+            filter.getSortDirection(), comingItem, QComingItem.class);
+
+        JPAQuery<Tuple> query =  new JPAQuery<Tuple>(em)
+            .select(
+                comingItem.item,
+                comingItem.sum.sum().as("summ"),
+                comingItem.currentQuantity.sum().as("quantity"),
+                ExpressionUtils.as(
+                    cipb.getSubQueryFromInventoryRowsByComingAndStockId(
+                            comingItem, inventoryRow, stockId, inventoryRow.quantity),
+                    "currentQuantity"),
+                ExpressionUtils.as(
+                    cipb.getSubQueryFromInventoryRowsByComingAndStockId(
+                        comingItem, inventoryRow, stockId,
+                        inventoryRow.quantity.multiply(casePriceIn).subtract(comingItem.sum.sum())),
+                    "inventorySum"),
+                ExpressionUtils.as(
+                    cipb.getSubQueryFromInventoryRowsByComingAndStockId(
+                        comingItem, inventoryRow, stockId, inventoryRow.date),"lastInventoryChangeDate")
+            )
+            .from(comingItem)
+            .where(predicate)
+            .groupBy(comingItem.item)
+            .orderBy(orderSpecifier)
+            .offset(pageRequest.getOffset())
+            .limit(pageRequest.getPageSize());
+
+        List<Tuple> groupedItems = query.fetch();
+
+        groupedItems.forEach(coming -> {
+            result.add(
+                new ComingItem(
+                    coming.get(comingItem.item),
                     filter.getStock(),
-                    comings.stream()
-                            .map(ComingItem::getSum)
-                            .reduce(BigDecimal.ZERO, BigDecimal::add),
-                    comings.stream()
-                            .map(ComingItem::getCurrentQuantity)
-                            .reduce(BigDecimal.ZERO, BigDecimal::add),
-                    comings.stream().max(Comparator.comparing(ComingItem::getPriceIn)).get().getPriceIn(),
-                    comings.stream().max(Comparator.comparing(ComingItem::getPriceOut)).get().getPriceOut(),
-                    inventoryRow == null ? BigDecimal.ZERO : inventoryRow.getQuantity(),
-                    inventoryRow == null ? null : inventoryRow.getDate()
+                    coming.get(1, BigDecimal.class),
+                    coming.get(2, BigDecimal.class),
+                    coming.get(3, BigDecimal.class) == null ? BigDecimal.ZERO : coming.get(3, BigDecimal.class),
+                    coming.get(4, BigDecimal.class) == null ? BigDecimal.ZERO : coming.get(4, BigDecimal.class),
+                    coming.get(5, Date.class) == null ? new Date() : coming.get(5, Date.class)
+                )
             );
-            if(coming.getSum().compareTo(BigDecimal.ZERO) > 0)
-                coming.setPriceIn(
-                    coming.getQuantity().compareTo(BigDecimal.ZERO) > 0 ?
-                    coming.getSum().divide(coming.getQuantity(), 5, RoundingMode.CEILING) : BigDecimal.ZERO
-                );
-            result.add(coming);
         });
 
-        sortGroupedItems(result,
-                         filter.getSortDirection(),
-                         ComingItemFilter
-                                 .ComingItemSortingStrategies
-                                 .valueOf(filter.getSortField()
-                                         .replace(".","_")
-                                         .toUpperCase()));
+        return getResults(
+            new PageImpl<ComingItem>(result, pageRequest, query.fetchCount()), filter, predicate);
 
-//
-        PagedListHolder<ComingItem> page = new PagedListHolder<ComingItem>(result);
-        page.setPageSize(filter.getRowsOnPage());
-        page.setPage(filter.getPage() - 1);
-
-        ResponseByComingItems ribyci =
-                new ResponseByComingItems(ELEMENTS_FOUND, page.getPageList(),
-                        true, page.getPageCount());
-
-        if(filter.getCalcTotal())
-            ribyci.calcInventoryTotals(result);
-//
-        return ribyci;
     }
 
     public ResponseByComingItems findByFilter(ComingItemFilter filter) {
 
-//        Sort sort = new Sort(Sort.Direction.DESC, "doc.date");
-
-//        abstractEntityManager.test();
-
         itemHandler.checkEanInFilter(filter);
-
         Sort sort = new Sort(Sort.Direction.fromStringOrNull(filter.getSortDirection()), filter.getSortField());
-
+        PageRequest pageRequest = new PageRequest(filter.getPage() - 1, filter.getRowsOnPage(), sort);
         BooleanBuilder predicate = cipb.buildByFilter(filter, abstractEntityManager);
 
         if(filter.getInventoryModeEnabled())
-                    return getInventoryItems(comingItemRepository.findAll(predicate), filter);
-
-        PageRequest pageRequest = new PageRequest(filter.getPage() - 1, filter.getRowsOnPage(), sort);
+                    return getInventoryItemsNew(predicate, filter, pageRequest);
 
         Page<ComingItem> page =  comingItemRepository.findAll(predicate, pageRequest);
-
         List<ComingItem> result = page.getContent();
 
         if (result.size() > 0) {
@@ -596,16 +684,30 @@ public class ComingItemHandler extends EntityHandlerImpl {
             ResponseByComingItems ribyci =
                     new ResponseByComingItems(ELEMENTS_FOUND, result, true, page.getTotalPages());
 
-            if(filter.getCalcTotal()) {
-
+            if(filter.getCalcTotal())
                 ribyci.calcTotals(abstractEntityManager, predicate);
-//                ribyci.calcTotals(comingItemRepository.findAll(predicate));
-            }
+
 
             return ribyci;
         }
 
         return new ResponseByComingItems(NOTHING_FOUND, new ArrayList<ComingItem>(), false, 0);
+    }
+
+    private ResponseByComingItems
+    getResults(Page<ComingItem> page,
+               ComingItemFilter filter,
+               BooleanBuilder predicate) {
+
+        ResponseByComingItems ribyci =
+            new ResponseByComingItems(ELEMENTS_FOUND,
+                page.getContent(), true, page.getTotalPages());
+
+        if(filter.getCalcTotal())
+            ribyci.calcInventoryTotalsNew(abstractEntityManager,
+                                                predicate, filter.getStock().getId());
+
+        return ribyci;
     }
 
 
@@ -630,21 +732,24 @@ public class ComingItemHandler extends EntityHandlerImpl {
         for (ComingItem coming : comingItems) {
 
             Item item = itemHandler.getItemById(coming.getItem().getId());
+            InventoryRow newInventoryRow = new InventoryRow(
+                                            userHandler.getCurrentUser(),
+                                            coming.getStock(),
+                                            coming.getCurrentQuantity());
 
-            InventoryRow inventoryRow = itemHandler.getInventoryRowByStock(item, coming.getStock().getId());
-
-            if(inventoryRow == null)
-                item.setInventoryRows(new ArrayList<InventoryRow>() {
-                    {
-                        add(new InventoryRow(userHandler.getCurrentUser(),
-                                coming.getStock(), coming.getCurrentQuantity()));
-                    }
-                });
+            if(item.getInventoryRows().size() == 0)
+                item.setInventoryRows(new ArrayList<InventoryRow>() {{add(newInventoryRow);}});
             else {
-                inventoryRow.setDate(new Date());
-                inventoryRow.setUser(userHandler.getCurrentUser());
-                inventoryRow.setQuantity(coming.getCurrentQuantity());
+                InventoryRow inventoryRow = itemHandler.getInventoryRowByStock(item, coming.getStock().getId());
+                if(inventoryRow == null)
+                    item.getInventoryRows().add(newInventoryRow);
+                else {
+                    inventoryRow.setDate(new Date());
+                    inventoryRow.setUser(userHandler.getCurrentUser());
+                    inventoryRow.setQuantity(coming.getCurrentQuantity());
+                }
             }
+
             itemHandler.saveItem(item);
 
         }

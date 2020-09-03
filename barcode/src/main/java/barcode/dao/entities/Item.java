@@ -47,7 +47,6 @@ public class Item extends BasicNamedEntity {
     private List<ItemComponent> components;
 
     @ElementCollection
-//    @JsonProperty("inventoryRows")
     @JsonIgnore
     private List<InventoryRow> inventoryRows;
 

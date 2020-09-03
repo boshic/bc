@@ -206,21 +206,17 @@ public class EntityHandlerImpl implements EntityHandler {
         return useForInventory;
     }
 
-    <T> void sortGroupedItems(List<T> items,
-                                    String direction,
-                                    SortingStrategy<T> strategy) {
-        strategy.sort(items);
-
-        if(direction.equalsIgnoreCase(BasicFilter.SORT_DIRECTION_DESC))
-            Collections.reverse(items);
-    }
+//    <T> void sortGroupedItems(List<T> items,
+//                              String direction,
+//                              SortingStrategy<T> strategy) {
+//        strategy.sort(items);
+//        if(direction.equalsIgnoreCase(BasicFilter.SORT_DIRECTION_DESC))
+//            Collections.reverse(items);
+//    }
 
     <T extends BasicNamedEntity> ResponseItem<T> setToNameIncorrectEntityFields(T item, List<String> fields) {
-
         String message = getIncorrectEntityFieldFoundMessage(fields);
-
         item.setName(message);
-
         return new ResponseItem<T>(message, false, item);
     }
 

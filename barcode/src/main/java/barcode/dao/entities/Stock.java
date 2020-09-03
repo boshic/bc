@@ -1,6 +1,7 @@
 package barcode.dao.entities;
 
 import barcode.dao.entities.basic.BasicNamedEntity;
+import barcode.dao.entities.embeddable.InventoryRow;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;

@@ -188,10 +188,10 @@ import commonReleasePaneCtrlr from '../../controllers/common-pane-release-ctrlr.
             deleteRows: '&', isHidden: '<?'
         },
         template:
-        "<a href='#' title='удалить' ng-click='$ctrl.deleteRows()'"+
+        "<span title='удалить' ng-click='$ctrl.deleteRows()'"+
             "ng-hide='$ctrl.isHidden'>" +
             "<span class='glyphicon glyphicon-remove item-blank'></span>" +
-        "</a>",
+        "</span>",
         controller: function() {}
     })
         .component( "onFlyCalcTotals", {

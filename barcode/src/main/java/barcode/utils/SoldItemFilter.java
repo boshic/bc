@@ -14,56 +14,6 @@ public class SoldItemFilter extends ComingItemFilter {
         public String getValue() {return this.value;};
     }
 
-//    public enum SoldItemSortingStrategies
-//        implements SortingStrategy<DtoForGroupedSoldItemsByItem> {
-//        COMING_ITEM_NAME {
-//            @Override
-//            public void sort(List<DtoForGroupedSoldItemsByItem> items) {
-//                items.sort(Comparator.comparing(DtoForGroupedSoldItemsByItem::getComingItem, (c1, c2) -> {
-//                    return c1.getItem().getName().compareToIgnoreCase(c2.getItem().getName());
-//                }));
-//            }
-//        },
-//        COMING_ITEM_SECTION_NAME {
-//            @Override
-//            public void sort(List<DtoForGroupedSoldItemsByItem> items) {
-//                items.sort(Comparator.comparing(DtoForGroupedSoldItemsByItem::getComingItem, (c1, c2) -> {
-//                    return c1.getItem().getSection().getName().compareToIgnoreCase(c2.getItem().getSection().getName());
-//                }));
-//            }
-//        },
-//        COMING_STOCK_NAME {
-//            @Override
-//            public void sort(List<DtoForGroupedSoldItemsByItem> items) {
-//                items.sort(Comparator.comparing(DtoForGroupedSoldItemsByItem::getComingItem, (c1, c2) -> {
-//                    return c1.getStock().getName().compareToIgnoreCase(c2.getStock().getName());
-//                }));
-//            }
-//        },
-//        AVAILQUANTITYBYEAN {
-//            @Override
-//            public void sort(List<DtoForGroupedSoldItemsByItem> items) {
-//                items.sort(Comparator.comparing(DtoForGroupedSoldItemsByItem::getAvailQuantityByEan));
-//            }
-//        },
-//        QUANTITY {
-//            @Override
-//            public void sort(List<DtoForGroupedSoldItemsByItem> items) {
-//                items.sort(Comparator.comparing(DtoForGroupedSoldItemsByItem::getQuantity));
-//            }
-//        },
-//        DATE {
-//            @Override
-//            public void sort(List<DtoForGroupedSoldItemsByItem> items) {}
-//        },
-//        PRICE {
-//            @Override
-//            public void sort(List<DtoForGroupedSoldItemsByItem> items) {
-//                items.sort(Comparator.comparing(DtoForGroupedSoldItemsByItem::getPrice));
-//            }
-//        };
-//    }
-
     private Buyer buyer;
     private User user;
     private Boolean groupByItems;

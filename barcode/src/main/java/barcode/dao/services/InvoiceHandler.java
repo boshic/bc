@@ -107,7 +107,9 @@ public class InvoiceHandler extends EntityHandlerImpl {
 
     public Invoice getItemById(Long id) {
 
-        return invoiceRepository.findOne(id);
+        Invoice item = invoiceRepository.findOne(id);
+        item.getUser().setStampForInvoices(userHandler.getCurrentUser().getStamp());
+        return item;
     }
 
 //    public Invoice get

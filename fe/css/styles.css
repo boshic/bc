@@ -503,16 +503,17 @@ ul.buyer-dropdown {
     /*left: -45%;*/
 }
 
-div.input-notification {
+span.input-notification {
     border-radius: 4px;
     z-index: 1;
-    margin-top: -20px;
+    margin-top: 35px;
     position: absolute;
     background: brown;
     color: aliceblue;
     padding-right: 2%;
     padding-left: 2%;
 }
+
 button.sell-item-btn {
     float: right;
     margin-bottom: 7px;

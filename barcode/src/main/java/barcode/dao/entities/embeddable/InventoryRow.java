@@ -4,10 +4,7 @@ import barcode.dao.entities.Stock;
 import barcode.dao.entities.User;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import javax.persistence.Embeddable;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.validation.constraints.NotNull;
+import javax.persistence.*;
 import java.math.BigDecimal;
 import java.util.Date;
 
@@ -58,6 +55,14 @@ public class InventoryRow {
         this.quantity = quantity;
     }
 
+    public Stock getStock() {
+        return stock;
+    }
+
+    public void setStock(Stock stock) {
+        this.stock = stock;
+    }
+
     public User getUser() {
         return user;
     }
@@ -66,11 +71,4 @@ public class InventoryRow {
         this.user = user;
     }
 
-    public Stock getStock() {
-        return stock;
-    }
-
-    public void setStock(Stock stock) {
-        this.stock = stock;
-    }
 }

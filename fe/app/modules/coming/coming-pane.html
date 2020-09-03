@@ -69,7 +69,11 @@
                 auto-open-quantity-changer-modal="autoOpenQuantityChangerModalInInventoryMode"
                 is-enabled-set-inventory-values = "!totals.length && rows.length"
                 is-enabled-apply-inventory-results
-                        = "totals.length && rows.length && totals[0].quantValue != 0 && inventoryBuyer.id > 0 && user.role == 'ROLE_ADMIN'">
+                        = "totals.length
+                        && rows.length
+                        && totals[0].quantValue != 0
+                        && inventoryBuyer.id > 0
+                        && user.role == 'ROLE_ADMIN'">
         </inventory-panel>
     </div>
 
@@ -127,60 +131,67 @@
             </div>
         </td>
             <td style="width: 7%;" ng-hide = "filter.inventoryModeEnabled">
-            <sortable-column field="filter.sortField"
+                 <sortable-column field="filter.sortField"
                              listening-field="'currentQuantity'"
                              sort-direction="filter.sortDirection"
                              column-name="Факт (">
-            </sortable-column>
-            <sortable-column field="filter.sortField"
+                 </sortable-column>
+                 <sortable-column field="filter.sortField"
                              listening-field="'quantity'"
                              sort-direction="filter.sortDirection"
                              column-name="пришло)">
-            </sortable-column>
-        </td>
+                 </sortable-column>
+          </td>
             <td style="width: 7%;" ng-hide = "filter.inventoryModeEnabled">
-            <sortable-column field="filter.sortField"
+                <sortable-column field="filter.sortField"
                              listening-field="'priceIn'"
                              sort-direction="filter.sortDirection"
                              column-name="Цена">
-            </sortable-column>
-        </td>
-            <td style="width: 7%;">
-            <sortable-column field="filter.sortField"
+                </sortable-column>
+            </td>
+            <td style="width: 7%;" ng-hide = "filter.inventoryModeEnabled">
+                <sortable-column field="filter.sortField"
                              listening-field="'sum'"
                              sort-direction="filter.sortDirection"
                              column-name="Сумма">
-            </sortable-column>
-        </td>
+                </sortable-column>
+            </td>
+            <td style="width: 7%;" ng-show = "filter.inventoryModeEnabled">
+                <sortable-column field="filter.sortField"
+                                 listening-field="'summ'"
+                                 sort-direction="filter.sortDirection"
+                                 column-name="Сумма спр.">
+                </sortable-column>
+            </td>
             <td style="width: 5%;"  ng-show = "filter.inventoryModeEnabled">
-            <sortable-column field="filter.sortField"
+                <sortable-column field="filter.sortField"
                              listening-field="'quantity'"
                              sort-direction="filter.sortDirection"
                              column-name="Количество">
-            </sortable-column>
-        </td>
+                </sortable-column>
+            </td>
             <td style="width: 7%;"  ng-show = "filter.inventoryModeEnabled">
-            <sortable-column field="filter.sortField"
+                <sortable-column field="filter.sortField"
                              listening-field="'currentQuantity'"
                              sort-direction="filter.sortDirection"
                              column-name="Факт.кол-во,">
-            </sortable-column>
-            <sortable-column field="filter.sortField"
-                             listening-field="'lastChangeDate'"
+                </sortable-column>
+                <sortable-column field="filter.sortField"
+                             listening-field="'lastInventoryChangeDate'"
                              sort-direction="filter.sortDirection"
                              column-name="дата ввода">
-            </sortable-column>
-        </td>
+                </sortable-column>
+            </td>
             <td style="width: 9%;"  ng-show = "filter.inventoryModeEnabled">
-            <sortable-column field="filter.sortField"
-                             listening-field="'currentSum'"
+                <sortable-column field="filter.sortField"
+                             listening-field="'inventorySum'"
                              sort-direction="filter.sortDirection"
                              column-name="Сумма расхождения">
-            </sortable-column>
-        </td>
+                </sortable-column>
+            </td>
             <td  style="width: 11%;" class="unprintable"
                 ng-hide="filter.inventoryModeEnabled">Автор, комментарий
-        </td>
+             </td>
         </thead>
         <tbody ng-show="rows.length">
             <tr class="hoverable middle-rows"
@@ -250,28 +261,52 @@
                     </span>
                 </td>
                 <td style="width: 9%;" class="price-data" ng-show = "filter.inventoryModeEnabled">
-                    <span class="price-out-on-coming-pane">
-                        <span ng-show="((x.currentQuantity * x.price).toFixed(2) - x.sum) != 0">
-                            {{ ((x.currentQuantity * x.price).toFixed(2) - x.sum).toFixed(2)}}
-                            <span style="font-weight: normal">(</span>
-                            <span unit-sensitive unit="x.item.unit"
-                                  quantity="(x.currentQuantity - x.quantity)">
+                    <div ng-show="totals.length
+                        && !(x.inventorySum == 0 && x.quantity != x.currentQuantity)">
+                        <span class="price-out-on-coming-pane">
+                            <span ng-show="x.inventorySum.toFixed(2) != 0">
+                                {{ x.inventorySum.toFixed(2)}}
+                                <span style="font-weight: normal">(</span>
+                                <span unit-sensitive unit="x.item.unit"
+                                      quantity="(x.currentQuantity - x.quantity)">
+                                </span>
+                                <span style="font-weight: normal">)</span>
                             </span>
-                            <span style="font-weight: normal">)</span>
                         </span>
-                    </span>
-                    <span class="glyphicon glyphicon-ok inventory-deviation-ok"
-                          ng-show="((x.currentQuantity * x.price).toFixed(2) - x.sum) == 0">
-                    </span>
-                    <span class="inventory-deviation-shortage"
-                          ng-show="((x.currentQuantity * x.price).toFixed(2) - x.sum) < 0">
+                        <span
+                            class="glyphicon glyphicon-ok inventory-deviation-ok" ng-show="x.inventorySum.toFixed(2) == 0">
+                        </span>
+                        <span class="inventory-deviation-shortage" ng-show="x.inventorySum.toFixed(2) < 0">
                             Недостача
-                    </span>
-                    <span class="inventory-deviation-surplus"
-                          ng-show="((x.currentQuantity * x.price).toFixed(2) - x.sum) > 0">
+                        </span>
+                        <span class="inventory-deviation-surplus" ng-show="x.inventorySum.toFixed(2) > 0">
                             Излишек
-                    </span>
+                        </span>
+                    </div>
                 </td>
+<!--                <td style="width: 9%;" class="price-data" ng-show = "filter.inventoryModeEnabled">-->
+<!--                    <span class="price-out-on-coming-pane">-->
+<!--                        <span ng-show="((x.currentQuantity * x.price).toFixed(2) - x.sum) != 0">-->
+<!--                            {{ ((x.currentQuantity * x.price).toFixed(2) - x.sum).toFixed(2)}}-->
+<!--                            <span style="font-weight: normal">(</span>-->
+<!--                            <span unit-sensitive unit="x.item.unit"-->
+<!--                                  quantity="(x.currentQuantity - x.quantity)">-->
+<!--                            </span>-->
+<!--                            <span style="font-weight: normal">)</span>-->
+<!--                        </span>-->
+<!--                    </span>-->
+<!--                    <span class="glyphicon glyphicon-ok inventory-deviation-ok"-->
+<!--                          ng-show="((x.currentQuantity * x.price).toFixed(2) - x.sum) == 0">-->
+<!--                    </span>-->
+<!--                    <span class="inventory-deviation-shortage"-->
+<!--                          ng-show="((x.currentQuantity * x.price).toFixed(2) - x.sum) < 0">-->
+<!--                            Недостача-->
+<!--                    </span>-->
+<!--                    <span class="inventory-deviation-surplus"-->
+<!--                          ng-show="((x.currentQuantity * x.price).toFixed(2) - x.sum) > 0">-->
+<!--                            Излишек-->
+<!--                    </span>-->
+<!--                </td>-->
                 <td style="width: 11%;" class="unprintable" ng-hide = "filter.inventoryModeEnabled">
                         <div>
                             <button class="glyphicon glyphicon-shopping-cart btn-on-pane

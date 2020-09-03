@@ -437,10 +437,6 @@ public class SoldItemHandler extends EntityHandlerImpl {
         QComingItem coming = QSoldItem.soldItem.coming;
         QComingItem comingItem = QComingItem.comingItem;
 
-        Path<SoldItem> fieldPath =  Expressions.path(SoldItem.class, soldItem, filter.getSortField());
-        Order order = Order.valueOf(filter.getSortDirection());
-        OrderSpecifier orderSpecifier;
-
         try {
             SoldItemFilter.SortingFieldsForGroupedByItemSoldItems
                 .valueOf(CommonUtils.toEnumStyle(filter.getSortField()));
@@ -449,9 +445,12 @@ public class SoldItemHandler extends EntityHandlerImpl {
                 SoldItemFilter.SortingFieldsForGroupedByItemSoldItems.AVAILQUANTITYBYEAN.getValue());
         }
 
-        orderSpecifier = (filter.getSortField().contains(".")) ?
-            new OrderSpecifier(order, fieldPath)
-            : new OrderSpecifier(order, stringPath(filter.getSortField()));
+        OrderSpecifier orderSpecifier = filter.getOrderSpec(filter.getSortField(),
+            filter.getSortDirection(), soldItem, QSoldItem.class);
+
+            Predicate getAvailQuantityByEanPredicate = filter.getStock().isAllowAll() ?
+                coming.item.id.eq(comingItem.item.id) :
+                coming.item.id.eq(comingItem.item.id).and(comingItem.stock.id.eq(filter.getStock().getId()));
 
         JPAQuery<Tuple> query =  new JPAQuery<Tuple>(abstractEntityManager.getEntityManager())
             .select(
@@ -461,7 +460,7 @@ public class SoldItemHandler extends EntityHandlerImpl {
                 ExpressionUtils.as(
                     JPAExpressions
                         .select(comingItem.currentQuantity.sum()).from(comingItem)
-                        .where(coming.item.id.eq(comingItem.item.id)),
+                        .where(getAvailQuantityByEanPredicate),
                     SoldItemFilter.SortingFieldsForGroupedByItemSoldItems.AVAILQUANTITYBYEAN.getValue()
                 )
             )

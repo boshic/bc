@@ -1,6 +1,14 @@
 package barcode.utils;
 
+import barcode.dao.entities.ComingItem;
+import com.querydsl.core.types.Order;
+import com.querydsl.core.types.OrderSpecifier;
+import com.querydsl.core.types.Path;
+import com.querydsl.core.types.dsl.Expressions;
+
 import java.util.Date;
+
+import static com.querydsl.core.types.dsl.Expressions.stringPath;
 
 public class BasicFilter {
 
@@ -28,42 +36,59 @@ public class BasicFilter {
         this(filter.getSearchString(), filter.getFromDate(), filter.getToDate());
     }
 
+    public <T> OrderSpecifier getOrderSpec(
+        String sortField,
+        String sortDirection,
+        Path<?> parent,
+        Class<? extends T> type) {
+
+        Path<T> fieldPath =  Expressions.path(type, parent, sortField);
+        Order order = Order.valueOf(sortDirection);
+
+        return (sortField.contains(".")) ?
+            new OrderSpecifier(order, fieldPath)
+            : new OrderSpecifier(order, stringPath(sortField));
+    }
+
+    public <T extends ComingItemFilter>
+    void validateFilterSortField(T filter,
+                                 String sortField,
+                                 String defaultValue,
+                                 SortingStrategy sortingStrategy) {
+        try {
+            sortingStrategy.checkSortField(sortField);
+        } catch (IllegalArgumentException e) {
+            filter.setSortField(defaultValue);
+        }
+    }
+
     public void setSearchString(String searchString) {
         this.searchString = searchString;
     }
-
     public void setFromDate(Date fromDate) {
         this.fromDate = fromDate;
     }
-
     public void setToDate(Date toDate) {
         this.toDate = toDate;
     }
-
     public String getSearchString() {
         return searchString;
     }
-
     public Date getFromDate() {
         return fromDate;
     }
-
     public Date getToDate() {
         return toDate;
     }
-
     public String getSortDirection() {
         return sortDirection;
     }
-
     public void setSortDirection(String sortDirection) {
         this.sortDirection = sortDirection;
     }
-
     public String getSortField() {
         return sortField;
     }
-
     public void setSortField(String sortField) {
         this.sortField = sortField;
     }

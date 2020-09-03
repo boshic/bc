@@ -2,12 +2,19 @@ package barcode.dao.predicates;
 
 import barcode.dao.entities.*;
 import barcode.dao.entities.embeddable.QComment;
+import barcode.dao.entities.embeddable.QInventoryRow;
 import barcode.dao.services.AbstractEntityManager;
 import com.querydsl.core.BooleanBuilder;
+import com.querydsl.core.types.Expression;
+import com.querydsl.core.types.Path;
 import com.querydsl.core.types.Predicate;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import barcode.utils.ComingItemFilter;
+import com.querydsl.core.types.dsl.DateTimePath;
+import com.querydsl.jpa.JPAExpressions;
+import com.querydsl.jpa.JPQLQuery;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -131,5 +138,23 @@ public class ComingItemPredicatesBuilder {
             predicate = predicate.and(comingItem.currentQuantity.gt(0));
 
         return predicate;
+    }
+
+   public <T> JPQLQuery<T>
+   getSubQueryFromInventoryRowsByComingAndStockId(QComingItem comingItem,
+                                                QInventoryRow inventoryRow,
+                                                Long stockId,
+                                                Expression<T> path) {
+
+        QItem qItem  = QItem.item;
+        QStock qStock = QStock.stock;
+
+        return JPAExpressions
+                .select(path)
+                .from(qItem)
+                .where(qItem.id.eq(comingItem.item.id))
+                .join(qItem.inventoryRows, inventoryRow)
+                .join(inventoryRow.stock, qStock)
+                .where(qStock.id.eq(stockId));
     }
 }
