@@ -424,7 +424,6 @@ public class SoldItemHandler extends EntityHandlerImpl {
 
             return new ResponseItem<SoldItem>(SALE_COMPLETED_SUCCESSFULLY, true);
         }
-
     }
 
     private ResponseBySoldItems groupByItemsNew(
@@ -437,18 +436,12 @@ public class SoldItemHandler extends EntityHandlerImpl {
         QComingItem coming = QSoldItem.soldItem.coming;
         QComingItem comingItem = QComingItem.comingItem;
 
-        try {
-            SoldItemFilter.SortingFieldsForGroupedByItemSoldItems
-                .valueOf(CommonUtils.toEnumStyle(filter.getSortField()));
-        } catch (IllegalArgumentException e) {
-            filter.setSortField(
-                SoldItemFilter.SortingFieldsForGroupedByItemSoldItems.AVAILQUANTITYBYEAN.getValue());
-        }
+        filter.validateFilterSortField(filter, SoldItemFilter.SortingFieldsForGroupedByItemSoldItems.QUANTITY);
 
         OrderSpecifier orderSpecifier = filter.getOrderSpec(filter.getSortField(),
             filter.getSortDirection(), soldItem, QSoldItem.class);
 
-            Predicate getAvailQuantityByEanPredicate = filter.getStock().isAllowAll() ?
+        Predicate getAvailQuantityByEanPredicate = filter.getStock().isAllowAll() ?
                 coming.item.id.eq(comingItem.item.id) :
                 coming.item.id.eq(comingItem.item.id).and(comingItem.stock.id.eq(filter.getStock().getId()));
 
@@ -487,16 +480,16 @@ public class SoldItemHandler extends EntityHandlerImpl {
         return getResults(new PageImpl<SoldItem>(result, pageRequest, query.fetchCount()), filter, predicate);
     }
 
-    private ResponseBySoldItems<SoldItem>
+    private ResponseBySoldItems
     getResults(Page<SoldItem> page,
                SoldItemFilter filter,
                BooleanBuilder predicate) {
 
-        ResponseBySoldItems<SoldItem> ribysi =
-            new ResponseBySoldItems<>(ELEMENTS_FOUND, page.getContent(), true, page.getTotalPages());
+        ResponseBySoldItems ribysi =
+            new ResponseBySoldItems(ELEMENTS_FOUND, page.getContent(), true, page.getTotalPages());
 
         if(filter.getCalcTotal())
-            ribysi.calcTotals(abstractEntityManager, predicate);
+            ribysi.calcTotals(abstractEntityManager, predicate, filter);
 
         return ribysi;
     }
@@ -519,16 +512,9 @@ public class SoldItemHandler extends EntityHandlerImpl {
 
             return getResults(page, filter, predicate);
 
-//            ResponseBySoldItems<SoldItem> ribysi =
-//                    new ResponseBySoldItems<>(ELEMENTS_FOUND, result, true, page.getTotalPages());
-//
-//            if(filter.getCalcTotal())
-//                ribysi.calcTotals(abstractEntityManager, predicate);
-//
-//            return ribysi;
         }
 
-        return new ResponseBySoldItems<SoldItem>(NOTHING_FOUND, new ArrayList<>(), false, 0);
+        return new ResponseBySoldItems(NOTHING_FOUND, new ArrayList<>(), false, 0);
     }
 
     public ResponseItem<SoldItem> changeDate(SoldItem soldItem) {

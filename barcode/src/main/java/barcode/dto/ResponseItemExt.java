@@ -15,7 +15,7 @@ import java.util.stream.Stream;
 /**
  * Created by xlinux on 21.11.18.
  */
-public abstract class ResponseItemExt<T> extends ResponseItem<T> {
+public class ResponseItemExt<T> extends ResponseItem<T> {
 
     final String
     SUMM = "Сумма",
@@ -29,6 +29,7 @@ public abstract class ResponseItemExt<T> extends ResponseItem<T> {
     SOLD_BY_PRICE_IN = SOLD + PRICE_IN,
     SOLD_BY_PRICE_OUT = SOLD + PRICE_OUT;
 
+    QComingItem qComingItem = QComingItem.comingItem;
 
     private Integer numberOfPages;
     private List<ResultRowByItemsCollection> totals = new ArrayList<ResultRowByItemsCollection>();
@@ -38,43 +39,16 @@ public abstract class ResponseItemExt<T> extends ResponseItem<T> {
 
     private List<Item> goods;
 
-//    public abstract void calcTotals(List<T> items);
-    public abstract void calcTotals(AbstractEntityManager abstractEntityManager, BooleanBuilder predicate);
+    public ResponseItemExt() {}
 
-    ResponseItemExt() {}
-    ResponseItemExt(String text, List<T> items, Boolean success, Integer number) {
+    public ResponseItemExt(String text, Boolean success) {
+        super(text,success);
+    }
+
+    public ResponseItemExt(String text, List<T> items, Boolean success, Integer number) {
         super(text, items, success);
         this.numberOfPages = number;
     }
-
-    //_deprecated. must be deleted1
-//    void setSuppliersByComings(List<ComingItem> comings) {
-//        this.setSuppliers(comings
-//                        .stream()
-//                        .map(s -> s.getDoc().getSupplier()).collect(Collectors.toSet())
-//                        .stream()
-//                        .sorted(Comparator.comparing(Supplier::getName))
-//                        .collect(Collectors.toList()));
-//    }
-
-    //_deprecated. must be deleted1
-    void setSectionsByComings(List<ComingItem> comings) {
-        this.setSections(comings
-                .stream()
-                .map(s -> s.getItem().getSection()).collect(Collectors.toSet())
-                .stream()
-                .sorted(Comparator.comparing(ItemSection::getName))
-                .collect(Collectors.toList()));
-    }
-
-//    void setGoodsBySellings(List<SoldItem> sellings) {
-//        this.setGoods(sellings
-//                .stream()
-//                .map(s -> s.getComing().getItem()).collect(Collectors.toSet())
-//                .stream()
-//                .sorted(Comparator.comparing(Item::getName))
-//                .collect(Collectors.toList()));
-//    }
 
     public Integer getNumberOfPages() {
         return numberOfPages;

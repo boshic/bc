@@ -156,7 +156,7 @@ public class InvoiceHandler extends EntityHandlerImpl {
         invoiceRepository.save(invoice);
     }
 
-    public ResponseByInvoices<Invoice> getInvoicesByFilter(SoldItemFilter filter) {
+    public ResponseByInvoices getInvoicesByFilter(SoldItemFilter filter) {
 
 //        Sort sort = new Sort(Sort.Direction.DESC, "date");
 
@@ -170,8 +170,8 @@ public class InvoiceHandler extends EntityHandlerImpl {
 
         if (result.size() > 0) {
 
-            ResponseByInvoices<Invoice> ribyi =
-                    new ResponseByInvoices<Invoice>(
+            ResponseByInvoices ribyi =
+                    new ResponseByInvoices(
                             ELEMENTS_FOUND, result, true, page.getTotalPages());
 
 //            if(filter.getCalcTotal())
@@ -180,21 +180,22 @@ public class InvoiceHandler extends EntityHandlerImpl {
             return ribyi;
         }
 
-        return new ResponseByInvoices<Invoice>(NOTHING_FOUND, new ArrayList<Invoice>(),
+        return new ResponseByInvoices(NOTHING_FOUND, new ArrayList<Invoice>(),
                 false, 0);
 
     }
 
-    public ResponseItem<InvoiceHeader> getInvoiceHeaders(SoldItemFilter filter) {
+    public ResponseItemExt<InvoiceHeader>
+    getInvoiceHeaders(SoldItemFilter filter) {
 
 //        abstractEntityManager.test();
 
-        ResponseByInvoices<Invoice> responseByInvoices = getInvoicesByFilter(filter);
+        ResponseItemExt<Invoice> responseByInvoices = getInvoicesByFilter(filter);
 
         if(responseByInvoices.getSuccess()) {
 
-            ResponseByInvoices<InvoiceHeader> headers
-                    = new ResponseByInvoices<InvoiceHeader>(
+            ResponseItemExt<InvoiceHeader> headers
+                    = new ResponseItemExt<InvoiceHeader>(
                             "", new ArrayList<InvoiceHeader>(),true,
                                                 responseByInvoices.getNumberOfPages());
 
@@ -204,7 +205,7 @@ public class InvoiceHandler extends EntityHandlerImpl {
             return headers;
         }
 
-        return new ResponseItem<>(NOTHING_FOUND, new ArrayList<>(), false);
+        return new ResponseItemExt<InvoiceHeader>(NOTHING_FOUND, false);
     }
 
     public Long addInvoiceByFilter(SoldItemFilter filter) {

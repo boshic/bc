@@ -2,11 +2,6 @@ package barcode.utils;
 
 import barcode.dao.entities.*;
 
-import java.math.BigDecimal;
-import java.math.RoundingMode;
-import java.util.Comparator;
-import java.util.List;
-
 public class ComingItemFilter extends  BasicFilter {
 
 //    public enum ComingItemSortingStrategies implements SortingStrategy<ComingItem>{
@@ -80,7 +75,7 @@ public class ComingItemFilter extends  BasicFilter {
 //        };
 //    }
 
-    public enum SortingFieldsForInventoryRows implements SortingStrategy{
+    public enum SortingFieldsForInventoryRows implements SortingField {
         ITEM_NAME("item.name"),
         STOCK_NAME("stock.name"),
         ITEM_SECTION_NAME("item.section.name"),
@@ -92,6 +87,8 @@ public class ComingItemFilter extends  BasicFilter {
 
         private String value;
         SortingFieldsForInventoryRows(String value) {this.value = value;}
+
+        @Override
         public String getValue() {return this.value;}
 
         @Override

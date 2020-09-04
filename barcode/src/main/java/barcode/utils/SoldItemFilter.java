@@ -4,14 +4,22 @@ import barcode.dao.entities.*;
 
 public class SoldItemFilter extends ComingItemFilter {
 
-    public enum SortingFieldsForGroupedByItemSoldItems {
+    public enum SortingFieldsForGroupedByItemSoldItems implements SortingField {
         COMING_ITEM_NAME("coming.item.name"),
         COMING_STOCK_NAME("coming.stock.name"),
         COMING_ITEM_SECTION_NAME("coming.item.section.name"),
         AVAILQUANTITYBYEAN("availQuantityByEan"), QUANTITY("quantity"), PRICE("price");
         private String value;
         SortingFieldsForGroupedByItemSoldItems(String value) {this.value = value;}
-        public String getValue() {return this.value;};
+
+        @Override
+        public String getValue() {return this.value;}
+
+        @Override
+        public void checkSortField (String field) {
+            SortingFieldsForGroupedByItemSoldItems
+                .valueOf(CommonUtils.toEnumStyle(field));
+        }
     }
 
     private Buyer buyer;

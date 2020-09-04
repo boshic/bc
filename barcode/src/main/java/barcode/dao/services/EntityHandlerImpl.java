@@ -3,15 +3,20 @@ package barcode.dao.services;
 
 import barcode.api.EntityHandler;
 import barcode.dao.entities.basic.BasicCounterPartyEntity;
+import barcode.dao.entities.basic.BasicEntity;
 import barcode.dao.entities.basic.BasicNamedEntity;
 import barcode.dao.entities.basic.BasicOperationWithCommentEntity;
 import barcode.dao.entities.embeddable.Comment;
 
-import barcode.utils.BasicFilter;
-import barcode.utils.SortingStrategy;
 import barcode.dto.ResponseItem;
+import barcode.dto.ResponseItemExt;
+import barcode.dto.ResponseWithTotals;
 import barcode.enums.CommentAction;
+import barcode.utils.ComingItemFilter;
+import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.Predicate;
+import org.dom4j.tree.AbstractEntity;
+import org.springframework.data.domain.Page;
 import org.springframework.data.querydsl.QueryDslPredicateExecutor;
 import org.springframework.data.repository.CrudRepository;
 
@@ -206,13 +211,28 @@ public class EntityHandlerImpl implements EntityHandler {
         return useForInventory;
     }
 
-//    <T> void sortGroupedItems(List<T> items,
-//                              String direction,
-//                              SortingStrategy<T> strategy) {
-//        strategy.sort(items);
-//        if(direction.equalsIgnoreCase(BasicFilter.SORT_DIRECTION_DESC))
-//            Collections.reverse(items);
-//    }
+    <T  extends ResponseItemExt> Boolean checkResponse(int resultSize, T response) {
+
+        if(resultSize == 0) {
+            response.setText(NOTHING_FOUND);
+            response.setSuccess(false);
+            response.setNumberOfPages(0);
+            return false;
+        }
+        return true;
+    }
+
+    <T extends ComingItemFilter>
+    void calcTotals(T filter,
+                    AbstractEntityManager abstractEntityManager,
+                    BooleanBuilder predicate,
+                    ResponseWithTotals<T> response ) {
+        if(filter.getCalcTotal())
+            response.calcTotals(abstractEntityManager, predicate, filter);
+
+    }
+
+
 
     <T extends BasicNamedEntity> ResponseItem<T> setToNameIncorrectEntityFields(T item, List<String> fields) {
         String message = getIncorrectEntityFieldFoundMessage(fields);

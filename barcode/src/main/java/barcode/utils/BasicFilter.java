@@ -1,6 +1,5 @@
 package barcode.utils;
 
-import barcode.dao.entities.ComingItem;
 import com.querydsl.core.types.Order;
 import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.Path;
@@ -51,14 +50,11 @@ public class BasicFilter {
     }
 
     public <T extends ComingItemFilter>
-    void validateFilterSortField(T filter,
-                                 String sortField,
-                                 String defaultValue,
-                                 SortingStrategy sortingStrategy) {
+    void validateFilterSortField(T filter, SortingField sortingField) {
         try {
-            sortingStrategy.checkSortField(sortField);
+            sortingField.checkSortField(filter.getSortField());
         } catch (IllegalArgumentException e) {
-            filter.setSortField(defaultValue);
+            filter.setSortField(sortingField.getValue());
         }
     }
 

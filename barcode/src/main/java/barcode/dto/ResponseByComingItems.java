@@ -1,56 +1,53 @@
 package barcode.dto;
 
 import barcode.dao.entities.*;
-import barcode.dao.entities.embeddable.QInventoryRow;
 import barcode.dao.services.AbstractEntityManager;
-import barcode.dao.services.ComingItemHandler;
+import barcode.utils.ComingItemFilter;
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.Expression;
 import com.querydsl.core.types.dsl.CaseBuilder;
-import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQuery;
 
-import javax.persistence.EntityManager;
 import java.math.BigDecimal;
 import java.util.List;
 
-public class ResponseByComingItems extends ResponseItemExt<ComingItem> {
-
-    final private String
-        SUMM_BY_SELECTION = SUMM + BY_SELECTION,
-        QUANTITY_BY_SELECTION_PRICE_IN = QUANTITY + BY_SELECTION + PRICE_IN,
-        QUANTITY_BY_FACT_PRICE_IN = QUANTITY + BY_FACT + PRICE_IN,
-        QUANTITY_BY_SELECTION_PRICE_OUT = QUANTITY + BY_SELECTION + PRICE_OUT,
-        QUANTITY_BY_FACT_PRICE_OUT = QUANTITY + BY_FACT + PRICE_OUT,
-        SUMM_BY_FACT = SUMM + BY_FACT;
-
-    QComingItem comingItem = QComingItem.comingItem;
+public class ResponseByComingItems
+    extends ResponseItemExt<ComingItem>
+    implements ResponseWithTotals<ComingItemFilter>{
 
     public ResponseByComingItems(
             String text, List<ComingItem> items, Boolean success, Integer numberOfPages) {
 
         super(text, items, success, numberOfPages);
-
     }
 
     @Override
-    public void calcTotals (AbstractEntityManager abstractEntityManager, BooleanBuilder predicate) {
+    public void calcTotals (AbstractEntityManager abstractEntityManager,
+                            BooleanBuilder predicate, ComingItemFilter filter) {
+
+        final String
+            SUMM_BY_SELECTION = SUMM + BY_SELECTION,
+            QUANTITY_BY_SELECTION_PRICE_IN = QUANTITY + BY_SELECTION + PRICE_IN,
+            QUANTITY_BY_FACT_PRICE_IN = QUANTITY + BY_FACT + PRICE_IN,
+            QUANTITY_BY_SELECTION_PRICE_OUT = QUANTITY + BY_SELECTION + PRICE_OUT,
+            QUANTITY_BY_FACT_PRICE_OUT = QUANTITY + BY_FACT + PRICE_OUT,
+            SUMM_BY_FACT = SUMM + BY_FACT;
 
         JPAQuery<BigDecimal> query = new JPAQuery<BigDecimal>(abstractEntityManager.getEntityManager());
-        query = query.from(comingItem).where(predicate);
+        query = query.from(qComingItem).where(predicate);
 
         Expression<BigDecimal> pricesSelection = new CaseBuilder()
-            .when(comingItem.item.price.gt(0))
-            .then(comingItem.item.price)
-            .otherwise(comingItem.priceOut);
+            .when(qComingItem.item.price.gt(0))
+            .then(qComingItem.item.price)
+            .otherwise(qComingItem.priceOut);
 
         BigDecimal
-            quantity = query.select(comingItem.quantity.sum()).fetchOne(),
-            currentQuantity = query.select(comingItem.currentQuantity.sum()).fetchOne(),
-            sum = query.select(comingItem.quantity.multiply(comingItem.priceIn).sum()).fetchOne(),
-            currentSum =  query.select(comingItem.sum.sum()).fetchOne(),
-            sumOut = query.select(comingItem.quantity.multiply(pricesSelection).sum()).fetchOne(),
-            currentSumOut = query.select(comingItem.currentQuantity.multiply(pricesSelection).sum()).fetchOne();
+            quantity = query.select(qComingItem.quantity.sum()).fetchOne(),
+            currentQuantity = query.select(qComingItem.currentQuantity.sum()).fetchOne(),
+            sum = query.select(qComingItem.quantity.multiply(qComingItem.priceIn).sum()).fetchOne(),
+            currentSum =  query.select(qComingItem.sum.sum()).fetchOne(),
+            sumOut = query.select(qComingItem.quantity.multiply(pricesSelection).sum()).fetchOne(),
+            currentSumOut = query.select(qComingItem.currentQuantity.multiply(pricesSelection).sum()).fetchOne();
 
         super.getTotals().add(new ResultRowByItemsCollection<BigDecimal, BigDecimal>
             (QUANTITY_BY_FACT_PRICE_OUT, currentQuantity, SUMM_BY_FACT , currentSumOut));
@@ -77,15 +74,15 @@ public class ResponseByComingItems extends ResponseItemExt<ComingItem> {
 
         super.setSections(
             new JPAQuery<ItemSection>(abstractEntityManager.getEntityManager())
-                .from(comingItem).where(predicate)
-                .select(comingItem.item.section)
-                .distinct().orderBy(comingItem.item.section.name.asc()).fetch());
+                .from(qComingItem).where(predicate)
+                .select(qComingItem.item.section)
+                .distinct().orderBy(qComingItem.item.section.name.asc()).fetch());
 
         super.setSuppliers(
             new JPAQuery<Supplier>(abstractEntityManager.getEntityManager())
-                .from(comingItem).where(predicate)
-                .select(comingItem.doc.supplier)
-                .distinct().orderBy(comingItem.doc.supplier.name.asc()).fetch());
+                .from(qComingItem).where(predicate)
+                .select(qComingItem.doc.supplier)
+                .distinct().orderBy(qComingItem.doc.supplier.name.asc()).fetch());
 
     }
 
@@ -156,127 +153,127 @@ public class ResponseByComingItems extends ResponseItemExt<ComingItem> {
 //
 //    }
 
-    public void calcInventoryTotalsNew(AbstractEntityManager abstractEntityManager,
-                                       BooleanBuilder predicate, Long stockId) {
-
-        QInventoryRow inventoryRow = QInventoryRow.inventoryRow;
-        QItem qItem = QItem.item;
-        QStock qStock = QStock.stock;
-
-        final String
-            DEVIATION = "Расхождение, кол.",
-            SUMM_OUT = SUMM + PRICE_OUT,
-            SUMM_IN = SUMM + PRICE_IN;
-
-        EntityManager em = abstractEntityManager.getEntityManager();
-        JPAQuery<BigDecimal> qFromComingItem = new JPAQuery<BigDecimal>(em);
-        JPAQuery<BigDecimal> qFromItem = new JPAQuery<BigDecimal>(em);
-
-        qFromComingItem = qFromComingItem.from(comingItem).where(predicate);
+//    public void calcInventoryTotalsNew(AbstractEntityManager abstractEntityManager,
+//                                       BooleanBuilder predicate, Long stockId) {
+//
+//        QInventoryRow inventoryRow = QInventoryRow.inventoryRow;
+//        QItem qItem = QItem.item;
+//        QStock qStock = QStock.stock;
+//
+//        final String
+//            DEVIATION = "Расхождение, кол.",
+//            SUMM_OUT = SUMM + PRICE_OUT,
+//            SUMM_IN = SUMM + PRICE_IN;
+//
+//        EntityManager em = abstractEntityManager.getEntityManager();
+//        JPAQuery<BigDecimal> qFromComingItem = new JPAQuery<BigDecimal>(em);
+//        JPAQuery<BigDecimal> qFromItem = new JPAQuery<BigDecimal>(em);
+//
+//        qFromComingItem = qFromComingItem.from(comingItem).where(predicate);
+////        qFromItem = qFromItem
+////            .from(comingItem)
+////            .where(predicate)
+////            .innerJoin(comingItem.item, qItem)
+////            .where(qItem.id.eq(comingItem.item.id))
+////            .join(qItem.inventoryRows, inventoryRow)
+////            .join(inventoryRow.stock, qStock)
+////            .where(qStock.id.eq(stockId));
 //        qFromItem = qFromItem
-//            .from(comingItem)
-//            .where(predicate)
-//            .innerJoin(comingItem.item, qItem)
-//            .where(qItem.id.eq(comingItem.item.id))
-//            .join(qItem.inventoryRows, inventoryRow)
-//            .join(inventoryRow.stock, qStock)
-//            .where(qStock.id.eq(stockId));
-        qFromItem = qFromItem
-            .from(qItem)
-            .where(qItem.id.in(
-                JPAExpressions
-                    .select(comingItem.item.id)
-                    .from(comingItem).where(predicate)
-                    .distinct()
-            ))
-            .leftJoin(qItem.inventoryRows, inventoryRow)
-            .leftJoin(inventoryRow.stock, qStock)
-            .where(qStock.id.eq(stockId));
-
-        BigDecimal
-            quantity = qFromComingItem.select(comingItem.currentQuantity.sum()).fetchOne(),
-            currentQuantity = qFromItem.select(inventoryRow.quantity.sum()).fetchOne(),
-//            currentQuantity = new JPAQuery<BigDecimal>(abstractEntityManager.getEntityManager())
-//                .select(inventoryRow.quantity.sum())
-//                .from(qItem)
-//                .where(qItem.id.in(
-//                    JPAExpressions
+//            .from(qItem)
+//            .where(qItem.id.in(
+//                JPAExpressions
 //                    .select(comingItem.item.id)
 //                    .from(comingItem).where(predicate)
 //                    .distinct()
-//                ))
-//                .leftJoin(qItem.inventoryRows, inventoryRow)
-//                .leftJoin(inventoryRow.stock, qStock)
-//                .where(qStock.id.eq(stockId))
-//                .fetchOne(),
-            sum = BigDecimal.ZERO,
-//                qFromComingItem.select(comingItem.sum.sum()).fetchOne(),
-            currentSum = BigDecimal.ZERO,
-//                qFromItem.select(inventoryRow.quantity.multiply(comingItem.priceIn).sum()).fetchOne(),
-            sumOut = BigDecimal.ZERO,
-//                = query.select(comingItem.currentQuantity.multiply(comingItem.priceIn).sum()).fetchOne(),
-            currentSumOut = BigDecimal.ZERO;
-//                = query.select(
-//                JPAExpressions
-//                    .select(inventoryRow.quantity.multiply(comingItem.priceIn.max()).sum())
-//                    .from(qItem)
-//                    .join(qItem.inventoryRows, inventoryRow)
-//                    .join(inventoryRow.stock, qStock)
-//                    .where(qStock.id.eq(stockId))
-//            ).fetchOne();
-
-        currentSum = currentSum == null ? BigDecimal.ZERO : currentSum;
-        currentQuantity = currentQuantity == null ? BigDecimal.ZERO : currentQuantity;
-        super.getTotals().add(new ResultRowByItemsCollection<BigDecimal, BigDecimal>
-            (DEVIATION, currentQuantity.subtract(quantity == null ? BigDecimal.ZERO : quantity),
-                SUMM_IN , currentSum.subtract(sum == null ? BigDecimal.ZERO : sum)));
-
-        currentSumOut = currentSumOut == null ? BigDecimal.ZERO : currentSumOut;
-        quantity = quantity == null ? BigDecimal.ZERO : quantity;
-        super.getTotals().add(new ResultRowByItemsCollection<BigDecimal, BigDecimal>
-            (DEVIATION, currentQuantity.subtract(quantity),
-                SUMM_OUT , currentSumOut.subtract(sumOut == null ? BigDecimal.ZERO : sumOut)));
-
-
-    }
-
-    public void calcInventoryTotals(List<ComingItem> comings) {
-
-        final String
-                DEVIATION = "Расхождение, кол.",
-                SUMM_OUT = SUMM + PRICE_OUT,
-                SUMM_IN = SUMM + PRICE_IN;
-        ;
-
-        BigDecimal
-            quantity = comings.stream().map(ComingItem::getQuantity).reduce(BigDecimal.ZERO, BigDecimal::add),
-                currentQuantity = comings.stream().map(ComingItem::getCurrentQuantity).reduce(BigDecimal.ZERO, BigDecimal::add),
-                sum = comings.stream().map(ComingItem::getSum).reduce(BigDecimal.ZERO, BigDecimal::add),
-                currentSum = comings.stream()
-                        .map(c -> c.getCurrentQuantity().multiply(c.getPriceIn()).setScale(2, BigDecimal.ROUND_HALF_UP))
-                        .reduce(BigDecimal.ZERO, BigDecimal::add),
-
-                sumOut = comings.stream()
-                        .map(c -> c.getQuantity()
-                                .multiply(ComingItemHandler.getComingPrice(c)).setScale(2, BigDecimal.ROUND_HALF_UP))
-                        .reduce(BigDecimal.ZERO, BigDecimal::add),
+//            ))
+//            .leftJoin(qItem.inventoryRows, inventoryRow)
+//            .leftJoin(inventoryRow.stock, qStock)
+//            .where(qStock.id.eq(stockId));
+//
+//        BigDecimal
+//            quantity = qFromComingItem.select(comingItem.currentQuantity.sum()).fetchOne(),
+//            currentQuantity = qFromItem.select(inventoryRow.quantity.sum()).fetchOne(),
+////            currentQuantity = new JPAQuery<BigDecimal>(abstractEntityManager.getEntityManager())
+////                .select(inventoryRow.quantity.sum())
+////                .from(qItem)
+////                .where(qItem.id.in(
+////                    JPAExpressions
+////                    .select(comingItem.item.id)
+////                    .from(comingItem).where(predicate)
+////                    .distinct()
+////                ))
+////                .leftJoin(qItem.inventoryRows, inventoryRow)
+////                .leftJoin(inventoryRow.stock, qStock)
+////                .where(qStock.id.eq(stockId))
+////                .fetchOne(),
+//            sum = BigDecimal.ZERO,
+////                qFromComingItem.select(comingItem.sum.sum()).fetchOne(),
+//            currentSum = BigDecimal.ZERO,
+////                qFromItem.select(inventoryRow.quantity.multiply(comingItem.priceIn).sum()).fetchOne(),
+//            sumOut = BigDecimal.ZERO,
+////                = query.select(comingItem.currentQuantity.multiply(comingItem.priceIn).sum()).fetchOne(),
+//            currentSumOut = BigDecimal.ZERO;
+////                = query.select(
+////                JPAExpressions
+////                    .select(inventoryRow.quantity.multiply(comingItem.priceIn.max()).sum())
+////                    .from(qItem)
+////                    .join(qItem.inventoryRows, inventoryRow)
+////                    .join(inventoryRow.stock, qStock)
+////                    .where(qStock.id.eq(stockId))
+////            ).fetchOne();
+//
+//        currentSum = currentSum == null ? BigDecimal.ZERO : currentSum;
+//        currentQuantity = currentQuantity == null ? BigDecimal.ZERO : currentQuantity;
+//        super.getTotals().add(new ResultRowByItemsCollection<BigDecimal, BigDecimal>
+//            (DEVIATION, currentQuantity.subtract(quantity == null ? BigDecimal.ZERO : quantity),
+//                SUMM_IN , currentSum.subtract(sum == null ? BigDecimal.ZERO : sum)));
+//
+//        currentSumOut = currentSumOut == null ? BigDecimal.ZERO : currentSumOut;
+//        quantity = quantity == null ? BigDecimal.ZERO : quantity;
+//        super.getTotals().add(new ResultRowByItemsCollection<BigDecimal, BigDecimal>
+//            (DEVIATION, currentQuantity.subtract(quantity),
+//                SUMM_OUT , currentSumOut.subtract(sumOut == null ? BigDecimal.ZERO : sumOut)));
 
 
-                currentSumOut = comings.stream()
-                        .map(c -> c.getCurrentQuantity().multiply(ComingItemHandler.getComingPrice(c)).setScale(2, BigDecimal.ROUND_HALF_UP))
-                        .reduce(BigDecimal.ZERO, BigDecimal::add);
+//    }
 
-
-        super.getTotals().add(new ResultRowByItemsCollection<BigDecimal, BigDecimal>
-                (DEVIATION, currentQuantity.subtract(quantity),
-                        SUMM_IN , currentSum.subtract(sum)));
-
-        super.getTotals().add(new ResultRowByItemsCollection<BigDecimal, BigDecimal>
-                (DEVIATION, currentQuantity.subtract(quantity),
-                        SUMM_OUT , currentSumOut.subtract(sumOut)));
-
-        super.setSectionsByComings(comings);
-
-    }
+//    public void calcInventoryTotals(List<ComingItem> comings) {
+//
+//        final String
+//                DEVIATION = "Расхождение, кол.",
+//                SUMM_OUT = SUMM + PRICE_OUT,
+//                SUMM_IN = SUMM + PRICE_IN;
+//        ;
+//
+//        BigDecimal
+//            quantity = comings.stream().map(ComingItem::getQuantity).reduce(BigDecimal.ZERO, BigDecimal::add),
+//                currentQuantity = comings.stream().map(ComingItem::getCurrentQuantity).reduce(BigDecimal.ZERO, BigDecimal::add),
+//                sum = comings.stream().map(ComingItem::getSum).reduce(BigDecimal.ZERO, BigDecimal::add),
+//                currentSum = comings.stream()
+//                        .map(c -> c.getCurrentQuantity().multiply(c.getPriceIn()).setScale(2, BigDecimal.ROUND_HALF_UP))
+//                        .reduce(BigDecimal.ZERO, BigDecimal::add),
+//
+//                sumOut = comings.stream()
+//                        .map(c -> c.getQuantity()
+//                                .multiply(ComingItemHandler.getComingPrice(c)).setScale(2, BigDecimal.ROUND_HALF_UP))
+//                        .reduce(BigDecimal.ZERO, BigDecimal::add),
+//
+//
+//                currentSumOut = comings.stream()
+//                        .map(c -> c.getCurrentQuantity().multiply(ComingItemHandler.getComingPrice(c)).setScale(2, BigDecimal.ROUND_HALF_UP))
+//                        .reduce(BigDecimal.ZERO, BigDecimal::add);
+//
+//
+//        super.getTotals().add(new ResultRowByItemsCollection<BigDecimal, BigDecimal>
+//                (DEVIATION, currentQuantity.subtract(quantity),
+//                        SUMM_IN , currentSum.subtract(sum)));
+//
+//        super.getTotals().add(new ResultRowByItemsCollection<BigDecimal, BigDecimal>
+//                (DEVIATION, currentQuantity.subtract(quantity),
+//                        SUMM_OUT , currentSumOut.subtract(sumOut)));
+//
+//        super.setSectionsByComings(comings);
+//
+//    }
 
 }

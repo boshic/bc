@@ -3,6 +3,7 @@ package barcode.dao.services;
 import barcode.dao.entities.embeddable.InventoryRow;
 import barcode.dao.entities.embeddable.QInventoryRow;
 import barcode.dao.entities.embeddable.QInvoiceRow;
+import barcode.dto.*;
 import barcode.enums.CommentAction;
 import barcode.enums.SystemMessage;
 import barcode.utils.CommonUtils;
@@ -16,9 +17,6 @@ import barcode.dao.repositories.ComingItemRepository;
 import barcode.utils.BasicFilter;
 import barcode.utils.ComingItemFilter;
 import barcode.utils.DocumentFilter;
-import barcode.dto.DtoItemForNewComing;
-import barcode.dto.ResponseByComingItems;
-import barcode.dto.ResponseItem;
 import com.querydsl.core.types.dsl.*;
 import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.JPQLQuery;
@@ -526,65 +524,7 @@ public class ComingItemHandler extends EntityHandlerImpl {
         return responseItem;
     }
 
-//    private ResponseByComingItems getInventoryItems(List<ComingItem> comingItems, ComingItemFilter filter) {
-//
-//        Map<Item, List<ComingItem>> groupedItems = comingItems.stream()
-//                                                    .collect(Collectors.groupingBy(ComingItem::getItem));
-//
-//        List<ComingItem> result = new ArrayList<ComingItem>();
-//
-//        //item, stock, sum, quantity, currentQuantity
-//        groupedItems.forEach((item, comings) -> {
-//            InventoryRow inventoryRow
-//                = itemHandler.getInventoryRowByStock(item, filter.getStock().getId());
-//            ComingItem coming = new ComingItem(
-//                    item,
-//                    filter.getStock(),
-//                    comings.stream()
-//                            .map(ComingItem::getSum)
-//                            .reduce(BigDecimal.ZERO, BigDecimal::add),
-//                    comings.stream()
-//                            .map(ComingItem::getCurrentQuantity)
-//                            .reduce(BigDecimal.ZERO, BigDecimal::add),
-//                    comings.stream().max(Comparator.comparing(ComingItem::getPriceIn)).get().getPriceIn(),
-//                    comings.stream().max(Comparator.comparing(ComingItem::getPriceOut)).get().getPriceOut(),
-//                    inventoryRow == null ? BigDecimal.ZERO : inventoryRow.getQuantity(),
-//                    inventoryRow == null ? null : inventoryRow.getDate()
-//            );
-//
-//            if(coming.getSum().compareTo(BigDecimal.ZERO) > 0)
-//                coming.setPriceIn(
-//                    coming.getQuantity().compareTo(BigDecimal.ZERO) > 0 ?
-//                    coming.getSum().divide(coming.getQuantity(), 5, RoundingMode.CEILING)
-//                        : BigDecimal.ZERO
-//                );
-//            result.add(coming);
-//        });
-//
-//        sortGroupedItems(result,
-//                         filter.getSortDirection(),
-//                         ComingItemFilter
-//                                 .ComingItemSortingStrategies
-//                                 .valueOf(filter.getSortField()
-//                                         .replace(".","_")
-//                                         .toUpperCase()));
-//
-////
-//        PagedListHolder<ComingItem> page = new PagedListHolder<ComingItem>(result);
-//        page.setPageSize(filter.getRowsOnPage());
-//        page.setPage(filter.getPage() - 1);
-//
-//        ResponseByComingItems ribyci =
-//                new ResponseByComingItems(ELEMENTS_FOUND, page.getPageList(),
-//                        true, page.getPageCount());
-//
-//        if(filter.getCalcTotal())
-//            ribyci.calcInventoryTotals(result);
-////
-//        return ribyci;
-//    }
-
-    private ResponseByComingItems getInventoryItemsNew(
+    private ResponseByInventory getInventoryItemsNew(
         BooleanBuilder predicate,
         ComingItemFilter filter,
         PageRequest pageRequest) {
@@ -598,24 +538,13 @@ public class ComingItemHandler extends EntityHandlerImpl {
         EntityManager em = abstractEntityManager.getEntityManager();
 
         Expression<BigDecimal> casePriceIn = new CaseBuilder()
-            .when(comingItem.sum.sum().gt(0)
-                .and(comingItem.currentQuantity.sum().gt(0)))
+            .when(comingItem.sum.sum().gt(0).and(comingItem.currentQuantity.sum().gt(0)))
             .then(comingItem.sum.sum().divide(comingItem.currentQuantity.sum()))
-            .when(comingItem.sum.sum().gt(0)
-                .and(comingItem.currentQuantity.sum().loe(0)))
+            .when(comingItem.sum.sum().gt(0).and(comingItem.currentQuantity.sum().loe(0)))
             .then(BigDecimal.ZERO)
             .otherwise(comingItem.priceIn.max());
 
-//        try {
-//            ComingItemFilter.SortingFieldsForInventoryRows.valueOf(CommonUtils.toEnumStyle(filter.getSortField()));
-//        } catch (IllegalArgumentException e) {
-//            filter.setSortField(ComingItemFilter.SortingFieldsForInventoryRows.INVENTORYSUM.getValue());
-//        }
-
-        filter.validateFilterSortField(filter, filter.getSortField(),
-            ComingItemFilter.SortingFieldsForInventoryRows.INVENTORYSUM.getValue(),
-            ComingItemFilter.SortingFieldsForInventoryRows.SUMM);
-
+        filter.validateFilterSortField(filter, ComingItemFilter.SortingFieldsForInventoryRows.QUANTITY);
 
         OrderSpecifier orderSpecifier = filter.getOrderSpec(filter.getSortField(),
             filter.getSortDirection(), comingItem, QComingItem.class);
@@ -623,20 +552,21 @@ public class ComingItemHandler extends EntityHandlerImpl {
         JPAQuery<Tuple> query =  new JPAQuery<Tuple>(em)
             .select(
                 comingItem.item,
-                comingItem.sum.sum().as("summ"),
-                comingItem.currentQuantity.sum().as("quantity"),
+                comingItem.sum.sum().as(ComingItemFilter.SortingFieldsForInventoryRows.SUMM.getValue()),
+                comingItem.currentQuantity.sum().as(ComingItemFilter.SortingFieldsForInventoryRows.QUANTITY.getValue()),
                 ExpressionUtils.as(
                     cipb.getSubQueryFromInventoryRowsByComingAndStockId(
                             comingItem, inventoryRow, stockId, inventoryRow.quantity),
-                    "currentQuantity"),
+                    ComingItemFilter.SortingFieldsForInventoryRows.CURRENTQUANTITY.getValue()),
                 ExpressionUtils.as(
                     cipb.getSubQueryFromInventoryRowsByComingAndStockId(
                         comingItem, inventoryRow, stockId,
                         inventoryRow.quantity.multiply(casePriceIn).subtract(comingItem.sum.sum())),
-                    "inventorySum"),
+                    ComingItemFilter.SortingFieldsForInventoryRows.INVENTORYSUM.getValue()),
                 ExpressionUtils.as(
                     cipb.getSubQueryFromInventoryRowsByComingAndStockId(
-                        comingItem, inventoryRow, stockId, inventoryRow.date),"lastInventoryChangeDate")
+                        comingItem, inventoryRow, stockId, inventoryRow.date),
+                    ComingItemFilter.SortingFieldsForInventoryRows.LASTINVENTORYCHANGEDATE.getValue())
             )
             .from(comingItem)
             .where(predicate)
@@ -661,12 +591,19 @@ public class ComingItemHandler extends EntityHandlerImpl {
             );
         });
 
-        return getResults(
-            new PageImpl<ComingItem>(result, pageRequest, query.fetchCount()), filter, predicate);
+        Page<ComingItem> page = new PageImpl<ComingItem>(result, pageRequest, query.fetchCount());
+
+        ResponseByInventory response =
+            new ResponseByInventory(ELEMENTS_FOUND, page.getContent(), true, page.getTotalPages());
+
+        if(checkResponse(page.getContent().size(), response))
+            calcTotals(filter, abstractEntityManager, predicate, response);
+
+        return response;
 
     }
 
-    public ResponseByComingItems findByFilter(ComingItemFilter filter) {
+    public ResponseItemExt<ComingItem> findByFilter(ComingItemFilter filter) {
 
         itemHandler.checkEanInFilter(filter);
         Sort sort = new Sort(Sort.Direction.fromStringOrNull(filter.getSortDirection()), filter.getSortField());
@@ -674,38 +611,28 @@ public class ComingItemHandler extends EntityHandlerImpl {
         BooleanBuilder predicate = cipb.buildByFilter(filter, abstractEntityManager);
 
         if(filter.getInventoryModeEnabled())
-                    return getInventoryItemsNew(predicate, filter, pageRequest);
+            return getInventoryItemsNew(predicate, filter, pageRequest);
 
         Page<ComingItem> page =  comingItemRepository.findAll(predicate, pageRequest);
-        List<ComingItem> result = page.getContent();
 
-        if (result.size() > 0) {
+        ResponseByComingItems response =
+                new ResponseByComingItems(ELEMENTS_FOUND, page.getContent(), true, page.getTotalPages());
 
-            ResponseByComingItems ribyci =
-                    new ResponseByComingItems(ELEMENTS_FOUND, result, true, page.getTotalPages());
+        if(checkResponse(page.getContent().size(), response))
+            calcTotals(filter, abstractEntityManager, predicate, response);
 
-            if(filter.getCalcTotal())
-                ribyci.calcTotals(abstractEntityManager, predicate);
-
-
-            return ribyci;
-        }
-
-        return new ResponseByComingItems(NOTHING_FOUND, new ArrayList<ComingItem>(), false, 0);
+        return response;
     }
 
     private ResponseByComingItems
-    getResults(Page<ComingItem> page,
-               ComingItemFilter filter,
-               BooleanBuilder predicate) {
+    getResults(Page<ComingItem> page, ComingItemFilter filter, BooleanBuilder predicate) {
 
         ResponseByComingItems ribyci =
             new ResponseByComingItems(ELEMENTS_FOUND,
                 page.getContent(), true, page.getTotalPages());
 
         if(filter.getCalcTotal())
-            ribyci.calcInventoryTotalsNew(abstractEntityManager,
-                                                predicate, filter.getStock().getId());
+            ribyci.calcTotals(abstractEntityManager, predicate, filter);
 
         return ribyci;
     }
