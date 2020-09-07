@@ -7,6 +7,7 @@ import barcode.dao.predicates.BuyerPredicateBuilder;
 import barcode.dao.repositories.BuyerRepository;
 import barcode.dto.DtoBuyer;
 import barcode.dto.ResponseItem;
+import barcode.utils.CommonUtils;
 import com.querydsl.core.BooleanBuilder;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
@@ -31,14 +32,14 @@ public class BuyerHandler extends EntityHandlerImpl{
 
     private ResponseItem<Buyer> update(Buyer newBuyer, Buyer buyer) {
         newBuyer.setName(buyer.getName());
-        newBuyer.setDebt(buyer.getDebt() == null ? BigDecimal.ZERO : buyer.getDebt());
-        newBuyer.setAccount(buyer.getAccount() == null? "" : buyer.getAccount());
+        newBuyer.setDebt(CommonUtils.validateBigDecimal(buyer.getDebt()));
+        newBuyer.setAccount(CommonUtils.validateString(buyer.getAccount()));
         newBuyer.setBank(bankHandler.getCheckedItem(buyer.getBank()));
-        newBuyer.setUnp(buyer.getUnp() == null ? "" : buyer.getUnp());
+        newBuyer.setUnp(CommonUtils.validateString(buyer.getUnp()));
         newBuyer.setAddress(buyer.getAddress());
         newBuyer.setDiscount(buyer.getDiscount() == null ? 0 : buyer.getDiscount());
-        newBuyer.setSellByComingPrices(buyer.getSellByComingPrices() == null ? false : buyer.getSellByComingPrices());
-        newBuyer.setExcludeExpensesFromIncome(buyer.getExcludeExpensesFromIncome() == null ? false : buyer.getExcludeExpensesFromIncome());
+        newBuyer.setSellByComingPrices(CommonUtils.validateBoolean(buyer.getSellByComingPrices()));
+        newBuyer.setExcludeExpensesFromIncome(CommonUtils.validateBoolean(buyer.getExcludeExpensesFromIncome()));
 //        newBuyer.setUseForInventory(checkAndGetInventorySign(buyer.getUseForInventory()));
         newBuyer.setLastPayDate(new Date());
         buyerRepository.save(newBuyer);

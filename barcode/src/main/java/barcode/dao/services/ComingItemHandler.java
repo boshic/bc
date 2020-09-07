@@ -537,13 +537,6 @@ public class ComingItemHandler extends EntityHandlerImpl {
 
         EntityManager em = abstractEntityManager.getEntityManager();
 
-        Expression<BigDecimal> casePriceIn = new CaseBuilder()
-            .when(comingItem.sum.sum().gt(0).and(comingItem.currentQuantity.sum().gt(0)))
-            .then(comingItem.sum.sum().divide(comingItem.currentQuantity.sum()))
-            .when(comingItem.sum.sum().gt(0).and(comingItem.currentQuantity.sum().loe(0)))
-            .then(BigDecimal.ZERO)
-            .otherwise(comingItem.priceIn.max());
-
         filter.validateFilterSortField(filter, ComingItemFilter.SortingFieldsForInventoryRows.QUANTITY);
 
         OrderSpecifier orderSpecifier = filter.getOrderSpec(filter.getSortField(),
@@ -561,7 +554,7 @@ public class ComingItemHandler extends EntityHandlerImpl {
                 ExpressionUtils.as(
                     cipb.getSubQueryFromInventoryRowsByComingAndStockId(
                         comingItem, inventoryRow, stockId,
-                        inventoryRow.quantity.multiply(casePriceIn).subtract(comingItem.sum.sum())),
+                        inventoryRow.quantity.multiply(cipb.getMaxPriceInForInventoryCase(comingItem)).subtract(comingItem.sum.sum())),
                     ComingItemFilter.SortingFieldsForInventoryRows.INVENTORYSUM.getValue()),
                 ExpressionUtils.as(
                     cipb.getSubQueryFromInventoryRowsByComingAndStockId(
@@ -584,9 +577,9 @@ public class ComingItemHandler extends EntityHandlerImpl {
                     filter.getStock(),
                     coming.get(1, BigDecimal.class),
                     coming.get(2, BigDecimal.class),
-                    coming.get(3, BigDecimal.class) == null ? BigDecimal.ZERO : coming.get(3, BigDecimal.class),
-                    coming.get(4, BigDecimal.class) == null ? BigDecimal.ZERO : coming.get(4, BigDecimal.class),
-                    coming.get(5, Date.class) == null ? new Date() : coming.get(5, Date.class)
+                    CommonUtils.validateBigDecimal(coming.get(3, BigDecimal.class)),
+                    CommonUtils.validateBigDecimal(coming.get(4, BigDecimal.class)),
+                    CommonUtils.validateDate(coming.get(5, Date.class))
                 )
             );
         });
@@ -596,7 +589,7 @@ public class ComingItemHandler extends EntityHandlerImpl {
         ResponseByInventory response =
             new ResponseByInventory(ELEMENTS_FOUND, page.getContent(), true, page.getTotalPages());
 
-        if(checkResponse(page.getContent().size(), response))
+        if(checkResponse(response.getEntityItems().size(), response))
             calcTotals(filter, abstractEntityManager, predicate, response);
 
         return response;
@@ -624,18 +617,18 @@ public class ComingItemHandler extends EntityHandlerImpl {
         return response;
     }
 
-    private ResponseByComingItems
-    getResults(Page<ComingItem> page, ComingItemFilter filter, BooleanBuilder predicate) {
-
-        ResponseByComingItems ribyci =
-            new ResponseByComingItems(ELEMENTS_FOUND,
-                page.getContent(), true, page.getTotalPages());
-
-        if(filter.getCalcTotal())
-            ribyci.calcTotals(abstractEntityManager, predicate, filter);
-
-        return ribyci;
-    }
+//    private ResponseByComingItems
+//    getResults(Page<ComingItem> page, ComingItemFilter filter, BooleanBuilder predicate) {
+//
+//        ResponseByComingItems ribyci =
+//            new ResponseByComingItems(ELEMENTS_FOUND,
+//                page.getContent(), true, page.getTotalPages());
+//
+//        if(filter.getCalcTotal())
+//            ribyci.calcTotals(abstractEntityManager, predicate, filter);
+//
+//        return ribyci;
+//    }
 
 
     public DtoItemForNewComing getItemForNewComing(String ean, Long stockId) {

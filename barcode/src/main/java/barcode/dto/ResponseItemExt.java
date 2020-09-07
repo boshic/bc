@@ -3,8 +3,11 @@ package barcode.dto;
 import barcode.dao.entities.*;
 import barcode.dao.services.AbstractEntityManager;
 import com.querydsl.core.BooleanBuilder;
+import com.querydsl.core.types.Expression;
+import com.querydsl.core.types.dsl.CaseBuilder;
 
 import java.lang.reflect.Method;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;

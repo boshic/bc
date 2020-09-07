@@ -9,6 +9,7 @@ import barcode.dao.repositories.ComingItemRepository;
 import barcode.dao.repositories.ItemRepository;
 import barcode.utils.ComingItemFilter;
 import barcode.dto.ResponseItem;
+import barcode.utils.CommonUtils;
 import com.querydsl.core.types.Predicate;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
@@ -50,12 +51,8 @@ public class ItemHandler  extends EntityHandlerImpl{
         }
 
         item.setAlterName(srcItem.getAlterName() == null ? "" : srcItem.getAlterName());
-        item.setPredefinedQuantity(srcItem.getPredefinedQuantity() == null ? BigDecimal.ZERO : srcItem.getPredefinedQuantity());
-        item.setPrice(srcItem.getPrice() == null ? BigDecimal.ZERO : srcItem.getPrice());
-
-//        qItem.components.any().component.ean.eq(srcItem.getEan());
-//        if (item.getCanBeComposite() == null)
-//            item.setCanBeComposite(true);
+        item.setPredefinedQuantity(CommonUtils.validateBigDecimal(srcItem.getPredefinedQuantity()));
+        item.setPrice(CommonUtils.validateBigDecimal(srcItem.getPrice()));
 
         if(srcItem.getComponents() != null)
             item.setComponents(srcItem.getComponents());

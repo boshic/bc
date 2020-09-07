@@ -10,6 +10,7 @@ import com.querydsl.core.types.Path;
 import com.querydsl.core.types.Predicate;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import barcode.utils.ComingItemFilter;
+import com.querydsl.core.types.dsl.CaseBuilder;
 import com.querydsl.core.types.dsl.DateTimePath;
 import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.JPQLQuery;
@@ -157,4 +158,38 @@ public class ComingItemPredicatesBuilder {
                 .join(inventoryRow.stock, qStock)
                 .where(qStock.id.eq(stockId));
     }
+
+    public <T> JPQLQuery<T>
+    getSubQueryFromComingItemsForInventoryTotals(QComingItem qComingItem,
+                                                   QItem qItem,
+                                                   Long stockId,
+                                                   Expression<T> path) {
+
+
+        return JPAExpressions
+            .select(path)
+            .from(qComingItem)
+            .where(qComingItem.item.id.eq(qItem.id)
+                .and(qComingItem.stock.id.eq(stockId)));
+    }
+
+    public Expression<BigDecimal> getMaxPriceInForInventoryCase (QComingItem qComingItem) {
+
+        return new CaseBuilder()
+            .when(qComingItem.sum.sum().gt(0).and(qComingItem.currentQuantity.sum().gt(0)))
+            .then(qComingItem.sum.sum().divide(qComingItem.currentQuantity.sum()))
+            .when(qComingItem.sum.sum().gt(0).and(qComingItem.currentQuantity.sum().loe(0)))
+            .then(BigDecimal.ZERO)
+            .otherwise(qComingItem.priceIn.max());
+    }
+
+    public Expression<BigDecimal> getPriceOutCase (QComingItem qComingItem) {
+
+        return new CaseBuilder()
+            .when(qComingItem.item.price.gt(0))
+            .then(qComingItem.item.price)
+            .otherwise(qComingItem.priceOut);
+    }
+
+
 }

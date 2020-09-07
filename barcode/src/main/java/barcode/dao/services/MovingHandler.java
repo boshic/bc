@@ -6,6 +6,7 @@ import barcode.dao.entities.Stock;
 import barcode.dao.entities.User;
 import barcode.dto.ResponseItem;
 import barcode.enums.CommentAction;
+import barcode.utils.CommonUtils;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -80,7 +81,7 @@ public ResponseItem makeMovings(Set<SoldItem> movings, Long stockId) {
                                         "c " + coming.getStock().getName() +
                                                 " на " + this.stockHandler.getStockById(stockId).getName() +
                                                 getQuantityForComment(moving.getQuantity())
-                                                + (moving.getComment() == null ? "": moving.getComment()),
+                                                + (CommonUtils.validateString(moving.getComment())),
                                         getCheckedUserName(moving.getUser()),
                                     CommentAction.MOVE_COMMENT.getAction(), newComing.getCurrentQuantity()));
 
@@ -142,7 +143,7 @@ public ResponseItem makeMovings(Set<SoldItem> movings, Long stockId) {
                                             "c " + coming.getStock().getName() +
                                                     " на " + this.stockHandler.getStockById(stockId).getName() +
                                                     getQuantityForComment(moving.getQuantity())
-                                                    + (moving.getComment() == null ? "": moving.getComment()),
+                                                    + (CommonUtils.validateString(moving.getComment())),
                                             getCheckedUserName(moving.getUser()),
                                         CommentAction.MOVE_COMMENT.getAction(), coming.getCurrentQuantity()));
 
@@ -167,7 +168,7 @@ public ResponseItem makeMovings(Set<SoldItem> movings, Long stockId) {
                                             "c " + coming.getStock().getName() +
                                                     " на " + this.stockHandler.getStockById(stockId).getName()
                                                     + getQuantityForComment(moving.getQuantity())
-                                                    + (moving.getComment() == null ? "": moving.getComment()),
+                                                    + CommonUtils.validateString(moving.getComment()),
                                             getCheckedUserName(moving.getUser()),
                                         CommentAction.MOVE_COMMENT.getAction(), coming.getCurrentQuantity()));
 
@@ -283,7 +284,7 @@ public ResponseItem addOneMoving(SoldItem moving, Long stockId) {
                             "c " + coming.getStock().getName() +
                                     " на " + this.stockHandler.getStockById(stockId).getName()
                                     + getQuantityForComment(moving.getQuantity())
-                                    + (moving.getComment() == null ? "": moving.getComment()),
+                                    + CommonUtils.validateString(moving.getComment()),
                             getCheckedUserName(moving.getUser()),
                         CommentAction.MOVE_COMMENT.getAction(), coming.getCurrentQuantity()));
 
@@ -314,7 +315,7 @@ public ResponseItem addOneMoving(SoldItem moving, Long stockId) {
                             "c " + coming.getStock().getName() +
                                     " на " + this.stockHandler.getStockById(stockId).getName()
                                     + getQuantityForComment(moving.getQuantity())
-                                    + (moving.getComment() == null ? "": moving.getComment()),
+                                    + CommonUtils.validateString(moving.getComment()),
                             getCheckedUserName(moving.getUser()),
                         CommentAction.MOVE_COMMENT.getAction(), coming.getCurrentQuantity()));
 
@@ -323,7 +324,7 @@ public ResponseItem addOneMoving(SoldItem moving, Long stockId) {
                             "c " + coming.getStock().getName() +
                                     " на " + this.stockHandler.getStockById(stockId).getName() +
                                     getQuantityForComment(moving.getQuantity())
-                                    + (moving.getComment() == null ? "": moving.getComment()),
+                                    + CommonUtils.validateString(moving.getComment()),
                             getCheckedUserName(moving.getUser()),
                         CommentAction.MOVE_COMMENT.getAction(), newComing.getCurrentQuantity()));
 

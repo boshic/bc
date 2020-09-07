@@ -7,6 +7,6 @@ import java.util.List;
  */
 public interface SortingField {
 
-    void checkSortField(String field);
+    void checkSortField(String field) throws IllegalArgumentException;
     String getValue();
 }
