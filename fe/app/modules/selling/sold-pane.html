@@ -66,8 +66,6 @@
         </div>
     </div>
     <current-stock-indicator stock="filter.stock"></current-stock-indicator>
-    <!--table table-responsive table-bordered-->
-    <!--fixed-head-table-->
     <table ng-class = "{'fixed-head-table': filter.showInScrollMode,
                         'table table-responsive table-bordered' : !filter.showInScrollMode}">
         <thead class="pane-thead" ng-show="rows.length">
@@ -88,7 +86,6 @@
                 </sortable-column>
                 <span>, продавец</span>
             </td>
-            <!--style="min-width: 49vw;" ng-class = "{'group-by-items-name': filter.groupByItems}"-->
             <td class="sold-pane-name" ng-class = "{'group-by-items-name': filter.groupByItems}">
                 <sortable-column field="filter.sortField"
                                  listening-field="'coming.item.name'"
@@ -147,6 +144,18 @@
                                  column-name="Покупатель">
                 </sortable-column>
             </td>
+            <td style="width: 10vw;" ng-show="filter.groupByItems">
+                <sortable-column field="filter.sortField"
+                                 listening-field="'incomeSum'"
+                                 sort-direction="filter.sortDirection"
+                                 column-name="Доход.">
+                </sortable-column>
+                <sortable-column field="filter.sortField"
+                                 listening-field="'incomeSumPercent'"
+                                 sort-direction="filter.sortDirection"
+                                 column-name="Процент от дохода">
+                </sortable-column>
+            </td>
         </thead>
         <tbody ng-show="rows.length">
             <tr class="hoverable middle-rows"
@@ -167,8 +176,6 @@
                     </span>
                     <span class="price-out-on-coming-pane" title="Продавец">{{ x.user.name }}</span>
                 </td>
-                <!--style="min-width: 49vw;"-->
-                <!--'group-by-items-name': filter.groupByItems,-->
                 <td  class="sold-pane-name"
                     ng-class = "{'receipt-bottom-underline': (x.receipt.id > 0 && x.receipt.id != rows[$index + 1].receipt.id),
                                  'group-by-items-name': filter.groupByItems,
@@ -185,8 +192,7 @@
                         <span>{{"изделие № -" + x.soldCompositeItem.id}}</span>
                         <span>{{", " + x.soldCompositeItem.item.name}}</span>
                         <span>{{", кол-во: " + x.soldCompositeItem.quantity + x.coming.item.unit}}</span>
-                        <span>{{",cd ..
-                            на сумму: " + x.soldCompositeItem.sum}}</span>
+                        <span>{{", на сумму: " + x.soldCompositeItem.sum}}</span>
                     </div>
                     <item-row-on-panes row="x.coming" filter="filter"></item-row-on-panes>
                 </td>
@@ -204,6 +210,13 @@
                 <td style="width: 5vw; text-decoration: underline; font-style: italic;" class="price-data"
                     title="Сумма" ng-show="!filter.groupByItems">
                     {{ x.sum }}
+                </td>
+                <td style="width: 10vw; text-decoration: underline; font-style: italic;" class="price-data"
+                    title="Доход" ng-show="filter.groupByItems">
+                    {{ x.incomeSum.toFixed(2) }}
+                    <div>
+                        <span class="overhead-percentage">{{(x.incomeSumPercent*100).toFixed(2) + "%"}}</span>
+                    </div>
                 </td>
                 <td style="width: 11vw;"
                     class="buyer-name"

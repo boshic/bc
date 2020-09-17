@@ -29,11 +29,17 @@
                 </ul>
             </div>
             <div class="additional-info">
-                <span>по</span>
-                <span>{{price.doc.name}}</span>
-                <span>от</span>
-                <span>{{price.doc.date | date:'dd.MM.yy'}}</span>
-                <span>{{', ' + stock.organization.name}}</span>
+                <div style="width: 70%;">
+                    <span>по</span>
+                    <span>{{price.doc.name}}</span>
+                    <span>от</span>
+                    <span>{{price.doc.date | date:'dd.MM.yy'}}</span>
+                    <span>{{', ' + stock.organization.name}}</span>
+                </div>
+                <div class="price-per-unit-container" ng-show="price.priceForOneUnit > 0">
+                    <span>{{price.priceForOneUnit}}</span>
+                    <span>{{" за 1" + price.item.contentUnit}}</span>
+                </div>
             </div>
             <div class="price-out">
 

@@ -370,7 +370,7 @@ import commonReleasePaneCtrlr from '../../controllers/common-pane-release-ctrlr.
         "<span class='btn-checkbox-toggler-btn-no' ng-hide='$ctrl.checkingValue'>Нет</span>",
         controller: function() {}
     })
-        .component( "itemRowOnPanes", {
+    .component( "itemRowOnPanes", {
         bindings: {
             row: '=',
             filter: '=',
@@ -379,7 +379,7 @@ import commonReleasePaneCtrlr from '../../controllers/common-pane-release-ctrlr.
         template: itemRowOnPanesTpl,
         controller: function() {}
     })
-        .component( "overheadPercentageIndicator", {
+    .component( "overheadPercentageIndicator", {
         bindings: {
             priceOut: '<',
             price: '<'

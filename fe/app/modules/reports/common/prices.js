@@ -40,11 +40,12 @@ let pricesCtrlr = ($location, $window, httpService, $s, $timeout) => {
             httpService.getItemById({id: $location.search().id, url:'getReportById'}).then(
                 resp => {
                     resp.rows.forEach((row) => {
-                        // row.item.price > 0 ? row.item.price :
                         let price = row.price;
                         row.rub = Math.trunc(price);
                         let kop = ((price - row.rub) * 100).toFixed(0);
                         row.kop = kop < 10? '0'+ kop : kop;
+                        row.priceForOneUnit = row.item.perUnitQuantity > 0
+                          ? (price/row.item.perUnitQuantity).toFixed(2) : 0;
                     });
                     $s.prices  = resp.rows;
                     $s.stock = resp.stock;

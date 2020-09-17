@@ -1,6 +1,7 @@
 package barcode.dto;
 
 import barcode.dao.entities.ComingItem;
+import barcode.dao.entities.QComingItem;
 import barcode.dao.entities.QItem;
 import barcode.dao.entities.QStock;
 import barcode.dao.entities.embeddable.QInventoryRow;
@@ -31,15 +32,15 @@ public class ResponseByInventory
     }
 
     @Override
-    public void calcTotals(AbstractEntityManager abstractEntityManager,
-                                       BooleanBuilder predicate,
-                                       ComingItemFilter filter) {
+    public void calcTotals(AbstractEntityManager abstractEntityManager, ComingItemFilter filter) {
 
         QInventoryRow inventoryRow = QInventoryRow.inventoryRow;
         QItem qItem = QItem.item;
         QStock qStock = QStock.stock;
+        QComingItem qComingItem = QComingItem.comingItem;
 
         ComingItemPredicatesBuilder cipb = new ComingItemPredicatesBuilder();
+        BooleanBuilder predicate = cipb.buildByFilter(filter, abstractEntityManager);
 
         final String
             DEVIATION = "Расхождение, кол.",
@@ -83,7 +84,8 @@ public class ResponseByInventory
                 qFromItem.select(inventoryRow.quantity.multiply(
                     cipb.getSubQueryFromComingItemsForInventoryTotals(
                         qComingItem, qItem, filter.getStock().getId(),
-                        new CaseBuilder().when(qItem.price.gt(0))
+                        new CaseBuilder()
+                            .when(qItem.price.gt(0))
                             .then(qItem.price).otherwise(qComingItem.priceOut.max()))
                 ).sum()).fetchOne());
 

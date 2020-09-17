@@ -20,16 +20,20 @@ public class Item extends BasicNamedEntity {
     @Column(name = "alter_name", columnDefinition="varchar(250) COLLATE utf8_general_ci default ''")
     private String alterName;
 
-
     @Column(name = "ean_synonym", columnDefinition="varchar(13) COLLATE utf8_general_ci default ''")
     private String eanSynonym;
 
     @Column(name = "predefined_quantity", columnDefinition="Decimal(9,2) default '0.00'")
     private BigDecimal predefinedQuantity;
 
+    @Column(name = "per_unit_quantity", columnDefinition="Decimal(9,2) default '0.00'")
+    private BigDecimal perUnitQuantity;
+
+    @Column(name = "content_unit", columnDefinition="varchar(100) COLLATE utf8_general_ci default ''")
+    private String contentUnit;
+
     @Column(name = "price", columnDefinition="Decimal(9,2) default '0.00'")
     private BigDecimal price;
-
 
     @Column(name = "unit", nullable = false)
     private String unit;
@@ -122,6 +126,22 @@ public class Item extends BasicNamedEntity {
 
     public void setPrice(BigDecimal price) {
         this.price = price;
+    }
+
+    public BigDecimal getPerUnitQuantity() {
+        return perUnitQuantity;
+    }
+
+    public void setPerUnitQuantity(BigDecimal perUnitQuantity) {
+        this.perUnitQuantity = perUnitQuantity;
+    }
+
+    public String getContentUnit() {
+        return contentUnit;
+    }
+
+    public void setContentUnit(String contentUnit) {
+        this.contentUnit = contentUnit;
     }
 
     @Override

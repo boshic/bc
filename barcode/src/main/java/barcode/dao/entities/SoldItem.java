@@ -35,6 +35,12 @@ public class SoldItem extends BasicOperationWithCommentEntity {
     @Column(name = "sum", columnDefinition="Decimal(12,2) default '0.00'")
     private BigDecimal sum;
 
+    @Transient
+    private BigDecimal incomeSum;
+
+    @Transient
+    private BigDecimal incomeSumPercent;
+
     @Column(columnDefinition="Decimal(19,3)")
     private BigDecimal quantity;
 
@@ -57,12 +63,16 @@ public class SoldItem extends BasicOperationWithCommentEntity {
     public SoldItem(ComingItem coming,
                     BigDecimal price,
                     BigDecimal quantity,
-                    BigDecimal availQuantityByEan) {
+                    BigDecimal availQuantityByEan,
+                    BigDecimal incomeSum,
+                    BigDecimal incomeSumPercent) {
 
         this.coming = coming;
         this.price = price;
         this.quantity = quantity;
         this.availQuantityByEan = availQuantityByEan;
+        this.incomeSum = incomeSum;
+        this.incomeSumPercent = incomeSumPercent;
     }
 
     public SoldItem( ComingItem coming,
@@ -139,5 +149,21 @@ public class SoldItem extends BasicOperationWithCommentEntity {
 
     public void setSoldCompositeItem(SoldCompositeItem soldCompositeItem) {
         this.soldCompositeItem = soldCompositeItem;
+    }
+
+    public BigDecimal getIncomeSum() {
+        return incomeSum;
+    }
+
+    public void setIncomeSum(BigDecimal incomeSum) {
+        this.incomeSum = incomeSum;
+    }
+
+    public BigDecimal getIncomeSumPercent() {
+        return incomeSumPercent;
+    }
+
+    public void setIncomeSumPercent(BigDecimal incomeSumPercent) {
+        this.incomeSumPercent = incomeSumPercent;
     }
 }

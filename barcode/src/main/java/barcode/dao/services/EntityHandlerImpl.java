@@ -225,10 +225,9 @@ public class EntityHandlerImpl implements EntityHandler {
     <T extends ComingItemFilter>
     void calcTotals(T filter,
                     AbstractEntityManager abstractEntityManager,
-                    BooleanBuilder predicate,
                     ResponseWithTotals<T> response ) {
         if(filter.getCalcTotal())
-            response.calcTotals(abstractEntityManager, predicate, filter);
+            response.calcTotals(abstractEntityManager, filter);
 
     }
 

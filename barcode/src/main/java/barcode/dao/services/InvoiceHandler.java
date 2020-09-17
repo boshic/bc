@@ -161,24 +161,13 @@ public class InvoiceHandler extends EntityHandlerImpl {
 //        Sort sort = new Sort(Sort.Direction.DESC, "date");
 
         Sort sort = new Sort(Sort.Direction.fromStringOrNull(filter.getSortDirection()), filter.getSortField());
-
         PageRequest pageRequest = new PageRequest(filter.getPage() - 1, filter.getRowsOnPage(), sort);
-
         Page<Invoice> page =  invoiceRepository.findAll(ipb.buildByFilter(filter, abstractEntityManager), pageRequest);
-
         List<Invoice> result = page.getContent();
 
-        if (result.size() > 0) {
-
-            ResponseByInvoices ribyi =
-                    new ResponseByInvoices(
+        if (result.size() > 0)
+            return  new ResponseByInvoices(
                             ELEMENTS_FOUND, result, true, page.getTotalPages());
-
-//            if(filter.getCalcTotal())
-//                ribyi.calcTotals(invoiceRepository.findAll(ipb.buildByFilter(filter, abstractEntityManager)));
-
-            return ribyi;
-        }
 
         return new ResponseByInvoices(NOTHING_FOUND, new ArrayList<Invoice>(),
                 false, 0);
@@ -187,8 +176,6 @@ public class InvoiceHandler extends EntityHandlerImpl {
 
     public ResponseItemExt<InvoiceHeader>
     getInvoiceHeaders(SoldItemFilter filter) {
-
-//        abstractEntityManager.test();
 
         ResponseItemExt<Invoice> responseByInvoices = getInvoicesByFilter(filter);
 
@@ -205,7 +192,7 @@ public class InvoiceHandler extends EntityHandlerImpl {
             return headers;
         }
 
-        return new ResponseItemExt<InvoiceHeader>(NOTHING_FOUND, false);
+        return new ResponseItemExt<InvoiceHeader>(NOTHING_FOUND, new ArrayList<>(), false, 0);
     }
 
     public Long addInvoiceByFilter(SoldItemFilter filter) {

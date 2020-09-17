@@ -6,6 +6,10 @@ import barcode.dao.entities.QItem;
 import barcode.dao.entities.QSoldItem;
 import com.querydsl.core.BooleanBuilder;
 import barcode.utils.SoldItemFilter;
+import com.querydsl.core.types.Expression;
+import com.querydsl.core.types.dsl.CaseBuilder;
+
+import java.math.BigDecimal;
 
 public class SoldItemPredicatesBuilder {
 
@@ -65,6 +69,14 @@ public class SoldItemPredicatesBuilder {
             predicate = predicate.and(soldItem.quantity.gt(0));
 
         return predicate;
+    }
+
+    public Expression<BigDecimal> getSumForExcludeFromIncome (QSoldItem qSoldItem) {
+
+        return new CaseBuilder()
+            .when(soldItem.buyer.excludeExpensesFromIncome.isTrue())
+            .then(soldItem.coming.priceIn.multiply(soldItem.quantity).multiply(2))
+            .otherwise(soldItem.coming.priceIn.multiply(soldItem.quantity));
     }
 
 }

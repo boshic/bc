@@ -54,6 +54,29 @@
                     <eraser style="margin-top: 6px;" data="item.price" ng-click="focusOnPriceInputId()"></eraser>
                 </div>
                 <div style="display: flex;">
+                    <span style="width: 39%;"></span>
+                    <span style="width: 33%;">Единица измерения содержимого</span>
+                    <span style="width: 33%;">Количество содержимого</span>
+                </div>
+                <div style="display: flex;margin-bottom: 10px;">
+                    <span style="width: 33%;"></span>
+                    <eraser style="margin-top: 6px;" data="item.contentUnit"></eraser>
+                    <input style = "width: 33%; text-align: center;" type="text"
+                           class="form-control"
+                           ng-model="item.contentUnit" list="content-measure-units" placeholder=""/>
+                        <datalist id="content-measure-units" >
+                        <option>шт</option>
+                        <option>л</option>
+                        <option>кг</option>
+                        <option>м</option>
+                        <option>к-т</option>
+                    </datalist>
+                    <input style = "width: 33%; text-align: center;" type="number"
+                           class="form-control" min="0"
+                           ng-model="item.perUnitQuantity" placeholder=""/>
+                    <span style="width: 28px;"></span>
+                </div>
+                <div style="display: flex;">
                     <span style="width: 50%;">Штрих-код</span>
                     <span style="width: 50%;">Штрих-код синоним</span>
                 </div>

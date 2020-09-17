@@ -38,9 +38,9 @@ public class ItemHandler  extends EntityHandlerImpl{
     private ResponseItem<Item> update(Item srcItem, Item item) {
 
         item.setName(srcItem.getName());
-
         item.setUnit(srcItem.getUnit());
-
+        item.setContentUnit(CommonUtils.validateString(srcItem.getContentUnit()));
+        item.setPerUnitQuantity(CommonUtils.validateBigDecimal(srcItem.getPerUnitQuantity()));
         item.setEan(srcItem.getEan());
 
         if(isAllowedEanSynonym(srcItem, item))

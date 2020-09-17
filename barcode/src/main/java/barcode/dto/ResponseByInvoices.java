@@ -21,7 +21,6 @@ public class ResponseByInvoices
     }
 
     @Override
-    public void calcTotals(AbstractEntityManager abstractEntityManager,
-                           BooleanBuilder predicate, SoldItemFilter filter) {}
+    public void calcTotals(AbstractEntityManager abstractEntityManager, SoldItemFilter filter) {}
 
 }

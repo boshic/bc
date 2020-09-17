@@ -36,10 +36,6 @@ public class User extends BasicNamedEntity{
     @JsonIgnore
     private Set<SoldItem> sellings;
 
-//    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
-//    @JsonIgnore
-//    private Set<InventoryRow> inventoryRows;
-
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     @JsonIgnore
     private Set<Invoice> invoices;

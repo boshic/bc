@@ -1,5 +1,7 @@
 package barcode.security;
 
+import barcode.dao.entities.User;
+import barcode.dao.services.UserHandler;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
 
@@ -8,20 +10,28 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-/**
- * Created by xlinux on 02.03.18.
- */
 public class SecuritySuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
 
-        private final Integer SESSION_TIMEOUT_IN_SECONDS = 5;
+        private UserHandler userHandler;
+
+        SecuritySuccessHandler() {}
+        SecuritySuccessHandler(UserHandler userHandler) {
+
+            this.userHandler = userHandler;
+        }
 
         @Override
         public void onAuthenticationSuccess(HttpServletRequest request,
             HttpServletResponse response,
-            Authentication authentication)
-                    throws ServletException, IOException {
+            Authentication authentication) throws ServletException, IOException {
 
-        request.getSession().setMaxInactiveInterval(SESSION_TIMEOUT_IN_SECONDS);
+//        final int SESSION_TIMEOUT_IN_SECONDS = 5;
+
+        User user = userHandler.getUserByName(request.getParameterValues("username")[0]);
+//        request.getSession().setMaxInactiveInterval(SESSION_TIMEOUT_IN_SECONDS);
+
+//        if(user.getName().equals("Админ"))
+//            authentication.setAuthenticated(false);
         response.sendRedirect("/mainPage");
 
     }

@@ -10,6 +10,7 @@ import com.querydsl.core.types.Expression;
 import com.querydsl.core.types.dsl.CaseBuilder;
 import com.querydsl.jpa.impl.JPAQuery;
 
+import javax.persistence.EntityManager;
 import java.math.BigDecimal;
 import java.util.List;
 
@@ -24,8 +25,7 @@ public class ResponseByComingItems
     }
 
     @Override
-    public void calcTotals (AbstractEntityManager abstractEntityManager,
-                            BooleanBuilder predicate, ComingItemFilter filter) {
+    public void calcTotals (AbstractEntityManager abstractEntityManager, ComingItemFilter filter) {
 
         final String
             SUMM_BY_SELECTION = SUMM + BY_SELECTION,
@@ -35,10 +35,13 @@ public class ResponseByComingItems
             QUANTITY_BY_FACT_PRICE_OUT = QUANTITY + BY_FACT + PRICE_OUT,
             SUMM_BY_FACT = SUMM + BY_FACT;
 
+        QComingItem qComingItem = QComingItem.comingItem;
         ComingItemPredicatesBuilder cipb = new ComingItemPredicatesBuilder();
+        BooleanBuilder predicate = cipb.buildByFilter(filter, abstractEntityManager);
         Expression<BigDecimal> casePriceOut = cipb.getPriceOutCase(qComingItem);
+        EntityManager em = abstractEntityManager.getEntityManager();
 
-        JPAQuery<BigDecimal> query = new JPAQuery<BigDecimal>(abstractEntityManager.getEntityManager());
+        JPAQuery<BigDecimal> query = new JPAQuery<BigDecimal>(em);
         query = query.from(qComingItem).where(predicate);
 
         BigDecimal
@@ -73,13 +76,13 @@ public class ResponseByComingItems
                 SUMM , sumOut.subtract(currentSumOut)));
 
         super.setSections(
-            new JPAQuery<ItemSection>(abstractEntityManager.getEntityManager())
+            new JPAQuery<ItemSection>(em)
                 .from(qComingItem).where(predicate)
                 .select(qComingItem.item.section)
                 .distinct().orderBy(qComingItem.item.section.name.asc()).fetch());
 
         super.setSuppliers(
-            new JPAQuery<Supplier>(abstractEntityManager.getEntityManager())
+            new JPAQuery<Supplier>(em)
                 .from(qComingItem).where(predicate)
                 .select(qComingItem.doc.supplier)
                 .distinct().orderBy(qComingItem.doc.supplier.name.asc()).fetch());

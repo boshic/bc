@@ -1,5 +1,6 @@
 package barcode.security;
 
+import barcode.dao.services.UserHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -22,13 +23,18 @@ import javax.sql.DataSource;
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
         private DataSource dataSource;
+        private UserHandler userHandler;
 
-        public WebSecurityConfig(DataSource dataSource) {
+        public WebSecurityConfig(DataSource dataSource,
+                                 UserHandler userHandler) {
+
+            this.userHandler = userHandler;
             this.dataSource = dataSource;
         }
 
         @Autowired
-        public void configAuthentication(AuthenticationManagerBuilder auth) throws Exception {
+        public void configAuthentication(AuthenticationManagerBuilder auth)
+            throws Exception {
             auth.jdbcAuthentication().dataSource(dataSource)
                     .passwordEncoder(passwordEncoder())
                     .usersByUsernameQuery("select name, password, active from user where name=?")
@@ -46,7 +52,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
             http
                 .authorizeRequests()
                 .antMatchers(
-//                        "/findComingItemByFilter",
                         "/tools/getHashedPass",
                         "/tools/pdfreport",
                         "/makeAutoMovings",
@@ -61,8 +66,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 //                    .access("hasRole('ADMIN')")
                 .anyRequest().authenticated()
                     .and().formLogin().loginPage("/login")
-//                    .successHandler(new SecuritySuccessHandler())
                     .failureHandler(new SecurityErrorHandler()).permitAll()
+                    .successHandler(new SecuritySuccessHandler(userHandler))
                     .and().logout().permitAll()
                     .and().sessionManagement()
                     .maximumSessions(1).maxSessionsPreventsLogin(true)

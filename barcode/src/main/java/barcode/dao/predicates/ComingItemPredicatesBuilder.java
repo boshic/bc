@@ -164,8 +164,6 @@ public class ComingItemPredicatesBuilder {
                                                    QItem qItem,
                                                    Long stockId,
                                                    Expression<T> path) {
-
-
         return JPAExpressions
             .select(path)
             .from(qComingItem)

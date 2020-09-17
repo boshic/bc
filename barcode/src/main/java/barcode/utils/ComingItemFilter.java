@@ -4,86 +4,60 @@ import barcode.dao.entities.*;
 
 public class ComingItemFilter extends  BasicFilter {
 
-//    public enum ComingItemSortingStrategies implements SortingStrategy<ComingItem>{
-//
-//        ITEM_NAME {
-//            @Override
-//            public void sort(List<ComingItem> comingItems) {
-//                comingItems.sort(Comparator.comparing(ComingItem::getItem, (i1, i2) -> {
-//                    return i1.getName().compareToIgnoreCase(i2.getName());
-//                }));
-//            }
-//        },
-//        ITEM_SECTION_NAME {
-//            @Override
-//            public void sort(List<ComingItem> comingItems) {
-//                comingItems.sort(Comparator.comparing(ComingItem::getItem, (i1, i2) -> {
-//                    return i1.getSection().getName().compareToIgnoreCase(i2.getSection().getName());
-//                }));
-//            }
-//        },
-//        STOCK_NAME {
-//            @Override
-//            public void sort(List<ComingItem> comingItems) {
-//                comingItems.sort(Comparator.comparing(ComingItem::getStock, (s1, s2) -> {
-//                    return s1.getName().compareToIgnoreCase(s2.getName());
-//                }));
-//            }
-//        },
-//        SUM {
-//            @Override
-//            public void sort(List<ComingItem> comingItems) {
-//                comingItems.sort(Comparator.comparing(ComingItem::getSum));
-//            }
-//        },
-//        QUANTITY {
-//            @Override
-//            public void sort(List<ComingItem> comingItems) {
-//                comingItems.sort(Comparator.comparing(ComingItem::getQuantity));
-//            }
-//        },
-//        CURRENTQUANTITY {
-//            @Override
-//            public void sort(List<ComingItem> comingItems) {
-//                comingItems.sort(Comparator.comparing(ComingItem::getCurrentQuantity));
-//            }
-//        },
-//        CURRENTSUM {
-//            @Override
-//            public void sort(List<ComingItem> comingItems) {
-//                comingItems.sort(Comparator.comparing(ComingItem::new, (c1, c2) -> {
-//                    return (c1.getCurrentQuantity()
-//                                .multiply(c1.getSum().divide(c1.getQuantity(), 5, RoundingMode.CEILING))
-//                                .setScale(2, BigDecimal.ROUND_HALF_UP).subtract(c1.getSum()))
-//                            .compareTo(
-//                                    (c2.getCurrentQuantity()
-//                                        .multiply(c2.getSum().divide(c2.getQuantity(), 5, RoundingMode.CEILING))
-//                                            .setScale(2, BigDecimal.ROUND_HALF_UP).subtract(c2.getSum())
-//                            ));
-//                }));
-//            }
-//        },
-//        LASTCHANGEDATE {
-//            @Override
-//            public void sort(List<ComingItem> comingItems) {
-//                comingItems.sort(Comparator.comparing(ComingItem::getLastChangeDate));
-//            }
-//        },
-//        DOC_DATE {
-//            @Override
-//            public void sort(List<ComingItem> comingItems) {}
-//        };
-//    }
-
-    public enum SortingFieldsForInventoryRows implements SortingField {
+    private enum SortingFields {
+        ID("id"),
+        DOC_DATE("doc.date"),
+        DOC_NAME("doc.name"),
+        DOC_SUPPLIER_NAME("doc.supplier.name"),
+        SUM("sum"),
+        SUMM("summ"),
+        PRICEIN("priceIn"),
+        QUANTITY("quantity"),
         ITEM_NAME("item.name"),
         STOCK_NAME("stock.name"),
         ITEM_SECTION_NAME("item.section.name"),
-        SUMM("summ"),
         CURRENTQUANTITY("currentQuantity"),
-        QUANTITY("quantity"),
         LASTINVENTORYCHANGEDATE("lastInventoryChangeDate"),
         INVENTORYSUM("inventorySum");
+
+        private String value;
+        SortingFields(String value) {this.value = value;}
+    }
+
+    public enum SortingFieldsForComingPane implements SortingField {
+        ID(SortingFields.ID.value),
+        DOC_DATE(SortingFields.DOC_DATE.value),
+        DOC_NAME(SortingFields.DOC_NAME.value),
+        DOC_SUPPLIER_NAME(SortingFields.DOC_SUPPLIER_NAME.value),
+        SUM(SortingFields.SUM.value),
+        ITEM_NAME(SortingFields.ITEM_NAME.value),
+        STOCK_NAME(SortingFields.STOCK_NAME.value),
+        ITEM_SECTION_NAME(SortingFields.ITEM_SECTION_NAME.value),
+        CURRENTQUANTITY(SortingFields.CURRENTQUANTITY.value),
+        QUANTITY(SortingFields.QUANTITY.value),
+        PRICEIN(SortingFields.PRICEIN.value);
+
+        private String value;
+        SortingFieldsForComingPane(String value) {this.value = value;}
+
+        @Override
+        public String getValue() {return this.value;}
+
+        @Override
+        public void checkSortField (String field) {
+            SortingFieldsForComingPane.valueOf(CommonUtils.toEnumStyle(field));
+        }
+    }
+
+    public enum SortingFieldsForInventoryRows implements SortingField {
+        ITEM_NAME(SortingFields.ITEM_NAME.value),
+        STOCK_NAME(SortingFields.STOCK_NAME.value),
+        ITEM_SECTION_NAME(SortingFields.ITEM_SECTION_NAME.value),
+        SUMM(SortingFields.SUMM.value),
+        CURRENTQUANTITY(SortingFields.CURRENTQUANTITY.value),
+        QUANTITY(SortingFields.QUANTITY.value),
+        LASTINVENTORYCHANGEDATE(SortingFields.LASTINVENTORYCHANGEDATE.value),
+        INVENTORYSUM(SortingFields.INVENTORYSUM.value);
 
         private String value;
         SortingFieldsForInventoryRows(String value) {this.value = value;}

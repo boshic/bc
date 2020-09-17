@@ -71,6 +71,7 @@
 }
 
 .additional-info {
+    display: flex;
     position: absolute;
     text-align: left;
     font-size: 10px;
@@ -85,6 +86,13 @@
     font-style: normal;
     /* top: -143%; */
     right: 115%;
+}
+
+.price-per-unit-container {
+    padding-left: 4px;
+    font-weight: bold;
+    width: 29%;
+    text-align: right;
 }
 
 .item-name-text {

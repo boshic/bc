@@ -32,8 +32,6 @@ public class ResponseItemExt<T> extends ResponseItem<T> {
     SOLD_BY_PRICE_IN = SOLD + PRICE_IN,
     SOLD_BY_PRICE_OUT = SOLD + PRICE_OUT;
 
-    QComingItem qComingItem = QComingItem.comingItem;
-
     private Integer numberOfPages;
     private List<ResultRowByItemsCollection> totals = new ArrayList<ResultRowByItemsCollection>();
     private List<Buyer> buyers;

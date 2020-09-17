@@ -525,17 +525,18 @@ public class ComingItemHandler extends EntityHandlerImpl {
     }
 
     private ResponseByInventory getInventoryItemsNew(
-        BooleanBuilder predicate,
-        ComingItemFilter filter,
-        PageRequest pageRequest) {
+        ComingItemFilter filter) {
 
         List<ComingItem> result = new ArrayList<>();
         Long stockId = filter.getStock().getId();
+
+        PageRequest pageRequest = new PageRequest(filter.getPage() - 1, filter.getRowsOnPage());
 
         QComingItem comingItem = QComingItem.comingItem;
         QInventoryRow inventoryRow = QInventoryRow.inventoryRow;
 
         EntityManager em = abstractEntityManager.getEntityManager();
+        BooleanBuilder predicate = cipb.buildByFilter(filter, abstractEntityManager);
 
         filter.validateFilterSortField(filter, ComingItemFilter.SortingFieldsForInventoryRows.QUANTITY);
 
@@ -590,7 +591,7 @@ public class ComingItemHandler extends EntityHandlerImpl {
             new ResponseByInventory(ELEMENTS_FOUND, page.getContent(), true, page.getTotalPages());
 
         if(checkResponse(response.getEntityItems().size(), response))
-            calcTotals(filter, abstractEntityManager, predicate, response);
+            calcTotals(filter, abstractEntityManager, response);
 
         return response;
 
@@ -599,37 +600,24 @@ public class ComingItemHandler extends EntityHandlerImpl {
     public ResponseItemExt<ComingItem> findByFilter(ComingItemFilter filter) {
 
         itemHandler.checkEanInFilter(filter);
-        Sort sort = new Sort(Sort.Direction.fromStringOrNull(filter.getSortDirection()), filter.getSortField());
-        PageRequest pageRequest = new PageRequest(filter.getPage() - 1, filter.getRowsOnPage(), sort);
-        BooleanBuilder predicate = cipb.buildByFilter(filter, abstractEntityManager);
 
         if(filter.getInventoryModeEnabled())
-            return getInventoryItemsNew(predicate, filter, pageRequest);
+            return getInventoryItemsNew(filter);
 
-        Page<ComingItem> page =  comingItemRepository.findAll(predicate, pageRequest);
+        filter.validateFilterSortField(filter, ComingItemFilter.SortingFieldsForComingPane.DOC_DATE);
+        Sort sort = new Sort(Sort.Direction.fromStringOrNull(filter.getSortDirection()), filter.getSortField());
+        PageRequest pageRequest = new PageRequest(filter.getPage() - 1, filter.getRowsOnPage(), sort);
+
+        Page<ComingItem> page =  comingItemRepository.findAll(cipb.buildByFilter(filter, abstractEntityManager), pageRequest);
 
         ResponseByComingItems response =
                 new ResponseByComingItems(ELEMENTS_FOUND, page.getContent(), true, page.getTotalPages());
 
         if(checkResponse(page.getContent().size(), response))
-            calcTotals(filter, abstractEntityManager, predicate, response);
+            calcTotals(filter, abstractEntityManager, response);
 
         return response;
     }
-
-//    private ResponseByComingItems
-//    getResults(Page<ComingItem> page, ComingItemFilter filter, BooleanBuilder predicate) {
-//
-//        ResponseByComingItems ribyci =
-//            new ResponseByComingItems(ELEMENTS_FOUND,
-//                page.getContent(), true, page.getTotalPages());
-//
-//        if(filter.getCalcTotal())
-//            ribyci.calcTotals(abstractEntityManager, predicate, filter);
-//
-//        return ribyci;
-//    }
-
 
     public DtoItemForNewComing getItemForNewComing(String ean, Long stockId) {
 

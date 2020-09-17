@@ -23,6 +23,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.EntityManager;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.*;
@@ -427,14 +428,30 @@ public class SoldItemHandler extends EntityHandlerImpl {
     }
 
     private ResponseBySoldItems groupByItemsNew(
-        BooleanBuilder predicate,
-        SoldItemFilter filter,
-        PageRequest pageRequest) {
+        SoldItemFilter filter) {
 
         List<SoldItem> result = new ArrayList<>();
         QSoldItem soldItem = QSoldItem.soldItem;
         QComingItem coming = QSoldItem.soldItem.coming;
         QComingItem comingItem = QComingItem.comingItem;
+        BooleanBuilder predicate = sipb.buildByFilter(filter);
+        EntityManager em = abstractEntityManager.getEntityManager();
+
+        PageRequest pageRequest = new PageRequest(filter.getPage() - 1, filter.getRowsOnPage());
+
+        JPAQuery<BigDecimal> incomeQuery =  new JPAQuery<BigDecimal>(em).from(soldItem).where(predicate);
+
+        BigDecimal totalIncome = CommonUtils.validateBigDecimal(
+            incomeQuery
+                .select(soldItem.sum.sum().subtract(soldItem.coming.priceIn.multiply(soldItem.quantity).sum()))
+                .fetchOne()
+        );
+
+        BigDecimal excludeFromIncome = CommonUtils.validateBigDecimal(
+            incomeQuery
+                .select(soldItem.coming.priceIn.multiply(soldItem.quantity).sum())
+                .where(soldItem.buyer.excludeExpensesFromIncome.isTrue()).fetchOne()
+        );
 
         filter.validateFilterSortField(filter, SoldItemFilter.SortingFieldsForGroupedByItemSoldItems.QUANTITY);
 
@@ -445,17 +462,25 @@ public class SoldItemHandler extends EntityHandlerImpl {
                 coming.item.id.eq(comingItem.item.id) :
                 coming.item.id.eq(comingItem.item.id).and(comingItem.stock.id.eq(filter.getStock().getId()));
 
-        JPAQuery<Tuple> query =  new JPAQuery<Tuple>(abstractEntityManager.getEntityManager())
+        JPAQuery<Tuple> query =  new JPAQuery<Tuple>(em)
             .select(
                 coming.item,
-                soldItem.quantity.sum().as(SoldItemFilter.SortingFieldsForGroupedByItemSoldItems.QUANTITY.getValue()),
-                soldItem.price.max().as(SoldItemFilter.SortingFieldsForGroupedByItemSoldItems.PRICE.getValue()),
+                soldItem.quantity.sum()
+                    .as(SoldItemFilter.SortingFieldsForGroupedByItemSoldItems.QUANTITY.getValue()),
+                soldItem.price.max()
+                    .as(SoldItemFilter.SortingFieldsForGroupedByItemSoldItems.PRICE.getValue()),
                 ExpressionUtils.as(
                     JPAExpressions
                         .select(comingItem.currentQuantity.sum()).from(comingItem)
                         .where(getAvailQuantityByEanPredicate),
                     SoldItemFilter.SortingFieldsForGroupedByItemSoldItems.AVAILQUANTITYBYEAN.getValue()
-                )
+                ),
+                soldItem.sum.subtract(sipb.getSumForExcludeFromIncome(soldItem)).sum()
+                    .as(SoldItemFilter.SortingFieldsForGroupedByItemSoldItems.INCOMESUM.getValue()),
+                soldItem.sum.subtract(sipb.getSumForExcludeFromIncome(soldItem))
+                    .sum()
+                    .divide(totalIncome.subtract(excludeFromIncome))
+                    .as(SoldItemFilter.SortingFieldsForGroupedByItemSoldItems.INCOMESUMPERCENT.getValue())
             )
             .from(soldItem).where(predicate)
             .groupBy(coming.item)
@@ -468,53 +493,45 @@ public class SoldItemHandler extends EntityHandlerImpl {
         groupedSoldItems.forEach(item -> {
             result.add(
                 new SoldItem(
-                    new ComingItem(
-                        item.get(coming.item), filter.getStock()),
-                    item.get(2, BigDecimal.class),
-                    item.get(1, BigDecimal.class),
-                    item.get(3, BigDecimal.class)
+                    new ComingItem(item.get(coming.item), filter.getStock()),
+                    CommonUtils.validateBigDecimal(item.get(2, BigDecimal.class)),
+                    CommonUtils.validateBigDecimal(item.get(1, BigDecimal.class)),
+                    CommonUtils.validateBigDecimal(item.get(3, BigDecimal.class)),
+                    CommonUtils.validateBigDecimal(item.get(4, BigDecimal.class)),
+                    CommonUtils.validateBigDecimal(item.get(5, BigDecimal.class))
                 )
             );
         });
 
-        return getResults(new PageImpl<SoldItem>(result, pageRequest, query.fetchCount()), filter, predicate);
+        return getResults(new PageImpl<SoldItem>(result, pageRequest, query.fetchCount()), filter);
     }
 
     private ResponseBySoldItems
-    getResults(Page<SoldItem> page,
-               SoldItemFilter filter,
-               BooleanBuilder predicate) {
+    getResults(Page<SoldItem> page, SoldItemFilter filter) {
 
-        ResponseBySoldItems ribysi =
+        ResponseBySoldItems response =
             new ResponseBySoldItems(ELEMENTS_FOUND, page.getContent(), true, page.getTotalPages());
 
-        if(filter.getCalcTotal())
-            ribysi.calcTotals(abstractEntityManager, predicate, filter);
+        if(checkResponse(response.getEntityItems().size(), response))
+            calcTotals(filter, abstractEntityManager, response);
 
-        return ribysi;
+        return response;
     }
 
     public ResponseBySoldItems findByFilter(SoldItemFilter filter) {
 
         itemHandler.checkEanInFilter(filter);
-        BooleanBuilder predicate = sipb.buildByFilter(filter);
+
+        if(filter.getGroupByItems())
+            return groupByItemsNew(filter);
+
+        filter.validateFilterSortField(filter, SoldItemFilter.SortingFieldsForSoldItemPane.DATE);
         Sort sort = new Sort(Sort.Direction.fromStringOrNull(filter.getSortDirection()), filter.getSortField());
         PageRequest pageRequest = new PageRequest(filter.getPage() - 1, filter.getRowsOnPage(), sort);
 
-        if(filter.getGroupByItems())
-            return groupByItemsNew(predicate , filter, pageRequest);
+        Page<SoldItem> page =  soldItemsRepository.findAll(sipb.buildByFilter(filter), pageRequest);
 
-        Page<SoldItem> page =  soldItemsRepository.findAll(predicate, pageRequest);
-
-        List<SoldItem> result = page.getContent();
-
-        if (result.size() > 0) {
-
-            return getResults(page, filter, predicate);
-
-        }
-
-        return new ResponseBySoldItems(NOTHING_FOUND, new ArrayList<>(), false, 0);
+        return getResults(page, filter);
     }
 
     public ResponseItem<SoldItem> changeDate(SoldItem soldItem) {
