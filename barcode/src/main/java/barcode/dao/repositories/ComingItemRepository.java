@@ -23,6 +23,7 @@ public interface ComingItemRepository extends CrudRepository<ComingItem, Long>,
     List<ComingItem> findAll(Predicate predicate, Sort sort);
     Page<ComingItem> findAll(Predicate predicate, Pageable pageable);
 
-    ComingItem findTopPriceOutByItemEanAndStockIdOrderByIdDesc(String ean, Long S);
+    ComingItem findTopPriceOutByItemEanAndStockIdOrderByIdDesc(String ean, Long stockId);
+    ComingItem findTopPriceInByItemId(Long itemId);
     List<ComingItem> findByItemEan(String ean);
 }

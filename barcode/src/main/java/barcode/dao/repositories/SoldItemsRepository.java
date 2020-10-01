@@ -23,4 +23,5 @@ public interface SoldItemsRepository extends CrudRepository<SoldItem, Long>,
     List<SoldItem> findAll(Predicate predicate);
     List<SoldItem> findAll(Predicate predicate, Sort sort);
     Page<SoldItem> findAll(Predicate predicate, Pageable pageable);
+    SoldItem findTopDateByComingItemEanAndComingStockIdOrderByIdDesc(String ean, Long stockId);
 }

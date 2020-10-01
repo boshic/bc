@@ -36,21 +36,13 @@ import static com.querydsl.core.types.dsl.Expressions.stringPath;
 public class SoldItemHandler extends EntityHandlerImpl {
 
     public static SoldItemPredicatesBuilder sipb = new SoldItemPredicatesBuilder();
-
     private SoldItemsRepository soldItemsRepository;
-
     private final ComingItemHandler comingItemHandler;
-
     private SoldCompositeItemHandler soldCompositeItemHandler;
-
     private UserHandler userHandler;
-
     private StockHandler stockHandler;
-
     private BuyerHandler buyerHandler;
-
     private ItemHandler itemHandler;
-
     private ReceiptHandler receiptHandler;
     private AbstractEntityManager abstractEntityManager;
 
@@ -309,6 +301,7 @@ public class SoldItemHandler extends EntityHandlerImpl {
                         checkedItems.getEntityItems(), soldItem.getComing().getItem().getEan());
 
                 BigDecimal availQuantityByEan = comingItemHandler.getAvailQuantityByEan(comings);
+                BigDecimal availQuantityByEanAfterSell = availQuantityByEan.subtract(reqForSell);
 
                 if(reqForSell.compareTo(availQuantityByEan) > 0  || comings.size() == 0)
                     return new ResponseItem<>(getInsufficientQuantityOfGoodsMessage(
@@ -316,43 +309,35 @@ public class SoldItemHandler extends EntityHandlerImpl {
                     ),
                             false);
 
-                availQuantityByEan = availQuantityByEan.subtract(reqForSell);
+//                availQuantityByEan = availQuantityByEan.subtract(reqForSell);
 
                 for (ComingItem coming: comings) {
-
-                    BigDecimal availQuant = coming.getCurrentQuantity();
-
-//                    reqForSell = soldItem.getQuantity();
-
-                    if (availQuant.compareTo(BigDecimal.ZERO) > 0) { // проверяем на остаток по приходу
+                    BigDecimal availQuantByComing = coming.getCurrentQuantity();
+                    if (availQuantByComing.compareTo(BigDecimal.ZERO) > 0) { // проверяем на остаток по приходу
 
                         SoldItem newSoldItem = new SoldItem();
-
                         newSoldItem.setComments(new ArrayList<>());
 
                         if(soldItem.getComment() != null)
                             newSoldItem.setComment(
                                     this.buildComment(newSoldItem.getComments(),
                                             getQuantityForComment(
-                                                    (reqForSell.compareTo(availQuant) > 0) ? availQuant : reqForSell)
+                                                    (reqForSell.compareTo(availQuantByComing) > 0) ? availQuantByComing : reqForSell)
                                                     + soldItem.getComment(),
                                             userHandler.checkUser(soldItem.getUser(), null ).getFullName(),
                                             CommentAction.SALE_COMMENT.getAction(), newSoldItem.getQuantity())
                             );
 
                         newSoldItem.setAvailQuantityByEan(
-                                availQuantityByEan.compareTo(BigDecimal.ZERO) > 0 ? availQuantityByEan : BigDecimal.ZERO);
+                                availQuantityByEanAfterSell.compareTo(BigDecimal.ZERO) > 0
+                                    ? availQuantityByEanAfterSell : BigDecimal.ZERO);
 
-                        newSoldItem.setQuantityBeforeSelling(availQuant); // устанавливаем количество до продажи
-
+                        newSoldItem.setQuantityBeforeSelling(availQuantByComing); // устанавливаем количество до продажи
                         newSoldItem.setBuyer(soldItem.getBuyer());
-
                         newSoldItem.setUser(soldItem.getUser());
-
                         newSoldItem.setDate(new Date());
 
                         Integer discount = soldItem.getBuyer().getDiscount();
-
                         if(discount !=null && discount > 0)
                             newSoldItem.setComment(
                                     this.buildComment(newSoldItem.getComments(), "",
@@ -364,27 +349,29 @@ public class SoldItemHandler extends EntityHandlerImpl {
                         coming.setComment(
                                 this.buildComment(coming.getComments(),
                                         soldItem.getComment() + " для " + soldItem.getBuyer().getName()
-                                                + getQuantityForComment((reqForSell.compareTo(availQuant) > 0) ? availQuant : reqForSell),
+                                                + getQuantityForComment((reqForSell.compareTo(availQuantByComing) > 0) ? availQuantByComing : reqForSell),
                                         userHandler.checkUser(soldItem.getUser(), null ).getFullName(),
                                     CommentAction.SALE_COMMENT.getAction(), coming.getCurrentQuantity())
                         );
 
-                        if (reqForSell.compareTo(availQuant) > 0) {
+                        newSoldItem.setMayBeError(!comingItemHandler
+                            .checkComingCurrentQuantity(availQuantityByEan, soldItemsRepository
+                                    .findTopDateByComingItemEanAndComingStockIdOrderByIdDesc(
+                                        coming.getItem().getEan(),coming.getStock().getId())));
+
+                        if (reqForSell.compareTo(availQuantByComing) > 0) {
 
                             coming.setCurrentQuantity(BigDecimal.ZERO);
-
-                            soldItem.setQuantity(reqForSell.subtract( availQuant));
-
-                            newSoldItem.setQuantity(availQuant);
-
+                            soldItem.setQuantity(reqForSell.subtract( availQuantByComing));
+                            newSoldItem.setQuantity(availQuantByComing);
+                            availQuantityByEan = availQuantityByEan.subtract(availQuantByComing);
+                            newSoldItem.setAvailQuantityByEan(availQuantityByEan);
                             reqForSell = soldItem.getQuantity();
 
                         } else {
 
-                            coming.setCurrentQuantity(availQuant.subtract(reqForSell));
-
+                            coming.setCurrentQuantity(availQuantByComing.subtract(reqForSell));
                             newSoldItem.setQuantity(reqForSell);
-
                             reqForSell = BigDecimal.ZERO;
                         }
 
@@ -398,10 +385,9 @@ public class SoldItemHandler extends EntityHandlerImpl {
                         newSoldItem.setComing(coming); // - добавляем ссылку на приход новой продажи
 
                         soldCompositeItemHandler.save(soldItem.getSoldCompositeItem());
+
                         newSoldItem.setSoldCompositeItem(soldItem.getSoldCompositeItem());
-
                         newSoldItem.setPrice(getPriceOfSoldItem(soldItem, coming.getPriceIn()));
-
                         newSoldItem.setSum(
                                 newSoldItem.getPrice()
                                 .multiply(newSoldItem.getQuantity())
@@ -409,7 +395,6 @@ public class SoldItemHandler extends EntityHandlerImpl {
                         );
 
                         setSumForComposites(newSoldItem);
-
                         newSoldItem.setVat(soldItem.getVat());
 
                         receiptHandler.save(receipt);
@@ -554,9 +539,7 @@ public class SoldItemHandler extends EntityHandlerImpl {
         ComingItem comingItem = comingItemHandler.getComingItemById(soldItem.getComing().getId());
 
         comingItem.setLastChangeDate(new Date());
-
         comingItem.setCurrentQuantity(comingItem.getCurrentQuantity().add(soldItem.getQuantity()));
-
         comingItem.setSum(comingItem.getPriceIn().multiply(comingItem.getCurrentQuantity())
                 .setScale(2, BigDecimal.ROUND_HALF_UP));
 
@@ -568,12 +551,9 @@ public class SoldItemHandler extends EntityHandlerImpl {
                     CommentAction.RETURN_COMMENT.getAction(), comingItem.getCurrentQuantity()));
 
         newSoldItem.setQuantity(newSoldItem.getQuantity().subtract(soldItem.getQuantity()));
-
         newSoldItem.setSum(newSoldItem.getPrice().multiply(newSoldItem.getQuantity())
                         .setScale(2, BigDecimal.ROUND_HALF_UP));
-
         newSoldItem.setAvailQuantityByEan(newSoldItem.getAvailQuantityByEan().add(soldItem.getQuantity()));
-
         newSoldItem.setComment(
                 this.buildComment(newSoldItem.getComments(),
                         getQuantityForComment(soldItem.getQuantity()) + soldItem.getComment(),
@@ -608,11 +588,8 @@ public ResponseItem addOneSelling(SoldItem soldItem) {
             ), false);
 
         soldItem.setQuantityBeforeSelling(comingItem.getCurrentQuantity());
-
         comingItem.setCurrentQuantity(comingItem.getCurrentQuantity().subtract(soldItem.getQuantity()));
-
         comingItem.setLastChangeDate(new Date());
-
         comingItem.setComment(
                 this.buildComment(comingItem.getComments(),
                         soldItem.getComment() + " для " + soldItem.getBuyer().getName()
@@ -622,7 +599,6 @@ public ResponseItem addOneSelling(SoldItem soldItem) {
         );
 
         soldItem.setDate(new Date());
-
         soldItem.setComments(new ArrayList<>());
         soldItem.setComment(
                 this.buildComment(soldItem.getComments(), getQuantityForComment(soldItem.getQuantity())
@@ -632,7 +608,6 @@ public ResponseItem addOneSelling(SoldItem soldItem) {
         );
 
         soldItem.setPrice(getPriceOfSoldItem(soldItem, comingItem.getPriceIn()));
-
         comingItem.setSum(comingItem.getPriceIn().multiply(comingItem.getCurrentQuantity())
                 .setScale(2, BigDecimal.ROUND_HALF_UP));
 
@@ -644,7 +619,6 @@ public ResponseItem addOneSelling(SoldItem soldItem) {
 
         receiptHandler.save(receipt);
         soldItem.setReceipt(receipt);
-
         soldItemsRepository.save(soldItem);
 
         return new ResponseItem(SALE_COMPLETED_SUCCESSFULLY, true);
@@ -697,10 +671,16 @@ public ResponseItem addOneSelling(SoldItem soldItem) {
             return documentResponseItem;
 
         inputComings.forEach(coming -> {
+
+            BigDecimal priceOut = comingItemHandler
+                .getItemPriceOutByIdAndStock(coming.getItem().getId(), coming.getStock().getId()),
+                comingSum = CommonUtils.validateBigDecimal(coming.getSum());
+
+
             if(coming.getQuantity().compareTo(coming.getCurrentQuantity()) > 0) {
                 sellings.add(new SoldItem(
                         coming,
-                        coming.getPriceOut(),
+                        priceOut,
                         coming.getStock().getOrganization().getVatValue(),
                         coming.getQuantity().subtract(coming.getCurrentQuantity()),
                     CommentAction.INVENTORY_SHORTAGE_DETECTED.getAction(),
@@ -712,8 +692,10 @@ public ResponseItem addOneSelling(SoldItem soldItem) {
 
             if(coming.getCurrentQuantity().compareTo(coming.getQuantity()) > 0) {
                 comings.add(new ComingItem(
-                        coming.getPriceIn(),
-                        coming.getPriceOut(),
+                        comingSum.compareTo(BigDecimal.ZERO) == 0 ?
+                            comingItemHandler.getPriceInMaxForComing(coming.getItem().getId()):
+                            comingSum.divide(coming.getQuantity(), 2, BigDecimal.ROUND_CEILING),
+                        priceOut,
                         coming.getCurrentQuantity().subtract(coming.getQuantity()),
                         new ArrayList<Comment>() {{
                                 add(new Comment(

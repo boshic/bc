@@ -74,6 +74,7 @@ public class SoldItemFilter extends ComingItemFilter {
     private Buyer buyer;
     private User user;
     private Boolean groupByItems;
+    private Boolean mayBeError;
     private Item compositeItem;
 
     public Buyer getBuyer() {
@@ -99,5 +100,13 @@ public class SoldItemFilter extends ComingItemFilter {
     }
     public void setCompositeItem(Item compositeItem) {
         this.compositeItem = compositeItem;
+    }
+
+    public Boolean getMayBeError() {
+        return mayBeError;
+    }
+
+    public void setMayBeError(Boolean mayBeError) {
+        this.mayBeError = mayBeError;
     }
 }

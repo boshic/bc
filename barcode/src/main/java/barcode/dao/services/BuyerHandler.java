@@ -1,6 +1,5 @@
 package barcode.dao.services;
 
-import barcode.api.EntityHandler;
 import barcode.dao.entities.Buyer;
 import barcode.dao.entities.QBuyer;
 import barcode.dao.predicates.BuyerPredicateBuilder;
@@ -9,11 +8,11 @@ import barcode.dto.DtoBuyer;
 import barcode.dto.ResponseItem;
 import barcode.utils.CommonUtils;
 import com.querydsl.core.BooleanBuilder;
-import org.springframework.data.domain.Sort;
+import com.querydsl.core.Tuple;
+import com.querydsl.core.types.Predicate;
+import com.querydsl.jpa.impl.JPAQuery;
 import org.springframework.stereotype.Service;
 
-import java.math.BigDecimal;
-import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -23,11 +22,15 @@ public class BuyerHandler extends EntityHandlerImpl{
 
     private BuyerRepository buyerRepository;
     private BankHandler bankHandler;
+    private AbstractEntityManager abstractEntityManager;
 
-    public BuyerHandler(BuyerRepository buyerRepository, BankHandler bankHandler) {
+    public BuyerHandler(BuyerRepository buyerRepository,
+                        BankHandler bankHandler,
+                        AbstractEntityManager abstractEntityManager) {
 
         this.bankHandler = bankHandler;
         this.buyerRepository = buyerRepository;
+        this.abstractEntityManager = abstractEntityManager;
     }
 
     private ResponseItem<Buyer> update(Buyer newBuyer, Buyer buyer) {
@@ -40,7 +43,6 @@ public class BuyerHandler extends EntityHandlerImpl{
         newBuyer.setDiscount(buyer.getDiscount() == null ? 0 : buyer.getDiscount());
         newBuyer.setSellByComingPrices(CommonUtils.validateBoolean(buyer.getSellByComingPrices()));
         newBuyer.setExcludeExpensesFromIncome(CommonUtils.validateBoolean(buyer.getExcludeExpensesFromIncome()));
-//        newBuyer.setUseForInventory(checkAndGetInventorySign(buyer.getUseForInventory()));
         newBuyer.setLastPayDate(new Date());
         buyerRepository.save(newBuyer);
         return new ResponseItem<Buyer>("Покупатель добавлен/изменен ", true , newBuyer);
@@ -70,38 +72,20 @@ public class BuyerHandler extends EntityHandlerImpl{
         return update(newBuyer, buyer);
     }
 
-    public List<Buyer> getBuyers(String filter) {
-
-        Sort sort = new Sort(Sort.Direction.ASC, "name");
-
-        return this.buyerRepository.findAll(new BuyerPredicateBuilder().buildByFilter(filter), sort);
-    }
-
     public List<DtoBuyer> getDtoBuyers(String filter) {
 
-        if (filter.equals(""))
-        return buyerRepository.getBuyersOrderedBySellingsSize()
-                .stream()
-                .map(b -> new DtoBuyer(b.getId(), b.getName()))
-                .collect(Collectors.toList());
+        QBuyer qBuyer = QBuyer.buyer;
+        Predicate predicate = new BuyerPredicateBuilder().buildByFilter(filter);
+        JPAQuery<Tuple> query = new JPAQuery<Tuple>(abstractEntityManager.getEntityManager())
+            .select(qBuyer.id, qBuyer.name)
+            .from(qBuyer)
+            .where(predicate)
+            .orderBy(qBuyer.sellings.size().desc());
 
-        Sort sort = new Sort(Sort.Direction.ASC, "id");
+        return query.fetch().stream()
+            .map(b -> new DtoBuyer(b.get(0, Long.class), b.get(1, String.class)))
+            .collect(Collectors.toList());
 
-        List<Buyer> buyers = buyerRepository.findAll(new BuyerPredicateBuilder().buildByFilter(filter), sort);
-
-        if(buyers.size() > 20)
-            return buyers
-                    .stream()
-                    .map(b -> new DtoBuyer(b.getId(), b.getName()))
-                    .collect(Collectors.toList());
-
-        return buyers
-                .stream()
-                .sorted(Comparator.comparing(Buyer::getSellings, (s1, s2) -> {
-                    return  s2.size() - s1.size();
-                }))
-                .map(b -> new DtoBuyer(b.getId(), b.getName()))
-                .collect(Collectors.toList());
     }
 
     Buyer getBuyerByName(String name) {

@@ -64,9 +64,6 @@ public ResponseItem makeMovings(Set<SoldItem> movings, Long stockId) {
                 for(ComingItem coming : comings) {
 
                     availQuant = coming.getCurrentQuantity();
-
-//                    reqForMove = moving.getQuantity();
-
                     totalQuantity = coming.getQuantity();
 
                     if(availQuant.compareTo(BigDecimal.ZERO) > 0) {
@@ -278,7 +275,6 @@ public ResponseItem addOneMoving(SoldItem moving, Long stockId) {
             ), false);
 
         if(coming.getQuantity().compareTo(moving.getQuantity()) == 0) {
-
             coming.setComment(
                     this.buildComment(coming.getComments(),
                             "c " + coming.getStock().getName() +
@@ -289,15 +285,10 @@ public ResponseItem addOneMoving(SoldItem moving, Long stockId) {
                         CommentAction.MOVE_COMMENT.getAction(), coming.getCurrentQuantity()));
 
             coming.setStock(this.stockHandler.getStockById(stockId));
-
             coming.setQuantity(moving.getQuantity());
-
             coming.setCurrentQuantity(moving.getQuantity());
-
             coming.setUser(moving.getUser());
-
             coming.setPriceOut(moving.getPrice());
-
             coming.setSum(coming.getPriceIn().multiply(coming.getCurrentQuantity())
                     .setScale(2, BigDecimal.ROUND_HALF_UP));
 
@@ -306,9 +297,6 @@ public ResponseItem addOneMoving(SoldItem moving, Long stockId) {
         } else {
 
             ComingItem newComing = new ComingItem();
-
-//            newComing.setComments(new ArrayList<>(coming.getComments()));
-
             newComing.setComments(new ArrayList<>());
             coming.setComment(
                     this.buildComment(coming.getComments(),
@@ -329,31 +317,18 @@ public ResponseItem addOneMoving(SoldItem moving, Long stockId) {
                         CommentAction.MOVE_COMMENT.getAction(), newComing.getCurrentQuantity()));
 
             newComing.setStock(this.stockHandler.getStockById(stockId));
-
             newComing.setQuantity(moving.getQuantity());
-
             newComing.setCurrentQuantity(moving.getQuantity());
-
             newComing.setUser(moving.getUser());
-
             newComing.setDate(new Date());
-
             newComing.setLastChangeDate(new Date());
-
             newComing.setPriceIn(coming.getPriceIn());
-
             newComing.setPriceOut(moving.getPrice());
-
             newComing.setDoc(coming.getDoc());
-
             newComing.setItem(coming.getItem());
-
             coming.setQuantity(coming.getQuantity().subtract(moving.getQuantity()));
-
             coming.setCurrentQuantity(coming.getCurrentQuantity().subtract(moving.getQuantity()));
-
             coming.setLastChangeDate(new Date());
-
             coming.setSum(coming.getPriceIn().multiply(coming.getCurrentQuantity())
                     .setScale(2, BigDecimal.ROUND_HALF_UP));
 
@@ -361,7 +336,6 @@ public ResponseItem addOneMoving(SoldItem moving, Long stockId) {
                     .setScale(2, BigDecimal.ROUND_HALF_UP));
 
             comingItemHandler.saveComingItem(newComing);
-
         }
 
         return new ResponseItem(MOVE_COMPLETED_SUCCESSFULLY, true);

@@ -45,20 +45,12 @@ public class ComingItemHandler extends EntityHandlerImpl {
     private BasicFilter filter;
 
     private ComingItemRepository comingItemRepository;
-
-
     private DocumentHandler documentHandler;
-
     private ItemHandler itemHandler;
-
     private ItemSectionHandler itemSectionHandler;
-
     private UserHandler userHandler;
-
     private StockHandler stockHandler;
-
     private SupplierHandler supplierHandler;
-
     private AbstractEntityManager abstractEntityManager;
 
     public ComingItemHandler(ComingItemRepository comingItemRepository,
@@ -86,98 +78,83 @@ public class ComingItemHandler extends EntityHandlerImpl {
 
         ResponseItem<ComingItem> responseItem = new ResponseItem<ComingItem>("", false);
 
-        coming.setPriceIn(srcComing.getPriceIn());
-
-        coming.setPriceOut(srcComing.getPriceOut());
-
-        coming.setQuantity(srcComing.getQuantity());
-
-        coming.setSum(srcComing.getSum() == null ?
-                (srcComing.getPriceIn().multiply(srcComing.getQuantity()))
-                        .setScale(2, BigDecimal.ROUND_HALF_UP) : srcComing.getSum());
-
-        coming.setCurrentQuantity(coming.getQuantity());
-
-        coming.setLastChangeDate(new Date());
-
-        coming.setDoc(srcComing.getDoc());
-
-        coming.setItem(srcComing.getItem());
-
-        coming.setStock(srcComing.getStock());
-
-        User checkedUser = userHandler.checkUser(srcComing.getUser(), AUTO_COMING_MAKER);
-
-        responseItem.setText(SystemMessage.CHANGING_OF_COMING.getMessage() + srcComing.getItem().getName() + NUMBER + srcComing.getId());
-
-        if (coming.getId() == null) {
-
-            coming.setComments(srcComing.getComments() == null? new ArrayList<Comment>() : srcComing.getComments());
-
-            responseItem.setText(
-                SystemMessage.MAKING_OF_COMING.getMessage() + srcComing.getItem().getName() + NUMBER + srcComing.getId());
-
-            coming.setDate(new Date());
-
-            coming.setComment(
-                    this.buildComment(coming.getComments(),
-                            srcComing.getStock().getName() + getQuantityForComment(srcComing.getQuantity()),
-                            checkedUser.getFullName(),
-                            CommentAction.MAKING_OF_COMING.getAction(), coming.getCurrentQuantity()));
-        } else {
-
-            if(coming.getSellings() != null && coming.getSellings().size() > 0)
+            if(isEditingDisallowed(coming))
                 return new ResponseItem<>(TRY_TO_CHANGE_SOLD_COMING_ERROR, false);
 
-            coming.setComment(
+            coming.setPriceIn(srcComing.getPriceIn());
+            coming.setPriceOut(srcComing.getPriceOut());
+            coming.setQuantity(srcComing.getQuantity());
+            coming.setSum(srcComing.getSum() == null ?
+                (srcComing.getPriceIn().multiply(srcComing.getQuantity()))
+                    .setScale(2, BigDecimal.ROUND_HALF_UP) : srcComing.getSum());
+
+            coming.setCurrentQuantity(coming.getQuantity());
+            coming.setLastChangeDate(new Date());
+            coming.setDoc(srcComing.getDoc());
+            coming.setItem(srcComing.getItem());
+            coming.setStock(srcComing.getStock());
+
+            User checkedUser = userHandler.checkUser(srcComing.getUser(), AUTO_COMING_MAKER);
+            responseItem.setText(SystemMessage.CHANGING_OF_COMING.getMessage() + srcComing.getItem().getName() + NUMBER + srcComing.getId());
+
+            if (coming.getId() == null) {
+
+                coming.setComments(srcComing.getComments() == null? new ArrayList<Comment>() : srcComing.getComments());
+
+                responseItem.setText(
+                    SystemMessage.MAKING_OF_COMING.getMessage() + srcComing.getItem().getName() + NUMBER + srcComing.getId());
+
+                coming.setDate(new Date());
+                coming.setComment(
+                    this.buildComment(coming.getComments(),
+                        srcComing.getStock().getName() + getQuantityForComment(srcComing.getQuantity()),
+                        checkedUser.getFullName(),
+                        CommentAction.MAKING_OF_COMING.getAction(), coming.getCurrentQuantity()));
+            } else {
+
+                coming.setComment(
                     this.buildComment(coming.getComments(), "",
-                            checkedUser.getFullName(),
+                        checkedUser.getFullName(),
                         CommentAction.CHANGING_OF_COMING.getAction(), coming.getCurrentQuantity()));
-        }
+            }
 
-        if(coming.getItem().getComponents() != null && coming.getItem().getComponents().size() > 0)
+            if(coming.getItem().getComponents() != null && coming.getItem().getComponents().size() > 0)
 
-            return new ResponseItem<>(ITEM_IS_COMPOSITE_ERROR + coming.getItem().getName(), false, coming);
+                return new ResponseItem<>(ITEM_IS_COMPOSITE_ERROR + coming.getItem().getName(), false, coming);
 
 
-        if (checkedUser != null && checkedUser.getRole().equals(ROLE_ADMIN)) {
-
-            coming.setUser(checkedUser);
-
-            comingItemRepository.save(coming);
-
-            responseItem.setSuccess(true);
-
-            responseItem.setEntityItem(coming);
-
-        } else {
-
-            responseItem.setText(CHANGING_DENIED);
-
-            responseItem.setEntityItem(srcComing);
-        }
-
-//        responseItem.packItems();
+            if (checkedUser != null && checkedUser.getRole().equals(ROLE_ADMIN)) {
+                coming.setUser(checkedUser);
+                comingItemRepository.save(coming);
+                responseItem.setSuccess(true);
+                responseItem.setEntityItem(coming);
+            } else {
+                responseItem.setText(CHANGING_DENIED);
+                responseItem.setEntityItem(srcComing);
+            }
 
         return responseItem;
     }
 
+    private Boolean isEditingDisallowed(ComingItem comingItem) {
+
+        return !(CommonUtils.validateBigDecimal(comingItem.getQuantity())
+            .compareTo(CommonUtils.validateBigDecimal(comingItem.getCurrentQuantity())) == 0);
+    }
+
     public ResponseItem addItem(ComingItem newComing) {
 
-        ComingItem coming = new ComingItem();
-
-        return update(newComing, coming);
+        return update(newComing, new ComingItem());
     }
 
     public ResponseItem updateItem(ComingItem updComing) {
-
-        ComingItem coming = this.getComingItemById(updComing.getId());
-
-        return update(updComing, coming);
+        synchronized (this) {
+            return update(updComing, this.getComingItemById(updComing.getId()));
+        }
     }
 
     public ComingItem getComingItemById(Long id) {
-        return comingItemRepository.findOne(id);
+            return comingItemRepository.findOne(id);
     }
 
     public List<ComingItem> getComingItemByIdAndStockId(Long itemId, Long stockId) {
@@ -190,14 +167,12 @@ public class ComingItemHandler extends EntityHandlerImpl {
 
         ComingItem comingItem = this.getComingItemById(id);
 
-        if(comingItem.getSellings() != null && comingItem.getSellings().size() > 0)
+        if(isEditingDisallowed(comingItem))
             return new ResponseItem<>(TRY_TO_CHANGE_SOLD_COMING_ERROR, false);
 
         User checkedUser = userHandler.checkUser(userHandler.getCurrentUser(), null);
 
         if (checkedUser != null && checkedUser.getRole().equals(ROLE_ADMIN)) {
-
-            comingItem.setCurrentQuantity(BigDecimal.ZERO);
 
             comingItem.setComment(
                     this.buildComment(comingItem.getComments(),
@@ -206,13 +181,10 @@ public class ComingItemHandler extends EntityHandlerImpl {
                             CommentAction.SMTH_DELETED.getAction(),
                             comingItem.getCurrentQuantity()));
 
+            comingItem.setCurrentQuantity(BigDecimal.ZERO);
             comingItem.setQuantity(BigDecimal.ZERO);
-
             comingItem.setSum(BigDecimal.ZERO);
-
             comingItemRepository.save(comingItem);
-
-//            comingItemRepository.delete(comingItem);
 
             return new ResponseItem<ComingItem>(SystemMessage.SMTH_DELETED.getMessage(), true, comingItem);
 
@@ -286,7 +258,6 @@ public class ComingItemHandler extends EntityHandlerImpl {
                                                               Boolean isCompositeAllowed) {
 
         Item item = itemHandler.getItemByEanSynonym(ean);
-
         if (item == null)
             return new ResponseItem<ComingItem>(ITEM_NOT_FOUND_WITH_SUCH_EAN + ean, false);
 
@@ -691,6 +662,36 @@ public class ComingItemHandler extends EntityHandlerImpl {
 
     public static BigDecimal getComingPrice(ComingItem coming) {
         return coming.getItem().getPrice().compareTo(BigDecimal.ZERO) > 0 ? coming.getItem().getPrice() : coming.getPriceOut();
+    }
+
+    BigDecimal getItemPriceOutByIdAndStock(Long itemId, Long stockId) {
+
+        return cipb
+            .getQueryForMaxItemPriceOutByIdAndStockId(abstractEntityManager, itemId, stockId)
+            .fetchOne();
+    }
+
+    BigDecimal getPriceInMaxForComing(Long itemId) {
+
+        return comingItemRepository.findTopPriceInByItemId(itemId).getPriceIn();
+    }
+
+    Boolean checkComingCurrentQuantity(BigDecimal availQuantity,
+                                       SoldItem lastSoldItemByStock) {
+        if(lastSoldItemByStock == null)
+            return true;
+
+        QComingItem qComingItem = QComingItem.comingItem;
+        BigDecimal cameAfterLastSelling = CommonUtils.validateBigDecimal(
+            new JPAQuery<BigDecimal>(abstractEntityManager.getEntityManager())
+            .select(qComingItem.currentQuantity.sum()).from(qComingItem)
+            .where(qComingItem.item.id.eq(lastSoldItemByStock.getComing().getItem().getId())
+                .and(qComingItem.stock.id.eq(lastSoldItemByStock.getComing().getStock().getId()))
+                .and(qComingItem.date.between(lastSoldItemByStock.getDate(), new Date())))
+            .fetchOne()
+        );
+
+        return availQuantity.compareTo(lastSoldItemByStock.getAvailQuantityByEan().add(cameAfterLastSelling)) <= 0;
     }
 
 }

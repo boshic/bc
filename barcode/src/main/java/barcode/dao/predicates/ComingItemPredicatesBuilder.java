@@ -14,6 +14,7 @@ import com.querydsl.core.types.dsl.CaseBuilder;
 import com.querydsl.core.types.dsl.DateTimePath;
 import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.JPQLQuery;
+import com.querydsl.jpa.impl.JPAQuery;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -188,6 +189,24 @@ public class ComingItemPredicatesBuilder {
             .then(qComingItem.item.price)
             .otherwise(qComingItem.priceOut);
     }
+
+    public JPAQuery<BigDecimal>
+    getQueryForMaxItemPriceOutByIdAndStockId(AbstractEntityManager abstractEntityManager,
+                                          Long itemId, Long stockId) {
+        QComingItem qComingItem = QComingItem.comingItem;
+
+        return new JPAQuery<BigDecimal>(abstractEntityManager.getEntityManager())
+            .select(new CaseBuilder()
+                .when(qComingItem.item.price.gt(0))
+                .then(qComingItem.item.price)
+                .otherwise(qComingItem.priceOut.max()))
+            .from(qComingItem)
+            .where(qComingItem.item.id.eq(itemId).and(qComingItem.stock.id.eq(stockId)));
+
+    }
+
+
+
 
 
 }

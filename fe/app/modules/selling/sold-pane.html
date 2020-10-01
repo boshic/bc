@@ -109,14 +109,14 @@
                     </div>
                 </div>
             </td>
-            <td style="width: 7vw;">
+            <td style="width: 9vw;">
                 <sortable-column field="filter.sortField"
                                  listening-field="'availQuantityByEan'"
                                  sort-direction="filter.sortDirection"
                                  column-name="Остаток">
                 </sortable-column>
             </td>
-            <td style="width: 6vw;">
+            <td style="width: 9vw;">
                 <sortable-column field="filter.sortField"
                                  listening-field="'quantity'"
                                  sort-direction="filter.sortDirection"
@@ -196,7 +196,7 @@
                     </div>
                     <item-row-on-panes row="x.coming" filter="filter"></item-row-on-panes>
                 </td>
-                <td style="width: 7vw;" class="price-data"
+                <td style="width: 9vw;" class="price-data"
                     ng-class="{'available-by-ean': (x.availQuantityByEan <= 3) && (x.quantity > 0)}">
                     <span ng-if="x.availQuantityByEan!=null">
                         <span style="font-weight: bold;">
@@ -204,18 +204,23 @@
                         </span>
                         <span style="font-size: 16px;">{{' ' + x.coming.item.unit}}</span>
                     </span>
+                    <span class='glyphicon glyphicon-warning-sign pane-request-indicator'
+                          ng-show='x.mayBeError'>
+                    </span>
                 </td>
-                <td style="width: 6vw; font-size: 30px;" class="price-data">{{ x.quantity }}</td>
+                <td style="width: 9vw; font-size: 30px;" class="price-data">{{ x.quantity }}</td>
                 <td style="width: 8vw; font-size: 30px; font-style: italic;"  class="price-data"title="Цена">{{ x.price }}</td>
                 <td style="width: 5vw; text-decoration: underline; font-style: italic;" class="price-data"
                     title="Сумма" ng-show="!filter.groupByItems">
                     {{ x.sum }}
                 </td>
-                <td style="width: 10vw; text-decoration: underline; font-style: italic;" class="price-data"
+                <td style="width: 10vw; text-align: center; font-style: italic;"
                     title="Доход" ng-show="filter.groupByItems">
-                    {{ x.incomeSum.toFixed(2) }}
-                    <div>
-                        <span class="overhead-percentage">{{(x.incomeSumPercent*100).toFixed(2) + "%"}}</span>
+                    <span class="income-sum-in-grouped-sellings">{{ x.incomeSum.toFixed(2) }}</span>
+                    <div style="text-align: right;">
+                        <span style="font-size: 20px;" class="overhead-percentage">
+                            {{(x.incomeSumPercent*100).toFixed(2) + "%"}}
+                        </span>
                     </div>
                 </td>
                 <td style="width: 11vw;"

@@ -21,13 +21,8 @@ public interface BuyerRepository extends CrudRepository<Buyer, Long>,
 
     @Query(value = "SELECT b from barcode.dao.entities.Buyer b ORDER BY b.sellings.size DESC")
     List<Buyer> getBuyersOrderedBySellingsSize();
-
     List<Buyer> findAll(Predicate predicate, Sort sort);
-
     Buyer findOne(Predicate predicate);
-
     List<Buyer> findByNameIgnoreCase(String name);
-
-//    Buyer findOneByUseForInventory(Boolean useForInventory);
 
 }

@@ -160,6 +160,7 @@ import commonFilterTpl from './common-filter.html';
 
                         filter.sortField = 'date';
                         filter.user = {};
+                        filter.mayBeError = false;
                         filter.groupByItems = false;
                         filter.buyer = {name:""};
                         filter.compositeItem = {name:""};
@@ -179,6 +180,7 @@ import commonFilterTpl from './common-filter.html';
                                     || (key === 'sectionPart')
                                     || (key === 'strictCommentSearch')
                                     || (key === 'hideNullQuantity')
+                                    || (key === 'mayBeError')
                                     || (key === 'inventoryModeEnabled')
                                     || (key === 'compositeItem')
                                     || (key === 'section')

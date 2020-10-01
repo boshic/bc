@@ -2095,7 +2095,7 @@ td.buyer-name {
 
 
 .fixed-head-table td.group-by-items-name {
-    min-width: 60vw!important;
+    min-width: 55vw!important;
 }
 
 
@@ -2105,6 +2105,10 @@ td.buyer-name {
 
 .fixed-head-table td.buyer-name {
     word-break: break-all;
+}
+
+span.income-sum-in-grouped-sellings {
+    font-size: 24px;
 }
 
 /*Фиксированный thead end*/

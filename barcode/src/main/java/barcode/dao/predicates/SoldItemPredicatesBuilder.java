@@ -68,6 +68,10 @@ public class SoldItemPredicatesBuilder {
         if(filter.getHideNullQuantity())
             predicate = predicate.and(soldItem.quantity.gt(0));
 
+        if(filter.getMayBeError())
+            predicate = predicate.and(soldItem.mayBeError.eq(filter.getMayBeError()));
+
+
         return predicate;
     }
 

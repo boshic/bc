@@ -103,7 +103,8 @@ let comingPaneConfig = {
         }
     },
     applyInventoryResults: ($s, config) => {
-        if(confirm("Эта операция автоматически спишет излишки и недостачи! Хорошенько подумайте, прежде чем продолжить!"))
+        if(confirm("Эта операция автоматически спишет излишки и недостачи на текущей странице! " +
+          "Хорошенько подумайте, прежде чем продолжить!"))
             config.httpService.addItem({
                 data: $s.filter,
                 url: 'applyInventoryResults',

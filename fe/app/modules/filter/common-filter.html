@@ -48,6 +48,15 @@
         </label>
     </li>
 
+
+    <li class="filter-row"
+        ng-if = "filter.mayBeError != null">
+        <input class="filter-checkbox-input" type="checkbox" ng-model="filter.mayBeError"/>
+        <label style="margin-left: 5%" class="filter-checkbox-name">
+            Предполагается сбой: {{(filter.mayBeError) ? "Да" : "Нет"}}
+        </label>
+    </li>
+
     <li class="filter-row"
         ng-if = "filter.alwaysOpenQuantityChangerModal != null">
         <input class="filter-checkbox-input" type="checkbox" ng-model="filter.alwaysOpenQuantityChangerModal"/>

@@ -56,6 +56,9 @@ public class SoldItem extends BasicOperationWithCommentEntity {
     @Column(columnDefinition="Decimal(19,2) default '0.00'")
     private BigDecimal vat;
 
+    @Column(name = "may_be_error", columnDefinition="tinyint(1) default 0")
+    private Boolean mayBeError;
+
     public SoldItem() {}
     public SoldItem(String comment) {
         super(comment);
@@ -165,5 +168,13 @@ public class SoldItem extends BasicOperationWithCommentEntity {
 
     public void setIncomeSumPercent(BigDecimal incomeSumPercent) {
         this.incomeSumPercent = incomeSumPercent;
+    }
+
+    public Boolean getMayBeError() {
+        return mayBeError;
+    }
+
+    public void setMayBeError(Boolean mayBeError) {
+        this.mayBeError = mayBeError;
     }
 }
