@@ -4,7 +4,8 @@ let commonPaneReleaseCtrlr = ($s, itemFactory, filterFactory, paneFactory, print
     let httpService = paneFactory.getHttpService();
 
     let getEmptyItem = itemFactory.itemConfig.getEmptyItem;
-    let getEmptyBuyer = itemFactory.buyerConfig.getEmptyItem;
+    $s.getEmptyBuyer = itemFactory.buyerConfig.getEmptyItem;
+    // $s.getEmptyBuyer = getEmptyBuyer;
     $s.item = getEmptyItem();
 
     $s.barcode = '';
@@ -52,7 +53,7 @@ let commonPaneReleaseCtrlr = ($s, itemFactory, filterFactory, paneFactory, print
     };
 
     $s.deleteRows =  (itemId) => {
-        paneFactory.deletePaneRows($s, config.getDeleteRowsConfig({getEmptyBuyer, itemId}));
+        paneFactory.deletePaneRows($s, config.getDeleteRowsConfig({getEmptyBuyer: $s.getEmptyBuyer(), itemId}));
     };
 
     $s.checkRows = () => {

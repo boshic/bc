@@ -19,10 +19,8 @@ import invoicesPaneConfig from '../modules/selling/invoices-pane-config';
                 let backSpaceKeyCode = 8;
                 let escKeyCode = 27;
                 let enterKeyCode = 13;
-
-                let searchInputAutoFocusEnabled = true;
-
                 let keyCodes = {escKeyCode, enterKeyCode, backSpaceKeyCode};
+
 
                 let focusTimeout = 200;
                 let successSound =  new Audio(snd);
@@ -38,7 +36,15 @@ import invoicesPaneConfig from '../modules/selling/invoices-pane-config';
                     return ean;
                 };
 
+                let isMobileClient = () => {
+                  return ('ontouchstart' in window);
+                };
 
+                let isItFunction = (func) => {
+                  return (angular.isDefined(func) && typeof func === 'function');
+                };
+
+                let searchInputAutoFocusEnabled = !isMobileClient();
                 let checkRowsBeforeSelling = ($s, user) => {
                     if (angular.isDefined($s.buyer.id) && ($s.rows.length)) {
                         for(let row of $s.rows) {
@@ -53,7 +59,6 @@ import invoicesPaneConfig from '../modules/selling/invoices-pane-config';
                         $s.setReportData();
                     }
                 };
-
                 let checkRowsBeforeMoving = ($s, user) => {
                     if ($s.rows.length > 0) {
                         for (let row of $s.rows) {
@@ -67,35 +72,29 @@ import invoicesPaneConfig from '../modules/selling/invoices-pane-config';
                         $s.canRelease = true;
                     }
                 };
-
                 let checkNumberLimit = (value, limit) => {
                     if((!angular.isDefined(value)) || (value === null) ||(value === 'null') || (value < 0) || (value > limit))
                         return 0;
                     return value;
                 };
-
                 let fixIfFractional = (value, unit) => {
                     return fractionalUnits.indexOf(unit) < 0 ? +value.toFixed(0) : +value.toFixed(3);
                 };
-
                 let getPages = numberOfPages => {
                     let pages = [];
                     for(let i = 0; i < numberOfPages; i++ )
                         pages[i] = i + 1;
                     return pages;
                 };
-
                 let isEanValid = (ean) => {
                     return (ean > 0 && ean.length === barcodeLength);
                 };
-
                 let getDiscountedPrice = (price, discount) => {
                         if(angular.isDefined(discount))
                             return (price - price * discount/100).toFixed(2);
                         else
                             return price;
                 };
-
                 let checkDuplicateRowsByItem = (itemId, rows) => {
                     if (rows.length > 0) {
                         for ( let i = 0; i < rows.length; i++)  {
@@ -151,12 +150,12 @@ import invoicesPaneConfig from '../modules/selling/invoices-pane-config';
                                         $s.filter.sections = resp.sections;
                                     // if('goods' in resp && resp.goods != null)
                                     //     $s.filter.items = resp.goods;
-                                    if(typeof $s.setReports === 'function')
+                                    if(isItFunction($s.setReports))
                                         $s.setReports();
                                     $s.filter.calcTotal = false;
                                 }
                                 // console.log(resp);
-                                if(typeof $s.afterSearch === 'function')
+                                if(isItFunction($s.afterSearch))
                                     $s.afterSearch();
                             }),
                         ), $s);
@@ -188,6 +187,8 @@ import invoicesPaneConfig from '../modules/selling/invoices-pane-config';
                     searchInputAutoFocusEnabled,
                     keyCodes,
                     isEanValid,
+                    isItFunction,
+                    isMobileClient,
                     keyUpHandler,
                     generateUuid,
                     fixIfFractional,
@@ -278,6 +279,8 @@ import invoicesPaneConfig from '../modules/selling/invoices-pane-config';
                                         $s.warning = "ошибка при проведении операции! Позиций - "
                                             + rows.length + ', время: ' + new Date().toLocaleTimeString();
                                         $s.rows = rows;
+                                      if(isItFunction($s.getEmptyBuyer))
+                                        $s.buyer = $s.getEmptyBuyer();
                                     }
                                 );
                         }
@@ -290,9 +293,9 @@ import invoicesPaneConfig from '../modules/selling/invoices-pane-config';
                             $s.rows=[];
                             if(angular.isDefined($s.comment))
                                 $s.comment = "";
-                            if(angular.isDefined(config.getEmptyBuyer) && typeof config.getEmptyBuyer === 'function')
+                            if(isItFunction(config.getEmptyBuyer))
                                 $s.buyer = config.getEmptyBuyer();
-                            if(angular.isDefined(config.getEmptyDoc) && typeof config.getEmptyDoc === 'function')
+                            if(isItFunction(config.getEmptyDoc))
                                 $s.doc = config.getEmptyDoc();
 
                         }

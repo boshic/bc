@@ -80,7 +80,7 @@ import commonFilterTpl from './common-filter.html';
                     toDate = new Date();
                     // filter.allowAllStocks = true;
                     if(!angular.isDefined(filter.showInScrollMode))
-                      filter.showInScrollMode = ('ontouchstart' in window);
+                      filter.showInScrollMode = paneFactory.isMobileClient();
                     filter.ean = "";
                     filter.sortDirection = 'DESC';
                     filter.hideNullQuantity = true;

@@ -10,6 +10,7 @@ import org.springframework.context.annotation.ImportResource;
 import org.springframework.context.event.ContextRefreshedEvent;
 
 @SpringBootApplication
+//@EnableEncryptableProperties
 //@ImportResource({"classpath:context.xml"})
 public class App implements ApplicationListener<ContextRefreshedEvent> {
 

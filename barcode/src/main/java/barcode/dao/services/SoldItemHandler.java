@@ -354,10 +354,13 @@ public class SoldItemHandler extends EntityHandlerImpl {
                                     CommentAction.SALE_COMMENT.getAction(), coming.getCurrentQuantity())
                         );
 
-                        newSoldItem.setMayBeError(!comingItemHandler
-                            .checkComingCurrentQuantity(availQuantityByEan, soldItemsRepository
-                                    .findTopDateByComingItemEanAndComingStockIdOrderByIdDesc(
-                                        coming.getItem().getEan(),coming.getStock().getId())));
+                        newSoldItem.setMayBeError(
+                            (soldItem.getMayBeError() == null) ?
+                                !comingItemHandler
+                                    .checkComingCurrentQuantity(availQuantityByEan, soldItemsRepository
+                                        .findTopDateByComingItemEanAndComingStockIdOrderByIdDesc(
+                                            coming.getItem().getEan(),coming.getStock().getId()))
+                                : soldItem.getMayBeError());
 
                         if (reqForSell.compareTo(availQuantByComing) > 0) {
 
@@ -648,6 +651,7 @@ public ResponseItem addOneSelling(SoldItem soldItem) {
         if(!responseItem.getSuccess())
             return responseItem;
 
+        soldItem.setMayBeError(false);
         return addSellings(Stream.of(soldItem).collect(Collectors.toList()));
     }
 

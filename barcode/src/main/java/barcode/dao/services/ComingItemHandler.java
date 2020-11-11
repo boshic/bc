@@ -426,10 +426,6 @@ public class ComingItemHandler extends EntityHandlerImpl {
 
             item.setName(coming.getItem().getName());
         }
-
-
-
-
         coming.setItem(item);
 
         responseItem.getEntityItems().add(responseByItem);
@@ -463,19 +459,14 @@ public class ComingItemHandler extends EntityHandlerImpl {
                                                         coming.getDoc().getSupplier()));
 
         if (document == null ) {
-
             document = documentHandler.addItem(coming.getDoc()).getEntityItem();
-
             responseBydoc.setText("Документ " + coming.getDoc().getName() + " от "
                                               + coming.getDoc().getDate() + SMTH_CREATED);
         }
 
         coming.setDoc(document);
-
         responseItem.getEntityItems().add(responseBydoc);
-
         QComingItem qComingItem = QComingItem.comingItem;
-
         Predicate predicate = qComingItem.doc.eq(coming.getDoc())
                                             .and(qComingItem.quantity.gt(0))
                                             .and(qComingItem.item.eq(coming.getItem()))
