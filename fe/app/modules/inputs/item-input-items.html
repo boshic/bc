@@ -3,11 +3,11 @@
             <thead>
             <tr>
                 <td>
-                    <a href="#" style="float: left;padding-left: 3%;" title="Добавить"
+                    <button style="float: left;padding-left: 3%;" title="Добавить"
                        ng-show = "$ctrl.changeItem() != null"
                        ng-click="$ctrl.changeItem()(0)">
                         <span class="glyphicon glyphicon-plus item-add"></span>
-                    </a>
+                    </button>
                 </td>
                 <td></td>
                 <td>
@@ -29,11 +29,11 @@
                     {{ x.name }}
                 </td>
                 <td style="width: 25px;">
-                    <a href="#" title="Редактировать" style="float: right;"
+                    <button title="Редактировать" style="float: right;"
                        ng-show = "$ctrl.changeItem() != null"
                        ng-click="$ctrl.changeItem()(x.id)">
                         <span class="glyphicon glyphicon-pencil item-edit"></span>
-                    </a>
+                    </button>
                 </td>
             </tr>
             </tbody>

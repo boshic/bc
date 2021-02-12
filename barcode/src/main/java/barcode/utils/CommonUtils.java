@@ -1,8 +1,12 @@
 package barcode.utils;
 
+import barcode.dto.DtoBuyer;
+import com.querydsl.core.Tuple;
+
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class CommonUtils {
 
@@ -34,5 +38,4 @@ public class CommonUtils {
         return (date == null) ? new Date() : date;
 
     }
-
 }

@@ -53,7 +53,7 @@ let commonPaneReleaseCtrlr = ($s, itemFactory, filterFactory, paneFactory, print
     };
 
     $s.deleteRows =  (itemId) => {
-        paneFactory.deletePaneRows($s, config.getDeleteRowsConfig({getEmptyBuyer: $s.getEmptyBuyer(), itemId}));
+        paneFactory.deletePaneRows($s, config.getDeleteRowsConfig({getEmptyBuyer: $s.getEmptyBuyer, itemId}));
     };
 
     $s.checkRows = () => {

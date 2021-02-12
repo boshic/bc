@@ -77,14 +77,55 @@
 
     <table class="table table-bordered unprintable table-responsive">
         <thead class="pane-thead">
-            <td style="width: 60px;">Номер</td>
-            <td>Наименование</td>
+            <td style="width: 60px;">
+                <sortable-column
+                        field = "filter.sortField"
+                        listening-field = "'$index'"
+                        reverse-order = "filter.reverseOrder"
+                        column-name = "Номер">
+                </sortable-column>
+            </td>
+            <td>
+                <sortable-column
+                        field = "filter.sortField"
+                        listening-field = "'item.name'"
+                        reverse-order = "filter.reverseOrder"
+                        column-name = "Наименование">
+                </sortable-column>
+            </td>
             <td style="width: 70px;">Ед.изм.</td>
-            <td style="width: 70px;" class="unprintable">Ост.</td>
+            <td style="width: 70px;" class="unprintable">
+                <sortable-column
+                        field = "filter.sortField"
+                        listening-field = "'currentQuantity'"
+                        reverse-order = "filter.reverseOrder"
+                        column-name = "Доступно, ед.">
+                </sortable-column>
+            </td>
             <td style="width: 83px;">НДС %</td>
-            <td style="width: 95px;">К продаже</td>
-            <td style="width: 120px;">Цена, руб., коп.</td>
-            <td style="width: 100px;">Сумма руб., коп.
+            <td style="width: 95px;">
+                <sortable-column
+                        field = "filter.sortField"
+                        listening-field = "'quantity'"
+                        reverse-order = "filter.reverseOrder"
+                        column-name = "Продаем, ед.">
+                </sortable-column>
+            </td>
+            <td style="width: 120px;">
+                <sortable-column
+                        field = "filter.sortField"
+                        listening-field = "'price'"
+                        reverse-order = "filter.reverseOrder"
+                        column-name = "Цена, руб., коп.">
+                </sortable-column>
+            </td>
+            <td style="width: 100px;">
+                <sortable-column
+                        field = "filter.sortField"
+                        listening-field = "'(quantity * price).toFixed(2)'"
+                        reverse-order = "filter.reverseOrder"
+                        column-name = "Сумма, руб., коп.">
+                </sortable-column>
                 <span style="font-weight: lighter;" title="Скидка" ng-if="buyer.discount > 0">
                         {{ "применена скидка в размере " + buyer.discount + "%" }}
                 </span>
@@ -94,7 +135,7 @@
             </td>
         </thead>
         <tbody>
-            <tr class="hoverable" ng-repeat="x in rows track by $index">
+            <tr class="hoverable" ng-repeat="x in rows | orderBy:filter.sortField:filter.reverseOrder track by $index">
                 <td class="price-data" title="Номер">{{ $index + 1 }}</td>
                 <td title="{{'по ' + x.doc.name + ' от ' + x.doc.date + ' от ' + x.doc.supplier.name}}">
                     <span>{{ x.item.name + "(" + x.item.ean + ")"}}</span>

@@ -52,7 +52,6 @@ public class InvoiceHeader {
 
         this.setNumberOfRows(invoice.getInvoiceRows().size());
 
-//        this.setSum(invoice.getSumOfRows());
         this.setSum(invoice.getSum());
 
         this.setDeleted(invoice.getDeleted());

@@ -15,6 +15,10 @@ public class BasicEntity {
     @GeneratedValue(strategy= GenerationType.AUTO)
     private Long id;
 
+    public BasicEntity() {};
+    public BasicEntity(Long id) {
+        this.id = id;
+    };
     public Long getId() {
         return id;
     }

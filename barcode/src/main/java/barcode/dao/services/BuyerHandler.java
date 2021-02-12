@@ -72,20 +72,22 @@ public class BuyerHandler extends EntityHandlerImpl{
         return update(newBuyer, buyer);
     }
 
+    public static List<DtoBuyer> getDtoBuyers(List<Tuple> tuple) {
+        return tuple.stream()
+            .map(b -> new DtoBuyer(b.get(0, Long.class), b.get(1, String.class)))
+            .collect(Collectors.toList());
+    }
+
     public List<DtoBuyer> getDtoBuyers(String filter) {
 
         QBuyer qBuyer = QBuyer.buyer;
         Predicate predicate = new BuyerPredicateBuilder().buildByFilter(filter);
-        JPAQuery<Tuple> query = new JPAQuery<Tuple>(abstractEntityManager.getEntityManager())
+        return getDtoBuyers(
+            new JPAQuery<Tuple>(abstractEntityManager.getEntityManager())
             .select(qBuyer.id, qBuyer.name)
             .from(qBuyer)
             .where(predicate)
-            .orderBy(qBuyer.sellings.size().desc());
-
-        return query.fetch().stream()
-            .map(b -> new DtoBuyer(b.get(0, Long.class), b.get(1, String.class)))
-            .collect(Collectors.toList());
-
+            .orderBy(qBuyer.sellings.size().desc()).fetch());
     }
 
     Buyer getBuyerByName(String name) {

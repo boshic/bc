@@ -345,15 +345,6 @@ public class SoldItemHandler extends EntityHandlerImpl {
                                             "применена скидка " + discount + "%.", newSoldItem.getQuantity())
                             );
 
-
-                        coming.setComment(
-                                this.buildComment(coming.getComments(),
-                                        soldItem.getComment() + " для " + soldItem.getBuyer().getName()
-                                                + getQuantityForComment((reqForSell.compareTo(availQuantByComing) > 0) ? availQuantByComing : reqForSell),
-                                        userHandler.checkUser(soldItem.getUser(), null ).getFullName(),
-                                    CommentAction.SALE_COMMENT.getAction(), coming.getCurrentQuantity())
-                        );
-
                         newSoldItem.setMayBeError(
                             (soldItem.getMayBeError() == null) ?
                                 !comingItemHandler
@@ -361,6 +352,14 @@ public class SoldItemHandler extends EntityHandlerImpl {
                                         .findTopDateByComingItemEanAndComingStockIdOrderByIdDesc(
                                             coming.getItem().getEan(),coming.getStock().getId()))
                                 : soldItem.getMayBeError());
+
+                        coming.setComment(
+                            this.buildComment(coming.getComments(),
+                                soldItem.getComment() + " для " + soldItem.getBuyer().getName()
+                                    + getQuantityForComment((reqForSell.compareTo(availQuantByComing) > 0) ? availQuantByComing : reqForSell),
+                                userHandler.checkUser(soldItem.getUser(), null ).getFullName(),
+                                CommentAction.SALE_COMMENT.getAction(), coming.getCurrentQuantity())
+                        );
 
                         if (reqForSell.compareTo(availQuantByComing) > 0) {
 
@@ -516,7 +515,6 @@ public class SoldItemHandler extends EntityHandlerImpl {
         filter.validateFilterSortField(filter, SoldItemFilter.SortingFieldsForSoldItemPane.DATE);
         Sort sort = new Sort(Sort.Direction.fromStringOrNull(filter.getSortDirection()), filter.getSortField());
         PageRequest pageRequest = new PageRequest(filter.getPage() - 1, filter.getRowsOnPage(), sort);
-
         Page<SoldItem> page =  soldItemsRepository.findAll(sipb.buildByFilter(filter), pageRequest);
 
         return getResults(page, filter);

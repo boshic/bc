@@ -11,6 +11,9 @@ import java.util.Set;
 @Entity
 public class Organization extends BasicNamedEntity{
 
+    @Column(name = "short_name", columnDefinition="varchar(250) COLLATE utf8_general_ci default ''")
+    private String shortName;
+
     @Column(name = "address", nullable = false)
     private String address;
 
@@ -122,5 +125,13 @@ public class Organization extends BasicNamedEntity{
 
     public void setBossName(String bossName) {
         this.bossName = bossName;
+    }
+
+    public String getShortName() {
+        return shortName;
+    }
+
+    public void setShortName(String shortName) {
+        this.shortName = shortName;
     }
 }

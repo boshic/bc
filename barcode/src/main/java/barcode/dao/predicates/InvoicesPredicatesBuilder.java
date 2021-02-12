@@ -4,6 +4,7 @@ import barcode.dao.entities.QInvoice;
 
 import barcode.dao.entities.embeddable.QInvoiceRow;
 import barcode.dao.services.AbstractEntityManager;
+import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import barcode.dao.services.InvoiceHandler;
 import barcode.utils.SoldItemFilter;
@@ -14,12 +15,13 @@ import barcode.utils.SoldItemFilter;
 
 public class InvoicesPredicatesBuilder {
 
-    public BooleanExpression buildByFilter(SoldItemFilter filter, AbstractEntityManager abstractEntityManager) {
+    public BooleanBuilder buildByFilter(SoldItemFilter filter) {
 
         QInvoiceRow qInvoiceRow = QInvoiceRow.invoiceRow;
         QInvoice invoice = InvoiceHandler.qInvoice;
+        BooleanBuilder predicate = new BooleanBuilder();
 
-        BooleanExpression predicate = (invoice.date.between(filter.getFromDate(), filter.getToDate()));
+        predicate.and(invoice.date.between(filter.getFromDate(), filter.getToDate()));
 
 
         ///!!!! Yes

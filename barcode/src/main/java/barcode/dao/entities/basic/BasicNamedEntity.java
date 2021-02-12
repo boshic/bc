@@ -19,6 +19,10 @@ public class BasicNamedEntity extends BasicEntity {
     public BasicNamedEntity(String name) {
         this.name = name;
     }
+    public BasicNamedEntity(Long id, String name) {
+        super(id);
+        this.name = name;
+    }
 
     public String getName() {
         return name;

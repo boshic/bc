@@ -279,7 +279,7 @@ import invoicesPaneConfig from '../modules/selling/invoices-pane-config';
                                         $s.warning = "ошибка при проведении операции! Позиций - "
                                             + rows.length + ', время: ' + new Date().toLocaleTimeString();
                                         $s.rows = rows;
-                                      if(isItFunction($s.getEmptyBuyer))
+                                      if(angular.isDefined($s.buyer) && isItFunction($s.getEmptyBuyer))
                                         $s.buyer = $s.getEmptyBuyer();
                                     }
                                 );

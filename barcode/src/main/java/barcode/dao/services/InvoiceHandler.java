@@ -156,22 +156,25 @@ public class InvoiceHandler extends EntityHandlerImpl {
         invoiceRepository.save(invoice);
     }
 
-    public ResponseByInvoices getInvoicesByFilter(SoldItemFilter filter) {
+    private ResponseByInvoices
+    getResults(Page<Invoice> page, SoldItemFilter filter) {
 
-//        Sort sort = new Sort(Sort.Direction.DESC, "date");
+        ResponseByInvoices response =
+            new ResponseByInvoices(ELEMENTS_FOUND, page.getContent(), true, page.getTotalPages());
+
+        if(checkResponse(response.getEntityItems().size(), response))
+            calcTotals(filter, abstractEntityManager, response);
+
+        return response;
+    }
+
+    public ResponseByInvoices getInvoicesByFilter(SoldItemFilter filter) {
 
         Sort sort = new Sort(Sort.Direction.fromStringOrNull(filter.getSortDirection()), filter.getSortField());
         PageRequest pageRequest = new PageRequest(filter.getPage() - 1, filter.getRowsOnPage(), sort);
-        Page<Invoice> page =  invoiceRepository.findAll(ipb.buildByFilter(filter, abstractEntityManager), pageRequest);
-        List<Invoice> result = page.getContent();
+        Page<Invoice> page =  invoiceRepository.findAll(ipb.buildByFilter(filter), pageRequest);
 
-        if (result.size() > 0)
-            return  new ResponseByInvoices(
-                            ELEMENTS_FOUND, result, true, page.getTotalPages());
-
-        return new ResponseByInvoices(NOTHING_FOUND, new ArrayList<Invoice>(),
-                false, 0);
-
+        return getResults(page, filter);
     }
 
     public ResponseItemExt<InvoiceHeader>
@@ -188,6 +191,9 @@ public class InvoiceHandler extends EntityHandlerImpl {
 
             for(Invoice invoice: responseByInvoices.getEntityItems())
                 headers.getEntityItems().add(new InvoiceHeader(invoice));
+
+            headers.setTotals(responseByInvoices.getTotals());
+            headers.setBuyers(responseByInvoices.getBuyers());
 
             return headers;
         }

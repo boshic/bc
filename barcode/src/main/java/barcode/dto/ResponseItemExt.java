@@ -1,10 +1,13 @@
 package barcode.dto;
 
 import barcode.dao.entities.*;
+import barcode.dao.entities.basic.BasicNamedEntity;
 import barcode.dao.services.AbstractEntityManager;
 import com.querydsl.core.BooleanBuilder;
+import com.querydsl.core.Tuple;
 import com.querydsl.core.types.Expression;
 import com.querydsl.core.types.dsl.CaseBuilder;
+import com.querydsl.jpa.impl.JPAQuery;
 
 import java.lang.reflect.Method;
 import java.math.BigDecimal;
@@ -34,14 +37,13 @@ public class ResponseItemExt<T> extends ResponseItem<T> {
 
     private Integer numberOfPages;
     private List<ResultRowByItemsCollection> totals = new ArrayList<ResultRowByItemsCollection>();
-    private List<Buyer> buyers;
+    private List<? extends BasicNamedEntity> buyers;
     private List<ItemSection> sections;
     private List<Supplier> suppliers;
 
     private List<Item> goods;
 
     public ResponseItemExt() {}
-
     public ResponseItemExt(String text, Boolean success) {
         super(text,success);
     }
@@ -75,11 +77,11 @@ public class ResponseItemExt<T> extends ResponseItem<T> {
         this.suppliers = suppliers;
     }
 
-    public List<Buyer> getBuyers() {
+    public List<? extends BasicNamedEntity> getBuyers() {
         return buyers;
     }
 
-    public void setBuyers(List<Buyer> buyers) {
+    public void setBuyers(List<? extends BasicNamedEntity> buyers) {
         this.buyers = buyers;
     }
 

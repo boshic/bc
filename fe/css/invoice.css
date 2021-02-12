@@ -26,3 +26,10 @@ td.price-data {
     margin-right: 1%;
     font-family: Times New Roman, serif;
 }
+
+
+.invoice-stamp {
+    position: absolute;
+    margin-left: -419px;
+    margin-top: -10px;
+}

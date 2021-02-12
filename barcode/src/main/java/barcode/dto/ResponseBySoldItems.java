@@ -5,9 +5,11 @@ import barcode.dao.entities.*;
 import barcode.dao.entities.basic.BasicOperationWithCommentEntity;
 import barcode.dao.predicates.SoldItemPredicatesBuilder;
 import barcode.dao.services.AbstractEntityManager;
+import barcode.dao.services.BuyerHandler;
 import barcode.utils.CommonUtils;
 import barcode.utils.SoldItemFilter;
 import com.querydsl.core.BooleanBuilder;
+import com.querydsl.core.Tuple;
 import com.querydsl.core.types.Expression;
 import com.querydsl.core.types.dsl.CaseBuilder;
 import com.querydsl.jpa.impl.JPAQuery;
@@ -33,8 +35,8 @@ public class ResponseBySoldItems extends ResponseItemExt<SoldItem>
         EntityManager em = abstractEntityManager.getEntityManager();
         QSoldItem soldItem = QSoldItem.soldItem;
         JPAQuery<BigDecimal> queryBdcml = new JPAQuery<BigDecimal>(em);
-        SoldItemPredicatesBuilder sipb = new SoldItemPredicatesBuilder();
-        BooleanBuilder predicate = sipb.buildByFilter(filter);
+        SoldItemPredicatesBuilder pb = new SoldItemPredicatesBuilder();
+        BooleanBuilder predicate = pb.buildByFilter(filter);
         queryBdcml = queryBdcml.from(soldItem).where(predicate);
 
         BigDecimal
@@ -57,10 +59,14 @@ public class ResponseBySoldItems extends ResponseItemExt<SoldItem>
             (SOLD, quantity, INCOME , sum.subtract(sumByComing.add(sumExcludedFromIncome))));
 
         super.setBuyers(
-            new JPAQuery<Buyer>(em)
-            .from(soldItem).where(predicate)
-            .select(soldItem.buyer)
-            .distinct().orderBy(soldItem.buyer.name.asc()).fetch());
+
+            BuyerHandler.getDtoBuyers(
+                new JPAQuery<Tuple>(em)
+                    .from(soldItem).where(predicate)
+                    .select(soldItem.buyer.id, soldItem.buyer.name)
+                    .distinct().orderBy(soldItem.buyer.name.asc()).fetch()
+            )
+        );
 
         super.setSuppliers(
             new JPAQuery<Supplier>(em)

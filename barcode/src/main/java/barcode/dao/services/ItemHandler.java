@@ -41,6 +41,10 @@ public class ItemHandler  extends EntityHandlerImpl{
         item.setUnit(srcItem.getUnit());
         item.setContentUnit(CommonUtils.validateString(srcItem.getContentUnit()));
         item.setPerUnitQuantity(CommonUtils.validateBigDecimal(srcItem.getPerUnitQuantity()));
+
+        if(srcItem.getEan().length() != EAN_LENGTH)
+            return new ResponseItem<Item>(BAD_EAN + " " + srcItem.getName(), false, srcItem);
+
         item.setEan(srcItem.getEan());
 
         if(isAllowedEanSynonym(srcItem, item))

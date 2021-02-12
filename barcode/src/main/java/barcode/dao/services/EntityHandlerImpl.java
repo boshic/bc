@@ -57,6 +57,7 @@ public class EntityHandlerImpl implements EntityHandler {
     static final String SUPPLIER_FOR_INVENTORY_NOT_FOUND = FAILED +
             "Не задан поставщик для документа инвентаризации";
 
+    static final String BAD_EAN = FAILED + "Товар имеет недопустимый ШК!";
     static final String BAD_EAN_SYNONYM = FAILED +
             "Товар имеет приходы, или указанный ШК уже имеет синоним!";
     static final String ITEM_ALREADY_EXIST = FAILED +

@@ -409,16 +409,18 @@ public class ComingItemHandler extends EntityHandlerImpl {
         responseItem.getEntityItems().add(responseBySection);
 
         //item
-        ResponseItem responseByItem = new ResponseItem(CHECK_ITEM_LOG_MESS + coming.getItem().getName() + SMTH_FOUND);
-
-//        Item item = itemHandler.getItemByEan(coming.getItem().getEan());
+        ResponseItem<Item> responseByItem = new ResponseItem<Item>(CHECK_ITEM_LOG_MESS + coming.getItem().getName() + SMTH_FOUND);
         Item item = itemHandler.getItemByEanSynonym(coming.getItem().getEan());
-
         if (item == null) {
 
-            item = itemHandler.addItem(coming.getItem()).getEntityItem();
+            responseByItem = itemHandler.addItem(coming.getItem());
+            if (!responseByItem.getSuccess())
+                return new ResponseItem<>(responseByItem.getText(), false);
 
-            responseByItem.setText(CHECK_ITEM_LOG_MESS + coming.getItem().getName() + SMTH_CREATED);
+            item = responseByItem.getEntityItem();
+
+//            item = itemHandler.addItem(coming.getItem()).getEntityItem();
+//            responseByItem.setText(CHECK_ITEM_LOG_MESS + coming.getItem().getName() + SMTH_CREATED);
         }
         else {
 
