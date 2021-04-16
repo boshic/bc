@@ -2103,3 +2103,12 @@ span.income-sum-in-grouped-sellings {
 }
 
 /*Фиксированный thead end*/
+
+.not-for-upload {
+    font-size: var(--common-font-size);
+}
+
+.disallow-upload-invoice-btn {
+    background: var(--gray-color);
+    color: var(--white-color);
+}

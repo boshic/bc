@@ -37,7 +37,7 @@ public class ResponseByInvoices
         QInvoice qInvoice = QInvoice.invoice;
         JPAQuery<BigDecimal> queryBdcml = new JPAQuery<BigDecimal>(em);
         InvoicesPredicatesBuilder pb = new InvoicesPredicatesBuilder();
-        BooleanBuilder predicate = pb.buildByFilter(filter);
+        BooleanBuilder predicate = pb.buildByFilter(filter, abstractEntityManager);
         queryBdcml = queryBdcml.from(qInvoice).where(predicate);
 
         BigDecimal

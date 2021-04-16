@@ -31,8 +31,9 @@
         </div>
     </div>
     <current-stock-indicator stock="filter.stock"></current-stock-indicator>
-    <table ng-show="rows.length" ng-class = "{'fixed-head-table': filter.showInScrollMode,
-                        'table table-responsive table-bordered' : !filter.showInScrollMode}">
+<!--    ng-class = "{'fixed-head-table': filter.showInScrollMode,-->
+<!--    'table table-responsive table-bordered' : !filter.showInScrollMode}"    -->
+    <table ng-show="rows.length" class="table table-responsive table-bordered">
         <thead class="pane-thead">
             <td style="width: 4%;">Номер</td>
             <td style="width: 20%;">Дата (Продавец)</td>
@@ -64,8 +65,13 @@
                     </pane-date-change-control>
                 </div>
             </td>
-            <td title="Наименование" class="hoverable"
-                ng-click="editItem(x)">{{ x.buyer}}
+            <td title="Наименование" class="hoverable" ng-click="editItem(x)">
+                <div style="display: flex">
+                    <div style="width: 100%">{{ x.buyer}}</div>
+                    <div ng-show="x.notForUpload"
+                            class="glyphicon glyphicon-floppy-remove not-for-upload">
+                    </div>
+                </div>
                 <div>
                     <span class="price-out-on-coming-pane" title="Склад">{{ '(' + x.stock+ ')'}}</span>
                 </div>

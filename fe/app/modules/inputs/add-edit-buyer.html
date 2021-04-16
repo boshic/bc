@@ -4,7 +4,9 @@
             <item-add-edit-controls
                     append-data="appendData()" close-modal="closeModal()" item-id="item.id"
                     is-close-hidden="requestParams.requestsQuantity > 0"
-                    is-ok-active="item.name.length>0 && item.address.length > 0">
+                    is-ok-active="item.name.length>0
+                    && item.invoiceDaysValid > 0
+                    && item.address.length > 0">
             </item-add-edit-controls>
         <div>
             <div>
@@ -45,13 +47,24 @@
 
         </div>
         <div style="display: flex;">
+            <span style="width: 30%;">Срок действия счетов, раб.дней:</span>
+        </div>
+        <div style="display: flex; margin-bottom: 10px;" ng-show = "user.role == 'ROLE_ADMIN'">
+            <div style="width: 30%;">
+                <span class="warning-item-input"
+                      ng-hide="item.invoiceDaysValid > 0">Неверное количество, допустимо 1-30!!</span>
+                <input  style="text-align: center;"
+                        type="number" class="form-control" min="1" max="30"
+                        ng-readonly="requestParams.requestsQuantity"
+                        ng-model="item.invoiceDaysValid"
+                        placeholder=""/>
+            </div>
+        </div>
+        <div style="display: flex;">
             <span style="width: 40%;">УНП:</span>
             <span style="width: 60%;">Банк:</span>
         </div>
         <div style="display: flex;margin-bottom: 10px;">
-            <!--<span class="warning-item-input" ng-hide="buyer.unp.length == 9">-->
-                <!--Введите УНП (9 знаков)-->
-            <!--</span>-->
             <input  style="width: 40%;" type="text" class="form-control" maxlength="9"
                     ng-readonly="requestParams.requestsQuantity"
                     ng-model="item.unp" placeholder="УНП"/>
@@ -59,8 +72,7 @@
                 <bank-input bank="item.bank"></bank-input>
             </div>
         </div>
-        <div style="display: flex;"
-             ng-show = "user.role == 'ROLE_ADMIN'">
+        <div style="display: flex;" ng-show = "user.role == 'ROLE_ADMIN'">
             <input style="zoom: 1.5; position: absolute; margin: auto;"
                    type="checkbox"
                    ng-model="item.sellByComingPrices"/>
@@ -77,14 +89,5 @@
                 Вычитать реализацию из дохода: {{(item.excludeExpensesFromIncome) ? "Да" : "Нет"}}
             </label>
         </div>
-        <!--<div style="display: flex;"-->
-             <!--ng-show = "user.role == 'ROLE_ADMIN'">-->
-            <!--<input style="zoom: 1.5; position: absolute; margin: auto;"-->
-                   <!--type="checkbox"-->
-                   <!--ng-model="item.useForInventory"/>-->
-            <!--<label style="margin-left: 20px; color: coral;">-->
-                <!--Использовать для инвентаризации: {{(item.useForInventory) ? "Да" : "Нет"}}-->
-            <!--</label>-->
-        <!--</div>-->
     </div>
 </div>

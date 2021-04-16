@@ -32,6 +32,9 @@ public class Buyer extends BasicCounterPartyEntity {
     @Column(columnDefinition="varchar(28) COLLATE utf8_general_ci")
     private String account;
 
+    @Column(name = "invoice_days_valid", columnDefinition = "integer default 3")
+    private Integer invoiceDaysValid;
+
     @ManyToOne
     @JoinColumn(name = "bank_id")
     private Bank bank;
@@ -89,6 +92,14 @@ public class Buyer extends BasicCounterPartyEntity {
 
     public void setExcludeExpensesFromIncome(Boolean excludeExpensesFromIncome) {
         this.excludeExpensesFromIncome = excludeExpensesFromIncome;
+    }
+
+    public Integer getInvoiceDaysValid() {
+        return invoiceDaysValid;
+    }
+
+    public void setInvoiceDaysValid(Integer invoiceDaysValid) {
+        this.invoiceDaysValid = invoiceDaysValid;
     }
 }
 

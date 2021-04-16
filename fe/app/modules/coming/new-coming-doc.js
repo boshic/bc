@@ -33,7 +33,7 @@ import newComingDocPaneTpl from './new-coming-doc.html';
         };
 
         let setReportData = () => {
-            $s.reports = [];
+            // $s.reports = [];
             if($s.rows.length) {
                 let data = { stock: $s.stock, buyer: $s.buyer, id: undefined, rows: getRowsForReports()};
                 if(angular.isDefined($s.doc.id))
@@ -76,12 +76,8 @@ import newComingDocPaneTpl from './new-coming-doc.html';
                             index = 0;
                         } else {
                             $s.rows[index].item = item;
-                            // $s.rows[index].quantity += 1;
                         }
                         $s.checkRows();
-                        // if(paneFactory.fractionalUnits.indexOf(item.unit) >= 0) {
-                        //     $s.rows[index].quantity = 0;
-                        // }
                         $s.openQuantityChangerModal(item.id);
 
                     } else {
@@ -120,7 +116,7 @@ import newComingDocPaneTpl from './new-coming-doc.html';
 
         $s.$watch("rows", (nv, ov) => {
             if ((nv) && (nv.length) && (ov) && (ov.length)) {
-                $s.checkRows();
+              // $s.checkRows();
                 if (ov.length === nv.length)
                     for( let i = 0; i < nv.length; i++)
                         for (let key in nv[i]) {
@@ -136,10 +132,11 @@ import newComingDocPaneTpl from './new-coming-doc.html';
                                     if(nv[i].quantity > 0)
                                         nv[i].price = (nv[i].sum/nv[i].quantity).toFixed(4);
                                 }
-                                $s.checkRows();
+                                // $s.checkRows();
                             }
                         }
-            }
+           }
+          $s.checkRows();
         }, true);
 
         $s.setEanPrefix = e => {
@@ -154,14 +151,14 @@ import newComingDocPaneTpl from './new-coming-doc.html';
 
         $s.checkRows = () => {
             $s.canRelease = false;
-
+            $s.reports = [];
             if ($s.rows.length) {
                 $s.totals = paneFactory.calcTotals($s.rows);
                 $s.totalsOut = paneFactory.calcTotals(printFactory.getRowsForReports($s, 'priceOut'));
                 for (let row of $s.rows) {
 
-                    if ((!row.quantity) || (!row.price) || (!row.priceOut))
-                        return $s.canRelease = false;
+                    if (!(row.quantity > 0) || !(row.price > 0) || !(row.priceOut > 0))
+                      return;
 
                     row.user = paneFactory.user;
                     row.stock = $s.stock;
@@ -169,8 +166,8 @@ import newComingDocPaneTpl from './new-coming-doc.html';
                 }
                 if($s.totals.quantity > 0 && $s.totals.sum > 0 && $s.doc.id > 0)
                     $s.canRelease = true;
-                setReportData();
             }
+            setReportData();
         };
 
         $s.deleteRows =  (itemId) => {

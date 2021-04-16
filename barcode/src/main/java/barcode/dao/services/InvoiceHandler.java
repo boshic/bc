@@ -125,7 +125,7 @@ public class InvoiceHandler extends EntityHandlerImpl {
     public List<DtoInvoice> getInvoicesFor1c(BasicFilter filter) {
 
         List<Invoice> invoices = invoiceRepository
-                .findByDateBetweenAndIsDeletedOrderByDateDesc(
+                .findByDateBetweenAndNotForUploadOrderByDateDesc(
                         filter.getFromDate(), filter.getToDate(), false);
 
         if(invoices.size() > 0) {
@@ -149,9 +149,17 @@ public class InvoiceHandler extends EntityHandlerImpl {
         return null;
     }
 
-    public synchronized void deleteItem(long id) {
+    public synchronized void disallowUploadFor1c(long id) {
 
         Invoice invoice = invoiceRepository.findOne(id);
+        invoice.setNotForUpload(true);
+        invoiceRepository.save(invoice);
+    }
+
+    public synchronized void deleteInvoice(long id) {
+
+        Invoice invoice = invoiceRepository.findOne(id);
+        invoice.setNotForUpload(true);
         invoice.setDeleted(true);
         invoiceRepository.save(invoice);
     }
@@ -172,7 +180,7 @@ public class InvoiceHandler extends EntityHandlerImpl {
 
         Sort sort = new Sort(Sort.Direction.fromStringOrNull(filter.getSortDirection()), filter.getSortField());
         PageRequest pageRequest = new PageRequest(filter.getPage() - 1, filter.getRowsOnPage(), sort);
-        Page<Invoice> page =  invoiceRepository.findAll(ipb.buildByFilter(filter), pageRequest);
+        Page<Invoice> page =  invoiceRepository.findAll(ipb.buildByFilter(filter, abstractEntityManager), pageRequest);
 
         return getResults(page, filter);
     }

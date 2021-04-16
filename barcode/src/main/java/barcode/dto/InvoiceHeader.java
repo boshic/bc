@@ -36,27 +36,22 @@ public class InvoiceHeader {
     @JsonProperty("deleted")
     private Boolean isDeleted;
 
+    @JsonProperty("notForUpload")
+    private Boolean notForUpload;
+
     public InvoiceHeader() {};
 
     public InvoiceHeader(Invoice invoice) {
 
         this.setId(invoice.getId());
-
         this.setBuyerName(invoice.getBuyer().getName());
-
         this.setDocDate(invoice.getDate());
-
         this.setUserName(invoice.getUser().getFullName());
-
         this.setStockName(invoice.getStock().getName());
-
         this.setNumberOfRows(invoice.getInvoiceRows().size());
-
         this.setSum(invoice.getSum());
-
         this.setDeleted(invoice.getDeleted());
-
-
+        this.setNotForUpload(invoice.getNotForUpload());
 
     }
 
@@ -122,5 +117,13 @@ public class InvoiceHeader {
 
     public void setDeleted(Boolean deleted) {
         isDeleted = deleted;
+    }
+
+    public Boolean getNotForUpload() {
+        return notForUpload;
+    }
+
+    public void setNotForUpload(Boolean notForUpload) {
+        this.notForUpload = notForUpload;
     }
 }

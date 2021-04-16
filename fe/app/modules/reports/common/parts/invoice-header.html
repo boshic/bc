@@ -16,7 +16,7 @@
         </span>
     </div>
     <div class="invoice-row-for-printing">
-        <span style="font-weight: bold">{{"Плательщик: "}}</span>
+        <span style="font-weight: bold">{{"Покупатель: "}}</span>
         <span>{{data.buyer.name + ", " + data.buyer.address + ". "}}</span>
         <span ng-if="data.buyer.unp.length == 9">
             {{", УНП:" + data.buyer.unp}}
@@ -28,7 +28,8 @@
     </div>
 
     <div class="invoice-row-for-printing">
-        <span style="font-size: smaller;">Счет действителен в течение 3-х банковских дней</span>
+        <span style="font-size: smaller;">Срок действия счета в количестве рабочих дней: </span>
+        <span style="font-size: smaller;">{{data.buyer.invoiceDaysValid}}</span>
     </div>
 
 </div>

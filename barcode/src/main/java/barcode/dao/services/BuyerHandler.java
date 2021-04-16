@@ -20,6 +20,8 @@ import java.util.stream.Collectors;
 @Service
 public class BuyerHandler extends EntityHandlerImpl{
 
+    private static final Integer DEF_INVOICE_DAYS_VALID = 3;
+    private static final Integer DEF_DISCOUNT = 0;
     private BuyerRepository buyerRepository;
     private BankHandler bankHandler;
     private AbstractEntityManager abstractEntityManager;
@@ -40,7 +42,8 @@ public class BuyerHandler extends EntityHandlerImpl{
         newBuyer.setBank(bankHandler.getCheckedItem(buyer.getBank()));
         newBuyer.setUnp(CommonUtils.validateString(buyer.getUnp()));
         newBuyer.setAddress(buyer.getAddress());
-        newBuyer.setDiscount(buyer.getDiscount() == null ? 0 : buyer.getDiscount());
+        newBuyer.setDiscount(buyer.getDiscount() == null ? DEF_DISCOUNT : buyer.getDiscount());
+        newBuyer.setInvoiceDaysValid(buyer.getInvoiceDaysValid() == null ? DEF_INVOICE_DAYS_VALID : buyer.getInvoiceDaysValid());
         newBuyer.setSellByComingPrices(CommonUtils.validateBoolean(buyer.getSellByComingPrices()));
         newBuyer.setExcludeExpensesFromIncome(CommonUtils.validateBoolean(buyer.getExcludeExpensesFromIncome()));
         newBuyer.setLastPayDate(new Date());

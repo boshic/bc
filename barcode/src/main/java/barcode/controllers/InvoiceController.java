@@ -73,9 +73,14 @@ public class InvoiceController {
         return this.invoiceHandler.getItemById(id);
     }
 
+    @GetMapping(value = "/disallowInvoiceUpload")
+    public @ResponseBody void disallowInvoiceUpload (@RequestParam Long id) {
+        invoiceHandler.disallowUploadFor1c(id);
+    }
+
     @GetMapping(value = "/deleteInvoice")
     public @ResponseBody void deleteInvoice (@RequestParam Long id) {
-        invoiceHandler.deleteItem(id);
+        invoiceHandler.deleteInvoice(id);
     }
 
     @RequestMapping(value = "/changeInvoiceDate", method = RequestMethod.POST)

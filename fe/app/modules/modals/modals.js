@@ -183,11 +183,17 @@
             {type: 'invoice', data, method: 'addInvoice'}],
             $s.reports = []);
 
-        $s.deleteInvoice = () => {
-            if(confirm("Подтвердите удаление"))
-                $http.get('/deleteInvoice', { params: { id: $s.invoice.id }})
+        $s.disallowInvoiceUpload = () => {
+            if(confirm("Подтвердите запрет на выгрузку наружу! "))
+                $http.get('/disallowInvoiceUpload', { params: { id: $s.invoice.id }})
                      .then(closeModal($s.refresh, $s.modalConfig));
         };
+
+      $s.deleteInvoice = () => {
+        if(confirm("Подтвердите удаление и запрет на выгрузку документа! "))
+          $http.get('/deleteInvoice', { params: { id: $s.invoice.id }})
+            .then(closeModal($s.refresh, $s.modalConfig));
+      };
     };
 
     angular.module('modals', [])

@@ -35,6 +35,10 @@ public class Invoice extends BasicOperationWithCommentEntity {
     @Column(name = "is_deleted", columnDefinition="tinyint(1) default 0")
     private Boolean isDeleted;
 
+    @Column(name = "not_for_upload", columnDefinition="tinyint(1) default 0")
+    private Boolean notForUpload;
+
+
     public BigDecimal getSumOfRows() {
 
         BigDecimal sum = BigDecimal.ZERO;
@@ -104,5 +108,13 @@ public class Invoice extends BasicOperationWithCommentEntity {
 
     public void setDeleted(Boolean deleted) {
         isDeleted = deleted;
+    }
+
+    public Boolean getNotForUpload() {
+        return notForUpload;
+    }
+
+    public void setNotForUpload(Boolean notForUpload) {
+        this.notForUpload = notForUpload;
     }
 }
