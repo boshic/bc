@@ -2,6 +2,8 @@ package barcode.dao.services;
 
 
 import barcode.api.EntityHandler;
+import barcode.dao.entities.ItemSection;
+import barcode.dao.entities.Stock;
 import barcode.dao.entities.basic.BasicCounterPartyEntity;
 import barcode.dao.entities.basic.BasicEntity;
 import barcode.dao.entities.basic.BasicNamedEntity;
@@ -16,6 +18,7 @@ import barcode.utils.ComingItemFilter;
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.Predicate;
 import org.dom4j.tree.AbstractEntity;
+import org.springframework.context.ApplicationContext;
 import org.springframework.data.domain.Page;
 import org.springframework.data.querydsl.QueryDslPredicateExecutor;
 import org.springframework.data.repository.CrudRepository;
@@ -68,7 +71,7 @@ public class EntityHandlerImpl implements EntityHandler {
     static final String NOT_ENOUGH_ITEMS = FAILED + "Товара нет в наличии!";
     static final String COMPOSITE_ITEMS_CASTING_IS_NOT_ALLOWED = FAILED + "Запрещен подбор компонентных товаров : ";
     static final String DELETING_FAILED = FAILED + "Удаление не удалось!";
-    static final String CHANGING_DENIED = FAILED + "Нет прав для изменения/ввода данных!";
+    public static final String CHANGING_DENIED = FAILED + "Нет прав для изменения/ввода данных!";
 
     static final String NEW_REPORT_ADDING_FAILED = FAILED + "Не удалось добавить отчет!";
 
@@ -101,6 +104,13 @@ public class EntityHandlerImpl implements EntityHandler {
     static final String DEAFULT_SECTION_NAME = "Секция не задана ";
     static final String CHECK_ITEM_LOG_MESS = "Товар с именем ";
     static final String CHECK_SECTION_LOG_MESS = "Секция с именем ";
+
+
+    private ApplicationContext context;
+    public EntityHandlerImpl() {};
+    public EntityHandlerImpl(ApplicationContext context) {
+        this.context = context;
+    };
 
     String generateCommentSearchString(String action, String text, String userName, Date date) {
 
@@ -232,8 +242,6 @@ public class EntityHandlerImpl implements EntityHandler {
 
     }
 
-
-
     <T extends BasicNamedEntity> ResponseItem<T> setToNameIncorrectEntityFields(T item, List<String> fields) {
         String message = getIncorrectEntityFieldFoundMessage(fields);
         item.setName(message);
@@ -244,5 +252,40 @@ public class EntityHandlerImpl implements EntityHandler {
 
         return Arrays.asList(fields);
     }
+
+    private <T extends EntityHandler> T getHandlerByClass(Class<T> cls) {
+        return context.getBean(cls);
+    }
+
+    StockHandler getStockHandler() {
+        return context.getBean(StockHandler.class);
+    }
+
+    SupplierHandler getSupplierHandler() {
+        return getHandlerByClass(SupplierHandler.class);
+    }
+
+    DocumentHandler getDocumentHandler() {
+        return getHandlerByClass(DocumentHandler.class);
+    }
+
+    ItemSectionHandler getItemSectionHandler() {
+        return getHandlerByClass(ItemSectionHandler.class);
+    }
+
+    InvoiceHandler getInvoiceHandler() {
+        return getHandlerByClass(InvoiceHandler.class);
+    }
+
+    SoldItemHandler getSoldItemHandler() {
+        return getHandlerByClass(SoldItemHandler.class);
+    }
+
+    UserHandler getUserHandler() {
+        return context.getBean(UserHandler.class);
+    }
+
+
+
 
 }

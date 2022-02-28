@@ -7,10 +7,13 @@ import barcode.dao.entities.SoldItem;
 import barcode.dao.predicates.InvoicesPredicatesBuilder;
 import barcode.dao.repositories.InvoiceRepository;
 import barcode.utils.BasicFilter;
+import barcode.utils.CommonUtils;
 import barcode.utils.SoldItemFilter;
 import barcode.dto.*;
 import barcode.enums.CommentAction;
 import barcode.enums.SystemMessage;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -26,45 +29,34 @@ public class InvoiceHandler extends EntityHandlerImpl {
 
     public static QInvoice qInvoice = QInvoice.invoice;
 
-
     private static InvoicesPredicatesBuilder ipb = new InvoicesPredicatesBuilder();
-
     private InvoiceRepository invoiceRepository;
-
-    private SoldItemHandler soldItemHandler;
-
     private UserHandler userHandler;
-
+    private ApplicationContext context;
     private AbstractEntityManager abstractEntityManager;
 
 
-    public InvoiceHandler(InvoiceRepository invoiceRepository, UserHandler userHandler, SoldItemHandler soldItemHandler
-            , AbstractEntityManager abstractEntityManager) {
+    public InvoiceHandler(InvoiceRepository invoiceRepository,
+                          UserHandler userHandler,
+                          ApplicationContext context,
+                          AbstractEntityManager abstractEntityManager) {
 
-        this.soldItemHandler = soldItemHandler;
-
+        super(context);
         this.userHandler = userHandler;
-
         this.invoiceRepository = invoiceRepository;
-
         this.abstractEntityManager = abstractEntityManager;
-
     }
 
     private ResponseItem<Invoice> update(Invoice newInvoice, Invoice invoice) {
 
         newInvoice.setUser(userHandler.getCurrentUser());
-
         newInvoice.setBuyer(invoice.getBuyer());
-
         newInvoice.setStock(invoice.getStock());
-
         newInvoice.setInvoiceRows(invoice.getInvoiceRows());
-
         newInvoice.setSum(invoice.getSumOfRows());
 
-        if(newInvoice.getDeleted() == null)
-            newInvoice.setDeleted(false);
+        newInvoice.setDeleted(CommonUtils.validateBoolean(invoice.getDeleted()));
+        newInvoice.setNotForUpload(CommonUtils.validateBoolean(invoice.getNotForUpload()));
 
         if(invoice.getId() == null) {
 
@@ -106,7 +98,6 @@ public class InvoiceHandler extends EntityHandlerImpl {
     }
 
     public Invoice getItemById(Long id) {
-
         Invoice item = invoiceRepository.findOne(id);
         item.getUser().setStampForInvoices(userHandler.getCurrentUser().getStamp());
         return item;
@@ -134,6 +125,7 @@ public class InvoiceHandler extends EntityHandlerImpl {
 
             for (Invoice invoice: invoices) {
 
+                disallowUploadFor1c(invoice.getId());
                 DtoInvoice dtoInvoice = new DtoInvoice(invoice);
 
                 for(InvoiceRow invoiceRow: invoice.getInvoiceRows())
@@ -164,6 +156,14 @@ public class InvoiceHandler extends EntityHandlerImpl {
         invoiceRepository.save(invoice);
     }
 
+    public synchronized void allowUploadReport(long id) {
+
+        Invoice invoice = invoiceRepository.findOne(id);
+        invoice.setNotForUpload(false);
+        if(!invoice.getDeleted())
+            invoiceRepository.save(invoice);
+    }
+
     private ResponseByInvoices
     getResults(Page<Invoice> page, SoldItemFilter filter) {
 
@@ -180,7 +180,7 @@ public class InvoiceHandler extends EntityHandlerImpl {
 
         Sort sort = new Sort(Sort.Direction.fromStringOrNull(filter.getSortDirection()), filter.getSortField());
         PageRequest pageRequest = new PageRequest(filter.getPage() - 1, filter.getRowsOnPage(), sort);
-        Page<Invoice> page =  invoiceRepository.findAll(ipb.buildByFilter(filter, abstractEntityManager), pageRequest);
+        Page<Invoice> page =  invoiceRepository.findAll(ipb.buildByFilter(filter, abstractEntityManager.getEntityManager()), pageRequest);
 
         return getResults(page, filter);
     }
@@ -211,7 +211,7 @@ public class InvoiceHandler extends EntityHandlerImpl {
 
     public Long addInvoiceByFilter(SoldItemFilter filter) {
 
-        List<SoldItem> sellings = soldItemHandler.getSoldItemsByFilter(filter);
+        List<SoldItem> sellings = getSoldItemHandler().getSoldItemsByFilter(filter);
 
         if(sellings.size() > 0) {
 
@@ -231,8 +231,7 @@ public class InvoiceHandler extends EntityHandlerImpl {
 
     public Long addWriteOffAct(SoldItemFilter filter) {
 
-        List<SoldItem> sellings = soldItemHandler.getSoldItemsByFilter(filter);
-
+        List<SoldItem> sellings = getSoldItemHandler().getSoldItemsByFilter(filter);
         if(sellings.size() > 0) {
 
             Invoice invoice = new Invoice(new Date(),

@@ -2,7 +2,6 @@ package barcode.dto;
 
 
 import barcode.dao.entities.*;
-import barcode.dao.entities.basic.BasicOperationWithCommentEntity;
 import barcode.dao.predicates.SoldItemPredicatesBuilder;
 import barcode.dao.services.AbstractEntityManager;
 import barcode.dao.services.BuyerHandler;
@@ -10,14 +9,12 @@ import barcode.utils.CommonUtils;
 import barcode.utils.SoldItemFilter;
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.Tuple;
-import com.querydsl.core.types.Expression;
-import com.querydsl.core.types.dsl.CaseBuilder;
 import com.querydsl.jpa.impl.JPAQuery;
 
 import javax.persistence.EntityManager;
 import java.math.BigDecimal;
 import java.util.*;
-import java.util.stream.Collectors;
+
 
 public class ResponseBySoldItems extends ResponseItemExt<SoldItem>
     implements ResponseWithTotals<SoldItemFilter>{

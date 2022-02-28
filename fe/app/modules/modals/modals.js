@@ -173,7 +173,7 @@
         return commonReleaseModalController($s, paneFactory, modalFactory, 'movingModalConfig');
     };
 
-    let invoiceModalCtrlr = ($s, printFactory, $http ) => {
+    let invoiceModalCtrlr = ($s, printFactory ) => {
 
         $s.modalConfig = {hidden: true};
         let data = {};
@@ -183,15 +183,14 @@
             {type: 'invoice', data, method: 'addInvoice'}],
             $s.reports = []);
 
-        $s.disallowInvoiceUpload = () => {
-            if(confirm("Подтвердите запрет на выгрузку наружу! "))
-                $http.get('/disallowInvoiceUpload', { params: { id: $s.invoice.id }})
-                     .then(closeModal($s.refresh, $s.modalConfig));
-        };
-
       $s.deleteInvoice = () => {
         if(confirm("Подтвердите удаление и запрет на выгрузку документа! "))
-          $http.get('/deleteInvoice', { params: { id: $s.invoice.id }})
+            printFactory.deleteReport({ id: $s.invoice.id })
+              .then(closeModal($s.refresh, $s.modalConfig));
+      };
+      $s.allowInvoiceUpload = () => {
+        if(confirm("Подтвердите разрешение на загрузку документа! "))
+          printFactory.allowUploadReport({ id: $s.invoice.id })
             .then(closeModal($s.refresh, $s.modalConfig));
       };
     };

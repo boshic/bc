@@ -24,8 +24,12 @@ public class InvoiceHeader {
     @JsonProperty("stock")
     private String stockName;
 
+//    @JsonProperty("buyer")
+//    private String buyerName;
+
     @JsonProperty("buyer")
-    private String buyerName;
+    private DtoBuyer buyer;
+
 
     @JsonProperty("rows")
     private Integer numberOfRows;
@@ -44,7 +48,7 @@ public class InvoiceHeader {
     public InvoiceHeader(Invoice invoice) {
 
         this.setId(invoice.getId());
-        this.setBuyerName(invoice.getBuyer().getName());
+        this.setBuyer(new DtoBuyer(invoice.getBuyer().getId(), invoice.getBuyer().getName()));
         this.setDocDate(invoice.getDate());
         this.setUserName(invoice.getUser().getFullName());
         this.setStockName(invoice.getStock().getName());
@@ -87,12 +91,12 @@ public class InvoiceHeader {
         this.stockName = stockName;
     }
 
-    public String getBuyerName() {
-        return buyerName;
+    public DtoBuyer getBuyer() {
+        return buyer;
     }
 
-    public void setBuyerName(String buyerName) {
-        this.buyerName = buyerName;
+    public void setBuyer(DtoBuyer buyer) {
+        this.buyer = buyer;
     }
 
     public Integer getNumberOfRows() {

@@ -1,9 +1,11 @@
 package barcode.httpUtils;
 
+import barcode.dao.services.EntityHandlerImpl;
 import org.springframework.context.event.EventListener;
 import org.springframework.security.core.session.SessionRegistry;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.support.RequestHandledEvent;
+import org.springframework.web.context.support.ServletRequestHandledEvent;
 
 import java.sql.Timestamp;
 import java.util.Date;
@@ -27,5 +29,6 @@ public class RequestEventListener {
 
         System.out.println(new Timestamp(date.getTime()));
         System.out.println(e);
+//        EntityHandlerImpl.checkThisIp = ((ServletRequestHandledEvent) e).getClientAddress();
     }
 }

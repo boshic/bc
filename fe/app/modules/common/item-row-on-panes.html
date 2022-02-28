@@ -27,9 +27,10 @@
             </ul>
         </div>
         </span>
-
             <span class="item-name-on-coming-item-pane"
                   ng-click="$ctrl.editItem()($ctrl.row)">
+                <span ng-show="$ctrl.row.item.perUnitQuantity > 0"
+                        class="measure-unit-icon glyphicon glyphicon-scale"></span>
                         {{ $ctrl.row.item.name }}
             </span>
 

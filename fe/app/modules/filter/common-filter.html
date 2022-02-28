@@ -80,6 +80,15 @@
         <label style="margin-left: 1%;margin-top: 1%; color: coral;">Количество строк на странице</label>
     </li>
 
+    <li class="filter-row" style="display: inline-flex;" ng-if = "filter.invoiceNumber != null">
+        <input class="form-control" style="width: 30%;" type="number" min="0"
+               id="{{invoiceNumberInputId}}"
+               ng-model="filter.invoiceNumber"/>
+        <eraser class="filter-eraser" data="filter.invoiceNumber"
+                ng-click="selectByInputId(invoiceNumberInputId)"></eraser>
+        <label style="margin-left: 1%;margin-top: 1%; color: coral;">Загрузить данные из отчета c этим номером</label>
+    </li>
+
     <li class="filter-row"
         ng-hide="filter.stock.allowAll"
         ng-if = "filter.inventoryModeEnabled != null">
@@ -94,6 +103,7 @@
             <input class="form-control filter-row-two-elements" type="text"
                    list="commentsList"
                    placeholder="Комментарий"
+                   id="{{commentInputId}}"
                    ng-model="filter.comment"/>
 
             <datalist id="commentsList">
@@ -101,7 +111,8 @@
                     {{x}}
                 </option>
             </datalist>
-            <eraser class="filter-eraser" data="filter.comment"></eraser>
+            <eraser class="filter-eraser" data="filter.comment"
+                    ng-click="selectByInputId(commentInputId)"></eraser>
         </div>
     </li>
 
@@ -116,7 +127,7 @@
 
     <li class="filter-row with-margin-bottom"
         ng-if = "filter.document != null"
-        ng-hide="filter.inventoryModeEnabled" >
+        ng-hide="filter.inventoryModeEnabled  || filter.invoiceNumber > 0" >
         <doc-input doc="filter.document"></doc-input>
     </li>
 
@@ -124,25 +135,30 @@
         <buyer-input buyer="filter.buyer" buyers="filter.buyers"></buyer-input>
     </li>
 
-    <li class="filter-row with-margin-bottom" ng-if = "filter.supplier != null"
-        ng-hide="filter.inventoryModeEnabled">
+    <li class="filter-row with-margin-bottom"
+        ng-if = "filter.supplier != null"
+        ng-hide="filter.inventoryModeEnabled || filter.invoiceNumber > 0">
         <supplier-input supplier="filter.supplier" suppliers="filter.suppliers"></supplier-input>
     </li>
 
     <!--ng-readonly="filter.calcTotal"-->
     <li class="filter-row"
+        ng-hide="filter.invoiceNumber > 0"
         ng-if = "filter.sectionPart != null">
         <div style="display: flex;">
             <input class="form-control filter-row-two-elements" type="text"
                    placeholder="Поиск по фрагменту наименования секции"
                    ng-change="filter.section.name=filter.sectionPart"
+                   id="{{sectionPartInputId}}"
                    ng-model="filter.sectionPart"/>
-            <eraser class="filter-eraser" data="filter.sectionPart"></eraser>
+            <eraser class="filter-eraser" data="filter.sectionPart"
+                    ng-click="selectByInputId(sectionPartInputId)"></eraser>
         </div>
     </li>
 
     <li class="filter-row with-margin-bottom"
-        ng-if = "filter.section != null">
+        ng-if = "filter.section != null"
+        ng-hide="filter.invoiceNumber > 0" >
         <div style="display: flex;">
             <div class="filter-row-two-elements">
                 <item-section-input
@@ -158,17 +174,21 @@
     </li>
 
     <!--ng-readonly="filter.calcTotal"-->
-    <li class="filter-row">
+    <li class="filter-row"
+        ng-hide="filter.invoiceNumber > 0">
         <div style="display: flex;">
             <input class="form-control filter-row-two-elements" type="text"
                    placeholder="Поиск по фрагменту наименования товара"
                    ng-change="filter.item.name=filter.searchString"
+                   id="{{searchStringInputId}}"
                    ng-model="filter.searchString"/>
-            <eraser class="filter-eraser" data="filter.searchString"></eraser>
+            <eraser class="filter-eraser" data="filter.searchString"
+                    ng-click="selectByInputId(searchStringInputId)"></eraser>
         </div>
     </li>
 
-    <li class="filter-row">
+    <li class="filter-row"
+        ng-hide="filter.invoiceNumber > 0">
         <div style="display: flex;">
             <div class="filter-row-two-elements">
                 <item-input item="filter.item"></item-input>

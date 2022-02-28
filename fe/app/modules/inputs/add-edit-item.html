@@ -9,6 +9,7 @@
                         && (item.eanSynonym.length == 13 || item.eanSynonym.length == 0)
                         && item.predefinedQuantity >= 0
                         && item.price >= 0
+                        && ((item.components.length > 0 && item.price > 0) || item.components.length == 0)
                         && item.ean.length == 13 && item.section.id > 0">
             </item-add-edit-controls>
         </div>
@@ -50,8 +51,10 @@
                     <input style = "width: 33%; text-align: center;" type="number"
                            id="{{priceInputId}}"
                            class="form-control" min="0"
+                           ng-readonly="item.components.length > 0"
                            ng-model="item.price" placeholder=""/>
-                    <eraser style="margin-top: 6px;" data="item.price" ng-click="focusOnPriceInputId()"></eraser>
+                    <eraser style="margin-top: 6px;" data="item.price"
+                            ng-click="selectByInputId(priceInputId)"></eraser>
                 </div>
                 <div style="display: flex;">
                     <span style="width: 39%;"></span>
@@ -88,7 +91,8 @@
                                             'enabled-button': item.ean.length != 13}"
                                 ng-disabled="item.ean.length === 13"
                                 ng-click="getNextId()"></button>
-                    <eraser style="margin-top: 6px;" data="item.ean" ng-click="focusOnEan()"></eraser>
+                    <eraser style="margin-top: 6px;" data="item.ean"
+                            ng-click="selectByInputId(eanInputId)"></eraser>
                     <input  style="width: 45%; text-align: center;" id="{{eanInputId}}"
                             type="text" class="form-control"
                             maxlength="13" placeholder=""
@@ -114,6 +118,10 @@
                         <item-section-input section="item.section"></item-section-input>
                     </div>
                     <span style="width:30%; margin-top: 21px;" ng-hide="item.eanSynonym > 0 || !item.id > 0">
+                        <span class="warning-item-input"
+                              ng-show="item.components.length > 0 && !item.price > 0">
+                            Исправьте цену компонентов, сумма должна быть больше 0!
+                        </span>
                         <button class="item-component-modal-open-btn"
                                 ng-click="openItemComponentsModal()">
                             <span ng-show="!cannotBeComposite">Редактировать компоненты товара</span>

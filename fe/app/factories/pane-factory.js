@@ -355,6 +355,19 @@ import invoicesPaneConfig from '../modules/selling/invoices-pane-config';
                                         row.coming = {item : row.item, stock: row.stock};
                                         row.vat = row.stock.organization.vatValue;
                                     });
+                                    if (angular.isDefined($s.buyer) && isItFunction($s.getEmptyBuyer)) {
+                                      $s.buyer = ($s.filter.invoiceNumber > 0 ) ?
+                                        httpService.getItemById({id:$s.filter.invoiceNumber, url:'getInvoiceById'}).then(
+                                          resp => {
+                                            $s.buyer = resp.buyer;
+                                            if(angular.isDefined($s.comment))
+                                              $s.comment = "счет-фактура №" + resp.id + " от " + new Date(resp.date).toLocaleDateString();
+                                          },
+                                          resp => {
+                                            console.log(resp);
+                                          }
+                                        ) : $s.getEmptyBuyer();
+                                    }
                                 } else {
                                     $s.warning =resp.text;
                                 }

@@ -6,12 +6,10 @@ import barcode.dao.entities.embeddable.QInventoryRow;
 import barcode.dao.services.AbstractEntityManager;
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.Expression;
-import com.querydsl.core.types.Path;
 import com.querydsl.core.types.Predicate;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import barcode.utils.ComingItemFilter;
 import com.querydsl.core.types.dsl.CaseBuilder;
-import com.querydsl.core.types.dsl.DateTimePath;
 import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.JPQLQuery;
 import com.querydsl.jpa.impl.JPAQuery;
@@ -37,19 +35,10 @@ public class ComingItemPredicatesBuilder {
 
         predicates.add(doc.date.between(filter.getFromDate(), filter.getToDate()));
 
-//        List<ComingItem> comings =
-//                new JPAQuery<ComingItem>(
-//                abstractEntityManager.getEntityManager())
-//                    .select(comingItem)
-//                    .from(comingItem).innerJoin(comingItem.comments, qComment)
-//                        .where(qComment.action.eq(CommentAction.MOVE_COMMENT.getAction())
-//                                .and(qComment.date.between(filter.getFromDate(), filter.getToDate()))
-//                        )
-//            .fetch();
-
-//        predicates.add(comingItem.in(comings));
-
-//        predicate = predicate.and(comingItem.in(comings));
+        JPAQuery<ComingItem> commentJPAQuery = new JPAQuery<ComingItem>(abstractEntityManager.getEntityManager());
+        commentJPAQuery = commentJPAQuery
+            .select(comingItem).from(comingItem)
+            .leftJoin(comingItem.comments, qComment);
 
         if(filter.getInventoryModeEnabled() != null && !filter.getInventoryModeEnabled())
             predicate  = predicate.andAnyOf(predicates.stream().toArray(Predicate[]::new));
@@ -70,9 +59,13 @@ public class ComingItemPredicatesBuilder {
                 && filter.getStrictCommentSearch() != null
                 && filter.getComment().length() > 0)
             predicate = predicate.and(
-                    predicateBuilder.buildCommentPredicate(filter, comingItem.comments.any().searchString::containsIgnoreCase))
-//                    .or(comingItem.comments.size().eq(0))
-                    ;
+                comingItem.in(commentJPAQuery
+                    .where(predicateBuilder.buildCommentPredicate(filter, qComment.searchString::containsIgnoreCase))));
+
+        // -- Search by all comments in coming! Instead search by one comment.
+//            predicate = predicate.and(
+//                    predicateBuilder.buildCommentPredicate(filter,
+//                        comingItem.comments.any().searchString::containsIgnoreCase));
 
         if(filter.getEan() != null && filter.getEan().length() == 13)
             predicate = predicate.and(item.ean.eq(filter.getEan()));

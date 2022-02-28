@@ -26,7 +26,7 @@ public class Item extends BasicNamedEntity {
     @Column(name = "predefined_quantity", columnDefinition="Decimal(9,2) default '0.00'")
     private BigDecimal predefinedQuantity;
 
-    @Column(name = "per_unit_quantity", columnDefinition="Decimal(9,2) default '0.00'")
+    @Column(name = "per_unit_quantity", columnDefinition="Decimal(9,3) default '0.000'")
     private BigDecimal perUnitQuantity;
 
     @Column(name = "content_unit", columnDefinition="varchar(100) COLLATE utf8_general_ci default ''")

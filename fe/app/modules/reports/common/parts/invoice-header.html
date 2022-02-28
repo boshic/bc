@@ -27,7 +27,7 @@
         </span>
     </div>
 
-    <div class="invoice-row-for-printing">
+    <div class="invoice-row-for-printing" ng-show="data.buyer.invoiceDaysValid > 0">
         <span style="font-size: smaller;">Срок действия счета в количестве рабочих дней: </span>
         <span style="font-size: smaller;">{{data.buyer.invoiceDaysValid}}</span>
     </div>

@@ -1,22 +1,27 @@
 package barcode.controllers;
 
 import barcode.dao.entities.ComingItem;
+import barcode.dao.entities.User;
 import barcode.dao.services.ComingItemHandler;
+import barcode.dao.services.EntityHandlerImpl;
+import barcode.dao.services.UserHandler;
 import barcode.utils.ComingItemFilter;
 import barcode.dto.DtoItemForNewComing;
 import barcode.dto.ResponseItem;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 import java.util.Set;
 
 @Controller
 @RequestMapping(path="/")
-public class ComingItemController {
+public class ComingItemController extends BasicController{
 
     private ComingItemHandler comingItemHandler;
     public ComingItemController(ComingItemHandler comingItemHandler) {
+        super();
         this.comingItemHandler = comingItemHandler;
     }
 
@@ -24,6 +29,7 @@ public class ComingItemController {
     @RequestMapping(value = "/addComing", method = RequestMethod.POST)
     public @ResponseBody
     ResponseItem addComingItem (@RequestBody ComingItem coming) {
+
         return this.comingItemHandler.addItem(coming);
     }
 
@@ -40,6 +46,13 @@ public class ComingItemController {
     @RequestMapping(value = "/addComings", method = RequestMethod.POST)
     public @ResponseBody ResponseItem addComings(@RequestBody Set<ComingItem> comings) {
         return this.comingItemHandler.addItems(comings);
+    }
+
+    @RequestMapping(value = "/addComingsExt", method = RequestMethod.POST)
+    public @ResponseBody ResponseItem addComingsExt(@RequestBody Set<ComingItem> comings) {
+        User user = comings.stream().findFirst().orElse(new ComingItem()).getUser();
+        return (checkUserCtrlr(user)) ? this.comingItemHandler.addItems(comings)
+            : new ResponseItem(EntityHandlerImpl.CHANGING_DENIED, false);
     }
 
     @GetMapping(value = "/deleteComing")
@@ -71,13 +84,16 @@ public class ComingItemController {
     }
 
     @RequestMapping(value = "/findComingItemByFilter", method = RequestMethod.POST)
-    public @ResponseBody ResponseItem<ComingItem> findComingItemByFilter(@RequestBody ComingItemFilter filter) {
+    public @ResponseBody ResponseItem<ComingItem>
+    findComingItemByFilter(@RequestBody ComingItemFilter filter, HttpServletRequest request) {
+        System.out.println(checkIp());
         return this.comingItemHandler.findByFilter(filter);
     }
 
     @RequestMapping(value = "/getComingsForReleaseByFilter", method = RequestMethod.POST)
     public @ResponseBody ResponseItem<ComingItem>
     getComingsForReleaseByFilter(@RequestBody ComingItemFilter filter) {
+
         return this.comingItemHandler.getComingsForReleaseByFilter(filter);
     }
 

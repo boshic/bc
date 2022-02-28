@@ -54,12 +54,12 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers(
                         "/tools/getHashedPass",
                         "/tools/pdfreport",
-                        "/makeAutoMovings",
+//                        "/makeAutoMovings",
                         "/public/**",
                         "/webjars/fe/0.1.0/css/public**/**",
                         "/",
                         "/addAutoSellings",
-                        "/addComings",
+                        "/addComingsExt",
                         "/home",
                         "/getInvoicesFor1c").permitAll()
 //                .antMatchers("/addComings").hasRole("ADMIN")

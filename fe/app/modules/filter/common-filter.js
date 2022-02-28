@@ -3,7 +3,15 @@ import commonFilterTpl from './common-filter.html';
 
     let commonFilterCtrlr = ($s, paneFactory, elem) => {
 
-        // $s.allowAllStocks = true;
+      $s.invoiceNumberInputId = paneFactory.generateUuid();
+      $s.commentInputId = paneFactory.generateUuid();
+      $s.sectionPartInputId = paneFactory.generateUuid();
+      $s.searchStringInputId = paneFactory.generateUuid();
+
+      $s.selectByInputId = (inputId) => {
+        paneFactory.changeElementState(document.getElementById(inputId), ['select']);
+      };
+
 
         $s.handleKeyup = e => {
             paneFactory.keyUpHandler(e, [{keyCode: paneFactory.keyCodes.escKeyCode, doAction: $s.toggleFilter}]);
@@ -109,8 +117,8 @@ import commonFilterTpl from './common-filter.html';
                     }
                 };
 
-                let resetPage = (filter, resetFuction) => {
-                    (filter['page'] = 1) ? resetFuction() : filter['page'] = 1;
+                let resetPage = (filter, resetFunction) => {
+                    (filter['page'] = 1) ? resetFunction() : filter['page'] = 1;
                 };
 
                 let execRowsOnPageFilter = (filter, findItemsByFilter) => {
@@ -143,6 +151,7 @@ import commonFilterTpl from './common-filter.html';
 
                     filter.allowUploadingWithBlankFilter = false;
                     filter.alwaysOpenQuantityChangerModal = false;
+                    filter.invoiceNumber = 0;
                     resetBasicReleaseFilterFields(filter);
                   },
                     resetComingFilter: (filter) => {

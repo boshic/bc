@@ -191,8 +191,8 @@
                          ng-show="x.soldCompositeItem.id > 0 && x.soldCompositeItem.id != rows[$index-1].soldCompositeItem.id">
                         <span>{{"изделие № -" + x.soldCompositeItem.id}}</span>
                         <span>{{", " + x.soldCompositeItem.item.name}}</span>
-                        <span>{{", кол-во: " + x.soldCompositeItem.quantity + x.coming.item.unit}}</span>
-                        <span>{{", на сумму: " + x.soldCompositeItem.sum}}</span>
+                        <span>{{"; кол-во: " + x.soldCompositeItem.quantity}}</span>
+                        <span>{{"; на сумму: " + x.soldCompositeItem.sum}}</span>
                     </div>
                     <item-row-on-panes row="x.coming" filter="filter"></item-row-on-panes>
                 </td>

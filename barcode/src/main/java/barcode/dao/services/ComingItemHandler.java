@@ -1,8 +1,8 @@
 package barcode.dao.services;
 
 import barcode.dao.entities.embeddable.InventoryRow;
+import barcode.dao.entities.embeddable.InvoiceRow;
 import barcode.dao.entities.embeddable.QInventoryRow;
-import barcode.dao.entities.embeddable.QInvoiceRow;
 import barcode.dto.*;
 import barcode.enums.CommentAction;
 import barcode.enums.SystemMessage;
@@ -17,11 +17,10 @@ import barcode.dao.repositories.ComingItemRepository;
 import barcode.utils.BasicFilter;
 import barcode.utils.ComingItemFilter;
 import barcode.utils.DocumentFilter;
-import com.querydsl.core.types.dsl.*;
-import com.querydsl.jpa.JPAExpressions;
-import com.querydsl.jpa.JPQLQuery;
 import com.querydsl.jpa.impl.JPAQuery;
-import org.springframework.beans.support.PagedListHolder;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
@@ -29,7 +28,6 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityManager;
-import javax.persistence.Query;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.*;
@@ -45,30 +43,20 @@ public class ComingItemHandler extends EntityHandlerImpl {
     private BasicFilter filter;
 
     private ComingItemRepository comingItemRepository;
-    private DocumentHandler documentHandler;
     private ItemHandler itemHandler;
-    private ItemSectionHandler itemSectionHandler;
     private UserHandler userHandler;
-    private StockHandler stockHandler;
-    private SupplierHandler supplierHandler;
     private AbstractEntityManager abstractEntityManager;
+    private ApplicationContext context;
 
     public ComingItemHandler(ComingItemRepository comingItemRepository,
-                             DocumentHandler documentHandler,
                              ItemHandler itemHandler,
                              UserHandler userHandler,
-                             StockHandler stockHandler,
-                             SupplierHandler supplierHandler,
-                             ItemSectionHandler itemSectionHandler,
+                             ApplicationContext context,
                              AbstractEntityManager abstractEntityManager) {
-
+        super(context);
         this.comingItemRepository = comingItemRepository;
-        this.documentHandler = documentHandler;
         this.itemHandler = itemHandler;
-        this.itemSectionHandler = itemSectionHandler;
         this.userHandler = userHandler;
-        this.stockHandler = stockHandler;
-        this.supplierHandler = supplierHandler;
         this.abstractEntityManager = abstractEntityManager;
     }
 
@@ -159,8 +147,10 @@ public class ComingItemHandler extends EntityHandlerImpl {
 
     public List<ComingItem> getComingItemByIdAndStockId(Long itemId, Long stockId) {
 
-        return comingItemRepository.findAll(cipb.getAvailableItemsByStock(itemId, stockHandler.getStockById(stockId)),
-                                                                    new Sort(Sort.Direction.ASC, "doc.date"));
+        return comingItemRepository
+            .findAll(cipb.getAvailableItemsByStock(itemId,
+                getStockHandler().getStockById(stockId)),
+                new Sort(Sort.Direction.ASC, "doc.date"));
     }
 
     public synchronized ResponseItem<ComingItem> deleteItem(long id) {
@@ -265,13 +255,10 @@ public class ComingItemHandler extends EntityHandlerImpl {
             return new ResponseItem<ComingItem>(COMPOSITE_ITEMS_CASTING_IS_NOT_ALLOWED + item.getName(), false);
 
         ComingItem comingItem = new ComingItem();
-
         comingItem.setCurrentQuantity(BigDecimal.ZERO);
-
         comingItem.setPriceOut(new BigDecimal(0));
-
         comingItem.setItem(item);
-
+        comingItem.setStock(getStockHandler().getStockById(stockId));
         if (comingItem.getItem().getComponents().size() > 0)
             setQuantityAndPriceFromComingsForCompositeItem(stockId, comingItem);
         else
@@ -312,7 +299,8 @@ public class ComingItemHandler extends EntityHandlerImpl {
             ComingItem coming = new ComingItem(
                     item,
                     comings.get(0).getStock(),
-                    comings.stream().max(Comparator.comparing(ComingItem::getPriceOut)).get().getPriceOut(),
+                    item.getPrice().compareTo(BigDecimal.ZERO) > 0 ? item.getPrice()
+                    : comings.stream().max(Comparator.comparing(ComingItem::getPriceOut)).get().getPriceOut(),
                     comings.stream()
                             .map(ComingItem::getCurrentQuantity)
                             .reduce(BigDecimal.ZERO, BigDecimal::add),
@@ -326,13 +314,41 @@ public class ComingItemHandler extends EntityHandlerImpl {
 
     public ResponseItem<ComingItem> getComingsForReleaseByFilter(ComingItemFilter filter) {
 
-        List<ComingItem> comings =
-                getGroupedComingsForRelease(comingItemRepository.findAll(cipb.buildByFilterForRelease(filter)));
+        List<ComingItem> comings = (filter.getInvoiceNumber() > 0 ) ?
+            getComingsFromInvoiceByNumber(filter)
+            : getGroupedComingsForRelease(comingItemRepository.findAll(cipb.buildByFilterForRelease(filter)));
 
         if(comings.size() > 0)
             return new ResponseItem<ComingItem>("", comings, true);
         else
             return new ResponseItem<ComingItem>(NOTHING_FOUND, false);
+    }
+
+    private List<ComingItem> getComingsFromInvoiceByNumber(ComingItemFilter filter) {
+
+        List<ComingItem> comings = new ArrayList<>();
+
+        Invoice invoice = getInvoiceHandler().getItemById(filter.getInvoiceNumber());
+        if(invoice != null) {
+            ComingItem comingItem;
+            for(InvoiceRow row : invoice.getInvoiceRows())
+                {
+                    ResponseItem<ComingItem> responseItem
+                        = getComingForSellSelector( row.getItem().getEan(), filter.getStock().getId(),true);
+                    comingItem = responseItem.getEntityItem();
+                    if(comingItem != null)
+                    {
+                        comingItem.setPriceIn(row.getPrice());
+                        comingItem.setQuantity(
+                            comingItem.getCurrentQuantity().compareTo(row.getQuantity()) > 0 ?
+                                row.getQuantity() : comingItem.getCurrentQuantity()
+                        );
+                        comings.add(comingItem);
+                    }
+                }
+        }
+
+        return comings;
     }
 
     public ResponseItem addItems(Set<ComingItem> comings) {
@@ -381,7 +397,7 @@ public class ComingItemHandler extends EntityHandlerImpl {
         coming.setUser(user);
 
         //stock
-        Stock stock = stockHandler.getStockByName(coming.getStock().getName());
+        Stock stock = getStockHandler().getStockByName(coming.getStock().getName());
 
         if (stock == null)
             return new ResponseItem<>("Заведите склад со следующим наименованием! - " + coming.getStock().getName(), false);
@@ -392,20 +408,16 @@ public class ComingItemHandler extends EntityHandlerImpl {
         if(coming.getItem().getSection() == null)
             coming.getItem().setSection(new ItemSection(DEAFULT_SECTION_NAME));
 
-        ItemSection section = itemSectionHandler.getItemByName(coming.getItem().getSection().getName());
 
+        ItemSection section = getItemSectionHandler()
+            .getItemByName(coming.getItem().getSection().getName());
         ResponseItem responseBySection = new ResponseItem(CHECK_SECTION_LOG_MESS
                                                     + coming.getItem().getSection().getName() + SMTH_FOUND);
-
         if(section == null) {
-
-            section = itemSectionHandler.addItem(coming.getItem().getSection()).getEntityItem();
-
+            section = getItemSectionHandler().addItem(coming.getItem().getSection()).getEntityItem();
             responseBySection.setText(CHECK_SECTION_LOG_MESS + coming.getItem().getName() + SMTH_CREATED);
         }
-
         coming.getItem().setSection(section);
-
         responseItem.getEntityItems().add(responseBySection);
 
         //item
@@ -419,13 +431,11 @@ public class ComingItemHandler extends EntityHandlerImpl {
 
             item = responseByItem.getEntityItem();
 
-//            item = itemHandler.addItem(coming.getItem()).getEntityItem();
-//            responseByItem.setText(CHECK_ITEM_LOG_MESS + coming.getItem().getName() + SMTH_CREATED);
-        }
+       }
         else {
 
             item.setSection(section);
-
+            item.setUnit(coming.getItem().getUnit());
             item.setName(coming.getItem().getName());
         }
         coming.setItem(item);
@@ -435,11 +445,10 @@ public class ComingItemHandler extends EntityHandlerImpl {
         //supplier
         ResponseItem responseBySupplier = new ResponseItem("Поставщик " + coming.getDoc().getSupplier().getName()
                                                                                                         + SMTH_FOUND);
-        Supplier supplier = supplierHandler.getSupplierByName(coming.getDoc().getSupplier().getName());
-
+        Supplier supplier = getSupplierHandler().getSupplierByName(coming.getDoc().getSupplier().getName());
         if (supplier == null) {
 
-            supplier = supplierHandler.addSupplier(coming.getDoc().getSupplier()).getEntityItem();
+            supplier = getSupplierHandler().addSupplier(coming.getDoc().getSupplier()).getEntityItem();
 
             responseBySupplier.setText("Поставщик " + coming.getDoc().getSupplier().getName() + SMTH_CREATED);
         }
@@ -452,7 +461,7 @@ public class ComingItemHandler extends EntityHandlerImpl {
         ResponseItem responseBydoc = new ResponseItem("Документ " + coming.getDoc().getName() + " от "
                                                                             + coming.getDoc().getDate() + SMTH_FOUND);
 
-        Document document = documentHandler
+        Document document = getDocumentHandler()
                 .findOneDocumentByFilter(new DocumentFilter
                                                 (new BasicFilter(
                                                         coming.getDoc().getName(),
@@ -461,7 +470,7 @@ public class ComingItemHandler extends EntityHandlerImpl {
                                                         coming.getDoc().getSupplier()));
 
         if (document == null ) {
-            document = documentHandler.addItem(coming.getDoc()).getEntityItem();
+            document = getDocumentHandler().addItem(coming.getDoc()).getEntityItem();
             responseBydoc.setText("Документ " + coming.getDoc().getName() + " от "
                                               + coming.getDoc().getDate() + SMTH_CREATED);
         }
@@ -629,11 +638,11 @@ public class ComingItemHandler extends EntityHandlerImpl {
 
     ResponseItem<Document> getDocForInventory() {
 
-        Supplier supplier = supplierHandler.getSupplierForInventory();
+        Supplier supplier = context.getBean(SupplierHandler.class).getSupplierForInventory();
         if(supplier == null)
             return new ResponseItem<>(SUPPLIER_FOR_INVENTORY_NOT_FOUND, false);
 
-        Document document = documentHandler.findOneDocumentByFilter(
+        Document document = getDocumentHandler().findOneDocumentByFilter(
                 new DocumentFilter
                     (new BasicFilter(
                             INVENTORY_DOC_NAME,
@@ -641,8 +650,8 @@ public class ComingItemHandler extends EntityHandlerImpl {
                             new Date())
                                 , supplier));
         if(document == null) {
-            document = new Document(supplier, new Date(), INVENTORY_DOC_NAME);
-            documentHandler.saveDocument(document);
+//            document = new Document(supplier, new Date(), INVENTORY_DOC_NAME);
+            getDocumentHandler().saveDocument(new Document(supplier, new Date(), INVENTORY_DOC_NAME));
         }
 
         return new ResponseItem<>(INVENTORY_DOC_NAME, true, document);

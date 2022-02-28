@@ -24,8 +24,19 @@ import './factories/pane-factory';
     'common-http-service', 'user-service', 'pane-factory', 'buyer-factory',
     'inputs', 'modals', 'common-filter',
     'pane-elements', 'text-utils', 'print-menu',
-     'coming-item', 'new-coming-doc'
-]);
+     'coming-item', 'new-coming-doc'])
+      .run(['itemFactory', Run]);
+
+  function Run (itemFactory) {
+    itemFactory.getStocks()
+      .then(
+        resp => {
+          itemFactory.stocks = resp;
+        },
+        () => {
+        console.log('Список складов не загружен!')
+      });
+  };
 
 console.log('starting');
 

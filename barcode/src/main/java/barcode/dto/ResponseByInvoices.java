@@ -1,22 +1,19 @@
 package barcode.dto;
 
-import barcode.dao.entities.Buyer;
 import barcode.dao.entities.Invoice;
 import barcode.dao.entities.QInvoice;
 import barcode.dao.predicates.InvoicesPredicatesBuilder;
 import barcode.dao.services.AbstractEntityManager;
 import barcode.dao.services.BuyerHandler;
-import barcode.utils.ComingItemFilter;
 import barcode.utils.CommonUtils;
 import barcode.utils.SoldItemFilter;
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.Tuple;
 import com.querydsl.jpa.impl.JPAQuery;
-
 import javax.persistence.EntityManager;
 import java.math.BigDecimal;
 import java.util.List;
-import java.util.stream.Collectors;
+
 
 /**
  * Created by xlinux on 20.11.18.
@@ -25,7 +22,7 @@ public class ResponseByInvoices
     extends ResponseItemExt<Invoice>
     implements ResponseWithTotals<SoldItemFilter> {
 
-    public ResponseByInvoices() {}
+//    public ResponseByInvoices() {}
     public ResponseByInvoices(String text, List<Invoice> items, Boolean success, Integer number) {
         super(text, items, success, number);
     }
@@ -33,11 +30,11 @@ public class ResponseByInvoices
     @Override
     public void calcTotals(AbstractEntityManager abstractEntityManager, SoldItemFilter filter) {
 
-        EntityManager em = abstractEntityManager.getEntityManager();
+        final EntityManager em = abstractEntityManager.getEntityManager();
         QInvoice qInvoice = QInvoice.invoice;
         JPAQuery<BigDecimal> queryBdcml = new JPAQuery<BigDecimal>(em);
         InvoicesPredicatesBuilder pb = new InvoicesPredicatesBuilder();
-        BooleanBuilder predicate = pb.buildByFilter(filter, abstractEntityManager);
+        BooleanBuilder predicate = pb.buildByFilter(filter, em);
         queryBdcml = queryBdcml.from(qInvoice).where(predicate);
 
         BigDecimal

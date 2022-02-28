@@ -21,6 +21,9 @@ public class ItemComponent {
     @Column(columnDefinition="Decimal(19,3)")
     private BigDecimal quantity;
 
+    @Column(columnDefinition="Decimal(12,2) default '0.00'")
+    private BigDecimal price;
+
     public Item getItem() {
         return item;
     }
@@ -29,27 +32,19 @@ public class ItemComponent {
         this.item = item;
     }
 
-    //    public Item getComponent() {
-//        return component;
-//    }
-//
-//    public void setComponent(Item component) {
-//        this.component = component;
-//    }
-
-    //    public Item getItem() {
-//        return component;
-//    }
-//
-//    public void setItem(Item item) {
-//        this.component = item;
-//    }
-
     public BigDecimal getQuantity() {
         return quantity;
     }
 
     public void setQuantity(BigDecimal quantity) {
         this.quantity = quantity;
+    }
+
+    public BigDecimal getPrice() {
+        return price;
+    }
+
+    public void setPrice(BigDecimal price) {
+        this.price = price;
     }
 }

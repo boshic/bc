@@ -5,7 +5,7 @@
                     append-data="appendData()" close-modal="closeModal()" item-id="item.id"
                     is-close-hidden="requestParams.requestsQuantity > 0"
                     is-ok-active="item.name.length>0
-                    && item.invoiceDaysValid > 0
+                    && item.invoiceDaysValid >= 0
                     && item.address.length > 0">
             </item-add-edit-controls>
         <div>
@@ -46,29 +46,31 @@
             </div>
 
         </div>
-        <div style="display: flex;">
-            <span style="width: 30%;">Срок действия счетов, раб.дней:</span>
-        </div>
         <div style="display: flex; margin-bottom: 10px;" ng-show = "user.role == 'ROLE_ADMIN'">
-            <div style="width: 30%;">
+            <div style="width: 40%;">
+                <div>
+                    <span>Срок действия счетов, раб.дней:</span>
+                </div>
                 <span class="warning-item-input"
-                      ng-hide="item.invoiceDaysValid > 0">Неверное количество, допустимо 1-30!!</span>
+                      ng-hide="item.invoiceDaysValid >= 0">Неверное количество, допустимо 0-30!!</span>
                 <input  style="text-align: center;"
-                        type="number" class="form-control" min="1" max="30"
+                        type="number" class="form-control" min="0" max="30"
                         ng-readonly="requestParams.requestsQuantity"
                         ng-model="item.invoiceDaysValid"
                         placeholder=""/>
+                <div>
+                    <span>УНП:</span>
+                </div>
+                <div>
+                    <input  type="text" class="form-control" maxlength="9"
+                            ng-readonly="requestParams.requestsQuantity"
+                            ng-model="item.unp" placeholder="УНП"/>
+                </div>
             </div>
-        </div>
-        <div style="display: flex;">
-            <span style="width: 40%;">УНП:</span>
-            <span style="width: 60%;">Банк:</span>
-        </div>
-        <div style="display: flex;margin-bottom: 10px;">
-            <input  style="width: 40%;" type="text" class="form-control" maxlength="9"
-                    ng-readonly="requestParams.requestsQuantity"
-                    ng-model="item.unp" placeholder="УНП"/>
             <div style="width: 60%;">
+                <div>
+                    <span>Банк:</span>
+                </div>
                 <bank-input bank="item.bank"></bank-input>
             </div>
         </div>

@@ -24,9 +24,15 @@
                     title="Код" ng-click="$ctrl.selectItem()(x.id)">
                     {{ x.code || x.id}}
                 </td>
-                <td class="hoverable" title="{{x.ean + ' ' + x.name}}"
+                <td class="hoverable" title="{{ x.name }}"
                     ng-click="$ctrl.selectItem()(x.id)">
-                    {{ x.name }}
+                    <span style="font-weight: bold">{{ x.name }}</span>
+                    <div ng-show="x.ean.length > 0" class="item-input-items-descr">
+                        <span>{{'ШК: ' + x.ean}}</span>
+                    </div>
+                    <div ng-show="x.section.name.length > 0" class="item-input-items-descr">
+                        <span>{{'Секция: ' + x.section.name}}</span>
+                    </div>
                 </td>
                 <td style="width: 25px;">
                     <button title="Редактировать" style="float: right;"

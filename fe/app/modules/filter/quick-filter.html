@@ -103,6 +103,12 @@
                     phrase="filter.sectionPart"
                     title="фрагмент секции">
                 </word-from-phrase-eraser>
+                            <li style="text-align: center">
+                <button class="glyphicon glyphicon-arrow-right send-item-name-to-section-btn"
+                        title="передать как фрагмент товара"
+                        ng-click="filter.searchString=filter.sectionPart; filter.sectionPart =''">
+                </button>
+            </li>
             </ul>
         </div>
     </span>
@@ -117,7 +123,8 @@
             </word-from-phrase-eraser>
             <li style="text-align: center">
                 <button class="glyphicon glyphicon-arrow-right send-item-name-to-section-btn"
-                        ng-click="filter.sectionPart=filter.searchString">
+                        title="передать как фрагмент секции"
+                        ng-click="filter.sectionPart=filter.searchString; filter.searchString =''">
                 </button>
             </li>
         </ul>

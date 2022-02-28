@@ -7,6 +7,12 @@
         </pane-search-input>
     </div>
 
+    <button class='glyphicon glyphicon-arrow-down pane-searchinput-btn'
+            title="найти по фрагменту в наименовании"
+            ng-disabled = "filter.ean.length === 0"
+            ng-click="filter.searchString = filter.ean">
+    </button>
+
     <div class="pane-right-menu">
 
         <div class="coming-pane-right-menu-option">
@@ -65,14 +71,17 @@
                     </pane-date-change-control>
                 </div>
             </td>
-            <td title="Наименование" class="hoverable" ng-click="editItem(x)">
+            <td title="Наименование" class="hoverable">
                 <div style="display: flex">
-                    <div style="width: 100%">{{ x.buyer}}</div>
+                    <button ng-click="filter.buyer = x.buyer"
+                         class="glyphicon glyphicon-filter filter-by-buyer-pane-btn">
+                    </button>
+                    <div ng-click="editItem(x)" style="width: 100%">{{ x.buyer.name}}</div>
                     <div ng-show="x.notForUpload"
                             class="glyphicon glyphicon-floppy-remove not-for-upload">
                     </div>
                 </div>
-                <div>
+                <div style="cursor:alias;">
                     <span class="price-out-on-coming-pane" title="Склад">{{ '(' + x.stock+ ')'}}</span>
                 </div>
             </td>

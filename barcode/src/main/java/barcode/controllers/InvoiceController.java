@@ -83,6 +83,12 @@ public class InvoiceController {
         invoiceHandler.deleteInvoice(id);
     }
 
+    @GetMapping(value = "/allowUploadReport")
+    public @ResponseBody void allowUploadReport (@RequestParam Long id) {
+        invoiceHandler.allowUploadReport(id);
+    }
+
+
     @RequestMapping(value = "/changeInvoiceDate", method = RequestMethod.POST)
     public @ResponseBody ResponseItem changeSoldItemDate(@RequestBody InvoiceHeader invoiceHeader) {
         return this.invoiceHandler.changeDate(invoiceHeader);

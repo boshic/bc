@@ -71,14 +71,14 @@ public class SoldItemHandler extends EntityHandlerImpl {
     public ResponseItem makeAutoSelling(List<SoldItem> sellings) {
 
         ResponseItem<ResponseItem> responseItem =
-                new ResponseItem<ResponseItem>("Обработка автоматических продаж", new ArrayList<ResponseItem>(), true);
+                new ResponseItem<ResponseItem>("Обработка автоматических продаж",
+                    new ArrayList<ResponseItem>(), true);
 
         ResponseItem responseItemTemp;
 
         for (SoldItem selling : sellings) {
 
             responseItemTemp = this.checkSelling(selling);
-
             responseItem.getEntityItems().add(responseItemTemp);
 
             if (!responseItemTemp.getSuccess()) {
@@ -120,8 +120,10 @@ public class SoldItemHandler extends EntityHandlerImpl {
                     selling.getComing().getStock().getName(), false);
 
         //coming
-        ResponseItem<ComingItem> responseByComing = this.comingItemHandler.getComingForSell(
-                                                    selling.getComing().getItem().getEan(), stock.getId());
+        ResponseItem<ComingItem>
+            responseByComing = this
+            .comingItemHandler.getComingForSell(
+                selling.getComing().getItem().getEan(), stock.getId());
 
         responseItem.getEntityItems().add(responseByComing);
 
@@ -129,41 +131,29 @@ public class SoldItemHandler extends EntityHandlerImpl {
             return responseByComing;
 
         selling.setComing(responseByComing.getEntityItem());
-
         selling.getComing().setStock(stock);
 
         //buyer
         ResponseItem responseByBuyer = new ResponseItem("Покупатель " + selling.getBuyer().getName() + SMTH_FOUND);
-
         Buyer buyer = this.buyerHandler.getBuyerByName(selling.getBuyer().getName());
-
         if (buyer == null) {
-
             buyer = this.buyerHandler.addBuyer(selling.getBuyer()).getEntityItem();
-
             responseByBuyer.setText("Покупатель " + selling.getBuyer().getName() + SMTH_CREATED);
         }
-
         selling.setBuyer(buyer);
-
         responseItem.getEntityItems().add(responseByBuyer);
 
         QSoldItem qSoldItem = QSoldItem.soldItem;
-
         Predicate predicate = qSoldItem.comment.eq(selling.getComment()).and(qSoldItem.price.eq(selling.getPrice()))
                 .and(qSoldItem.quantity.eq(selling.getQuantity()))
                 .and((qSoldItem.coming.item.id.eq(selling.getComing().getItem().getId())));
-
         if (soldItemsRepository.findAll(predicate).size() > 0) {
-
             responseItem.getEntityItems().add(new ResponseItem("Соответствующая продажа " +
                     "уже содержится, добавление НЕ состоится"));
-
             return responseItem;
         }
 
         responseItem.setSuccess(true);
-
         return responseItem;
     }
 
@@ -231,6 +221,9 @@ public class SoldItemHandler extends EntityHandlerImpl {
     }
 
     private BigDecimal getComponentPrice (ItemComponent component, BigDecimal price, List<ItemComponent> components) {
+
+        if(component.getPrice().compareTo(BigDecimal.ZERO) > 0)
+            return component.getPrice();
 
         BigDecimal componentsQuantity = components.stream()
             .map(ItemComponent::getQuantity)

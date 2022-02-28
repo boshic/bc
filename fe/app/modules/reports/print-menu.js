@@ -1,12 +1,12 @@
 // define(['angular'], angular => {
 
-    let printMenuCntrlr = function ($scope, httpService, paneFactory)  {
+    let printMenuCntrlr = function ($scope, httpService, paneFactory, printFactory)  {
 
         let vm = this;
         vm.btnId = paneFactory.generateUuid();
 
-        let openReport = (group, type, id) => {
-            window.open('reports/' + group + '/' + type +'.html?id='+id+'&stamp='+vm.hasStamp, "Атчот");
+        let openReport = (report, id) => {
+            window.open('reports/' + report.group + '/' + report.type +'.html?id='+id+'&stamp='+vm.hasStamp, "Атчот");
         };
 
         vm.reportListVisible = false;
@@ -23,18 +23,20 @@
             vm.toggleReportList();
 
             if(vm.reportId) {
-                openReport(report.group, report.type, vm.reportId);
+                openReport(report, vm.reportId);
             } else {
                 httpService.addItem({data: report.data, url: report.method}).then(
                     resp => {
-                        openReport(report.group, report.type, resp);
+                        if (report.type === 'salesReceipt')
+                            printFactory.deleteReport({id: resp});
+                        openReport(report, resp);
                     },
                     resp=> {console.log(resp);}
                 );
             }
         };
     };
-    printMenuCntrlr.$inject = ['$scope', 'httpService', 'paneFactory'];
+    printMenuCntrlr.$inject = ['$scope', 'httpService', 'paneFactory', 'printFactory'];
 
     angular.module('print-menu', [])
         .component( "printMenu", {
@@ -78,8 +80,8 @@
             "</div>",
             controller: printMenuCntrlr
         })
-        .factory('printFactory',[
-            function () {
+        .factory('printFactory',['httpService',
+            function (httpService) {
                 // salesReceipt.html
                 let reports =   [
                     {id:1, allowNoId: true, name:'Счет', group: 'common',type: 'invoice'},
@@ -109,6 +111,12 @@
                             });
                         });
                         return rows;
+                    },
+                    deleteReport: (params) => {
+                      return httpService.getItemById({id: params.id, url: 'deleteInvoice', requestParams: params.requestParams});
+                    },
+                    allowUploadReport: (params) => {
+                      return httpService.getItemById({id: params.id, url: 'allowUploadReport', requestParams: params.requestParams});
                     },
                     setReportsByParams: (params, reps) => {
                         reports.forEach((report)=> {

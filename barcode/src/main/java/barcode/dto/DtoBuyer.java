@@ -12,6 +12,7 @@ public class DtoBuyer extends BasicNamedEntity {
     @JsonIgnore
     private Integer numberOfSellings;
 
+    public DtoBuyer() {}
     public DtoBuyer(Long id, String name) {
         super(id,name);
     }

@@ -154,17 +154,13 @@ let itemChangeCtrlr = ($s, itemFactory, paneFactory) => {
             itemFactory.setItemEanByTopId($s.item);
     };
 
-    $s.focusOnEan = () => {
-        paneFactory.changeElementState(document.getElementById($s.eanInputId), ['select']);
-    };
-
-    $s.focusOnPriceInputId = () => {
-        paneFactory.changeElementState(document.getElementById($s.priceInputId), ['select']);
+    $s.selectByInputId = (inputId) => {
+      paneFactory.changeElementState(document.getElementById(inputId), ['select']);
     };
 
     $s.copyEanToSynonym = () => {
         $s.item.eanSynonym = $s.item.ean;
-        $s.focusOnEan();
+        $s.selectByInputId($s.eanInputId);
     };
 
     return commonAddEditCtrlr($s, itemFactory, 'itemConfig');
@@ -268,45 +264,44 @@ let docCtrlr = ($s, httpService, itemFactory) => {
 
 };
 
-let stockCntrlr = ($s, httpService) => {
+let stockCntrlr = function ($s, $interval, itemFactory) {
 
     $s.stocks = [];
     $s.stockListVisible = false;
 
-    let reSelectStock = () => {
-        for (let stock of $s.stocks)
-            (stock.id === $s.stock.id) ? stock.selected = true : stock.selected = false;
-    };
+    let gettingStocks;
 
     $s.toggleStockList = () => {
-        $s.stockListVisible = !$s.stockListVisible;
+      $s.stockListVisible = !$s.stockListVisible;
     };
 
-    $s.$watch('stock', (nv, ov) => {
-        if ((nv) && (ov)) {
-            reSelectStock();
+    let stocksPreSelect = () => {
+      for (let stock of itemFactory.stocks) {
+        if($s.allowAll || (!$s.allowAll && !stock.allowAll))
+          $s.stocks.push(angular.extend({}, stock));
+        if (stock.selected)
+          $s.stock = stock;
+      }
+    };
+      gettingStocks = $interval(function() {
+        if (itemFactory.stocks.length > 0) {
+          stocksPreSelect();
+          $interval.cancel(gettingStocks);
         }
-    });
+        console.log("stocks filling failed!");
+      }, 1000);
 
-    $s.getStocks = () => {
-
-        httpService.getItems({params: {allowAll: $s.allowAll}, url: 'getStocks'}).then(
-            resp => {
-                $s.stocks = resp;
-                for (let stock of $s.stocks)
-                    if (stock.selected)
-                        $s.stock = stock;
-            },
-            () => { console.log('Список складов пуст');}
-        );
-    };
-
-    $s.clickOnStock = function (stock) {
-        $s.stock = stock;
+    $s.clickOnStock = function (value) {
+        $s.stock = value;
+        $s.stocks.forEach((st) => {
+          (st.id === $s.stock.id) ? st.selected = true : st.selected = false;
+        });
         $s.toggleStockList();
     };
 
 };
+
+stockCntrlr.$inject = ['$scope', '$interval', 'itemFactory'];
 
 angular.module('inputs', ['asyncFilter'])
     .directive( "bankInput", () => {
@@ -496,7 +491,7 @@ angular.module('inputs', ['asyncFilter'])
         return {
             restrict: 'E',
             transclude: true,
-            scope: { allowAll: '=allowAll', stock: '=stock'},
+            scope: { stock: '=stock', allowAll: '<?'},
             template:
             "<div class='dropdown' style='display: inherit;'>" +
             "<div class='glyphicon glyphicon-home stock-icon' ng-click='toggleStockList()'></div>" +
@@ -516,17 +511,42 @@ angular.module('inputs', ['asyncFilter'])
             "</ul>" +
             "</div>",
             // templateUrl: 'html/stock/stock-picker.html',
-            controller: ($scope, httpService) => {
-
-                return stockCntrlr($scope, httpService)
+            controller: ($scope, $interval, itemFactory) => {
+                return stockCntrlr($scope, $interval, itemFactory)
 
             },
-            link: scope => {
-                scope.getStocks();
-            }
         };
 
     })
+  // .component( "stockPicker", {
+  //
+  //     bindings: {
+  //       allowAll: '=allowAll',
+  //       uploader: '@?uploader',
+  //       stock: '=stock'
+  //     },
+  //     transclude: true,
+  //     template:
+  //       "<div class='dropdown' style='display: inherit;'>" +
+  //       "<div class='glyphicon glyphicon-home stock-icon' ng-click='$ctrl.toggleStockList()'></div>" +
+  //       "<ul class='stocks-list' ng-show='$ctrl.stockListVisible'>" +
+  //       "<li style='list-style: none;'>" +
+  //       "<table class='table'>" +
+  //       "<tbody>" +
+  //       "<tr class='hoverable unselected-stock' " +
+  //       "ng-repeat='x in $ctrl.stocks' " +
+  //       "ng-class='{\"selected-stock\": (x.selected)}'>" +
+  //       "<td class='hoverable' ng-click='$ctrl.clickOnStock(x)'>{{ x.id }}</td>" +
+  //       "<td class='hoverable' ng-click='$ctrl.clickOnStock(x)'>{{ x.name }}</td>" +
+  //       "</tr>" +
+  //       "</tbody>" +
+  //       "</table>" +
+  //       "</li>" +
+  //       "</ul>" +
+  //       "</div>",
+  //     // templateUrl: 'html/stock/stock-picker.html',
+  //     controller: stockCntrlr
+  // })
     .directive( "userPicker", () => {
         return {
             restrict: 'E',
@@ -673,14 +693,6 @@ angular.module('inputs', ['asyncFilter'])
             keypressHandler: '&?'
         },
         template:
-        // "<div class='dropdown' style='position: absolute;'" +
-        //     "ng-show='$ctrl.item.name.length>0'>" +
-        //     "<span class='glyphicon glyphicon-filter item-input-filter'></span>" +
-        //     "<ul class='dropdown-menu hoverable quick-filter-comment-delete background-white'>" +
-        //         "<word-from-phrase-eraser phrase='$ctrl.item.name' title={{$ctrl.title}}>" +
-        //         "</word-from-phrase-eraser>" +
-        //     "</ul>" +
-        // "</div>" +
         "<span class='warning-item-input' ng-hide='$ctrl.item.id>0'>" +
             "{{'Не выбран(а)(о) ' + $ctrl.title + '!'}}</span>" +
         "<textarea rows='2' title='{{$ctrl.item.ean + \"  \" + $ctrl.item.name}}' type='text' " +
@@ -731,21 +743,41 @@ angular.module('inputs', ['asyncFilter'])
         bindings: { item: '=', modalVisible: '='},
         template: itemComponentsPickerTpl,
         controller: ['paneFactory', function(paneFactory) {
+
+            let calcItemSum = (components) => {
+              let sum = 0;
+              components.forEach(component =>{
+                sum += +(component.price * component.quantity);
+              });
+              return  +sum.toFixed(2);
+            };
+
             this.addItemComponent = () => {
+
                 let component = {
                     item: this.component,
+                    price: this.componentPrice,
                     quantity: paneFactory.fixIfFractional(this.componentQuantity, this.component.unit)
                 };
+
                 let index = paneFactory.checkDuplicateRowsByItem(component.item.id, this.item.components);
                 index < 0 ? this.item.components.push(component)
                     : this.item.components[index].quantity += component.quantity;
-            }
+
+              this.item.price = calcItemSum(this.item.components);
+            };
+
+          this.deleteItemComponent = (index) => {
+            this.item.components.splice(index, 1);
+            this.item.price = calcItemSum(this.item.components);
+          };
         }]
     })
-    .factory('itemFactory',['httpService', 'paneFactory', '$filter',
-        function (httpService, paneFactory, $filter) {
+    .factory('itemFactory',['httpService', 'paneFactory', '$filter', '$interval',
+        function (httpService, paneFactory, $filter, $interval) {
 
           let incompatableReqSymbols = ['%'];
+          let stocks = [];
           let checkReqForIncompatableSymbols = (request) => {
             if(typeof request === 'string') {
               incompatableReqSymbols.forEach(symbol => {
@@ -759,9 +791,13 @@ angular.module('inputs', ['asyncFilter'])
             return request;
           };
 
-            let getNewBank = () => {return {name: ''};};
+          let getStocks = () => {
+            return httpService.getItems({params: {allowAll: true}, url: 'getStocks'});
+          };
+
+          let getNewBank = () => {return {name: ''};};
             let getNewSupplier = () => { return {name: ''};};
-            let getNewBuyer = () => {return {name: '', bank: getNewBank()};};
+            let getNewBuyer = () => {return {name: '', bank: getNewBank(), invoiceDaysValid:3};};
             let getNewDocument = () => { return {name: '', date: '', supplier : getNewSupplier()};};
             let getNewSection = () => {return {name: ''};};
             let getNewItem = () => {
@@ -771,6 +807,7 @@ angular.module('inputs', ['asyncFilter'])
                     section: getNewSection(),
                     component: {},
                     componentQuantity: 0,
+                    componentPrice: 0,
                     components:[] };
             };
 
@@ -780,6 +817,8 @@ angular.module('inputs', ['asyncFilter'])
             };
 
             return {
+                stocks,
+                getStocks,
                 getItemById,
                 generateUuid : paneFactory.generateUuid,
                 bankConfig :

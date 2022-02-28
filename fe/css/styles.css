@@ -2112,3 +2112,22 @@ span.income-sum-in-grouped-sellings {
     background: var(--gray-color);
     color: var(--white-color);
 }
+
+.allow-upload-invoice-btn {
+    background: var(--white-color);
+    color: darkgreen;
+    border-radius: 10px;
+}
+
+button.filter-by-buyer-pane-btn {
+    background: transparent;
+    margin-right: 5px;
+}
+
+.measure-unit-icon {
+    color: var(--main-color);;
+}
+
+div.item-input-items-descr {
+    text-align: right;
+}

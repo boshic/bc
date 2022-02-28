@@ -319,6 +319,7 @@ import commonReleasePaneCtrlr from '../../controllers/common-pane-release-ctrlr.
             "&& !($ctrl.filter.section.id > 0) " +
             "&& !($ctrl.filter.supplier.id > 0) " +
             "&& $ctrl.filter.searchString.length == 0 " +
+            "&& $ctrl.filter.invoiceNumber == 0 " +
             "&& !($ctrl.filter.item.id > 0)'\n" +
             "                        style=\"border: none; background: none;\"\n" +
             "                        ng-click=\"$ctrl.getItems()\">\n" +

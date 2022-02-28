@@ -79,6 +79,7 @@ public class ComingItemFilter extends  BasicFilter {
     private Stock stock;
     private Integer page;
     private Integer rowsOnPage;
+    private Long invoiceNumber;
     private Document document;
     private Supplier supplier;
     private Boolean calcTotal;
@@ -98,6 +99,7 @@ public class ComingItemFilter extends  BasicFilter {
         this.stock = comingItemFilter.getStock();
         this.page = comingItemFilter.getPage();
         this.rowsOnPage = comingItemFilter.getRowsOnPage();
+        this.invoiceNumber = comingItemFilter.getInvoiceNumber();
         this.document = comingItemFilter.getDocument();
         this.supplier = comingItemFilter.getSupplier();
         this.calcTotal = comingItemFilter.getCalcTotal();
@@ -207,6 +209,14 @@ public class ComingItemFilter extends  BasicFilter {
 
     public void setStrictCommentSearch(Boolean strictCommentSearch) {
         this.strictCommentSearch = strictCommentSearch;
+    }
+
+    public Long getInvoiceNumber() {
+        return invoiceNumber;
+    }
+
+    public void setInvoiceNumber(Long invoiceNumber) {
+        this.invoiceNumber = invoiceNumber;
     }
 
     @Override
