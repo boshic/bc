@@ -78,6 +78,21 @@ public class SoldItem extends BasicOperationWithCommentEntity {
         this.incomeSumPercent = incomeSumPercent;
     }
 
+    public SoldItem(BigDecimal sum,
+                    ComingItem coming,
+                    BigDecimal quantity,
+                    BigDecimal availQuantityByEan,
+                    BigDecimal incomeSum,
+                    BigDecimal incomeSumPercent) {
+
+        this.coming = coming;
+        this.sum = sum;
+        this.quantity = quantity;
+        this.availQuantityByEan = availQuantityByEan;
+        this.incomeSum = incomeSum;
+        this.incomeSumPercent = incomeSumPercent;
+    }
+
     public SoldItem( ComingItem coming,
                      BigDecimal price,
                      BigDecimal vat,

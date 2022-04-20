@@ -77,7 +77,7 @@
                         column-name="Номер">
                 </sortable-column>
             </td>
-            <td style="width: 8vw;" ng-show="!filter.groupByItems">
+            <td style="width: 8vw;" ng-hide="filter.groupByItems || filter.groupBySections">
                 <sortable-column
                         field="filter.sortField"
                         listening-field="'date'"
@@ -86,21 +86,22 @@
                 </sortable-column>
                 <span>, продавец</span>
             </td>
-            <td class="sold-pane-name" ng-class = "{'group-by-items-name': filter.groupByItems}">
+            <td class="sold-pane-name" ng-class = "{'group-by-items-name': filter.groupByItems || filter.groupBySections}">
                 <sortable-column field="filter.sortField"
+                                 ng-hide="filter.groupBySections"
                                  listening-field="'coming.item.name'"
                                  sort-direction="filter.sortDirection"
-                                 column-name="Наименование">
-                </sortable-column>
-                <sortable-column field="filter.sortField"
-                                 listening-field="'coming.stock.name'"
-                                 sort-direction="filter.sortDirection"
-                                 column-name="(склад,">
+                                 column-name="Наименование, ">
                 </sortable-column>
                 <sortable-column field="filter.sortField"
                                  listening-field="'coming.item.section.name'"
                                  sort-direction="filter.sortDirection"
-                                 column-name="секция)">
+                                 column-name=" секция, ">
+                </sortable-column>
+                <sortable-column field="filter.sortField"
+                                 listening-field="'coming.stock.name'"
+                                 sort-direction="filter.sortDirection"
+                                 column-name="склад">
                 </sortable-column>
 
                 <div class="page-picker-on-sold-pane unprintable">
@@ -123,28 +124,28 @@
                                  column-name="Продано">
                 </sortable-column>
             </td>
-            <td style="width: 8vw;">
+            <td style="width: 8vw;"  ng-hide="filter.groupBySections">
                 <sortable-column field="filter.sortField"
                                  listening-field="'price'"
                                  sort-direction="filter.sortDirection"
                                  column-name="Цена">
                 </sortable-column>
             </td>
-            <td style="width: 5vw;" ng-show="!filter.groupByItems">
+            <td style="width: 5vw;" ng-hide="filter.groupByItems">
                 <sortable-column field="filter.sortField"
-                                 listening-field="'sum'"
+                                 listening-field="filter.groupBySections ? 'summ' : 'sum'"
                                  sort-direction="filter.sortDirection"
                                  column-name="Сумма">
                 </sortable-column>
             </td>
-            <td style="width: 11vw;" ng-show="!filter.groupByItems">
+            <td style="width: 11vw;" ng-hide="filter.groupByItems || filter.groupBySections">
                 <sortable-column field="filter.sortField"
                                  listening-field="'buyer.name'"
                                  sort-direction="filter.sortDirection"
                                  column-name="Покупатель">
                 </sortable-column>
             </td>
-            <td style="width: 10vw;" ng-show="filter.groupByItems">
+            <td style="width: 10vw;" ng-show="filter.groupByItems || filter.groupBySections">
                 <sortable-column field="filter.sortField"
                                  listening-field="'incomeSum'"
                                  sort-direction="filter.sortDirection"
@@ -164,7 +165,7 @@
                 <td  style="width: 4vw;" class="price-data" title="Номер">
                     {{ ($index + 1) + (filter.page - 1)*filter.rowsOnPage }}
                 </td>
-                <td  style="width: 8vw;" ng-show="!filter.groupByItems">
+                <td  style="width: 8vw;" ng-hide="filter.groupByItems || filter.groupBySections">
                     <pane-date-change-control
                             user="user" row="x" change-item-date="changeItemDate"
                         requests-quantity="requestParams.requestsQuantity">
@@ -176,7 +177,12 @@
                     </span>
                     <span class="price-out-on-coming-pane" title="Продавец">{{ x.user.name }}</span>
                 </td>
+                <td  class="sold-pane-name group-by-items-name"
+                     ng-show="filter.groupBySections">
+                    <section-row-on-panes row="x.coming" filter="filter"></section-row-on-panes>
+                </td>
                 <td  class="sold-pane-name"
+                    ng-hide="filter.groupBySections"
                     ng-class = "{'receipt-bottom-underline': (x.receipt.id > 0 && x.receipt.id != rows[$index + 1].receipt.id),
                                  'group-by-items-name': filter.groupByItems,
                                  'sold-composite-item': x.soldCompositeItem.id > 0}">
@@ -202,20 +208,25 @@
                         <span style="font-weight: bold;">
                             {{x.availQuantityByEan}}
                         </span>
-                        <span style="font-size: 16px;">{{' ' + x.coming.item.unit}}</span>
+                        <span style="font-size: 16px;" ng-show="x.coming.item.unit != null">
+                            {{' ' + x.coming.item.unit}}
+                        </span>
                     </span>
                     <span class='glyphicon glyphicon-warning-sign pane-request-indicator'
                           ng-show='x.mayBeError'>
                     </span>
                 </td>
                 <td style="width: 9vw; font-size: 30px;" class="price-data">{{ x.quantity }}</td>
-                <td style="width: 8vw; font-size: 30px; font-style: italic;"  class="price-data"title="Цена">{{ x.price }}</td>
+                <td style="width: 8vw; font-size: 30px; font-style: italic;"  class="price-data"
+                    title="Цена" ng-hide="filter.groupBySections">
+                    {{ x.price }}
+                </td>
                 <td style="width: 5vw; text-decoration: underline; font-style: italic;" class="price-data"
-                    title="Сумма" ng-show="!filter.groupByItems">
+                    title="Сумма" ng-hide="filter.groupByItems">
                     {{ x.sum }}
                 </td>
                 <td style="width: 10vw; text-align: center; font-style: italic;"
-                    title="Доход" ng-show="filter.groupByItems">
+                    title="Доход" ng-show="filter.groupByItems || filter.groupBySections">
                     <span class="income-sum-in-grouped-sellings">{{ x.incomeSum.toFixed(2) }}</span>
                     <div style="text-align: right;">
                         <span style="font-size: 20px;" class="overhead-percentage">
@@ -225,7 +236,7 @@
                 </td>
                 <td style="width: 11vw;"
                     class="buyer-name"
-                    ng-show="!filter.groupByItems">
+                    ng-hide="filter.groupByItems || filter.groupBySections">
                     <!--<div class="dropdown hoverable" style=" position: absolute;">-->
                         <div class="unprintable" style="text-align: left;"
                              ng-if="(user.role == 'ROLE_ADMIN' || user.actsAllowed.indexOf('return') > -1)">

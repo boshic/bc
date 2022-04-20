@@ -53,6 +53,7 @@ public class SoldItemFilter extends ComingItemFilter {
         COMING_ITEM_NAME(SortingFields.ITEM_NAME.value),
         COMING_STOCK_NAME(SortingFields.STOCK_NAME.value),
         COMING_ITEM_SECTION_NAME(SortingFields.SECTION_NAME.value),
+        SUMM("summ"),
         INCOMESUM(SortingFields.INCOMESUM.value),
         INCOMESUMPERCENT(SortingFields.INCOMESUMPERCENT.value),
         AVAILQUANTITYBYEAN(SortingFields.AVAILQUANTITYBYEAN.value),
@@ -74,6 +75,7 @@ public class SoldItemFilter extends ComingItemFilter {
     private Buyer buyer;
     private User user;
     private Boolean groupByItems;
+    private Boolean groupBySections;
     private Boolean mayBeError;
     private Item compositeItem;
 
@@ -108,5 +110,13 @@ public class SoldItemFilter extends ComingItemFilter {
 
     public void setMayBeError(Boolean mayBeError) {
         this.mayBeError = mayBeError;
+    }
+
+    public Boolean getGroupBySections() {
+        return groupBySections;
+    }
+
+    public void setGroupBySections(Boolean groupBySections) {
+        this.groupBySections = groupBySections;
     }
 }

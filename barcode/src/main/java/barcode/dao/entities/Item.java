@@ -54,6 +54,12 @@ public class Item extends BasicNamedEntity {
     @JsonIgnore
     private List<InventoryRow> inventoryRows;
 
+    public Item() {}
+    public Item(ItemSection section) {
+        super(section.getId(), section.getName());
+    }
+
+
     public String getEan() { return ean; }
     public void setEan(String ean) { this.ean = ean; }
 

@@ -4,6 +4,7 @@ import movingPaneTpl from '../moving/moving-pane.html';
 import sellingPaneTpl from '../selling/selling-pane.html';
 import invoicesPaneTpl from '../selling/invoices-pane.html';
 import itemRowOnPanesTpl from './item-row-on-panes.html';
+import sectionRowOnPanesTpl from './section-row-on-panes.html';
 import commonPaneCtrlr from '../../controllers/common-pane-ctrlr';
 import commonReleasePaneCtrlr from '../../controllers/common-pane-release-ctrlr.js';
 
@@ -380,6 +381,14 @@ import commonReleasePaneCtrlr from '../../controllers/common-pane-release-ctrlr.
         template: itemRowOnPanesTpl,
         controller: function() {}
     })
+     .component( "sectionRowOnPanes", {
+        bindings: {
+          row: '=',
+          filter: '='
+        },
+        template: sectionRowOnPanesTpl,
+        controller: function() {}
+      })
     .component( "overheadPercentageIndicator", {
         bindings: {
             priceOut: '<',

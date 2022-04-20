@@ -18,9 +18,7 @@ import barcode.utils.BasicFilter;
 import barcode.utils.ComingItemFilter;
 import barcode.utils.DocumentFilter;
 import com.querydsl.jpa.impl.JPAQuery;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
-import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
@@ -32,8 +30,6 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.*;
 import java.util.stream.Collectors;
-
-import static com.querydsl.core.types.dsl.Expressions.stringPath;
 
 @Service
 public class ComingItemHandler extends EntityHandlerImpl {
@@ -314,7 +310,8 @@ public class ComingItemHandler extends EntityHandlerImpl {
 
     public ResponseItem<ComingItem> getComingsForReleaseByFilter(ComingItemFilter filter) {
 
-        List<ComingItem> comings = (filter.getInvoiceNumber() > 0 ) ?
+        List<ComingItem> comings =
+            (filter.getInvoiceNumber() != null && filter.getInvoiceNumber() > 0 ) ?
             getComingsFromInvoiceByNumber(filter)
             : getGroupedComingsForRelease(comingItemRepository.findAll(cipb.buildByFilterForRelease(filter)));
 
@@ -406,7 +403,7 @@ public class ComingItemHandler extends EntityHandlerImpl {
 
         //section
         if(coming.getItem().getSection() == null)
-            coming.getItem().setSection(new ItemSection(DEAFULT_SECTION_NAME));
+            coming.getItem().setSection(new ItemSection(DEFAULT_SECTION_NAME));
 
 
         ItemSection section = getItemSectionHandler()
@@ -638,7 +635,7 @@ public class ComingItemHandler extends EntityHandlerImpl {
 
     ResponseItem<Document> getDocForInventory() {
 
-        Supplier supplier = context.getBean(SupplierHandler.class).getSupplierForInventory();
+        Supplier supplier = getSupplierHandler().getSupplierForInventory();
         if(supplier == null)
             return new ResponseItem<>(SUPPLIER_FOR_INVENTORY_NOT_FOUND, false);
 

@@ -171,6 +171,7 @@ import commonFilterTpl from './common-filter.html';
                         filter.user = {};
                         filter.mayBeError = false;
                         filter.groupByItems = false;
+                        filter.groupBySections = false;
                         filter.buyer = {name:""};
                         filter.compositeItem = {name:""};
                         filter.fromDate = toDate.setHours(0,0,0,0);
@@ -207,7 +208,7 @@ import commonFilterTpl from './common-filter.html';
                                     findItemsByFilter();
                                 if((key === 'rowsOnPage'))
                                     execRowsOnPageFilter(nv, findItemsByFilter)();
-                                if(key === 'groupByItems')
+                                if(key === 'groupByItems' || key === 'groupBySections')
                                     resetPage(nv, findItemsByFilter);
                                 if(key === 'ean')
                                     changeEan(nv, calcTotalsAndRefresh);

@@ -41,10 +41,20 @@
     </li>
 
     <li class="filter-row"
+        ng-hide="filter.groupBySections"
         ng-if = "filter.groupByItems != null">
         <input class="filter-checkbox-input" type="checkbox" ng-model="filter.groupByItems"/>
         <label style="margin-left: 5%" class="filter-checkbox-name">
             Группировать по товару: {{(filter.groupByItems) ? "Да" : "Нет"}}
+        </label>
+    </li>
+
+    <li class="filter-row"
+        ng-hide="filter.groupByItems"
+        ng-if = "filter.groupBySections != null">
+        <input class="filter-checkbox-input" type="checkbox" ng-model="filter.groupBySections"/>
+        <label style="margin-left: 5%" class="filter-checkbox-name">
+            Группировать по секциям: {{(filter.groupBySections) ? "Да" : "Нет"}}
         </label>
     </li>
 
@@ -175,7 +185,7 @@
 
     <!--ng-readonly="filter.calcTotal"-->
     <li class="filter-row"
-        ng-hide="filter.invoiceNumber > 0">
+        ng-hide="filter.invoiceNumber > 0 || filter.groupBySections">
         <div style="display: flex;">
             <input class="form-control filter-row-two-elements" type="text"
                    placeholder="Поиск по фрагменту наименования товара"
@@ -188,7 +198,7 @@
     </li>
 
     <li class="filter-row"
-        ng-hide="filter.invoiceNumber > 0">
+        ng-hide="filter.invoiceNumber > 0 || filter.groupBySections">
         <div style="display: flex;">
             <div class="filter-row-two-elements">
                 <item-input item="filter.item"></item-input>
@@ -200,7 +210,9 @@
         </div>
     </li>
 
-    <li class="filter-row" ng-if="filter.compositeItem != null">
+    <li class="filter-row"
+        ng-hide="filter.groupBySections"
+        ng-if="filter.compositeItem != null">
         <div style="display: flex;">
             <div class="filter-row-two-elements">
                 <composite-item-input item="filter.compositeItem"></composite-item-input>

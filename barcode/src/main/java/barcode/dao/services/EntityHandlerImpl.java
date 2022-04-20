@@ -101,7 +101,7 @@ public class EntityHandlerImpl implements EntityHandler {
     static final String SPACE = " ";
 
 
-    static final String DEAFULT_SECTION_NAME = "Секция не задана ";
+    public static final String DEFAULT_SECTION_NAME = "Секция не задана ";
     static final String CHECK_ITEM_LOG_MESS = "Товар с именем ";
     static final String CHECK_SECTION_LOG_MESS = "Секция с именем ";
 

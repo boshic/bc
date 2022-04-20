@@ -1,0 +1,23 @@
+
+        <span>
+        <div class="dropdown item-details-filter">
+            <span class="glyphicon glyphicon-filter unprintable"></span>
+            <ul class="dropdown-menu hoverable comments-container item-title">
+                <phrase-by-word-to-filter
+                    filter="$ctrl.filter.sectionPart"
+                    comment="$ctrl.row.item.name">
+                </phrase-by-word-to-filter>
+            </ul>
+        </div>
+        </span>
+        <span class="item-name-on-coming-item-pane"
+              ng-click = '$ctrl.filter.section = $ctrl.row.item'>
+            {{ $ctrl.row.item.name }}
+        </span>
+        <div style="text-align: right; margin-right: 12px;">
+        <span class="clickable-filter-value item-additional-info-on-cp"
+              style="margin-left: 3px;"
+                ng-click = '$ctrl.filter.stock = $ctrl.row.stock'>
+                                {{$ctrl.row.stock.name + '. '}}
+                </span>
+        </div>

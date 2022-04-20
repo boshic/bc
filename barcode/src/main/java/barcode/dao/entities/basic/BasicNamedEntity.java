@@ -1,6 +1,7 @@
 package barcode.dao.entities.basic;
 
 import barcode.dao.entities.basic.BasicEntity;
+import barcode.utils.CommonUtils;
 
 import javax.persistence.Column;
 import javax.persistence.MappedSuperclass;
@@ -17,11 +18,11 @@ public class BasicNamedEntity extends BasicEntity {
     public BasicNamedEntity() {}
 
     public BasicNamedEntity(String name) {
-        this.name = name;
+        this.name = CommonUtils.validateString(name);
     }
     public BasicNamedEntity(Long id, String name) {
         super(id);
-        this.name = name;
+        this.name = CommonUtils.validateString(name);
     }
 
     public String getName() {

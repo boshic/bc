@@ -1,5 +1,7 @@
 package barcode.utils;
 
+import barcode.dao.entities.ItemSection;
+import barcode.dao.services.EntityHandlerImpl;
 import barcode.dto.DtoBuyer;
 import com.querydsl.core.Tuple;
 
@@ -31,8 +33,12 @@ public class CommonUtils {
 
     public static Boolean validateBoolean(Boolean value) {
         return (value == null) ? false : value;
-
     }
+
+    public static ItemSection validateItemSection(ItemSection value) {
+        return (value == null) ? new ItemSection(EntityHandlerImpl.DEFAULT_SECTION_NAME) : value;
+    }
+
 
     public static Date validateDate(Date date) {
         return (date == null) ? new Date() : date;
