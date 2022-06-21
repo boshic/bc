@@ -107,6 +107,13 @@ public class ComingItemFilter extends  BasicFilter {
         this.inventoryModeEnabled = comingItemFilter.getInventoryModeEnabled();
     }
 
+    public SortingField getDefSortingField() {
+        if(this.getInventoryModeEnabled())
+            return ComingItemFilter.SortingFieldsForInventoryRows.QUANTITY;
+        return ComingItemFilter.SortingFieldsForComingPane.DOC_DATE;
+    }
+
+
     public Integer getPage() {
         return page;
     }

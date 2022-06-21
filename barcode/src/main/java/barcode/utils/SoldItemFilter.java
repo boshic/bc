@@ -15,6 +15,7 @@ public class SoldItemFilter extends ComingItemFilter {
         QUANTITY("quantity"),
         PRICE("price"),
         SUM("sum"),
+        SUMM("summ"),
         BUYER_NAME("buyer.name"),
         INCOMESUM("incomeSum"),
         INCOMESUMPERCENT("incomeSumPercent");
@@ -53,7 +54,6 @@ public class SoldItemFilter extends ComingItemFilter {
         COMING_ITEM_NAME(SortingFields.ITEM_NAME.value),
         COMING_STOCK_NAME(SortingFields.STOCK_NAME.value),
         COMING_ITEM_SECTION_NAME(SortingFields.SECTION_NAME.value),
-        SUMM("summ"),
         INCOMESUM(SortingFields.INCOMESUM.value),
         INCOMESUMPERCENT(SortingFields.INCOMESUMPERCENT.value),
         AVAILQUANTITYBYEAN(SortingFields.AVAILQUANTITYBYEAN.value),
@@ -71,6 +71,27 @@ public class SoldItemFilter extends ComingItemFilter {
                 .valueOf(CommonUtils.toEnumStyle(field));
         }
     }
+    public enum SortingFieldsForGroupedBySectionSoldItems implements SortingField {
+        COMING_STOCK_NAME(SortingFields.STOCK_NAME.value),
+        COMING_ITEM_SECTION_NAME(SortingFields.SECTION_NAME.value),
+        SUMM("summ"),
+        INCOMESUM(SortingFields.INCOMESUM.value),
+        INCOMESUMPERCENT(SortingFields.INCOMESUMPERCENT.value),
+        AVAILQUANTITYBYEAN(SortingFields.AVAILQUANTITYBYEAN.value),
+        QUANTITY(SortingFields.QUANTITY.value);
+
+        private String value;
+        SortingFieldsForGroupedBySectionSoldItems(String value) {this.value = value;}
+
+        @Override
+        public String getValue() {return this.value;}
+
+        @Override
+        public void checkSortField (String field) {
+            SortingFieldsForGroupedBySectionSoldItems
+                .valueOf(CommonUtils.toEnumStyle(field));
+        }
+    }
 
     private Buyer buyer;
     private User user;
@@ -78,6 +99,14 @@ public class SoldItemFilter extends ComingItemFilter {
     private Boolean groupBySections;
     private Boolean mayBeError;
     private Item compositeItem;
+
+    public SortingField getDefSortingField() {
+        if(this.getGroupBySections())
+            return SoldItemFilter.SortingFieldsForGroupedBySectionSoldItems.SUMM;
+        if(this.getGroupByItems())
+            return SoldItemFilter.SortingFieldsForGroupedByItemSoldItems.AVAILQUANTITYBYEAN;
+        return SoldItemFilter.SortingFieldsForSoldItemPane.DATE;
+    }
 
     public Buyer getBuyer() {
         return buyer;

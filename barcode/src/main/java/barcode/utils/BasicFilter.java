@@ -49,14 +49,24 @@ public class BasicFilter {
             : new OrderSpecifier(order, stringPath(sortField));
     }
 
-    public <T extends ComingItemFilter>
-    void validateFilterSortField(T filter, SortingField sortingField) {
+    public
+    void validateFilterSortField( SortingField sortingField) {
         try {
-            sortingField.checkSortField(filter.getSortField());
+            sortingField.checkSortField(this.getSortField());
         } catch (IllegalArgumentException e) {
-            filter.setSortField(sortingField.getValue());
+            this.setSortField(sortingField.getValue());
         }
     }
+
+//    public <T extends ComingItemFilter>
+//    void validateFilterSortField(T filter, SortingField sortingField) {
+//        try {
+//            sortingField.checkSortField(filter.getSortField());
+//        } catch (IllegalArgumentException e) {
+//            filter.setSortField(sortingField.getValue());
+//        }
+//    }
+
 
     public void setSearchString(String searchString) {
         this.searchString = searchString;

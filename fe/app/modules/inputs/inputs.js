@@ -559,11 +559,13 @@ angular.module('inputs', ['asyncFilter'])
                 $scope.searchInputAutoFocusEnabled = paneFactory.searchInputAutoFocusEnabled;
                 $scope.showMenu = false;
 
+                $scope.user = paneFactory.user;
 
-                userService.getUser().then(
-                    resp => {$scope.user = resp;},
-                    resp => {$scope.user.name = resp;}
-                );
+
+                // userService.getUser().then(
+                //     resp => {$scope.user = resp;},
+                //     resp => {$scope.user.name = resp;}
+                // );
 
                 $scope.searchInputAutoFocusToggle = () => {
                     $scope.searchInputAutoFocusEnabled = !$scope.searchInputAutoFocusEnabled;

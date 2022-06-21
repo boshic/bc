@@ -30,7 +30,8 @@
     <button class='glyphicon glyphicon-arrow-down pane-searchinput-btn'
             title="найти по фрагменту в наименовании"
             ng-disabled = "filter.ean.length === 0"
-            ng-click="filter.searchString = filter.ean">
+            ng-click="filter.groupBySections ? filter.sectionPart = filter.ean :
+                                                        filter.searchString = filter.ean">
     </button>
 
     <div class="pane-right-menu">
@@ -58,7 +59,9 @@
     <div style="display: flex;">
         <div class="on-pane-totals-container">
             <div ng-show="rows.length > 0">
-                <totals totals="totals"></totals>
+                <totals totals="totals"
+                        switch-values-allowed="user.actsAllowed.indexOf('viewSoldTotalsAllowed')>-1">
+                </totals>
             </div>
         </div>
         <div class="quick-filter-container">
@@ -86,7 +89,9 @@
                 </sortable-column>
                 <span>, продавец</span>
             </td>
-            <td class="sold-pane-name" ng-class = "{'group-by-items-name': filter.groupByItems || filter.groupBySections}">
+            <td class="sold-pane-name"
+                ng-class = "{'group-by-items-name': filter.groupByItems,
+                             'group-by-sections-name': filter.groupBySections}">
                 <sortable-column field="filter.sortField"
                                  ng-hide="filter.groupBySections"
                                  listening-field="'coming.item.name'"
@@ -177,7 +182,7 @@
                     </span>
                     <span class="price-out-on-coming-pane" title="Продавец">{{ x.user.name }}</span>
                 </td>
-                <td  class="sold-pane-name group-by-items-name"
+                <td  class="sold-pane-name group-by-sections-name"
                      ng-show="filter.groupBySections">
                     <section-row-on-panes row="x.coming" filter="filter"></section-row-on-panes>
                 </td>
@@ -200,7 +205,10 @@
                         <span>{{"; кол-во: " + x.soldCompositeItem.quantity}}</span>
                         <span>{{"; на сумму: " + x.soldCompositeItem.sum}}</span>
                     </div>
-                    <item-row-on-panes row="x.coming" filter="filter"></item-row-on-panes>
+                    <item-row-on-panes row="x.coming" filter="filter"
+                                       edit-item="filterByItem">
+
+                    </item-row-on-panes>
                 </td>
                 <td style="width: 9vw;" class="price-data"
                     ng-class="{'available-by-ean': (x.availQuantityByEan <= 3) && (x.quantity > 0)}">

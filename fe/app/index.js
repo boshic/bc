@@ -24,10 +24,10 @@ import './factories/pane-factory';
     'common-http-service', 'user-service', 'pane-factory', 'buyer-factory',
     'inputs', 'modals', 'common-filter',
     'pane-elements', 'text-utils', 'print-menu',
-     'coming-item', 'new-coming-doc'])
-      .run(['itemFactory', Run]);
+     'coming-item', 'new-coming-doc', 'userInfo'])
+      .run(['itemFactory', 'userInfo', 'paneFactory', 'userService', Run]);
 
-  function Run (itemFactory) {
+  function Run (itemFactory, userInfo, paneFactory, userService) {
     itemFactory.getStocks()
       .then(
         resp => {
@@ -36,8 +36,30 @@ import './factories/pane-factory';
         () => {
         console.log('Список складов не загружен!')
       });
+    // userService.user = userInfo;
+    // paneFactory.user = userInfo;
   };
 
-console.log('starting');
 
+(function() {
+
+  // Get Angular's $http module.
+  var initInjector = angular.injector(['ng']);
+  var $http = initInjector.get('$http');
+
+  // Get user info.
+  $http.get('/getUser').then(
+    function(success) {
+
+      // Define a 'userInfo' module.
+      angular.module('userInfo', []).constant('userInfo', success.data);
+
+      angular.element(document).ready(function() {
+        angular.bootstrap(document, ['barcode']);
+      });
+    });
+})();
+
+
+console.log('starting');
 

@@ -131,7 +131,9 @@
                 </span>
             </td>
             <td style="width: 60px;" class="unprintable">
-                <pane-rows-eraser delete-rows="deleteRows()"></pane-rows-eraser>
+                <pane-rows-eraser delete-rows="deleteRowsWithTracking()"
+                                  is-hidden="(user.actsAllowed.indexOf('erasesTrackingEnabled')>-1 && !(buyer.id > 0))">
+                </pane-rows-eraser>
             </td>
         </thead>
         <tbody>
@@ -171,7 +173,11 @@
                     </div>
                 </td>
                 <td>
-                    <pane-rows-eraser delete-rows="deleteRows(x.item.id)" is-hidden="x.quantity > 0"></pane-rows-eraser>
+                    <pane-rows-eraser
+                            delete-rows="deleteRowsWithTracking(x.item.id)"
+                            is-hidden="(user.actsAllowed.indexOf('erasesTrackingEnabled')>-1 && !(buyer.id > 0))
+                            || (user.actsAllowed.indexOf('erasesTrackingEnabled') ===-1 && x.quantity > 0)">
+                    </pane-rows-eraser>
                 </td>
             </tr>
         </tbody>

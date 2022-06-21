@@ -14,7 +14,7 @@ let commonPaneCtrlr = ($s, itemFactory, filterFactory, paneFactory, printFactory
     $s.modalConfig = {};
 
     $s.totals = {};
-    $s.user = {};
+    // $s.user = {};
 
     $s.inventoryBuyer = itemFactory.buyerConfig.getEmptyItem();
 
@@ -78,7 +78,7 @@ let commonPaneCtrlr = ($s, itemFactory, filterFactory, paneFactory, printFactory
 
     $s.$on("tabSelected", (event, data) => {
         if (data.event != null && paneFactory.paneToggler(data.pane) === config.paneId) {
-            $s.user = paneFactory.user;
+            // $s.user = paneFactory.user;
             $s.focusOnEanInput();
         }
     });

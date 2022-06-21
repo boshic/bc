@@ -1,7 +1,7 @@
 
-
 let sellingPaneConfig = {
 
+  deletionTrackingUrl: 'addDeletedSelings',
   findItemUrl: 'getComingForSell',
   sellItemsUrl: 'addSellingsSet',
   checkRowsType: 'selling',
@@ -31,7 +31,10 @@ let sellingPaneConfig = {
     ];
   },
   getDeleteRowsConfig : (params) => {
-    return {getEmptyBuyer: params.getEmptyBuyer, itemId: params.itemId };
+    return {
+      getEmptyBuyer: params.getEmptyBuyer,
+      itemId: params.itemId,
+      deletionTrackingUrl: params.deletionTrackingUrl };
   },
   doAfterBlankSearch : ($s, params) => {
     if(!angular.isDefined($s.buyer.id) && !$s.rows.length)

@@ -11,6 +11,7 @@ public enum CommentAction {
     SMTH_CHANGED("добавлен(а)/изменен(а)"),
 
     SALE_COMMENT("Продажа"),
+    DELETED_SALE_COMMENT("Удаление в режиме продажи"),
     MOVE_COMMENT("Перемещение"),
     RETURN_COMMENT("Возврат"),
 

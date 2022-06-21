@@ -41,16 +41,18 @@
     </li>
 
     <li class="filter-row"
-        ng-hide="filter.groupBySections"
         ng-if = "filter.groupByItems != null">
-        <input class="filter-checkbox-input" type="checkbox" ng-model="filter.groupByItems"/>
+        <input class="filter-checkbox-input" type="checkbox"
+               ng-click="checkGroupSettings('groupByItems')"
+               ng-model="filter.groupByItems"/>
         <label style="margin-left: 5%" class="filter-checkbox-name">
             Группировать по товару: {{(filter.groupByItems) ? "Да" : "Нет"}}
         </label>
     </li>
 
     <li class="filter-row"
-        ng-hide="filter.groupByItems"
+        ng-click="checkGroupSettings('groupBySections')"
+        ng-hide="filter.searchString.length > 0 || filter.item.id > 0 || filter.compositeItem.id > 0"
         ng-if = "filter.groupBySections != null">
         <input class="filter-checkbox-input" type="checkbox" ng-model="filter.groupBySections"/>
         <label style="margin-left: 5%" class="filter-checkbox-name">

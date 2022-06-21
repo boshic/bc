@@ -2089,6 +2089,9 @@ td.buyer-name {
     min-width: 55vw!important;
 }
 
+.fixed-head-table td.group-by-sections-name {
+    min-width: 58vw!important;
+}
 
 .fixed-head-table td.inventory-mode-item-name {
     min-width: 63vw!important;

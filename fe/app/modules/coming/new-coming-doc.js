@@ -6,6 +6,7 @@ import newComingDocPaneTpl from './new-coming-doc.html';
         $s.allowAllStocks = false;
         $s.itemInputVisible = false;
         $s.searchInputId = paneFactory.generateUuid();
+        $s.user = paneFactory.user;
 
         let getEpmtyItem = itemFactory.itemConfig.getEmptyItem;
         $s.item = getEpmtyItem();
@@ -76,6 +77,7 @@ import newComingDocPaneTpl from './new-coming-doc.html';
                             index = 0;
                         } else {
                             $s.rows[index].item = item;
+                            $s.rows[index].priceOut = resp.priceOut;
                         }
                         $s.checkRows();
                         $s.openQuantityChangerModal(item.id);
@@ -160,7 +162,7 @@ import newComingDocPaneTpl from './new-coming-doc.html';
                     if (!(row.quantity > 0) || !(row.price > 0) || !(row.priceOut > 0))
                       return;
 
-                    row.user = paneFactory.user;
+                    row.user = $s.user;
                     row.stock = $s.stock;
                     row.doc = $s.doc;
                 }

@@ -28,6 +28,13 @@ public class SoldItemController {
         return this.soldItemHandler.addSellings(sellings);
     }
 
+//    addDeletedSelingsSet
+    @RequestMapping(value="/addDeletedSelings", method = RequestMethod.POST)
+    public @ResponseBody
+    ResponseItem addDeletedSelings(@RequestBody List<SoldItem> sellings) {
+        return this.soldItemHandler.addDeletedSelings(sellings);
+}
+
     @RequestMapping(value="/addOneSelling", method = RequestMethod.POST)
     public @ResponseBody
     ResponseItem addOneSelling(@RequestBody SoldItem soldItem) {

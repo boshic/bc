@@ -22,6 +22,14 @@ import commonFilterTpl from './common-filter.html';
                 paneFactory.changeElementState(document.getElementById('filter-input'), ['focus']);
             $s.filter.visible = !$s.filter.visible;
         };
+
+        $s.checkGroupSettings = (key) => {
+          for(let prop in $s.filter){
+            if((prop === 'groupByItems' || prop === 'groupBySections') && (prop !== key)) {
+              $s.filter[prop] = false;
+            }
+          }
+        }
     };
 
     angular.module('common-filter', ['text-utils'])
@@ -121,6 +129,15 @@ import commonFilterTpl from './common-filter.html';
                     (filter['page'] = 1) ? resetFunction() : filter['page'] = 1;
                 };
 
+                // let checkGroupSettings = (filter, key) => {
+                //   for(let prop in filter){
+                //     if((prop === 'groupByItems' || prop === 'groupBySections')) {
+                //       filter[prop] = false;
+                //     }
+                //   }
+                //   filter[key] = true;
+                // };
+
                 let execRowsOnPageFilter = (filter, findItemsByFilter) => {
                     let value = filter['rowsOnPage'];
                     if(!((value^0) === value))
@@ -208,8 +225,10 @@ import commonFilterTpl from './common-filter.html';
                                     findItemsByFilter();
                                 if((key === 'rowsOnPage'))
                                     execRowsOnPageFilter(nv, findItemsByFilter)();
-                                if(key === 'groupByItems' || key === 'groupBySections')
-                                    resetPage(nv, findItemsByFilter);
+                                if(key === 'groupByItems' || key === 'groupBySections') {
+                                  resetPage(nv, findItemsByFilter);
+                                  // checkGroupSettings(nv, key);
+                                }
                                 if(key === 'ean')
                                     changeEan(nv, calcTotalsAndRefresh);
                             }

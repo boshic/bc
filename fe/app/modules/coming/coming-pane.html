@@ -51,7 +51,9 @@
     <div style="display: flex;">
         <div class="on-pane-totals-container">
             <div ng-show="rows.length > 0">
-                <totals totals="totals"></totals>
+                <totals totals="totals"
+                        switch-values-allowed="user.actsAllowed.indexOf('viewComingsTotalsAllowed')>-1">
+                </totals>
             </div>
         </div>
         <div class="quick-filter-container">

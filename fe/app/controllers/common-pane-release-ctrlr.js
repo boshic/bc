@@ -53,8 +53,17 @@ let commonPaneReleaseCtrlr = ($s, itemFactory, filterFactory, paneFactory, print
     };
 
     $s.deleteRows =  (itemId) => {
-        paneFactory.deletePaneRows($s, config.getDeleteRowsConfig({getEmptyBuyer: $s.getEmptyBuyer, itemId}));
+        paneFactory.deletePaneRows(
+          $s, config.getDeleteRowsConfig({getEmptyBuyer: $s.getEmptyBuyer, itemId}));
     };
+
+    $s.deleteRowsWithTracking =  (itemId) => {
+      paneFactory.deletePaneRows($s,
+          config.getDeleteRowsConfig({
+            getEmptyBuyer: $s.getEmptyBuyer, itemId, deletionTrackingUrl: config.deletionTrackingUrl
+          }));
+    };
+
 
     $s.checkRows = () => {
         paneFactory.checkRows($s, paneFactory.user, config.checkRowsType);
@@ -63,7 +72,7 @@ let commonPaneReleaseCtrlr = ($s, itemFactory, filterFactory, paneFactory, print
     $s.$on("tabSelected", (event, data) => {
         if (data.event != null && paneFactory.paneToggler(data.pane) === config.paneId) {
             $s.blankSearch();
-            $s.user = paneFactory.user;
+            // $s.user = paneFactory.user;
         }
     });
 

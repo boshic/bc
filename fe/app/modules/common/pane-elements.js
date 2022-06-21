@@ -14,7 +14,7 @@ import commonReleasePaneCtrlr from '../../controllers/common-pane-release-ctrlr.
             return {
                 restrict: 'E',
                 transclude: true,
-                scope: { totals: '='},
+                scope: { totals: '=', switchValuesAllowed : '<?'},
                 template:
                 "<div ng-repeat='x in totals' ng-click='switchTotalsView()'>" +
                 "<div class='totals-root-div' ng-show='$index == selected'>" +
@@ -34,7 +34,9 @@ import commonReleasePaneCtrlr from '../../controllers/common-pane-release-ctrlr.
                     $scope.totals = [];
 
                     $scope.switchTotalsView = () => {
-                        if(paneFactory.user.role === 'ROLE_ADMIN') {
+                      // user.actsAllowed.indexOf('sellFromAllStocks')>-1
+                      //   if(paneFactory.user.actsAllowed.indexOf('viewTotalsAllowed')>-1) {
+                      if($scope.switchValuesAllowed) {
                             $scope.selected = ($scope.selected === $scope.totals.length - 1) ? 0: $scope.selected +=1;
                         }
                     };

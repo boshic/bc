@@ -508,7 +508,7 @@ public class ComingItemHandler extends EntityHandlerImpl {
         EntityManager em = abstractEntityManager.getEntityManager();
         BooleanBuilder predicate = cipb.buildByFilter(filter, abstractEntityManager);
 
-        filter.validateFilterSortField(filter, ComingItemFilter.SortingFieldsForInventoryRows.QUANTITY);
+        filter.validateFilterSortField(filter.getDefSortingField());
 
         OrderSpecifier orderSpecifier = filter.getOrderSpec(filter.getSortField(),
             filter.getSortDirection(), comingItem, QComingItem.class);
@@ -574,7 +574,7 @@ public class ComingItemHandler extends EntityHandlerImpl {
         if(filter.getInventoryModeEnabled())
             return getInventoryItemsNew(filter);
 
-        filter.validateFilterSortField(filter, ComingItemFilter.SortingFieldsForComingPane.DOC_DATE);
+        filter.validateFilterSortField(filter.getDefSortingField());
         Sort sort = new Sort(Sort.Direction.fromStringOrNull(filter.getSortDirection()), filter.getSortField());
         PageRequest pageRequest = new PageRequest(filter.getPage() - 1, filter.getRowsOnPage(), sort);
 

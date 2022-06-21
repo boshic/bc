@@ -1,4 +1,5 @@
 import snd from '../../media/audio/sell.mp3';
+import failSnd from '../../media/audio/fail.mp3';
 // import 'angular1-async-filter';
 import { BehaviorSubject, of, Subject, from } from 'rxjs';
 import { filter, tap, map, debounceTime, distinctUntilChanged, switchMap } from 'rxjs/operators';
@@ -10,8 +11,8 @@ import soldPaneConfig from '../modules/selling/sold-pane-config';
 import invoicesPaneConfig from '../modules/selling/invoices-pane-config';
 
     angular.module('pane-factory', [])
-        .factory('paneFactory',[ 'httpService', '$timeout', '$filter',
-            function ( httpService, $timeout, $filter) {
+        .factory('paneFactory',[ 'userInfo', 'httpService', '$timeout', '$filter',
+            function ( userInfo, httpService, $timeout, $filter) {
 
                 let barcodeLength = 13;
 
@@ -21,11 +22,12 @@ import invoicesPaneConfig from '../modules/selling/invoices-pane-config';
                 let enterKeyCode = 13;
                 let keyCodes = {escKeyCode, enterKeyCode, backSpaceKeyCode};
 
-
                 let focusTimeout = 200;
                 let successSound =  new Audio(snd);
+                let failSound =  new Audio(failSnd);
 
                 let fractionalUnits = ['кг', 'л', 'м'];
+                let user = angular.extend({}, userInfo);
 
                 let generateEan = (ean) => {
                     if (ean && (ean.valueOf() > 0)) {
@@ -121,6 +123,15 @@ import invoicesPaneConfig from '../modules/selling/invoices-pane-config';
                     return totals
                 };
 
+                let sendDataAboutDeletionsFromSellingPane = ($s, index, url, params) => {
+                  let rows = [];
+                  (index >= 0) ?
+                      rows = angular.extend([], [$s.rows[index]])
+                  : rows = angular.extend([], $s.rows);
+                    httpService.addItem({data: rows, url, params, requestParams:$s.requestParams});
+
+                };
+
                 let getSearchTermsForGetItemsByFilter = ($s, url) => {
 
                     let searchTerms = new Subject();
@@ -181,8 +192,10 @@ import invoicesPaneConfig from '../modules/selling/invoices-pane-config';
                 };
 
                 return {
+                    user,
                     fractionalUnits,
                     successSound,
+                    failSound,
                     barcodeLength,
                     searchInputAutoFocusEnabled,
                     keyCodes,
@@ -217,6 +230,10 @@ import invoicesPaneConfig from '../modules/selling/invoices-pane-config';
                         $s.rows = [];
                         $s.comment = '';
                         $s.warning = '';
+                        // console.log(this.user);
+                        // console.log(user);
+                        // $s.user = params.user;
+                        $s.user = user;
                         $s.searchInputId = generateUuid();
                         $s.quantityChangerModalData = { hidden : true, row: {} };
                         $s.requestParams = {requestsQuantity: 0};
@@ -225,6 +242,9 @@ import invoicesPaneConfig from '../modules/selling/invoices-pane-config';
                         };
                         $s.resetFilter = () => {
                             params.config.resetFilter(params.filterFactory, $s.filter);
+                        };
+                        $s.filterByItem = (row) => {
+                          $s.filter.item = row.item;
                         };
 
                     },
@@ -235,7 +255,6 @@ import invoicesPaneConfig from '../modules/selling/invoices-pane-config';
                             return generateEan(ean);
                         return ean;
                     },
-                    user : { name:"emptyUser" },
                     paneToggler: (pane) => {
                         for(let p of pane.$$childTail.panes) {
                             if(p.selected)
@@ -287,6 +306,9 @@ import invoicesPaneConfig from '../modules/selling/invoices-pane-config';
                     },
                     deletePaneRows: ($s, config) => {
                         let i = config.itemId > 0 ? checkDuplicateRowsByItem(config.itemId, $s.rows) : -1;
+                        if (angular.isDefined(config.deletionTrackingUrl)
+                          && user.actsAllowed.indexOf('erasesTrackingEnabled')>-1)
+                            sendDataAboutDeletionsFromSellingPane($s, i, config.deletionTrackingUrl);
                         if (i >= 0)
                             $s.rows.splice(i, 1);
                         else {
@@ -337,9 +359,11 @@ import invoicesPaneConfig from '../modules/selling/invoices-pane-config';
                                     }
                                 } else {
                                     $s.warning =resp.text + "-" + params.filter;
+                                    failSound.play();
                                 }
                             },
                             resp => {
+                                failSound.play();
                                 console.log("ошибка получения остатка товара!");
                                 console.log(resp);
                             });
@@ -369,7 +393,7 @@ import invoicesPaneConfig from '../modules/selling/invoices-pane-config';
                                         ) : $s.getEmptyBuyer();
                                     }
                                 } else {
-                                    $s.warning =resp.text;
+                                    $s.warning = resp.text;
                                 }
                             },
                             resp => {
@@ -387,7 +411,7 @@ import invoicesPaneConfig from '../modules/selling/invoices-pane-config';
 
                         return f === s;
                     },
-                    checkRows: ($s, user, checkingType) => {
+                    checkRows: ($s, usr, checkingType) => {
                         $s.canRelease = false;
                         $s.totals = calcTotals($s.rows, typeof $s.buyer === 'object' && $s.buyer.id > 0 ? $s.buyer.discount : undefined);
                         $s.reports = [];

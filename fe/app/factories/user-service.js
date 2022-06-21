@@ -1,7 +1,14 @@
     angular.module('user-service', [])
-        .factory('userService',[ '$http', '$q', 'paneFactory',
-            function ($http, $q, paneFactory) {
-                return {
+        .factory('userService',[ '$http', '$q',
+            function ($http, $q) {
+              let getUser_ = () => {
+                return  $http.get('/getUser');
+              };
+              let user = {};
+
+              return {
+                  user,
+                  getUser_,
                     getUser : () => {
                         let defer = $q.defer();
                         $http.get('/getUser').then(

@@ -5,6 +5,7 @@ import barcode.dao.entities.embeddable.ItemComponent;
 import barcode.utils.ComingItemFilter;
 import barcode.enums.CommentAction;
 import barcode.utils.CommonUtils;
+import barcode.utils.SortingField;
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.Tuple;
 import com.querydsl.core.types.*;
@@ -408,170 +409,6 @@ public class SoldItemHandler extends EntityHandlerImpl {
         }
     }
 
-    //bySections
-//    private ResponseBySoldItems groupBySections(
-//        SoldItemFilter filter) {
-//
-//        List<SoldItem> result = new ArrayList<>();
-//        QSoldItem soldItem = QSoldItem.soldItem;
-//        QComingItem coming = QSoldItem.soldItem.coming;
-//        QComingItem comingItem = QComingItem.comingItem;
-//        BooleanBuilder predicate = sipb.buildByFilter(filter);
-//        EntityManager em = abstractEntityManager.getEntityManager();
-//
-//        PageRequest pageRequest = new PageRequest(filter.getPage() - 1, filter.getRowsOnPage());
-//
-//        JPAQuery<BigDecimal> incomeQuery =  new JPAQuery<BigDecimal>(em).from(soldItem).where(predicate);
-//
-//        BigDecimal totalIncome = CommonUtils.validateBigDecimal(
-//            incomeQuery
-//                .select(soldItem.sum.sum().subtract(soldItem.coming.priceIn.multiply(soldItem.quantity).sum()))
-//                .fetchOne()
-//        );
-//
-//        BigDecimal excludeFromIncome = CommonUtils.validateBigDecimal(
-//            incomeQuery
-//                .select(soldItem.coming.priceIn.multiply(soldItem.quantity).sum())
-//                .where(soldItem.buyer.excludeExpensesFromIncome.isTrue()).fetchOne()
-//        );
-//
-//        filter.validateFilterSortField(filter, SoldItemFilter.SortingFieldsForGroupedByItemSoldItems.QUANTITY);
-//
-//        OrderSpecifier orderSpecifier = filter.getOrderSpec(filter.getSortField(),
-//            filter.getSortDirection(), soldItem, QSoldItem.class);
-//
-//        Predicate availQuantityByEanPredicate = filter.getStock().isAllowAll() ?
-//                coming.item.section.id.eq(comingItem.item.section.id) :
-//                coming.item.section.id.eq(comingItem.item.section.id).and(comingItem.stock.id.eq(filter.getStock().getId()));
-//
-//        JPAQuery<Tuple> query =  new JPAQuery<Tuple>(em)
-//            .select(
-//                coming.item.section,
-//                soldItem.quantity.sum()
-//                    .as(SoldItemFilter.SortingFieldsForGroupedByItemSoldItems.QUANTITY.getValue()),
-//                soldItem.sum.sum()
-//                    .as(SoldItemFilter.SortingFieldsForGroupedByItemSoldItems.SUM.getValue()),
-//                ExpressionUtils.as(
-//                    JPAExpressions
-//                        .select(comingItem.currentQuantity.sum()).from(comingItem)
-//                        .where(availQuantityByEanPredicate),
-//                    SoldItemFilter.SortingFieldsForGroupedByItemSoldItems.AVAILQUANTITYBYEAN.getValue()
-//                ),
-//                soldItem.sum.subtract(sipb.getSumForExcludeFromIncome(soldItem)).sum()
-//                    .as(SoldItemFilter.SortingFieldsForGroupedByItemSoldItems.INCOMESUM.getValue()),
-//                soldItem.sum.subtract(sipb.getSumForExcludeFromIncome(soldItem))
-//                    .sum()
-//                    .divide(totalIncome.subtract(excludeFromIncome))
-//                    .as(SoldItemFilter.SortingFieldsForGroupedByItemSoldItems.INCOMESUMPERCENT.getValue())
-//            )
-//            .from(soldItem).where(predicate)
-//            .groupBy(coming.item.section)
-//            .orderBy(orderSpecifier)
-//            .offset(pageRequest.getOffset())
-//            .limit(pageRequest.getPageSize());
-//
-//        List<Tuple> groupedSoldItems = query.fetch();
-//
-//        groupedSoldItems.forEach(item -> {
-//            result.add(
-//                new SoldItem(
-//                    new ComingItem(new Item(item.get(coming.item.section)), filter.getStock()),
-//                    CommonUtils.validateBigDecimal(item.get(2, BigDecimal.class)),
-//                    CommonUtils.validateBigDecimal(item.get(1, BigDecimal.class)),
-//                    CommonUtils.validateBigDecimal(item.get(3, BigDecimal.class)),
-//                    CommonUtils.validateBigDecimal(item.get(4, BigDecimal.class)),
-//                    CommonUtils.validateBigDecimal(item.get(5, BigDecimal.class))
-//                )
-//            );
-//        });
-//
-//        return getResults(new PageImpl<SoldItem>(result, pageRequest, query.fetchCount()), filter);
-//    }
-
-//    private ResponseBySoldItems groupByItemsNew(
-//        SoldItemFilter filter) {
-//
-//        List<SoldItem> result = new ArrayList<>();
-//        QSoldItem soldItem = QSoldItem.soldItem;
-//        QComingItem coming = QSoldItem.soldItem.coming;
-//        QComingItem comingItem = QComingItem.comingItem;
-//        BooleanBuilder predicate = sipb.buildByFilter(filter);
-//        EntityManager em = abstractEntityManager.getEntityManager();
-//
-//        PageRequest pageRequest = new PageRequest(filter.getPage() - 1, filter.getRowsOnPage());
-//        JPAQuery<BigDecimal> incomeQuery =  new JPAQuery<BigDecimal>(em).from(soldItem).where(predicate);
-//        BigDecimal totalIncome = CommonUtils.validateBigDecimal(
-//            incomeQuery
-//                .select(soldItem.sum.sum().subtract(soldItem.coming.priceIn.multiply(soldItem.quantity).sum()))
-//                .fetchOne()
-//        );
-//
-//        BigDecimal excludeFromIncome = CommonUtils.validateBigDecimal(
-//            incomeQuery
-//                .select(soldItem.coming.priceIn.multiply(soldItem.quantity).sum())
-//                .where(soldItem.buyer.excludeExpensesFromIncome.isTrue()).fetchOne()
-//        );
-//
-//        filter.validateFilterSortField(filter, SoldItemFilter.SortingFieldsForGroupedByItemSoldItems.QUANTITY);
-//
-//        OrderSpecifier orderSpecifier = filter.getOrderSpec(filter.getSortField(),
-//            filter.getSortDirection(), soldItem, QSoldItem.class);
-//
-//        Predicate getAvailQuantityByEanPredicate = filter.getStock().isAllowAll() ?
-//            coming.item.id.eq(comingItem.item.id) :
-//            coming.item.id.eq(comingItem.item.id).and(comingItem.stock.id.eq(filter.getStock().getId()));
-//
-//        //if filter.getGroupByItems()
-//        // query = ....
-//        // result = ....
-//        // else filter.getGroupBySections
-//        // query = ....
-//        // result = ....
-//        JPAQuery<Tuple> query;
-//        query =  new JPAQuery<Tuple>(em)
-//            .select(
-//                coming.item,
-//                soldItem.quantity.sum()
-//                    .as(SoldItemFilter.SortingFieldsForGroupedByItemSoldItems.QUANTITY.getValue()),
-//                soldItem.price.max()
-//                    .as(SoldItemFilter.SortingFieldsForGroupedByItemSoldItems.PRICE.getValue()),
-//                ExpressionUtils.as(
-//                    JPAExpressions
-//                        .select(comingItem.currentQuantity.sum()).from(comingItem)
-//                        .where(getAvailQuantityByEanPredicate),
-//                    SoldItemFilter.SortingFieldsForGroupedByItemSoldItems.AVAILQUANTITYBYEAN.getValue()
-//                ),
-//                soldItem.sum.subtract(sipb.getSumForExcludeFromIncome(soldItem)).sum()
-//                    .as(SoldItemFilter.SortingFieldsForGroupedByItemSoldItems.INCOMESUM.getValue()),
-//                soldItem.sum.subtract(sipb.getSumForExcludeFromIncome(soldItem))
-//                    .sum()
-//                    .divide(totalIncome.subtract(excludeFromIncome))
-//                    .as(SoldItemFilter.SortingFieldsForGroupedByItemSoldItems.INCOMESUMPERCENT.getValue())
-//            )
-//            .from(soldItem).where(predicate)
-//            .groupBy(coming.item)
-//            .orderBy(orderSpecifier)
-//            .offset(pageRequest.getOffset())
-//            .limit(pageRequest.getPageSize());
-//
-//        List<Tuple> groupedSoldItems = query.fetch();
-//
-//        groupedSoldItems.forEach(item -> {
-//            result.add(
-//                new SoldItem(
-//                    new ComingItem(item.get(coming.item), filter.getStock()),
-//                    CommonUtils.validateBigDecimal(item.get(2, BigDecimal.class)),
-//                    CommonUtils.validateBigDecimal(item.get(1, BigDecimal.class)),
-//                    CommonUtils.validateBigDecimal(item.get(3, BigDecimal.class)),
-//                    CommonUtils.validateBigDecimal(item.get(4, BigDecimal.class)),
-//                    CommonUtils.validateBigDecimal(item.get(5, BigDecimal.class))
-//                )
-//            );
-//        });
-//
-//        return getResults(new PageImpl<SoldItem>(result, pageRequest, query.fetchCount()), filter);
-//    }
-
 
     private Predicate buildAvailQuantByEanPredicate( QComingItem coming,
                                                      QComingItem comingItem,
@@ -645,21 +482,21 @@ public class SoldItemHandler extends EntityHandlerImpl {
                 .select(
                     coming.item.section,
                     soldItem.quantity.sum()
-                        .as(SoldItemFilter.SortingFieldsForGroupedByItemSoldItems.QUANTITY.getValue()),
+                        .as(SoldItemFilter.SortingFieldsForGroupedBySectionSoldItems.QUANTITY.getValue()),
                     soldItem.sum.sum()
-                        .as(SoldItemFilter.SortingFieldsForGroupedByItemSoldItems.SUMM.getValue()),
+                        .as(SoldItemFilter.SortingFieldsForGroupedBySectionSoldItems.SUMM.getValue()),
                     ExpressionUtils.as(
                         JPAExpressions
                             .select(comingItem.currentQuantity.sum()).from(comingItem)
                             .where(availQuantityByEanPredicate),
-                        SoldItemFilter.SortingFieldsForGroupedByItemSoldItems.AVAILQUANTITYBYEAN.getValue()
+                        SoldItemFilter.SortingFieldsForGroupedBySectionSoldItems.AVAILQUANTITYBYEAN.getValue()
                     ),
                     soldItem.sum.subtract(sipb.getSumForExcludeFromIncome(soldItem)).sum()
-                        .as(SoldItemFilter.SortingFieldsForGroupedByItemSoldItems.INCOMESUM.getValue()),
+                        .as(SoldItemFilter.SortingFieldsForGroupedBySectionSoldItems.INCOMESUM.getValue()),
                     soldItem.sum.subtract(sipb.getSumForExcludeFromIncome(soldItem))
                         .sum()
                         .divide(totalIncome.subtract(excludeFromIncome))
-                        .as(SoldItemFilter.SortingFieldsForGroupedByItemSoldItems.INCOMESUMPERCENT.getValue())
+                        .as(SoldItemFilter.SortingFieldsForGroupedBySectionSoldItems.INCOMESUMPERCENT.getValue())
                 )
                 .from(soldItem).where(predicate)
                 .groupBy(coming.item.section)
@@ -713,7 +550,7 @@ public class SoldItemHandler extends EntityHandlerImpl {
 
         PageRequest pageRequest = new PageRequest(filter.getPage() - 1, filter.getRowsOnPage());
 
-        filter.validateFilterSortField(filter, SoldItemFilter.SortingFieldsForGroupedByItemSoldItems.QUANTITY);
+        filter.validateFilterSortField(filter.getDefSortingField());
 
         JPAQuery<Tuple> query =
             getQueryForGroupedItems(filter, pageRequest, coming, comingItem, soldItem);
@@ -742,7 +579,8 @@ public class SoldItemHandler extends EntityHandlerImpl {
         if(filter.getGroupByItems() || filter.getGroupBySections())
             return groupByItemsNew(filter);
 
-        filter.validateFilterSortField(filter, SoldItemFilter.SortingFieldsForSoldItemPane.DATE);
+
+        filter.validateFilterSortField(filter.getDefSortingField());
         Sort sort = new Sort(Sort.Direction.fromStringOrNull(filter.getSortDirection()), filter.getSortField());
         PageRequest pageRequest = new PageRequest(filter.getPage() - 1, filter.getRowsOnPage(), sort);
         Page<SoldItem> page =  soldItemsRepository.findAll(sipb.buildByFilter(filter), pageRequest);
@@ -750,12 +588,73 @@ public class SoldItemHandler extends EntityHandlerImpl {
         return getResults(page, filter);
     }
 
+//    private SortingField getDefSortingField(SoldItemFilter filter) {
+//        if(filter.getGroupBySections())
+//            return SoldItemFilter.SortingFieldsForGroupedBySectionSoldItems.SUMM;
+//        if(filter.getGroupByItems())
+//            return SoldItemFilter.SortingFieldsForGroupedByItemSoldItems.AVAILQUANTITYBYEAN;
+//        return SoldItemFilter.SortingFieldsForSoldItemPane.DATE;
+//    }
+
     public ResponseItem<SoldItem> changeDate(SoldItem soldItem) {
 
         this.changeDate(soldItem.getId(), soldItem.getDate(),
                 soldItemsRepository, userHandler.getCurrentUser().getFullName());
 
         return null;
+    }
+
+    public ResponseItem<SoldItem> addDeletedSelings (List<SoldItem> soldItems) {
+
+        ResponseItem<SoldItem> checkedItems = checkSoldItemsForComposites(soldItems);
+        if (!checkedItems.getSuccess())
+            return checkedItems;
+
+        for (SoldItem soldItem : checkedItems.getEntityItems()) {
+            List<ComingItem> comings = this.comingItemHandler.getComingItemByIdAndStockId(
+                soldItem.getComing().getItem().getId(),
+                soldItem.getComing().getStock().getId());
+
+            if (comings.size() == 0)
+                return null;
+
+            BigDecimal availQuantityByEan = comingItemHandler.getAvailQuantityByEan(comings);
+
+            SoldItem newSoldItem = new SoldItem();
+            newSoldItem.setComments(new ArrayList<>());
+
+            if(soldItem.getComment() != null)
+                newSoldItem.setComment(
+                    this.buildComment(newSoldItem.getComments(),
+                        soldItem.getQuantity()+ "ед. " + soldItem.getComment(),
+                        userHandler.checkUser(soldItem.getUser(), null ).getFullName(),
+                        CommentAction.DELETED_SALE_COMMENT.getAction(), newSoldItem.getQuantity())
+                );
+
+            newSoldItem.setAvailQuantityByEan(availQuantityByEan);
+            newSoldItem.setQuantityBeforeSelling(BigDecimal.ZERO);
+            newSoldItem.setBuyer(soldItem.getBuyer());
+            newSoldItem.setUser(soldItem.getUser());
+            newSoldItem.setDate(new Date());
+            newSoldItem.setMayBeError(false);
+            newSoldItem.setQuantity(BigDecimal.ZERO);
+            newSoldItem.setComing(comings.get(0));
+
+            newSoldItem.setPrice(getPriceOfSoldItem(soldItem, comings.get(0).getPriceIn()));
+            newSoldItem.setSum(
+                newSoldItem.getPrice()
+                    .multiply(newSoldItem.getQuantity())
+                    .setScale(2, BigDecimal.ROUND_HALF_UP)
+            );
+            newSoldItem.setVat(soldItem.getVat());
+
+            soldItemsRepository.save(newSoldItem);
+
+
+
+        }
+
+        return  null;
     }
 
     public synchronized ResponseItem<SoldItem> returnSoldItem(SoldItem soldItem) {
