@@ -10,7 +10,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "angular": "1.6.9",
+    "angular": "1.8.3",
     "angular1-async-filter": "^1.1.0",
     "rxjs": "^6.5.3"
   },
