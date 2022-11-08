@@ -22,6 +22,14 @@
                     Использовать для инвентаризации: {{(item.useForInventory) ? "Да" : "Нет" }}
                 </label>
             </div>
+            <div style='display: flex;'>
+                <input style='zoom: 1.5; position: absolute; margin: auto;'
+                       type='checkbox'
+                       ng-model='item.usesVat'/>
+                <label style='margin-left: 20px; color: coral;'>
+                    Работает с НДС: {{(item.usesVat) ? "Да" : "Нет" }}
+                </label>
+            </div>
 
         </div>
     </div>

@@ -644,11 +644,10 @@ public class ComingItemHandler extends EntityHandlerImpl {
                     (new BasicFilter(
                             INVENTORY_DOC_NAME,
                             new Date(),
-                            new Date())
-                                , supplier));
+                            new Date()) , supplier));
         if(document == null) {
-//            document = new Document(supplier, new Date(), INVENTORY_DOC_NAME);
-            getDocumentHandler().saveDocument(new Document(supplier, new Date(), INVENTORY_DOC_NAME));
+            document = getDocumentHandler()
+                .saveAndGetDocument(new Document(supplier, new Date(), INVENTORY_DOC_NAME));
         }
 
         return new ResponseItem<>(INVENTORY_DOC_NAME, true, document);

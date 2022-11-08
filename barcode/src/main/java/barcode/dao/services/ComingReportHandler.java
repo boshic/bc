@@ -1,14 +1,16 @@
 package barcode.dao.services;
 
+import barcode.dao.entities.*;
+import barcode.dao.entities.embeddable.QComingReportRow;
 import barcode.enums.SystemMessage;
+import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.Predicate;
-import barcode.dao.entities.ComingItem;
-import barcode.dao.entities.ComingReport;
 import barcode.dao.entities.embeddable.ComingReportRow;
 import barcode.dao.repositories.ComingItemRepository;
 import barcode.dao.repositories.ComingReportRepository;
 import barcode.utils.ComingItemFilter;
 import barcode.dto.ResponseItem;
+import com.querydsl.jpa.impl.JPAQuery;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -53,15 +55,10 @@ public class ComingReportHandler extends  EntityHandlerImpl {
     private ResponseItem<ComingReport> update(ComingReport newComingReport, ComingReport srcComingReport) {
 
         newComingReport.setUser(userHandler.getCurrentUser());
-
         newComingReport.setDate(new Date());
-
         newComingReport.setStock(srcComingReport.getStock());
-
         newComingReport.setComingReportRows(srcComingReport.getComingReportRows());
-
         comingReportRepository.save(newComingReport);
-
         return new ResponseItem<ComingReport>(SystemMessage.NEW_REPORT_ADDED.getMessage(), true, newComingReport);
     }
 
@@ -73,27 +70,25 @@ public class ComingReportHandler extends  EntityHandlerImpl {
     public ResponseItem<ComingReport> addItemByFilter(ComingItemFilter filter) {
 
         itemHandler.checkEanInFilter(filter);
-
         Predicate predicate = ComingItemHandler.cipb.buildByFilter(filter, abstractEntityManager);
-
         List<ComingItem> comings = comingItemRepository.findAll(predicate);
 
         if(comings.size() > 0) {
-
             ComingReport comingReport = new ComingReport(filter.getStock(), new ArrayList<ComingReportRow>());
-            for(ComingItem comingItem : comings)
+            for(ComingItem comingItem : comings) {
+                BigDecimal price = comingItem.getItem().getPrice().compareTo(BigDecimal.ZERO) > 0 ?
+                    comingItem.getItem().getPrice() : comingItem.getPriceOut();
                 comingReport.getComingReportRows()
                         .add(new ComingReportRow(
                                 comingItem.getItem(),
                                 comingItem.getDoc(),
                                 comingItem.getCurrentQuantity(),
-                                comingItem.getItem().getPrice().compareTo(BigDecimal.ZERO) > 0 ?
-                                    comingItem.getItem().getPrice() : comingItem.getPriceOut()));
+                                price)
+                        );
 
-            return addItem(comingReport);
-
+            }
+                return addItem(comingReport);
         }
-
         return new ResponseItem<ComingReport>(NEW_REPORT_ADDING_FAILED, false, new ComingReport());
     }
 

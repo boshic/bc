@@ -10,9 +10,19 @@
             <div>
                 <div>
                     <common-item-text-input
-                            text="item.name" description="наименование"
+                            text="item.name" description="Наименование"
                             requests-quantity = "requestParams.requestsQuantity">
                     </common-item-text-input>
+                </div>
+                <div style="display: flex;">
+                    <span style="width: 50%;">Процент ограничения наценки по секции:</span>
+                </div>
+                <div style="display: flex;">
+                    <input style = "width: 33%; text-align: center;" type="number"
+                           id="{{percOverheadLimitId}}"
+                           class="form-control" min="0"
+                           ng-model="item.percOverheadLimit" placeholder=""/>
+                    <eraser style="margin-top: 6px;" data="item.percOverheadLimit" ng-click="selectByInputId(percOverheadLimitId)"></eraser>
                 </div>
             </div>
         </div>

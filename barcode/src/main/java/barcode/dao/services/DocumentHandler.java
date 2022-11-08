@@ -105,4 +105,9 @@ public class DocumentHandler extends EntityHandlerImpl {
         documentRepository.save(document);
     }
 
+    Document saveAndGetDocument(Document document) {
+        saveDocument(document);
+        return document;
+    }
+
 }

@@ -402,6 +402,24 @@ import commonReleasePaneCtrlr from '../../controllers/common-pane-release-ctrlr.
                 "{{ ((100 * $ctrl.priceOut / $ctrl.price)-100).toFixed(1) + '%'}}</span>",
         controller: function() {}
     })
+      .component( "sectionOverheadPercentageIndicator", {
+        bindings: {
+          percentage: '<'
+        },
+        template:
+          "<span class='overhead-percentage'" +
+          "ng-show='$ctrl.percentage > 0'>" +
+          "{{ $ctrl.percentage + '%'}}</span>",
+        controller: function() {}
+      })
+      .component( "usingVatIndicator", {
+        bindings: {
+          vat: '<'
+        },
+        template:
+          "<span class='overhead-percentage' ng-show='!$ctrl.vat'>{{'БезНДС!'}}</span>",
+        controller: function() {}
+      })
         .component( "paneDateChangeControl", {
         bindings: {
             user: '<',

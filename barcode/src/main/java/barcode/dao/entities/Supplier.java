@@ -22,6 +22,18 @@ public class Supplier extends BasicCounterPartyEntity {
     public Set<Document> getDocuments() {
         return this.documents;
     }
+
+    @Column(name = "uses_vat", columnDefinition="tinyint(1) default 1")
+    private Boolean usesVat;
+
+    public Boolean getUsesVat() {
+        return usesVat;
+    }
+
+    public void setUsesVat(Boolean usesVat) {
+        this.usesVat = usesVat;
+    }
+
     public void setDocuments(Set<Document> documents) {
         this.documents = documents;
     }

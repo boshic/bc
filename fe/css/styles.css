@@ -935,19 +935,19 @@ td.sold {
 }
 
 .ok-btn-on-coming-filter {
-    width: 83%;
+    width: 62%;
     color: var(--white-color);
     background: var(--main-color);
     padding: 0px;
-    font-size: 25px;
+    font-size: 28px;
 }
 
 .clear-btn-on-coming-filter {
-    width: 9%;
+    width: 23%;
     color: var(--white-color);
     background: var(--main-color);
     padding: 0px;
-    font-size: 25px;
+    font-size: 28px;
 }
 
 
@@ -970,13 +970,14 @@ td.warning-input {
 
 
 .stock-icon {
-    font-size: 24px;
+    /*font-size: 24px;*/
+    font-size: inherit;
     margin-right: 3px;
     color: var(--main-color);
     background: var(--white-color);
     padding: 4px;
     cursor: pointer;
-    border: 2px solid var(--main-color);
+    /*border: 2px solid var(--main-color);*/
 }
 
 .stock-icon:hover {
@@ -1098,6 +1099,7 @@ button.user-select {
     display: inline-block;
     float: left;
     margin-top: -1px;
+    font-size: 59px;
 }
 
 .total-quantity-on-sold-pane {
@@ -1253,6 +1255,7 @@ button.user-select {
     position: absolute;
     margin-right: 6px;
     right: 59%;
+    font-size: 52px;
 }
 
 .move-button-on-moving-pane {
@@ -1317,6 +1320,7 @@ td.price-data {
 
 .stock-picker-on-moving-modal {
     right: 57%;
+    font-size: 48px;
 }
 
 .print-icon {

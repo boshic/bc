@@ -75,7 +75,8 @@
         </div>
     </div>
 
-    <table class="table table-bordered unprintable table-responsive">
+<!--    unprintable-->
+    <table class="table table-bordered table-responsive">
         <thead class="pane-thead">
             <td style="width: 60px;">
                 <sortable-column
@@ -94,7 +95,7 @@
                 </sortable-column>
             </td>
             <td style="width: 70px;">Ед.изм.</td>
-            <td style="width: 70px;" class="unprintable">
+            <td style="width: 70px;">
                 <sortable-column
                         field = "filter.sortField"
                         listening-field = "'currentQuantity'"
@@ -130,7 +131,7 @@
                         {{ "применена скидка в размере " + buyer.discount + "%" }}
                 </span>
             </td>
-            <td style="width: 60px;" class="unprintable">
+            <td style="width: 60px;">
                 <pane-rows-eraser delete-rows="deleteRowsWithTracking()"
                                   is-hidden="(user.actsAllowed.indexOf('erasesTrackingEnabled')>-1 && !(buyer.id > 0))">
                 </pane-rows-eraser>

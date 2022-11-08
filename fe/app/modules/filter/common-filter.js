@@ -65,7 +65,7 @@ import commonFilterTpl from './common-filter.html';
         })
         .factory('filterFactory',['paneFactory', function (paneFactory) {
 
-                let toDate;
+                let today;
                 let defaultRowsOnPage = 15;
 
                 let resetBasicReleaseFilterFields = (filter) => {
@@ -93,7 +93,7 @@ import commonFilterTpl from './common-filter.html';
                         'Возврат'
                     ];
 
-                    toDate = new Date();
+                    today = new Date();
                     // filter.allowAllStocks = true;
                     if(!angular.isDefined(filter.showInScrollMode))
                       filter.showInScrollMode = paneFactory.isMobileClient();
@@ -105,22 +105,29 @@ import commonFilterTpl from './common-filter.html';
                     filter.rowsOnPage = defaultRowsOnPage;
                     filter.comment = "";
                     filter.strictCommentSearch = false;
-                    filter.toDate =  toDate.setHours(23,59,0,0);
+                    filter.toDate =  new Date(today).setHours(23,59, 0 ,0 );
                 };
 
                 let validate = (filter) => {
                     if(('toDate' in filter) && !(filter.toDate > 0)) {
                         console.log('validatating toDate!');
-                        filter.toDate =  toDate.setHours(23,59,0,0);
+                        filter.toDate =  new Date(today).setHours(23,59, 0 ,0 );
                     }
                     if(('fromDate' in filter) && !(filter.fromDate > 0)) {
-                        console.log('validatating fromDate!');
+                        console.log('validating fromDate!');
                         filter.fromDate = angular.isDefined(filter.groupByItems)
-                            ? toDate.setHours(0,0,0,0)
-                            : filter.fromDate = new Date(toDate.getFullYear(), toDate.getMonth(), 1);
+                            ? today.setHours(0,0, 0 ,0 )
+                            : filter.fromDate = new Date(today.getFullYear(), today.getMonth(), 1);
+                    }
+                    if(('toDate' in filter && 'fromDate' in filter) && (filter.fromDate > filter.toDate > 0)) {
+                      console.log('validating fromDate > toDate!');
+                      filter.toDate =  new Date(filter.fromDate);
+                      filter.toDate.setHours(23,59);
+                      // // toDate.setHours(23,59);
+                      // filter.toDate = toDate;
                     }
                     if(('rowsOnPage' in filter) && !(filter.rowsOnPage > 0)) {
-                        console.log('validatating rowsOnPage!');
+                        console.log('validating rowsOnPage!');
                         filter.rowsOnPage = defaultRowsOnPage;
                     }
                 };
@@ -129,14 +136,6 @@ import commonFilterTpl from './common-filter.html';
                     (filter['page'] = 1) ? resetFunction() : filter['page'] = 1;
                 };
 
-                // let checkGroupSettings = (filter, key) => {
-                //   for(let prop in filter){
-                //     if((prop === 'groupByItems' || prop === 'groupBySections')) {
-                //       filter[prop] = false;
-                //     }
-                //   }
-                //   filter[key] = true;
-                // };
 
                 let execRowsOnPageFilter = (filter, findItemsByFilter) => {
                     let value = filter['rowsOnPage'];
@@ -177,7 +176,7 @@ import commonFilterTpl from './common-filter.html';
 
                         filter.inventoryModeEnabled = false;
                         filter.sortField = 'doc.date';
-                        filter.fromDate = new Date(toDate.getFullYear(), toDate.getMonth(), 1);
+                        filter.fromDate = new Date(today.getFullYear(), today.getMonth(), 1);
 
                     },
                     resetSoldPaneFilter: (filter) => {
@@ -191,7 +190,7 @@ import commonFilterTpl from './common-filter.html';
                         filter.groupBySections = false;
                         filter.buyer = {name:""};
                         filter.compositeItem = {name:""};
-                        filter.fromDate = toDate.setHours(0,0,0,0);
+                        filter.fromDate = new Date(today).setHours(0,0,0,0);
                     },
                     doFilter : (calcTotalsAndRefresh, findItemsByFilter, nv, ov) => {
                         for (let key in nv) {

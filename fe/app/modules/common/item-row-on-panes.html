@@ -48,6 +48,11 @@
               ng-click = '$ctrl.filter.section = $ctrl.row.item.section'>
                                     {{$ctrl.row.item.section.name}}
         </span>
+        <span ng-if="$ctrl.filter.buyer == null">
+            <section-overhead-percentage-indicator
+                    percentage="$ctrl.row.item.section.percOverheadLimit">
+            </section-overhead-percentage-indicator>
+        </span>
         <span>
             <div class="dropdown item-details-filter">
                 <span class="glyphicon glyphicon-filter unprintable"></span>

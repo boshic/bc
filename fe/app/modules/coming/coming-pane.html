@@ -214,6 +214,7 @@
                     <span class="price-out-on-coming-pane clickable-filter-value" title="Поставщик"
                         ng-click = "filter.supplier = x.doc.supplier">
                         {{x.doc.supplier.name}}
+                        <using-vat-indicator vat="x.doc.supplier.usesVat"></using-vat-indicator>
                     </span>
                 </td>
                 <td ng-class = "{'inventory-mode-item-name': filter.inventoryModeEnabled}"   >

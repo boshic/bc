@@ -80,7 +80,12 @@ let commonAddEditCtrlr = ($s, itemFactory, itemConfig) => {
         $s.setEanPrefix = (e, field) => {
             itemFactory.setEanPrefix($s, e, field);
         };
-    };
+
+        $s.selectByInputId = (inputId) => {
+            itemFactory.selectByInputId(inputId);
+  };
+
+};
 
 let bankInputCtrlr = ($s, itemFactory) => {
 
@@ -108,6 +113,11 @@ let sectionCtrlr = ($s, itemFactory) => {
 };
 
 let sectionChangeCtrlr = ($s, itemFactory) => {
+
+    $s.percOverheadLimitId = itemFactory.generateUuid();
+    // $s.selectByInputId = (inputId) => {
+    //     itemFactory.selectByInputId(inputId);
+    // };
 
     return commonAddEditCtrlr($s, itemFactory, 'sectionConfig');
 };
@@ -154,9 +164,9 @@ let itemChangeCtrlr = ($s, itemFactory, paneFactory) => {
             itemFactory.setItemEanByTopId($s.item);
     };
 
-    $s.selectByInputId = (inputId) => {
-      paneFactory.changeElementState(document.getElementById(inputId), ['select']);
-    };
+    // $s.selectByInputId = (inputId) => {
+    //   itemFactory.selectByInputId(inputId);
+    // };
 
     $s.copyEanToSynonym = () => {
         $s.item.eanSynonym = $s.item.ean;
@@ -641,6 +651,7 @@ angular.module('inputs', ['asyncFilter'])
         },
         template:
             "<input date-input class='form-control' type='datetime-local'" +
+                "placeholder='yyyy-MM-ddThh:mm:ss.SSS'" +
                 "ng-readonly = '$ctrl.readOnly'" +
                 "ng-change = '$ctrl.changeValue()'" +
                 "ng-model='$ctrl.dateValue'/>",
@@ -887,6 +898,9 @@ angular.module('inputs', ['asyncFilter'])
                         addItemUrl: 'addSection',
                         getItemsUrl: 'getSections',
                         getItemByIdUrl: 'getSectionById'
+                },
+                selectByInputId : (inputId) => {
+                  paneFactory.changeElementState(document.getElementById(inputId), ['select']);
                 },
                 getItems: ($s, url) => {
                     $s.items=[];

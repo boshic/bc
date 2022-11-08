@@ -22,6 +22,7 @@ public class SupplierHandler extends EntityHandlerImpl{
         newSupplier.setUnp(supplier.getUnp() == null ? "" : supplier.getUnp());
         newSupplier.setAddress(supplier.getAddress() == null ? "" : supplier.getAddress());
         newSupplier.setUseForInventory(checkAndGetInventorySign(supplier.getUseForInventory()));
+        newSupplier.setUsesVat(supplier.getUsesVat());
         supplierRepository.save(newSupplier);
         return new ResponseItem<Supplier>("Поставщик создан/изменен ", true, newSupplier);
     }

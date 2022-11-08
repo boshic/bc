@@ -7,6 +7,7 @@ import barcode.dao.entities.QItemSection;
 import barcode.dao.predicates.ItemSectionPredicateBuilder;
 import barcode.dao.repositories.ItemSectionRepository;
 import barcode.dto.ResponseItem;
+import barcode.utils.CommonUtils;
 import org.springframework.stereotype.Service;
 
 import java.util.Collections;
@@ -30,7 +31,7 @@ public class ItemSectionHandler extends EntityHandlerImpl{
     private ResponseItem<ItemSection> update(ItemSection newSection, ItemSection section) {
 
         section.setName(newSection.getName());
-
+        section.setPercOverheadLimit(CommonUtils.validateBigDecimal(newSection.getPercOverheadLimit()));
         itemSectionRepository.save(section);
 
         return new ResponseItem<ItemSection>("Создана секция '" + section.getName() + "'", true, section);
