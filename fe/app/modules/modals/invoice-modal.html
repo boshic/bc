@@ -16,11 +16,6 @@
                     report-id="invoice.id"
                     reports = "reports">
             </print-menu>
-<!--            <button class="glyphicon glyphicon-floppy-remove disallow-upload-invoice-btn"-->
-<!--                    ng-click="disallowInvoiceUpload()"-->
-<!--                    ng-hide="invoice.notForUpload"-->
-<!--                    title="запретить загрузку во внешнее ПО">-->
-<!--            </button>-->
             <button class="glyphicon glyphicon-upload allow-upload-invoice-btn"
                     ng-click="allowInvoiceUpload()"
                     ng-show="invoice.notForUpload && !invoice.deleted"

@@ -27,6 +27,12 @@ public class ComingItem extends BasicOperationWithCommentEntity{
     @Column(name = "sum", columnDefinition="Decimal(12,2) default '0.00'")
     private BigDecimal sum;
 
+    @Column(name = "imp_overhead_perc", columnDefinition="Decimal(5,2) default '0.00'")
+    private BigDecimal impOverheadPerc;
+
+    @Column(name = "first_imp_price", columnDefinition="Decimal(9,2) default '0.00'")
+    private BigDecimal firstImpPrice;
+
     @Transient
     private BigDecimal inventorySum;
 
@@ -180,5 +186,21 @@ public class ComingItem extends BasicOperationWithCommentEntity{
 
     public void setInventorySum(BigDecimal inventorySum) {
         this.inventorySum = inventorySum;
+    }
+
+    public BigDecimal getImpOverheadPerc() {
+        return impOverheadPerc;
+    }
+
+    public void setImpOverheadPerc(BigDecimal impOverheadPerc) {
+        this.impOverheadPerc = impOverheadPerc;
+    }
+
+    public BigDecimal getFirstImpPrice() {
+        return firstImpPrice;
+    }
+
+    public void setFirstImpPrice(BigDecimal firstImpPrice) {
+        this.firstImpPrice = firstImpPrice;
     }
 }

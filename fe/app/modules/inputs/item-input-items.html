@@ -33,6 +33,9 @@
                     <div ng-show="x.section.name.length > 0" class="item-input-items-descr">
                         <span>{{'Секция: ' + x.section.name}}</span>
                     </div>
+                    <div ng-show="x.debt > 0" class="item-input-items-descr">
+                        <span style="color: brown; font-weight: bold;">{{'Долг: ' + x.debt}}</span>
+                    </div>
                 </td>
                 <td style="width: 25px;">
                     <button title="Редактировать" style="float: right;"

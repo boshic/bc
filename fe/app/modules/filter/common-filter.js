@@ -188,6 +188,7 @@ import commonFilterTpl from './common-filter.html';
                         filter.mayBeError = false;
                         filter.groupByItems = false;
                         filter.groupBySections = false;
+                        filter.showNotForDeductions = true;
                         filter.buyer = {name:""};
                         filter.compositeItem = {name:""};
                         filter.fromDate = new Date(today).setHours(0,0,0,0);
@@ -207,6 +208,7 @@ import commonFilterTpl from './common-filter.html';
                                     || (key === 'strictCommentSearch')
                                     || (key === 'hideNullQuantity')
                                     || (key === 'mayBeError')
+                                    || (key === 'showNotForDeductions')
                                     || (key === 'inventoryModeEnabled')
                                     || (key === 'compositeItem')
                                     || (key === 'section')
@@ -216,8 +218,6 @@ import commonFilterTpl from './common-filter.html';
                                     || (key === 'searchString')) {
                                     calcTotalsAndRefresh();
                                 }
-                                // if((key === 'fromDate') && (!paneFactory.isEanValid(nv['ean'])))
-                                //     calcTotalsAndRefresh();
                                 if(key === 'page')
                                     (nv['inventoryModeEnabled']) ? calcTotalsAndRefresh() : findItemsByFilter();
                                 if((key === 'sortDirection') || (key === 'sortField'))
@@ -226,7 +226,6 @@ import commonFilterTpl from './common-filter.html';
                                     execRowsOnPageFilter(nv, findItemsByFilter)();
                                 if(key === 'groupByItems' || key === 'groupBySections') {
                                   resetPage(nv, findItemsByFilter);
-                                  // checkGroupSettings(nv, key);
                                 }
                                 if(key === 'ean')
                                     changeEan(nv, calcTotalsAndRefresh);

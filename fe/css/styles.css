@@ -506,9 +506,9 @@ ul.buyer-dropdown {
 span.input-notification {
     border-radius: 4px;
     z-index: 1;
-    margin-top: 35px;
+    /*margin-top: 35px;*/
     position: absolute;
-    background: brown;
+    background: var(--main-color);
     color: aliceblue;
     padding-right: 2%;
     padding-left: 2%;
@@ -527,6 +527,7 @@ div.locked {
 }
 
 .common-number-input {
+    vertical-align: middle!important;
     text-align: center;
     padding-top: 0px;
     padding-bottom: 0px;
@@ -824,7 +825,7 @@ td.sold {
 
 .new-coming-doc-pricein {
     text-align: center;
-    vertical-align: middle;
+    vertical-align: middle!important;
     font-size: 22px;
 }
 
@@ -1691,9 +1692,17 @@ td.quick-filter {
     background: none;
 }
 
-.add-comment-btn {
+button.add-comment-btn {
     color: green;
     width: 50%;
+    border: none;
+    background: var(--white-color);
+    font-size: 20px;
+}
+
+button.add-comment-in-filter-btn {
+    color: var(--main-color);
+    width: 98%;
     border: none;
     background: var(--white-color);
     font-size: 20px;
@@ -2115,6 +2124,10 @@ span.income-sum-in-grouped-sellings {
     font-size: var(--common-font-size);
 }
 
+.for-sale {
+    text-align: center;
+}
+
 .disallow-upload-invoice-btn {
     background: var(--gray-color);
     color: var(--white-color);
@@ -2132,9 +2145,21 @@ button.filter-by-buyer-pane-btn {
 }
 
 .measure-unit-icon {
-    color: var(--main-color);;
+    color: var(--main-color);
 }
 
 div.item-input-items-descr {
     text-align: right;
+}
+
+span.discounted-sum {
+    text-decoration: line-through;
+}
+
+div.doc-info-on-sold-pane {
+    font-weight: bold;
+}
+
+div.filter-on-release-pane-enabled {
+    border-bottom: 5px dashed var(--main-color);
 }

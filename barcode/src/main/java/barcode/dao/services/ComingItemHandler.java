@@ -73,6 +73,8 @@ public class ComingItemHandler extends EntityHandlerImpl {
                     .setScale(2, BigDecimal.ROUND_HALF_UP) : srcComing.getSum());
 
             coming.setCurrentQuantity(coming.getQuantity());
+            coming.setFirstImpPrice(CommonUtils.validateBigDecimal(srcComing.getFirstImpPrice()));
+            coming.setImpOverheadPerc(CommonUtils.validateBigDecimal(srcComing.getImpOverheadPerc()));
             coming.setLastChangeDate(new Date());
             coming.setDoc(srcComing.getDoc());
             coming.setItem(srcComing.getItem());

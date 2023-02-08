@@ -48,7 +48,12 @@ public class InvoiceHeader {
     public InvoiceHeader(Invoice invoice) {
 
         this.setId(invoice.getId());
-        this.setBuyer(new DtoBuyer(invoice.getBuyer().getId(), invoice.getBuyer().getName()));
+        this.setBuyer(
+            new DtoBuyer(
+                invoice.getBuyer().getId(),
+                invoice.getBuyer().getName(),
+                invoice.getBuyer().getDebt()
+            ));
         this.setDocDate(invoice.getDate());
         this.setUserName(invoice.getUser().getFullName());
         this.setStockName(invoice.getStock().getName());

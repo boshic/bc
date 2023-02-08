@@ -178,8 +178,10 @@
         $s.modalConfig = {hidden: true};
         let data = {};
         printFactory.setReportsByParams([
+            {type: 'writeOffAct', data, method: 'addWriteOffAct'},
             {type: 'invoiceWithContract', data, method: 'addInvoice'},
             {type: 'workCompletionStatement', data, method: 'addInvoice'},
+            {type: 'packingList', data, method: 'addInvoice'},
             {type: 'invoice', data, method: 'addInvoice'}],
             $s.reports = []);
 

@@ -13,6 +13,7 @@ import com.querydsl.core.types.Predicate;
 import com.querydsl.jpa.impl.JPAQuery;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -46,6 +47,7 @@ public class BuyerHandler extends EntityHandlerImpl{
         newBuyer.setInvoiceDaysValid(buyer.getInvoiceDaysValid() == null ? DEF_INVOICE_DAYS_VALID : buyer.getInvoiceDaysValid());
         newBuyer.setSellByComingPrices(CommonUtils.validateBoolean(buyer.getSellByComingPrices()));
         newBuyer.setExcludeExpensesFromIncome(CommonUtils.validateBoolean(buyer.getExcludeExpensesFromIncome()));
+        newBuyer.setDoNotUseForDeductions(CommonUtils.validateBoolean(buyer.getDoNotUseForDeductions()));
         newBuyer.setLastPayDate(new Date());
         buyerRepository.save(newBuyer);
         return new ResponseItem<Buyer>("Покупатель добавлен/изменен ", true , newBuyer);
@@ -77,7 +79,7 @@ public class BuyerHandler extends EntityHandlerImpl{
 
     public static List<DtoBuyer> getDtoBuyers(List<Tuple> tuple) {
         return tuple.stream()
-            .map(b -> new DtoBuyer(b.get(0, Long.class), b.get(1, String.class)))
+            .map(b -> new DtoBuyer(b.get(0, Long.class), b.get(1, String.class), b.get(2, BigDecimal.class)))
             .collect(Collectors.toList());
     }
 
@@ -87,7 +89,7 @@ public class BuyerHandler extends EntityHandlerImpl{
         Predicate predicate = new BuyerPredicateBuilder().buildByFilter(filter);
         return getDtoBuyers(
             new JPAQuery<Tuple>(abstractEntityManager.getEntityManager())
-            .select(qBuyer.id, qBuyer.name)
+            .select(qBuyer.id, qBuyer.name, qBuyer.debt)
             .from(qBuyer)
             .where(predicate)
             .orderBy(qBuyer.sellings.size().desc()).fetch());

@@ -48,6 +48,17 @@
                   ng-click="calcTotalsAndRefresh()">
             </span>
         </div>
+        <div ng-show = "filter.supplier.id > 0
+                    || filter.document.id > 0
+                    || filter.section.id > 0
+                    || filter.sectionPart.length > 0
+                    || filter.searchString.length > 0
+                    || filter.comment.length > 0"
+                class="coming-pane-right-menu-option">
+            <button class="glyphicon glyphicon-magnet"
+                    style="background: none; margin-right: -3px;">
+            </button>
+        </div>
         <div class="coming-pane-right-menu-option">
             <common-filter filter="filter" reset-filter="resetFilter()"></common-filter>
         </div>
@@ -58,7 +69,7 @@
 
     <div style="display: flex;">
         <div class="on-pane-totals-container">
-            <div ng-show="rows.length > 0">
+            <div ng-show="rows.length > 0 ">
                 <totals totals="totals"
                         switch-values-allowed="user.actsAllowed.indexOf('viewSoldTotalsAllowed')>-1">
                 </totals>
@@ -192,7 +203,7 @@
                                  'group-by-items-name': filter.groupByItems,
                                  'sold-composite-item': x.soldCompositeItem.id > 0}">
                     <div class="sold-receipt-item-descr"
-                         ng-show="x.receipt.id > 0 && x.receipt.id != rows[$index-1].receipt.id">
+                         ng-show="x.receipt.id > 0 && x.receipt.id != rows[$index-1].receipt.id && filter.showNotForDeductions">
                         <span>{{"чек № - " + x.receipt.id}}</span>
                         <span>{{", позиций: " + x.receipt.numberOfPositions + ", "}}</span>
                         <span>{{x.receipt.date | date:'dd.MM.yyyy HH:mm:ss'}}</span>
@@ -205,9 +216,14 @@
                         <span>{{"; кол-во: " + x.soldCompositeItem.quantity}}</span>
                         <span>{{"; на сумму: " + x.soldCompositeItem.sum}}</span>
                     </div>
+                    <div class="doc-info-on-sold-pane"
+                         ng-hide="filter.showNotForDeductions">
+                        <span>{{x.coming.doc.name + ", от "}}</span>
+                        <span>{{x.coming.doc.date | date:'dd-MM-yyyy'}}</span>
+                        <span>{{x.coming.doc.supplier.name}}</span>
+                    </div>
                     <item-row-on-panes row="x.coming" filter="filter"
                                        edit-item="filterByItem">
-
                     </item-row-on-panes>
                 </td>
                 <td style="width: 9vw;" class="price-data"

@@ -24,9 +24,15 @@ import newComingDocPaneTpl from './new-coming-doc.html';
 
         let getDataFromLastRow = () => {
             if($s.rows.length)
-                return {sum: $s.rows[0].sum, price: $s.rows[0].price,
-                            quantity: 0, priceOut: $s.rows[0].priceOut};
-            return {quantity: 0, sum:0, price: 0, priceOut: 0};
+                return {
+                  sum: $s.rows[0].sum,
+                  price: $s.rows[0].price,
+                  impOverheadPerc: 0,
+                  firstImpPrice: 0,
+                  quantity: 0,
+                  priceOut: $s.rows[0].priceOut
+                };
+            return {quantity: 0, sum:0, price: 0, priceOut: 0, firstImpPrice: 0, impOverheadPerc:0};
         };
 
         let getRowsForReports =() => {
@@ -68,7 +74,10 @@ import newComingDocPaneTpl from './new-coming-doc.html';
                                         quantity: 0, //1
                                         sum: resp.price,
                                         price: resp.price,
-                                        priceOut: resp.priceOut
+                                        priceOut: resp.priceOut,
+                                        impOverheadPerc: 0,
+                                        firstImpPrice: item.section.percOverheadLimit > 0
+                                          ? (resp.price - (resp.price*20/120).toFixed(2)): 0
                                     })
                                     : $s.rows.splice(0,0, angular.extend({
                                             item: item,
@@ -77,7 +86,8 @@ import newComingDocPaneTpl from './new-coming-doc.html';
                             index = 0;
                         } else {
                             $s.rows[index].item = item;
-                            $s.rows[index].priceOut = resp.priceOut;
+                            if (resp.priceOut > 0)
+                              $s.rows[index].priceOut = resp.priceOut;
                         }
                         $s.checkRows();
                         $s.openQuantityChangerModal(item.id);
@@ -111,9 +121,9 @@ import newComingDocPaneTpl from './new-coming-doc.html';
                 $s.barcode ='';
         });
 
-        $s.$watchCollection("[doc, stock, buyer]", (nv) => {
+        $s.$watchCollection('[doc, stock, buyer, rows.length]', (nv) => {
             if ((nv.indexOf(undefined) < 0))
-                $s.checkRows();
+              $s.checkRows();
         }, true);
 
         $s.$watch("rows", (nv, ov) => {
@@ -134,7 +144,6 @@ import newComingDocPaneTpl from './new-coming-doc.html';
                                     if(nv[i].quantity > 0)
                                         nv[i].price = (nv[i].sum/nv[i].quantity).toFixed(4);
                                 }
-                                // $s.checkRows();
                             }
                         }
            }

@@ -89,7 +89,8 @@
                     {id:3, allowNoId: true, name:'Акт на списание', group: 'common', type: 'writeOffAct'},
                     {id:4, allowNoId: true, name:'Товарный чек', group: 'common', type: 'salesReceipt'},
                     {id:5, allowNoId: true, name:'Ценники', group: 'common', type: 'prices'},
-                    {id:6, allowNoId: true, name:'Акт вып.работ', group: 'common', type: 'workCompletionStatement'}
+                    {id:6, allowNoId: false, name:'ТН2', group: 'common', type: 'packingList'},
+                    {id:7, allowNoId: true, name:'Акт вып.работ', group: 'common', type: 'workCompletionStatement'}
                 ];
 
                 return {

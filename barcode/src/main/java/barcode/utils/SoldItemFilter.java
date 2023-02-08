@@ -98,6 +98,7 @@ public class SoldItemFilter extends ComingItemFilter {
     private Boolean groupByItems;
     private Boolean groupBySections;
     private Boolean mayBeError;
+    private Boolean showNotForDeductions;
     private Item compositeItem;
 
     public SortingField getDefSortingField() {
@@ -147,5 +148,13 @@ public class SoldItemFilter extends ComingItemFilter {
 
     public void setGroupBySections(Boolean groupBySections) {
         this.groupBySections = groupBySections;
+    }
+
+    public Boolean getShowNotForDeductions() {
+        return showNotForDeductions;
+    }
+
+    public void setShowNotForDeductions(Boolean showNotForDeductions) {
+        this.showNotForDeductions = showNotForDeductions;
     }
 }

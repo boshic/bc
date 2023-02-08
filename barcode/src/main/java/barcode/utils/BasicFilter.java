@@ -58,16 +58,6 @@ public class BasicFilter {
         }
     }
 
-//    public <T extends ComingItemFilter>
-//    void validateFilterSortField(T filter, SortingField sortingField) {
-//        try {
-//            sortingField.checkSortField(filter.getSortField());
-//        } catch (IllegalArgumentException e) {
-//            filter.setSortField(sortingField.getValue());
-//        }
-//    }
-
-
     public void setSearchString(String searchString) {
         this.searchString = searchString;
     }

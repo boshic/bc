@@ -538,6 +538,7 @@ public class SoldItemHandler extends EntityHandlerImpl {
                 );
             });
         }
+
         return result;
     }
 
@@ -587,14 +588,6 @@ public class SoldItemHandler extends EntityHandlerImpl {
 
         return getResults(page, filter);
     }
-
-//    private SortingField getDefSortingField(SoldItemFilter filter) {
-//        if(filter.getGroupBySections())
-//            return SoldItemFilter.SortingFieldsForGroupedBySectionSoldItems.SUMM;
-//        if(filter.getGroupByItems())
-//            return SoldItemFilter.SortingFieldsForGroupedByItemSoldItems.AVAILQUANTITYBYEAN;
-//        return SoldItemFilter.SortingFieldsForSoldItemPane.DATE;
-//    }
 
     public ResponseItem<SoldItem> changeDate(SoldItem soldItem) {
 

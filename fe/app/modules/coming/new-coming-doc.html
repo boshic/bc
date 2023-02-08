@@ -1,14 +1,20 @@
 <div ng-transclude></div>
 
-<div class="item-input-on-panes" ng-show="itemInputVisible">
-    <item-input item="item" get-items="getItems"></item-input>
+<!--<div class="item-input-on-panes" ng-show="itemInputVisible">-->
+<!--    <item-input item="item" get-items="getItemsWithItemInput"></item-input>-->
+<!--&lt;!&ndash;    <item-input item="item" get-items="getItems"></item-input>&ndash;&gt;-->
+<!--</div>-->
+<div class="item-input-on-panes"
+     ng-show="item.name.length > 0">
+    <item-input item="item" get-items="getItemsWithItemInput"></item-input>
 </div>
 <div class="item-input-on-panes" ng-show="reportListVisible">
     <buyer-input buyer="buyer"></buyer-input>
 </div>
 <div>
     <quantity-changer-modal
-            check-input = 'checkRows()' after-close = 'blankSearch()'
+            check-input = 'checkRows()'
+            after-close = 'blankSearch()'
             modal-data="quantityChangerModalData">
     </quantity-changer-modal>
 </div>
@@ -67,6 +73,13 @@
                 </td>
             </tr>
         </thead>
+        <div class="add-coming-container-on-new-coming"
+             ng-show="canRelease">
+            <button class="add-coming-button-on-new-coming"
+                    ng-click="makeComing()">
+                Оприходовать
+            </button>
+        </div>
         <thead class="pane-thead">
             <td style="width: 60px;">Номер</td>
             <td>
@@ -78,10 +91,17 @@
                         column-name = "Наименование">
                 </sortable-column>
             </td>
-            <td style="width: 100px;">Количество</td>
-            <td style="width: 115px;">Приходная</td>
-            <td style="width: 160px;">Сумма</td>
-            <td style="width: 160px;">Продажи</td>
+            <td style="width: 115px;">
+                <div style="border-bottom: 1px solid #ddd;">ЦПП</div>
+                <div>% наценки</div>
+            </td>
+            <td style="width: 100px;">Кол-во</td>
+            <td style="width: 150px;">
+                <div style="border-bottom: 1px solid #ddd;">Цена ед.</div>
+                <div>Сумма</div>
+<!--                Сумма-->
+            </td>
+            <td style="width: 115px;">Цена розн.</td>
             <td>
                 <pane-rows-eraser delete-rows="deleteRows()"></pane-rows-eraser>
             </td>
@@ -96,8 +116,25 @@
                             {{ x.item.name}}
                         </span>
                     </a>
+                     <span class="input-notification">
+                        <section-overhead-percentage-indicator
+                                descr = "Ограничение наценки:"
+                                percentage = x.item.section.percOverheadLimit>
+                        </section-overhead-percentage-indicator>
+                    </span>
                 </td>
-                <td class="hoverable for-sale" title="Пришло">
+                <td class="hoverable for-sale" title="Сведения о ценах и наценке первого импортера">
+                    <div style="border-bottom: 1px solid #ddd; font-size: 16px;">
+                        <pane-quantity-input
+                            value-field="firstImpPrice" input-value="x">
+                        </pane-quantity-input>
+                    </div>
+                    <pane-quantity-input
+                            value-field="impOverheadPerc" input-value="x">
+                    </pane-quantity-input>
+                </td>
+                <td class="hoverable new-coming-doc-pricein"
+                    title="Количество ед.">
                     <div>
                         <button class='change-quantity-btn'
                                 ng-click='openQuantityChangerModal(x.item.id)'>
@@ -105,32 +142,35 @@
                         </button>
                     </div>
                 </td>
-                <td class="hoverable new-coming-doc-pricein" title="Цена прихода">
-                    <span style="position: absolute;  margin-left: 68px; margin-top: -16px;">
-                        <overhead-percentage-indicator
-                            price-out="x.priceOut" price="x.price">
-                        </overhead-percentage-indicator>
-                    </span>
-                    {{x.price}}
-                </td>
-                <td class="hoverable common-number-input" title="Сумма">
-                    <pane-quantity-input value-field="sum" input-value="x"></pane-quantity-input>
+                <td class="hoverable common-number-input" title="цена единицы и сумма">
+                    <div style="border-bottom: 1px solid #ddd; font-size: 16px;">
+                            <span style="position: absolute;  margin-left: 68px; margin-top: -16px;">
+                                <overhead-percentage-indicator
+                                    price-out="x.firstImpPrice > 0
+                                    ? (x.priceOut - (x.price - x.firstImpPrice * (1 + x.impOverheadPerc/100))) : x.priceOut"
+                                    price="x.firstImpPrice > 0 ? x.firstImpPrice : x.price">
+                                </overhead-percentage-indicator>
+                            </span>
+                        {{x.price}}
+                    </div>
+                    <pane-quantity-input value-field="sum" input-value="x">
+                    </pane-quantity-input>
                 </td>
                 <td class="hoverable common-number-input" title="Цена продажи">
                     <pane-quantity-input value-field="priceOut" input-value="x"
                                          change-value="checkRows()"></pane-quantity-input>
                 </td>
-                <td style="text-align: center; padding-top: 14px;">
+                <td style="text-align: center; padding-top: 14px; vertical-align: middle!important;">
                     <pane-rows-eraser delete-rows="deleteRows(x.item.id)" is-hidden="x.quantity > 0"></pane-rows-eraser>
                 </td>
             </tr>
         </tbody>
     </table>
-    <div class="add-coming-container-on-new-coming"
-         ng-show="canRelease">
-        <button class="add-coming-button-on-new-coming"
-                ng-click="makeComing()">
-            Оприходовать
-        </button>
-    </div>
+<!--    <div class="add-coming-container-on-new-coming"-->
+<!--         ng-show="canRelease">-->
+<!--        <button class="add-coming-button-on-new-coming"-->
+<!--                ng-click="makeComing()">-->
+<!--            Оприходовать-->
+<!--        </button>-->
+<!--    </div>-->
 </div>

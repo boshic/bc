@@ -229,11 +229,20 @@
                     {{'(' + x.item.unit + ')'}}
                 </td>
                 <td style="width: 7%;" class="price-data" ng-hide = "filter.inventoryModeEnabled">
-                    <div>
+                    <div style="border-bottom: 1px solid #ddd; text-align: right; font-style: italic;">
+                        <span ng-show="x.firstImpPrice > 0">({{x.firstImpPrice}})</span>
                         <overhead-percentage-indicator
-                                price-out="x.item.price > 0 ? x.item.price : x.priceOut" price="x.price">
+                                price-out="x.item.price > 0 ?
+                                    x.item.price - (x.firstImpPrice > 0 ? (x.price - x.firstImpPrice * (1 + x.impOverheadPerc/100)) : 0)
+                                    : x.priceOut - (x.firstImpPrice > 0 ? (x.price - x.firstImpPrice * (1 + x.impOverheadPerc/100)) : 0)"
+                                price="x.firstImpPrice > 0 ? x.firstImpPrice : x.price">
                         </overhead-percentage-indicator>
                     </div>
+<!--                    <div>-->
+<!--                        <overhead-percentage-indicator-->
+<!--                                price-out="x.item.price > 0 ? x.item.price : x.priceOut" price="x.price">-->
+<!--                        </overhead-percentage-indicator>-->
+<!--                    </div>-->
                     {{ x.price}}
                     <span>/</span>
                     <span class="price-out-on-coming-pane"

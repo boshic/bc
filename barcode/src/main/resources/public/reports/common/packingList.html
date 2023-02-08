@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="stylesheet" href="/webjars/fe/0.1.0/css/packingList.css"/>
+    <head>
+        <title>Товарная накладная</title>
+    </head>
+    <body ng-controller="ctrlr">
+
+<!--<div ng-transclude></div>-->
+        <div>
+            <text-edit-modal
+                after-close = 'modalClose()'
+                modal-data="modalData">
+            </text-edit-modal>
+        </div>
+
+
+        <div class="root-container">
+
+            <div style="display: flex; margin-top: 25%; ">
+                <div style="width: 10%; text-align: right; margin-left: 30%; margin-right: 1%;">УНП</div>
+                <div class="regnum-rows">{{reportData.stock.organization.regNum}}</div>
+                <div class="regnum-rows">{{reportData.buyer.unp}}</div>
+            </div>
+
+            <div style="margin-top: 50px; margin-left: 35%; font-weight: bold;">
+                <span>от </span>
+                <span>{{reportData.dateLocal}}</span>
+                <button class="glyphicon glyphicon-pencil edit-comment unprintable"
+                        ng-click="openCommentModal('dateLocal')">
+                </button>
+            </div>
+
+            <div style="font-style: italic; margin-top: 3%;">
+                <span>Грузоотправитель:</span>
+            </div>
+            <div style="font-weight: bold;">
+                <span style="margin-left: 3%">
+                    {{reportData.stock.organization.name + " " + reportData.stock.organization.address}}
+                </span>
+            </div>
+
+            <div style="font-style: italic;">
+                <span style="font-style: italic;">Грузополучатель:</span>
+            </div>
+            <div style="font-weight: bold;">
+                <span style="margin-left: 3%">
+                    {{reportData.buyer.name + ", " + reportData.buyer.address}}
+                </span>
+            </div>
+
+            <div style="font-weight: bold; font-style: italic;">
+                <span>Основание отпуска:</span>
+                <span>
+                    {{reportData.shipmentBasedOn}}
+                </span>
+                <button class="glyphicon glyphicon-pencil edit-comment unprintable"
+                        ng-click="openCommentModal('shipmentBasedOn')">
+                </button>
+            </div>
+
+            <div style="width: 90%;margin-left: 3%;margin-top: 1%; font-size: 12px;">
+                <div style="text-align: center; border: solid 1px #ddd;">I. Товарный раздел</div>
+                <table class="table table-bordered">
+                                    <thead>
+                                        <tr style="font-weight: bold; text-align: center;">
+                                            <td style="width: 5%;">№</td>
+                                            <td>Наименование</td>
+                                            <td style="width: 5%;">Ед. изм.</td>
+                                            <td style="width: 7%;">
+                                                <div>Коли-</div>
+                                                <div>чество</div>
+                                            </td>
+                                            <td style="width: 7%;">Цена, руб., коп.</td>
+                                            <td style="width: 8%;">Сумма, руб., коп.</td>
+                                            <td style="width: 7%;">Ставка НДС, %</td>
+                                            <td style="width: 8%;">Сумма НДС, руб., коп.</td>
+                                            <td style="width: 9%;">Сумма с НДС, руб.,коп.</td>
+                                            <td style="width: 22%;">
+<!--                                                <button class="glyphicon glyphicon-pencil edit-comment unprintable"-->
+<!--                                                    ng-click="openCommentModal(undefined)">-->
+<!--                                                </button>-->
+                                                <span>Примечание</span>
+                                            </td>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr ng-repeat="row in reportData.rows track by $index">
+                                            <td style="text-align: center;">{{$index + 1}}</td>
+                                            <td>{{row.item.name}}</td>
+                                            <td style="text-align: center;">{{row.item.unit}}</td>
+                                            <td style="text-align: center;">{{row.quantity}}</td>
+                                            <td style="text-align: center;">{{row.price}}</td>
+                                            <td style="text-align: center;">{{row.sum}}</td>
+                                            <td style="text-align: center;" ng-if="row.vat == 0">Без НДС</td>
+                                            <td style="text-align: center;" ng-if="row.vat > 0">{{ row.vat.toFixed(2) }}</td>
+                                            <td style="text-align: center;" ng-if="row.vat == 0">Без НДС</td>
+                                            <td style="text-align: center;" ng-if="row.vat > 0">{{ row.vatSum.toFixed(2) }}</td>
+                                            <td style="text-align: center;">{{ row.sum.toFixed(2) }}</td>
+                                            <td>
+                                                <span>{{row.comment}}</span>
+                                                <span style="position:absolute;">
+                                                    <button class="glyphicon glyphicon-pencil edit-comment unprintable"
+                                                        ng-click="openCommentModal($index)">
+                                                    </button>
+                                                </span>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                    <tfoot style="font-weight: bold;">
+                        <td colspan="3" style="text-align: right;">Итого:</td>
+                        <td style="text-align: center;">{{reportData.totals.quantity}}</td>
+                        <td></td>
+                        <td style="text-align: center;">{{reportData.totals.woVatSum.toFixed(2)}}</td>
+                        <td></td>
+                        <td  style="text-align: center;" ng-if="reportData.totals.vatSum > 0">{{data.totals.vatSum.toFixed(2)}}</td>
+                        <td  ng-if="reportData.totals.vatSum == 0"></td>
+                        <td style="text-align: center;">{{reportData.totals.sum.toFixed(2)}}</td>
+                        <td></td>
+                    </tfoot>
+                </table>
+            </div>
+            <div style="margin-left:3%;"
+                 ng-if="reportData.totals.vatSum > 0">
+                <span>Сумма НДС: </span>
+                <span style="font-weight: bold;">{{(reportData.totals.vatSum).toFixed(2) | num2phrase}}</span>
+            </div>
+            <div style="margin-left:3%;"
+                 ng-if="reportData.totals.vatSum == 0">
+                <span>{{"Всего сумма НДС:"}}</span>
+                <span style="font-weight: bold;">{{"Без НДС."}}</span>
+            </div>
+            <div style="margin-left:3%;"
+                <span>Всего стоимость с НДС:</span>
+                <span style="font-weight: bold;">{{(reportData.totals.sum).toFixed(2) | num2phrase}}</span>
+            </div>
+
+            <div style="margin-top: 1%;" class="bottom-lines">
+                <span>Отпуск разрешил:</span>
+                <span>{{reportData.stock.organization.bossPosition}}</span>
+                <span>{{reportData.stock.organization.bossName}}</span>
+            </div>
+            <div class="under-bottom-lines">
+                <span> (должность, фамилия, инициалы, подпись)</span>
+            </div>
+
+            <div class="bottom-lines">
+                <span>Сдал грузоотправитель:</span>
+                <span>{{reportData.stock.organization.bossPosition}}</span>
+                <span>{{reportData.stock.organization.bossName}}</span>
+            </div>
+            <div class="under-bottom-lines">
+                <span> (должность, фамилия и инициалы, подпись; штамп (печать) грузоотправителя)</span>
+            </div>
+
+        <div class="bottom-lines">
+            <span>Товар к доставке принял</span>
+        </div>
+        <div class="under-bottom-lines">
+            <span> (должность, фамилия, инициалы, подпись)</span>
+        </div>
+
+        <div style="margin-left: 3%;">
+            <span>по доверенности, выданной</span>
+        </div>
+
+        <div class="bottom-lines">
+            <span>Принял грузополучатель</span>
+        </div>
+        <div class="under-bottom-lines">
+            <span> (должность, фамилия и инициалы, подпись; штамп (печать) грузополучателя)</span>
+        </div>
+
+        <div style="margin-left: 3%;">
+            <span>С товаром переданы документы:</span>
+            <span>{{reportData.accompDocs}}</span>
+            <button class="glyphicon glyphicon-pencil edit-comment unprintable"
+                    ng-click="openCommentModal('accompDocs')">
+            </button>
+        </div>
+
+    </div>
+
+        <script src="/webjars/fe/0.1.0/packingList.js"></script>
+    </body>
+</html>

@@ -71,6 +71,9 @@ public class SoldItemPredicatesBuilder {
         if(filter.getMayBeError())
             predicate = predicate.and(soldItem.mayBeError.eq(filter.getMayBeError()));
 
+        if(!filter.getShowNotForDeductions())
+            predicate = predicate.and(soldItem.buyer.doNotUseForDeductions.eq(false));
+
 
         return predicate;
     }

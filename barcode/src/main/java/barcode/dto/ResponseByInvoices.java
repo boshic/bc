@@ -48,7 +48,7 @@ public class ResponseByInvoices
              BuyerHandler.getDtoBuyers(
                  new JPAQuery<Tuple>(em)
                 .from(qInvoice).where(predicate)
-                .select(qInvoice.buyer.id, qInvoice.buyer.name)
+                .select(qInvoice.buyer.id, qInvoice.buyer.name, qInvoice.buyer.debt)
                 .distinct().orderBy(qInvoice.buyer.name.asc()).fetch()
              )
         );

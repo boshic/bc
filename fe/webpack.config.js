@@ -23,6 +23,7 @@ module.exports = {
         public:'./public/public.js',
         prices: './app/modules/reports/common/prices.js',
         invoice: './app/modules/reports/common/invoice.js',
+        packingList: './app/modules/reports/common/packingList.js',
         writeOffAct: './app/modules/reports/common/writeOffAct.js'
     },
 

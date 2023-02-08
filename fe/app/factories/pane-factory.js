@@ -4,6 +4,7 @@ import failSnd from '../../media/audio/fail.mp3';
 import { BehaviorSubject, of, Subject, from } from 'rxjs';
 import { filter, tap, map, debounceTime, distinctUntilChanged, switchMap } from 'rxjs/operators';
 
+import newComingDocConfig from '../modules/coming/new-coming-doc-config';
 import comingPaneConfig from '../modules/coming/coming-pane-config';
 import movingPaneConfig from '../modules/moving/moving-pane-config';
 import sellingPaneConfig from '../modules/selling/selling-pane-config';
@@ -11,8 +12,8 @@ import soldPaneConfig from '../modules/selling/sold-pane-config';
 import invoicesPaneConfig from '../modules/selling/invoices-pane-config';
 
     angular.module('pane-factory', [])
-        .factory('paneFactory',[ 'userInfo', 'httpService', '$timeout', '$filter',
-            function ( userInfo, httpService, $timeout, $filter) {
+        .factory('paneFactory',[ 'userInfo', 'httpService', 'printFactory', '$timeout', '$filter',
+            function ( userInfo, httpService, printFactory, $timeout, $filter) {
 
                 let barcodeLength = 13;
 
@@ -26,7 +27,7 @@ import invoicesPaneConfig from '../modules/selling/invoices-pane-config';
                 let successSound =  new Audio(snd);
                 let failSound =  new Audio(failSnd);
 
-                let fractionalUnits = ['кг', 'л', 'м'];
+                let fractionalUnits = ['кг', 'л', 'м', 'км', 'ч'];
                 let user = angular.extend({}, userInfo);
 
                 let generateEan = (ean) => {
@@ -47,6 +48,7 @@ import invoicesPaneConfig from '../modules/selling/invoices-pane-config';
                 };
 
                 let searchInputAutoFocusEnabled = !isMobileClient();
+
                 let checkRowsBeforeSelling = ($s, user) => {
                     if (angular.isDefined($s.buyer.id) && ($s.rows.length)) {
                         for(let row of $s.rows) {
@@ -74,6 +76,31 @@ import invoicesPaneConfig from '../modules/selling/invoices-pane-config';
                         $s.canRelease = true;
                     }
                 };
+
+              let checkRowsBeforeComing = ($s, user) => {
+                if ($s.rows.length) {
+                    // $s.totals = calcTotals($s.rows);
+                    $s.totalsOut = calcTotals(printFactory.getRowsForReports($s, 'priceOut'));
+                    for (let row of $s.rows) {
+                      if (!(row.quantity > 0) || !(row.price > 0) || !(row.priceOut > 0))
+                        return;
+
+                      row.user = user;
+                      row.stock = $s.stock;
+                      row.doc = $s.doc;
+                  }
+                  if($s.totals.quantity > 0 && $s.totals.sum > 0 && $s.doc.id > 0)
+                      $s.canRelease = true;
+              }
+                $s.setReportData();
+              };
+
+                let checkingsBeforeRelease = {
+                  selling: checkRowsBeforeSelling,
+                  newComing: checkRowsBeforeComing,
+                  moving: checkRowsBeforeMoving
+                };
+
                 let checkNumberLimit = (value, limit) => {
                     if((!angular.isDefined(value)) || (value === null) ||(value === 'null') || (value < 0) || (value > limit))
                         return 0;
@@ -215,6 +242,7 @@ import invoicesPaneConfig from '../modules/selling/invoices-pane-config';
                     getSearchTermsForGetItemsByFilter,
                     invoicesPaneConfig,
                     comingPaneConfig,
+                    newComingDocConfig,
                     sellingPaneConfig,
                     movingPaneConfig,
                     soldPaneConfig,
@@ -230,9 +258,6 @@ import invoicesPaneConfig from '../modules/selling/invoices-pane-config';
                         $s.rows = [];
                         $s.comment = '';
                         $s.warning = '';
-                        // console.log(this.user);
-                        // console.log(user);
-                        // $s.user = params.user;
                         $s.user = user;
                         $s.searchInputId = generateUuid();
                         $s.quantityChangerModalData = { hidden : true, row: {} };
@@ -369,16 +394,28 @@ import invoicesPaneConfig from '../modules/selling/invoices-pane-config';
                             });
                     },
                     getItemsForReleaseByFilter: ($s) => {
+                        let index = 0;
                         httpService.getItemsByFilter(
                             {filter: $s.filter, url: 'getComingsForReleaseByFilter', requestParams:$s.requestParams}
                             ).then(
                             resp => {
                                 if (resp.success) {
-                                    $s.rows = resp.entityItems;
-                                    $s.rows.forEach(row => {
+                                    // rows = $s.rows;
+                                    // newRows = resp.entityItems;
+                                  // $s.rows = rows.concat(newRows);
+                                  resp.entityItems.forEach(row => {
+                                      index = checkDuplicateRowsByItem(row.item.id, $s.rows);
+                                      if (index < 0) {
                                         row.coming = {item : row.item, stock: row.stock};
                                         row.vat = row.stock.organization.vatValue;
+                                        $s.rows.push(row);
+                                      }
                                     });
+                                    // $s.rows = resp.entityItems;
+                                    // $s.rows.forEach(row => {
+                                    //     row.coming = {item : row.item, stock: row.stock};
+                                    //     row.vat = row.stock.organization.vatValue;
+                                    // });
                                     if (angular.isDefined($s.buyer) && isItFunction($s.getEmptyBuyer)) {
                                       $s.buyer = ($s.filter.invoiceNumber > 0 ) ?
                                         httpService.getItemById({id:$s.filter.invoiceNumber, url:'getInvoiceById'}).then(
@@ -415,10 +452,8 @@ import invoicesPaneConfig from '../modules/selling/invoices-pane-config';
                         $s.canRelease = false;
                         $s.totals = calcTotals($s.rows, typeof $s.buyer === 'object' && $s.buyer.id > 0 ? $s.buyer.discount : undefined);
                         $s.reports = [];
-                        if(checkingType === 'selling')
-                            checkRowsBeforeSelling($s, user);
-                        else
-                            checkRowsBeforeMoving($s, user);
+                        if (typeof checkingsBeforeRelease[checkingType] ==='function')
+                          checkingsBeforeRelease[checkingType]($s, user);
                     }
                 };
             }

@@ -3,13 +3,19 @@
         $s.setFilter = function () {
             $s.filter = ($s.filter === '') ? this.word : $s.filter + ' ' + this.word;
         };
+
+      $s.setFilterByEntireComment = function (comment) {
+        $s.filter =  comment;
+      };
+
+
     };
 
     let wordFromPhraseEraserCtrlr = ($s) => {
 
         $s.deleteWord = function () {
             let words = $s.phrase.split(' ');
-            if(words.indexOf(this.word) != -1) {
+            if(words.indexOf(this.word) !== -1) {
                 words.splice(words.indexOf(this.word), 1);
                 $s.phrase = words.join(' ');
             }
@@ -43,11 +49,14 @@
                 template:
                 "<li style='border-bottom: 1px lightgray solid;'" +
                     "ng-repeat=\"cmnt in comment.split('; ') track by $index\">" +
-                        "<span class=\"price-out-on-coming-pane comment-row\""+
+                  "<span class=\"price-out-on-coming-pane comment-row\""+
                             "ng-repeat=\"word in cmnt.split(' ') track by $index\" " +
                                 "ng-click=\"setFilter()\"> " +
                                     "{{word}}" +
-                        "</span>" +
+                  "</span>" +
+                  "<button class='glyphicon glyphicon-arrow-up add-comment-in-filter-btn'" +
+                      "ng-hide = 'cmnt.length === 0' ng-click = 'setFilterByEntireComment(cmnt)'>" +
+                  "</button>" +
                 "</li>",
                 controller: ($scope) => {
                     return phraseByWordToFilterCtrlr($scope);

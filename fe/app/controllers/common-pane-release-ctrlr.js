@@ -1,24 +1,24 @@
 let commonPaneReleaseCtrlr = ($s, itemFactory, filterFactory, paneFactory, printFactory, modalFactory, paneConfig) => {
 
     let config = paneFactory[paneConfig];
-    let httpService = paneFactory.getHttpService();
 
-    let getEmptyItem = itemFactory.itemConfig.getEmptyItem;
+    let getEmptyItem = itemFactory.itemConfig.getEmptyItem,
+      getEmptyDoc = itemFactory.documentConfig.getEmptyItem;
+
     $s.getEmptyBuyer = itemFactory.buyerConfig.getEmptyItem;
-    // $s.getEmptyBuyer = getEmptyBuyer;
     $s.item = getEmptyItem();
-
     $s.barcode = '';
-
     paneFactory.setPaneDefaults($s, {config, filterFactory});
-
     $s.filter = {visible: false, allowAllStocks: false, sortField: '$index', reverseOrder: false};
-
     $s.canRelease = false;
     $s.totals = { date: new Date, sum: 0, quantity: 0 };
 
     let getItems =(ean) => {
-        paneFactory.getItemsForRelease(config.getFindItemParams(ean, $s), config.findItemUrl, $s);
+      typeof config.getItems === 'function' ?
+        config.getItems(
+          angular.extend({}, {paneFactory}, config.getFindItemParams(ean, $s)),
+          config.findItemUrl, $s)
+        : paneFactory.getItemsForRelease(config.getFindItemParams(ean, $s), config.findItemUrl, $s);
     };
 
     $s.getItemsForReleaseByFilter = () => {
@@ -27,6 +27,11 @@ let commonPaneReleaseCtrlr = ($s, itemFactory, filterFactory, paneFactory, print
 
     $s.$watchCollection(config.watchingCollectionValue, (nv, ov) => {
       config.watchingCollectionFunc($s, nv, ov);
+    }, true);
+
+    $s.$watch('rows', (nv, ov) => {
+      if (typeof config.watchingRowsFunc === 'function')
+        config.watchingRowsFunc( $s, nv, ov, {paneFactory});
     }, true);
 
     $s.$watch('barcode', (nv) => {
@@ -52,18 +57,27 @@ let commonPaneReleaseCtrlr = ($s, itemFactory, filterFactory, paneFactory, print
       }
     };
 
-    $s.deleteRows =  (itemId) => {
+   $s.makeComing = () => {
+     config.makeComing($s, {paneFactory});
+   };
+
+   $s.deleteRows =  (itemId) => {
         paneFactory.deletePaneRows(
-          $s, config.getDeleteRowsConfig({getEmptyBuyer: $s.getEmptyBuyer, itemId}));
+          $s, config.getDeleteRowsConfig({
+            getEmptyDoc,
+            getEmptyBuyer: $s.getEmptyBuyer,
+            itemId
+          }));
     };
 
     $s.deleteRowsWithTracking =  (itemId) => {
       paneFactory.deletePaneRows($s,
           config.getDeleteRowsConfig({
-            getEmptyBuyer: $s.getEmptyBuyer, itemId, deletionTrackingUrl: config.deletionTrackingUrl
+            itemId,
+            getEmptyBuyer: $s.getEmptyBuyer,
+            deletionTrackingUrl: config.deletionTrackingUrl
           }));
     };
-
 
     $s.checkRows = () => {
         paneFactory.checkRows($s, paneFactory.user, config.checkRowsType);
@@ -72,7 +86,6 @@ let commonPaneReleaseCtrlr = ($s, itemFactory, filterFactory, paneFactory, print
     $s.$on("tabSelected", (event, data) => {
         if (data.event != null && paneFactory.paneToggler(data.pane) === config.paneId) {
             $s.blankSearch();
-            // $s.user = paneFactory.user;
         }
     });
 

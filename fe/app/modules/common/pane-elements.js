@@ -1,4 +1,5 @@
 import comingPaneTpl from '../coming/coming-pane.html';
+import newComingDocPaneTpl from '../coming/new-coming-doc.html';
 import soldPaneTpl from '../selling/sold-pane.html';
 import movingPaneTpl from '../moving/moving-pane.html';
 import sellingPaneTpl from '../selling/selling-pane.html';
@@ -47,10 +48,10 @@ import commonReleasePaneCtrlr from '../../controllers/common-pane-release-ctrlr.
             return {
                 restrict: 'E',
                 transclude: true,
-                controller: ['$scope', '$rootScope', '$http', function MyTabsController($scope) {
+                controller: ['$scope', 'paneFactory', '$rootScope', function MyTabsController($scope, paneFactory) {
                     let panes = $scope.panes = [];
 
-                    $scope.select = (pane, e) => {
+                    paneFactory.tabSelect = $scope.select = (pane, e) => {
                         angular.forEach(panes, pane => {
                             pane.selected = false;
                         });
@@ -111,6 +112,21 @@ import commonReleasePaneCtrlr from '../../controllers/common-pane-release-ctrlr.
                 }
             }
         })
+      .directive( "newComingDoc", () => {
+        return {
+          restrict: 'E',
+          transclude: true,
+          scope: {},
+          template: newComingDocPaneTpl,
+          controller: ($scope, itemFactory, filterFactory, paneFactory, printFactory, modalFactory ) => {
+            return commonReleasePaneCtrlr($scope,  itemFactory, filterFactory, paneFactory, printFactory, modalFactory, 'newComingDocConfig');
+          }
+          // ,
+          // link: (scope) => {
+          //   scope.resetFilter();
+          // }
+        }
+      })
         .directive( "sellingPane", () => {
           return {
             restrict: 'E',
@@ -132,7 +148,6 @@ import commonReleasePaneCtrlr from '../../controllers/common-pane-release-ctrlr.
             scope: {},
             template: movingPaneTpl,
             controller: ($scope, itemFactory, filterFactory, paneFactory, printFactory, modalFactory ) => {
-
                 return commonReleasePaneCtrlr($scope,  itemFactory, filterFactory, paneFactory, printFactory, modalFactory, 'movingPaneConfig');
             },
             link: (scope) => {
@@ -402,11 +417,25 @@ import commonReleasePaneCtrlr from '../../controllers/common-pane-release-ctrlr.
                 "{{ ((100 * $ctrl.priceOut / $ctrl.price)-100).toFixed(1) + '%'}}</span>",
         controller: function() {}
     })
+      // .component( "sectionOverheadPercentLimNotification", {
+      //   bindings: {
+      //     percent: '<'
+      //   },
+      //   template:
+      //   "<span class='input-notification'" +
+      //       "ng-show='$ctrl.percent'>" +
+      //           "Ограничение наценки:" +
+      //           "<span>{$ctrl.percent}}%</span>" +
+      //   "</span>",
+      //   controller: function() {}
+      // })
       .component( "sectionOverheadPercentageIndicator", {
         bindings: {
+          descr: '@?',
           percentage: '<'
         },
         template:
+          "<span ng-show='$ctrl.percentage'>{{$ctrl.descr}}</span>" +
           "<span class='overhead-percentage'" +
           "ng-show='$ctrl.percentage > 0'>" +
           "{{ $ctrl.percentage + '%'}}</span>",

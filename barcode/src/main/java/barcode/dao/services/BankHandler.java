@@ -20,13 +20,9 @@ public class BankHandler extends EntityHandlerImpl{
     private ResponseItem<Bank> update(Bank newBank, Bank bank) {
 
         ResponseItem<Bank> responseItem = new ResponseItem<Bank>();
-
         bank.setName(newBank.getName());
-
         bank.setAddress(newBank.getAddress());
-
         bank.setCode(newBank.getCode());
-
         bankRepository.save(bank);
 
         return new ResponseItem<Bank>("Добавлен банк '" + bank.getName() + "'", true, bank);
@@ -50,8 +46,8 @@ public class BankHandler extends EntityHandlerImpl{
 
     public ResponseItem<Bank> addItem(Bank newBank) {
 
-        if ((bankRepository.findByNameIgnoreCase(newBank.getName()) == null) &&
-                (bankRepository.findByCodeIgnoreCase(newBank.getCode()) == null))
+        if (bankRepository.findByNameIgnoreCase(newBank.getName()) == null)
+//            && (bankRepository.findByCodeIgnoreCase(newBank.getCode()) == null))
             return update(newBank, new Bank());
 
         else
@@ -64,9 +60,9 @@ public class BankHandler extends EntityHandlerImpl{
                 !bankRepository.findByNameIgnoreCase(newBank.getName()).getId().equals(newBank.getId()))
                         return setToNameIncorrectEntityFields(newBank, stringsToList(ENTITY_NAME));
 
-        if((bankRepository.findByCodeIgnoreCase(newBank.getCode()) != null) &&
-                !bankRepository.findByCodeIgnoreCase(newBank.getCode()).getId().equals(newBank.getId()))
-                    return  setToNameIncorrectEntityFields(newBank, stringsToList(ENTITY_BANK_CODE));
+//        if((bankRepository.findByCodeIgnoreCase(newBank.getCode()) != null) &&
+//                !bankRepository.findByCodeIgnoreCase(newBank.getCode()).getId().equals(newBank.getId()))
+//                    return  setToNameIncorrectEntityFields(newBank, stringsToList(ENTITY_BANK_CODE));
 
         return update(newBank, this.getItemById(newBank.getId()));
     }

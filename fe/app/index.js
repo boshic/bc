@@ -11,7 +11,7 @@ import './modules/common/text-utils';
 import './modules/filter/common-filter';
 import './modules/reports/print-menu';
 import './modules/coming/coming-item';
-import './modules/coming/new-coming-doc';
+// import './modules/coming/new-coming-doc';
 // import './modules/selling/selling-pane';
 
 import './factories/http-service';
@@ -24,7 +24,9 @@ import './factories/pane-factory';
     'common-http-service', 'user-service', 'pane-factory', 'buyer-factory',
     'inputs', 'modals', 'common-filter',
     'pane-elements', 'text-utils', 'print-menu',
-     'coming-item', 'new-coming-doc', 'userInfo'])
+     'coming-item',
+      // 'new-coming-doc',
+      'userInfo'])
       .run(['itemFactory', 'userInfo', 'paneFactory', 'userService', Run]);
 
   function Run (itemFactory, userInfo, paneFactory, userService) {

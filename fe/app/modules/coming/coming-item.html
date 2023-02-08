@@ -48,6 +48,8 @@
         <table class="table" style="margin-bottom: 1%">
             <thead>
             <tr>
+                <td>Цена изготовителя (ЦПП)</td>
+                <td>Наценка поставщика</td>
                 <td>Сумма по документу</td>
                 <td>Цена розничная</td>
                 <td>Количество</td>
@@ -55,6 +57,14 @@
             </thead>
             <tbody>
             <tr>
+                <td class="comingdetails">
+                    <input title="Цена изготовителя (ЦПП)" type="number" min="0"
+                           class="form-control" ng-model="coming.firstImpPrice"/>
+                </td>
+                <td class="comingdetails">
+                    <input title="Наценка поставщика" type="number"
+                           class="form-control" ng-model="coming.impOverheadPerc"/>
+                </td>
                 <td class="comingdetails">
                     <!--<pane-quantity-input value-field="sum" input-value="coming"-->
                                          <!--change-value="getPriceIn()"></pane-quantity-input>-->
@@ -73,6 +83,8 @@
                 </td>
             </tr>
             <tr>
+                <td class="comingdetails"></td>
+                <td class="comingdetails"></td>
                 <td title="цена прихода" class="comingdetails">{{ coming.price }}</td>
                 <td title="сумма по продажной цене" class="comingdetails">
                     {{(coming.quantity*coming.priceOut).toFixed(2)}}

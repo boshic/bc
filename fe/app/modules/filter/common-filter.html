@@ -48,16 +48,18 @@
         <label style="margin-left: 5%" class="filter-checkbox-name">
             Группировать по товару: {{(filter.groupByItems) ? "Да" : "Нет"}}
         </label>
-    </li>
+<!--    </li>-->
 
-    <li class="filter-row"
-        ng-click="checkGroupSettings('groupBySections')"
-        ng-hide="filter.searchString.length > 0 || filter.item.id > 0 || filter.compositeItem.id > 0"
-        ng-if = "filter.groupBySections != null">
-        <input class="filter-checkbox-input" type="checkbox" ng-model="filter.groupBySections"/>
-        <label style="margin-left: 5%" class="filter-checkbox-name">
-            Группировать по секциям: {{(filter.groupBySections) ? "Да" : "Нет"}}
-        </label>
+<!--    <li class="filter-row"-->
+        <span>, </span>
+        <span style="margin-left: 2%" ng-click="checkGroupSettings('groupBySections')"
+            ng-hide="filter.searchString.length > 0 || filter.item.id > 0 || filter.compositeItem.id > 0"
+            ng-if = "filter.groupBySections != null">
+            <input class="filter-checkbox-input" type="checkbox" ng-model="filter.groupBySections"/>
+            <label style="margin-left: 5%" class="filter-checkbox-name">
+                Группировать по секциям: {{(filter.groupBySections) ? "Да" : "Нет"}}
+            </label>
+        </span>
     </li>
 
 
@@ -84,7 +86,6 @@
             Разрешить автоподбор с пустым фильтром: {{(filter.allowUploadingWithBlankFilter) ? "Да" : "Нет"}}
         </label>
     </li>
-
 
     <li class="filter-row" style="display: inline-flex;" ng-if = "filter.rowsOnPage != null">
         <input class="form-control" style="width: 30%;" type="number" min="1"
@@ -143,7 +144,18 @@
         <doc-input doc="filter.document"></doc-input>
     </li>
 
-    <li class="filter-row" ng-if = "filter.buyer != null">
+    <li class="filter-row"
+        ng-if = "filter.showNotForDeductions != null"
+        ng-hide="filter.buyer.id > 0">
+        <input class="filter-checkbox-input" type="checkbox" ng-model="filter.showNotForDeductions"/>
+        <label style="margin-left: 5%" class="filter-checkbox-name">
+            Выводить покупателей, не используемых для вычетов: {{(filter.showNotForDeductions) ? "Да" : "Нет"}}
+        </label>
+    </li>
+
+    <li class="filter-row"
+        ng-hide="filter.showNotForDeductions === false"
+        ng-if = "filter.buyer != null">
         <buyer-input buyer="filter.buyer" buyers="filter.buyers"></buyer-input>
     </li>
 

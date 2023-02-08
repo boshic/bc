@@ -60,7 +60,7 @@ public class ResponseBySoldItems extends ResponseItemExt<SoldItem>
             BuyerHandler.getDtoBuyers(
                 new JPAQuery<Tuple>(em)
                     .from(soldItem).where(predicate)
-                    .select(soldItem.buyer.id, soldItem.buyer.name)
+                    .select(soldItem.buyer.id, soldItem.buyer.name, soldItem.buyer.debt)
                     .distinct().orderBy(soldItem.buyer.name.asc()).fetch()
             )
         );

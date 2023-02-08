@@ -18,6 +18,10 @@ public class Buyer extends BasicCounterPartyEntity {
     @Column(name = "exclude_expenses_from_income", columnDefinition="tinyint(1) default 0")
     private Boolean excludeExpensesFromIncome;
 
+    @Column(name = "do_not_use_for_deductions", columnDefinition="tinyint(1) default 0")
+    private Boolean doNotUseForDeductions;
+
+    @Column(name = "debt", columnDefinition="Decimal(12,2) default '0.00'")
     private BigDecimal debt;
 
     @Column(name = "discount")
@@ -100,6 +104,14 @@ public class Buyer extends BasicCounterPartyEntity {
 
     public void setInvoiceDaysValid(Integer invoiceDaysValid) {
         this.invoiceDaysValid = invoiceDaysValid;
+    }
+
+    public Boolean getDoNotUseForDeductions() {
+        return doNotUseForDeductions;
+    }
+
+    public void setDoNotUseForDeductions(Boolean doNotUseForDeductions) {
+        this.doNotUseForDeductions = doNotUseForDeductions;
     }
 }
 

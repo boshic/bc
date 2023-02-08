@@ -9,11 +9,12 @@
         <td style="width: 7%;">Ставка НДС %</td>
         <td style="width: 9%;">Сумма НДС, руб.,коп.</td>
         <td style="width: 9%;">Сумма с НДС, руб.,коп.</td>
+<!--        <td>Примечание</td>-->
     </thead>
     <tbody>
         <tr ng-repeat="x in data.rows track by $index">
             <td class="invoice-body-row">{{ $index + 1 }}</td>
-            <td>{{ x.item.name + "(код " + x.item.ean + ")" }}</td>
+            <td>{{ x.item.name }}</td>
             <td class="invoice-body-row">{{ x.item.unit }}</td>
             <td class="invoice-body-row">{{ x.quantity }}</td>
             <td class="invoice-body-row">{{ x.woVatPrice.toFixed(2)}}</td>
@@ -23,9 +24,10 @@
             <td class="invoice-body-row" ng-if="x.vat == 0">Без НДС</td>
             <td class="invoice-body-row" ng-if="x.vat > 0">{{ x.vatSum.toFixed(2) }}</td>
             <td class="invoice-body-row">{{ x.sum.toFixed(2) }}</td>
+<!--            <td class="invoice-body-row">{{ x.comment }}</td>-->
         </tr>
     </tbody>
-    <tfoot class="invoice-body-header">
+    <tfoot class="invoice-body-header" style="font-weight: bold;">
         <td colspan="3" style="text-align: right;">Итого:</td>
         <td class="price-data invoice-body">{{data.totals.quantity}}</td>
         <td></td>

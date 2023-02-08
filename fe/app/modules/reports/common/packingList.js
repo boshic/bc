@@ -11,8 +11,9 @@ import '../../../modules/common/text-utils';
 import '../../../modules/inputs/inputs';
 import '../../../modules/reports/print-menu';
 import '../../../filters/num-2-phrase';
+// import './parts/common-reports-parts';
 
-import '../../../../css/writeOffAct.css';
+import '../../../../css/packingList.css';
 
 (function() {
 
@@ -27,23 +28,29 @@ import '../../../../css/writeOffAct.css';
     });
 })();
 
+let tnComment = "Товар не входит в Перечень 1 ПСМ No713 от 19.10.22";
+let accompDocs = "товарная накладная № _______ серия ____";
+let overheadRestricted = "цена импортера: _______, опт.надб.: ____ %";
 
 let openTextEditModal = ($s, index, modalFactory) => {
     let row;
+    let isTablesRow = (index >= 0);
     if(angular.isDefined(index))
-        row = angular.extend($s.reportData.rows[index], {commentCause:'Причина списания'});
-    else
-        row = {commentCause:'Причина списания', comment: $s.reportData.rows[0].comment};
-    $s.modalClose = () => {
-        if(!angular.isDefined(index))
-            if (confirm("Подтвердите добавление причины списания для всех строк"))
-                $s.reportData.rows.map((r) => {r.comment = row.comment});
+        row = (isTablesRow) ? angular.extend($s.reportData.rows[index], {commentCause:'Строки примечания'})
+              : {commentCause:'Комментарий к накладной', comment: $s.reportData[index]};
+
+     $s.modalClose = () => {
+        if(!isTablesRow)
+          $s.reportData[index] = row.comment;
+
+        window.document.title = $s.reportData.accompDocs + " "
+          + $s.reportData.buyer.name + " от " + $s.reportData.dateLocal;
     };
+
     modalFactory.openModal(undefined, [row], $s.modalData);
 };
 
-
-        let writeOffAct =  angular.module('writeOffAct', [
+        let packingList =  angular.module('packingList', [
             'text-utils',
             'inputs',
             'modals',
@@ -52,6 +59,7 @@ let openTextEditModal = ($s, index, modalFactory) => {
             'pane-factory',
             'print-menu',
             'invoice-factory',
+            // 'common-reports-parts',
             'common-http-service'
         ])
             .controller("ctrlr", ['invoiceFactory', '$location', '$window', 'httpService', '$scope',
@@ -65,18 +73,31 @@ let openTextEditModal = ($s, index, modalFactory) => {
                         openTextEditModal($scope, index, modalFactory);
                     };
 
-                    httpService.getItemById({id:$location.search().id, url:'getWriteOffActById'}).then(
+                    httpService.getItemById({id:$location.search().id, url:'getInvoiceById'}).then(
                         resp => {
                             $scope.reportData  = resp;
                             $scope.reportData.totals = invoiceFactory.getTotals(resp);
                             $scope.reportData.showStamp = JSON.parse($location.search().stamp);
-                            //
-                            $timeout(
-                                () => {
-                                    $window.document.title = resp.buyer.name + " №" +
-                                        resp.id + " от " + new Date(resp.date).toLocaleDateString();
-                                    $window.print();
-                                }, 200);
+                            $scope.reportData.shipmentBasedOn = "счет-фактура " + " №" +
+                                    resp.id + " от " + new Date(resp.date).toLocaleDateString();
+                            $scope.reportData.rows.map((r) => {
+                              r.comment = tnComment;
+                              if (r.item.section.percOverheadLimit > 0)
+                                r.comment = overheadRestricted;
+                            });
+                            $scope.reportData.accompDocs = accompDocs;
+                            $scope.reportData.dateLocal = new Date(resp.date).toLocaleString(
+                              'ru', {
+                              year: 'numeric',
+                              month: 'long',
+                              day: 'numeric'
+                            });
+                            // $timeout(
+                            //     () => {
+                            //         $window.document.title = "ТН " + resp.buyer.name + "по счету " +
+                            //             resp.id + " от " + resp.dateLocal;
+                            //         // $window.print();
+                            //     }, 200);
                         },
                         resp => { console.log(resp); }
                     );
@@ -87,11 +108,6 @@ let openTextEditModal = ($s, index, modalFactory) => {
                     requireBase: false
                 });
             }]);
-
-
-        // angular.bootstrap(document, ['writeOffAct']);
-//     }
-// );
 
 (function() {
 
@@ -107,7 +123,7 @@ let openTextEditModal = ($s, index, modalFactory) => {
       angular.module('userInfo', []).constant('userInfo', success.data);
 
       angular.element(document).ready(function() {
-        angular.bootstrap(document, ['writeOffAct']);
+        angular.bootstrap(document, ['packingList']);
       });
     });
 })();

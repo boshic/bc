@@ -1,8 +1,8 @@
 <div ng-transclude></div>
-<div class="item-input-on-panes"
-        ng-show="item.name.length > 0">
-    <item-input item="item" stock="stock" get-items="getItemsWithItemInput"></item-input>
-</div>
+<!--<div class="item-input-on-panes"-->
+<!--        ng-show="item.name.length > 0">-->
+<!--    <item-input item="item" stock="stock" get-items="getItemsWithItemInput"></item-input>-->
+<!--</div>-->
 <div>
     <quantity-changer-modal
             check-input = 'checkRows()'
@@ -27,13 +27,22 @@
 
     <button class='glyphicon glyphicon-arrow-up pane-searchinput-btn'
             title="искать по наименованию"
-            ng-disabled = "barcode.length === 0"
-            ng-click="editItem(barcode)">
+            ng-disabled = "barcode.length === 0
+            || filter.invoiceNumber > 0
+            || requestParams.requestsQuantity > 0"
+            ng-click="filter.searchString = barcode;getItemsForReleaseByFilter()">
     </button>
 
-    <div>
+    <div ng-class="{'filter-on-release-pane-enabled':
+                    filter.searchString.length > 0
+                    || filter.document.id > 0
+                    || filter.supplier.id > 0
+                    || filter.section.id > 0
+                    || filter.sectionPart.length > 0
+                    || filter.item.id > 0}">
+<!--        !rows.length &&-->
         <filter-panel-on-release-pane
-                pane-is-visible = "!rows.length && requestParams.requestsQuantity == 0
+                pane-is-visible = "requestParams.requestsQuantity == 0
                         && (user.role == 'ROLE_ADMIN' || user.actsAllowed.indexOf('sellFromAllStocks')>-1)"
                 filter = 'filter' reset-filter = 'resetFilter()' get-items = 'getItemsForReleaseByFilter()'>
         </filter-panel-on-release-pane>
@@ -150,7 +159,7 @@
                 <td class="text-table-row" title="Текущее количество">{{ x.currentQuantity }}</td>
                 <td class="hoverable common-number-input" title="ставка НДС">
                     <pane-quantity-input value-field="vat" input-value="x"
-                                         change-value="checkRows()"></pane-quantity-input>
+                                         change-value = "checkRows()"></pane-quantity-input>
                 </td>
                 <td class="hoverable for-sale"
                     ng-class="{'warning-input': x.quantity === 0 || x.quantity === null}"
@@ -166,10 +175,13 @@
                     <pane-quantity-input value-field="price" read-only="buyer.sellByComingPrices"
                                          input-value="x" change-value="checkRows()"></pane-quantity-input>
                 </td>
-                <td class="text-table-row" title="Сумма">{{ (x.quantity * x.price).toFixed(2) }}
+                <td class="text-table-row" title="Сумма">
+                    <span ng-class="{'discounted-sum': buyer.discount > 0}">
+                        {{ (x.quantity * x.price).toFixed(2) }}
+                    </span>
                     <div>
                         <span class="price-out-on-coming-pane" title="Сумма со скидкой" ng-if="buyer.discount > 0">
-                            {{ (x.quantity*(getDiscountedPrice(x.price, buyer.discount))).toFixed(2) }}
+                            {{ (x.quantity*(x.price - x.price * buyer.discount/100)).toFixed(2) }}
                         </span>
                     </div>
                 </td>
