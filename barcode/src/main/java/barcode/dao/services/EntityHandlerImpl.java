@@ -3,6 +3,7 @@ package barcode.dao.services;
 
 import barcode.api.EntityHandler;
 import barcode.dao.entities.ItemSection;
+import barcode.dao.entities.SoldItem;
 import barcode.dao.entities.Stock;
 import barcode.dao.entities.basic.BasicCounterPartyEntity;
 import barcode.dao.entities.basic.BasicEntity;
@@ -138,7 +139,6 @@ public class EntityHandlerImpl implements EntityHandler {
     String getQuantityForComment (BigDecimal quantity) {
 
         BigDecimal fraction = quantity.remainder(BigDecimal.ONE);
-
         return " " + (fraction.compareTo(BigDecimal.ZERO) > 0 ? quantity.toString() : quantity.toBigInteger().toString()) + COMMON_UNIT;
     }
 
@@ -151,7 +151,6 @@ public class EntityHandlerImpl implements EntityHandler {
 
         return result;
     }
-
 
     public Date getDateOnly(final Date date) {
         final Calendar cal = Calendar.getInstance();

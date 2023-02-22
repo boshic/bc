@@ -292,17 +292,24 @@ public class SoldItemHandler extends EntityHandlerImpl {
                         soldItem.getComing().getItem().getId(),
                         soldItem.getComing().getStock().getId());
 
-//                BigDecimal reqForSell = soldItem.getQuantity();
                 BigDecimal reqForSell = getRequeredQuantityForSell(
                         checkedItems.getEntityItems(), soldItem.getComing().getItem().getEan());
 
                 BigDecimal availQuantityByEan = comingItemHandler.getAvailQuantityByEan(comings);
                 BigDecimal availQuantityByEanAfterSell = availQuantityByEan.subtract(reqForSell);
 
-                if(reqForSell.compareTo(availQuantityByEan) > 0  || comings.size() == 0)
+                if(reqForSell.compareTo(availQuantityByEan) > 0  || comings.size() == 0) {
+
+                    receiptHandler.modifyReceiptBySoldItems(receipt,
+                        soldItems.stream().filter(SoldItem::getSold).collect(Collectors.toList()));
+
+                    soldItem.setQuantity(BigDecimal.ZERO);
                     return new ResponseItem<>(
                         getInsufficientQuantityOfGoodsMessage(
-                            reqForSell, availQuantityByEan, soldItem.getComing().getItem().getName()), false);
+                            reqForSell, availQuantityByEan, soldItem.getComing().getItem().getName()),
+                        soldItems.stream().filter(s -> !s.getSold()).collect(Collectors.toList()),
+                        false);
+                }
 
                 for (ComingItem coming: comings) {
                     BigDecimal availQuantByComing = coming.getCurrentQuantity();
@@ -396,6 +403,7 @@ public class SoldItemHandler extends EntityHandlerImpl {
                         newSoldItem.setReceipt(receipt);
 
                         soldItemsRepository.save(newSoldItem);
+                        soldItem.setSold(true);
 
                         if (reqForSell.compareTo(BigDecimal.ZERO) == 0) break;
 
@@ -850,4 +858,3 @@ public ResponseItem addOneSelling(SoldItem soldItem) {
     }
 
 }
-

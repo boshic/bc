@@ -228,6 +228,26 @@ import invoicesPaneConfig from '../modules/selling/invoices-pane-config';
                     });
                 };
 
+                let setUnsoldRows = (rowsIn, rowsOut) => {
+                  let index = 0;
+                  rowsIn.forEach(row => {
+                    index = checkDuplicateRowsByItem(row.coming.item.id, rowsOut);
+                    if (index < 0) {
+                      row.item = row.coming.item;
+                      row.vat = row.coming.stock.organization.vatValue;
+                      rowsOut.push(row);
+                    }
+                  });
+                };
+
+                  let getRowWhenGetItemsForRelease = (row, stock) => {
+                    row.coming = { item: row.item, stock };
+                    row.priceIn = row.price;
+                    row.price = row.priceOut;
+                    row.vat = stock.organization.vatValue;
+                    return row;
+                  };
+
                 return {
                     user,
                     fractionalUnits,
@@ -328,6 +348,12 @@ import invoicesPaneConfig from '../modules/selling/invoices-pane-config';
                                     resp => {
                                         if (resp.success)
                                             successSound.play();
+                                        else {
+                                          $s.canRelease = false;
+                                          $s.buyer = $s.getEmptyBuyer();
+                                          setUnsoldRows(resp.entityItems, $s.rows);
+                                          failSound.play();
+                                        }
                                         $s.warning = resp.text;
                                     },
                                     (resp) => {
@@ -367,13 +393,14 @@ import invoicesPaneConfig from '../modules/selling/invoices-pane-config';
                                 if (resp.success) {
                                     $s.warning ="";
                                     let stock = angular.isDefined($s.stock) ? $s.stock : $s.filter.stock;
-                                    let row = resp.entityItem;
-                                    row.coming = {
-                                        item: row.item, stock
-                                    };
-                                    row.priceIn = row.price;
-                                    row.price = row.priceOut;
-                                    row.vat = stock.organization.vatValue;
+                                    // let row = resp.entityItem;
+                                    let row = getRowWhenGetItemsForRelease(resp.entityItem, stock);
+                                    // row.coming = {
+                                    //     item: row.item, stock
+                                    // };
+                                    // row.priceIn = row.price;
+                                    // row.price = row.priceOut;
+                                    // row.vat = stock.organization.vatValue;
 
                                     let index = checkDuplicateRowsByItem(row.item.id, $s.rows);
                                     let isFractional = fractionalUnits.indexOf(row.item.unit) >= 0;
@@ -417,11 +444,14 @@ import invoicesPaneConfig from '../modules/selling/invoices-pane-config';
                                   resp.entityItems.forEach(row => {
                                       index = checkDuplicateRowsByItem(row.item.id, $s.rows);
                                       if (index < 0) {
-                                        row.coming = {item : row.item, stock: row.stock};
-                                        row.vat = row.stock.organization.vatValue;
+                                        // setRowWhenGetItemsForRelease(row, row.stock);
+                                        // row.coming = {item : row.item, stock: row.stock};
+                                        // row.vat = row.stock.organization.vatValue;
+                                        // row.priceIn = row.price;
+                                        // row.price = row.priceOut;
                                         // row.buyer = $s.buyer;
                                         // row.comment =  (row.comment !== null && row.comment.length > 0) ? row.comment : '';
-                                        $s.rows.push(row);
+                                        $s.rows.push(getRowWhenGetItemsForRelease(row, row.stock));
                                       }
                                     });
                                     if (angular.isDefined($s.buyer) && ($s.filter.invoiceNumber > 0 )) {

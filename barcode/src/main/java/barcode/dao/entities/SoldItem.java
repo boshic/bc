@@ -2,6 +2,7 @@ package barcode.dao.entities;
 
 
 import barcode.dao.entities.basic.BasicOperationWithCommentEntity;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.querydsl.core.annotations.QueryInit;
 import javax.persistence.*;
 import java.math.BigDecimal;
@@ -40,6 +41,10 @@ public class SoldItem extends BasicOperationWithCommentEntity {
 
     @Transient
     private BigDecimal incomeSumPercent;
+
+    @Transient
+    @JsonIgnore
+    private Boolean sold = false;
 
     @Column(columnDefinition="Decimal(19,3)")
     private BigDecimal quantity;
@@ -191,5 +196,13 @@ public class SoldItem extends BasicOperationWithCommentEntity {
 
     public void setMayBeError(Boolean mayBeError) {
         this.mayBeError = mayBeError;
+    }
+
+    public Boolean getSold() {
+        return sold;
+    }
+
+    public void setSold(Boolean sold) {
+        this.sold = sold;
     }
 }
