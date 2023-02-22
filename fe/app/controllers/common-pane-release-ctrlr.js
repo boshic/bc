@@ -1,12 +1,11 @@
 let commonPaneReleaseCtrlr = ($s, itemFactory, filterFactory, paneFactory, printFactory, modalFactory, paneConfig) => {
 
     let config = paneFactory[paneConfig];
+    let getEmptyDoc = itemFactory.documentConfig.getEmptyItem;
 
-    let getEmptyItem = itemFactory.itemConfig.getEmptyItem,
-      getEmptyDoc = itemFactory.documentConfig.getEmptyItem;
-
+    $s.getEmptyItem = itemFactory.itemConfig.getEmptyItem
     $s.getEmptyBuyer = itemFactory.buyerConfig.getEmptyItem;
-    $s.item = getEmptyItem();
+    $s.item = $s.getEmptyItem();
     $s.barcode = '';
     paneFactory.setPaneDefaults($s, {config, filterFactory});
     $s.filter = {visible: false, allowAllStocks: false, sortField: '$index', reverseOrder: false};
@@ -98,7 +97,7 @@ let commonPaneReleaseCtrlr = ($s, itemFactory, filterFactory, paneFactory, print
     };
 
     $s.editItem = (barcode) => {
-        $s.item = angular.extend(getEmptyItem(), {name: barcode});
+        $s.item = angular.extend($s.getEmptyItem(), {name: barcode});
     };
 
     $s.setReportData = () => {
@@ -108,7 +107,7 @@ let commonPaneReleaseCtrlr = ($s, itemFactory, filterFactory, paneFactory, print
     $s.blankSearch = () => {
         $s.warning = '';
         $s.barcode = '';
-        $s.item = getEmptyItem();
+        $s.item = $s.getEmptyItem();
         if(paneFactory.searchInputAutoFocusEnabled)
             paneFactory.changeElementState(document.getElementById($s.searchInputId), ['focus']);
         if(typeof config.doAfterBlankSearch === 'function')

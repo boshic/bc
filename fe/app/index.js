@@ -25,23 +25,20 @@ import './factories/pane-factory';
     'inputs', 'modals', 'common-filter',
     'pane-elements', 'text-utils', 'print-menu',
      'coming-item',
-      // 'new-coming-doc',
       'userInfo'])
-      .run(['itemFactory', 'userInfo', 'paneFactory', 'userService', Run]);
+      .run(['itemFactory', '$rootScope', Run]);
 
-  function Run (itemFactory, userInfo, paneFactory, userService) {
+  function Run (itemFactory, $rootScope) {
     itemFactory.getStocks()
       .then(
         resp => {
-          itemFactory.stocks = resp;
+          // itemFactory.stocks = resp;
+          $rootScope.$broadcast('StocksPrepared', resp);
         },
         () => {
         console.log('Список складов не загружен!')
       });
-    // userService.user = userInfo;
-    // paneFactory.user = userInfo;
   };
-
 
 (function() {
 
@@ -56,12 +53,10 @@ import './factories/pane-factory';
       // Define a 'userInfo' module.
       angular.module('userInfo', []).constant('userInfo', success.data);
 
-      angular.element(document).ready(function() {
+          angular.element(document).ready(function() {
         angular.bootstrap(document, ['barcode']);
       });
     });
 })();
 
-
 console.log('starting');
-

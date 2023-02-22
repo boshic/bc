@@ -160,7 +160,8 @@ public class SoldItemHandler extends EntityHandlerImpl {
     }
 
     private BigDecimal getPriceOfSoldItem(SoldItem soldItem, BigDecimal priceIn) {
-        return soldItem.getBuyer().getSellByComingPrices() ? priceIn : soldItem.getPrice();
+        return soldItem.getBuyer().getSellByComingPrices() ?
+            priceIn : CommonUtils.validateBigDecimal(soldItem.getPrice());
     }
 
 
@@ -299,12 +300,9 @@ public class SoldItemHandler extends EntityHandlerImpl {
                 BigDecimal availQuantityByEanAfterSell = availQuantityByEan.subtract(reqForSell);
 
                 if(reqForSell.compareTo(availQuantityByEan) > 0  || comings.size() == 0)
-                    return new ResponseItem<>(getInsufficientQuantityOfGoodsMessage(
-                                    reqForSell, availQuantityByEan, soldItem.getComing().getItem().getName()
-                    ),
-                            false);
-
-//                availQuantityByEan = availQuantityByEan.subtract(reqForSell);
+                    return new ResponseItem<>(
+                        getInsufficientQuantityOfGoodsMessage(
+                            reqForSell, availQuantityByEan, soldItem.getComing().getItem().getName()), false);
 
                 for (ComingItem coming: comings) {
                     BigDecimal availQuantByComing = coming.getCurrentQuantity();
@@ -635,15 +633,13 @@ public class SoldItemHandler extends EntityHandlerImpl {
 
             newSoldItem.setPrice(getPriceOfSoldItem(soldItem, comings.get(0).getPriceIn()));
             newSoldItem.setSum(
-                newSoldItem.getPrice()
+                CommonUtils.validateBigDecimal(newSoldItem.getPrice())
                     .multiply(newSoldItem.getQuantity())
                     .setScale(2, BigDecimal.ROUND_HALF_UP)
             );
             newSoldItem.setVat(soldItem.getVat());
 
             soldItemsRepository.save(newSoldItem);
-
-
 
         }
 

@@ -39,6 +39,48 @@ public class MovingHandler extends EntityHandlerImpl {
         return userHandler.checkUser(user, AUTO_MOVING_MAKER).getFullName();
     }
 
+    private void setCommonMovingFields(ComingItem coming,
+                                       ComingItem newComing,
+                                       SoldItem moving,
+                                       Long stockId) {
+
+        newComing.setFirstImpPrice(CommonUtils.validateBigDecimal(coming.getFirstImpPrice()));
+        newComing.setImpOverheadPerc(CommonUtils.validateBigDecimal(coming.getImpOverheadPerc()));
+        newComing.setComments(new ArrayList<>());
+        newComing.setComment(
+            this.buildComment(newComing.getComments(),
+                "c " + coming.getStock().getName() +
+                    " на " + this.stockHandler.getStockById(stockId).getName() +
+                    getQuantityForComment(moving.getQuantity())
+                    + CommonUtils.validateString(moving.getComment()),
+                getCheckedUserName(moving.getUser()),
+                CommentAction.MOVE_COMMENT.getAction(), newComing.getCurrentQuantity()));
+
+        newComing.setStock(this.stockHandler.getStockById(stockId));
+        newComing.setUser(moving.getUser());
+        newComing.setDate(new Date());
+        newComing.setLastChangeDate(new Date());
+        newComing.setPriceIn(coming.getPriceIn());
+        newComing.setPriceOut(moving.getPrice());
+        newComing.setDoc(coming.getDoc());
+        newComing.setItem(coming.getItem());
+        coming.setLastChangeDate(new Date());
+    }
+
+    private void setCommentForChangedComing(ComingItem coming,
+                                    Long stockId,
+                                    SoldItem moving) {
+        coming.setComment(
+            this.buildComment(coming.getComments(),
+                "c " + coming.getStock().getName() +
+                    " на " + this.stockHandler.getStockById(stockId).getName()
+                    + getQuantityForComment(moving.getQuantity())
+                    + CommonUtils.validateString(moving.getComment()),
+                getCheckedUserName(moving.getUser()),
+                CommentAction.MOVE_COMMENT.getAction(), coming.getCurrentQuantity()));
+
+    }
+
 public ResponseItem makeMovings(Set<SoldItem> movings, Long stockId) {
 
         synchronized (comingItemHandler) {
@@ -64,25 +106,26 @@ public ResponseItem makeMovings(Set<SoldItem> movings, Long stockId) {
                     if(availQuant.compareTo(BigDecimal.ZERO) > 0) {
 
                         ComingItem newComing = new ComingItem();
-                        newComing.setComments(new ArrayList<>());
-                        newComing.setComment(
-                                this.buildComment(newComing.getComments(),
-                                        "c " + coming.getStock().getName() +
-                                                " на " + this.stockHandler.getStockById(stockId).getName() +
-                                                getQuantityForComment(moving.getQuantity())
-                                                + (CommonUtils.validateString(moving.getComment())),
-                                        getCheckedUserName(moving.getUser()),
-                                    CommentAction.MOVE_COMMENT.getAction(), newComing.getCurrentQuantity()));
-
-                        newComing.setUser(moving.getUser());
-                        newComing.setDate(new Date());
-                        newComing.setLastChangeDate(new Date());
-                        newComing.setPriceIn(coming.getPriceIn());
-                        newComing.setPriceOut(moving.getPrice());
-                        newComing.setDoc(coming.getDoc());
-                        newComing.setItem(coming.getItem());
-                        newComing.setStock(this.stockHandler.getStockById(stockId));
-                        coming.setLastChangeDate(new Date());
+//                        newComing.setComments(new ArrayList<>());
+//                        newComing.setComment(
+//                                this.buildComment(newComing.getComments(),
+//                                        "c " + coming.getStock().getName() +
+//                                                " на " + this.stockHandler.getStockById(stockId).getName() +
+//                                                getQuantityForComment(moving.getQuantity())
+//                                                + (CommonUtils.validateString(moving.getComment())),
+//                                        getCheckedUserName(moving.getUser()),
+//                                    CommentAction.MOVE_COMMENT.getAction(), newComing.getCurrentQuantity()));
+//
+//                        newComing.setStock(this.stockHandler.getStockById(stockId));
+//                        newComing.setUser(moving.getUser());
+//                        newComing.setDate(new Date());
+//                        newComing.setLastChangeDate(new Date());
+//                        newComing.setPriceIn(coming.getPriceIn());
+//                        newComing.setPriceOut(moving.getPrice());
+//                        newComing.setDoc(coming.getDoc());
+//                        newComing.setItem(coming.getItem());
+//                        coming.setLastChangeDate(new Date());
+                        setCommonMovingFields(coming, newComing, moving, stockId);
 
                         if (reqForMove.compareTo(availQuant) > 0) {
                             moving.setQuantity(reqForMove.subtract(availQuant));
@@ -105,15 +148,16 @@ public ResponseItem makeMovings(Set<SoldItem> movings, Long stockId) {
                         newComing.setSum(newComing.getPriceIn().multiply(newComing.getCurrentQuantity())
                                 .setScale(2, BigDecimal.ROUND_HALF_UP));
 
+                        setCommentForChangedComing(coming, stockId, moving);
                         if(coming.getQuantity().compareTo(BigDecimal.ZERO) == 0) {
-                            coming.setComment(
-                                    this.buildComment(coming.getComments(),
-                                            "c " + coming.getStock().getName() +
-                                                    " на " + this.stockHandler.getStockById(stockId).getName() +
-                                                    getQuantityForComment(moving.getQuantity())
-                                                    + (CommonUtils.validateString(moving.getComment())),
-                                            getCheckedUserName(moving.getUser()),
-                                        CommentAction.MOVE_COMMENT.getAction(), coming.getCurrentQuantity()));
+//                            coming.setComment(
+//                                    this.buildComment(coming.getComments(),
+//                                            "c " + coming.getStock().getName() +
+//                                                    " на " + this.stockHandler.getStockById(stockId).getName() +
+//                                                    getQuantityForComment(moving.getQuantity())
+//                                                    + (CommonUtils.validateString(moving.getComment())),
+//                                            getCheckedUserName(moving.getUser()),
+//                                        CommentAction.MOVE_COMMENT.getAction(), coming.getCurrentQuantity()));
 
                             coming.setStock(this.stockHandler.getStockById(stockId));
                             coming.setQuantity(newComing.getQuantity());
@@ -126,14 +170,14 @@ public ResponseItem makeMovings(Set<SoldItem> movings, Long stockId) {
 
                         } else {
 
-                            coming.setComment(
-                                    this.buildComment(coming.getComments(),
-                                            "c " + coming.getStock().getName() +
-                                                    " на " + this.stockHandler.getStockById(stockId).getName()
-                                                    + getQuantityForComment(moving.getQuantity())
-                                                    + CommonUtils.validateString(moving.getComment()),
-                                            getCheckedUserName(moving.getUser()),
-                                        CommentAction.MOVE_COMMENT.getAction(), coming.getCurrentQuantity()));
+//                            coming.setComment(
+//                                    this.buildComment(coming.getComments(),
+//                                            "c " + coming.getStock().getName() +
+//                                                    " на " + this.stockHandler.getStockById(stockId).getName()
+//                                                    + getQuantityForComment(moving.getQuantity())
+//                                                    + CommonUtils.validateString(moving.getComment()),
+//                                            getCheckedUserName(moving.getUser()),
+//                                        CommentAction.MOVE_COMMENT.getAction(), coming.getCurrentQuantity()));
 
                             comingItemHandler.saveComingItem(newComing);
                         }
@@ -240,15 +284,16 @@ public ResponseItem addOneMoving(SoldItem moving, Long stockId) {
                     moving.getQuantity(), coming.getCurrentQuantity(), coming.getItem().getName()
             ), false);
 
+        setCommentForChangedComing(coming, stockId, moving);
         if(coming.getQuantity().compareTo(moving.getQuantity()) == 0) {
-            coming.setComment(
-                    this.buildComment(coming.getComments(),
-                            "c " + coming.getStock().getName() +
-                                    " на " + this.stockHandler.getStockById(stockId).getName()
-                                    + getQuantityForComment(moving.getQuantity())
-                                    + CommonUtils.validateString(moving.getComment()),
-                            getCheckedUserName(moving.getUser()),
-                        CommentAction.MOVE_COMMENT.getAction(), coming.getCurrentQuantity()));
+//            coming.setComment(
+//                    this.buildComment(coming.getComments(),
+//                            "c " + coming.getStock().getName() +
+//                                    " на " + this.stockHandler.getStockById(stockId).getName()
+//                                    + getQuantityForComment(moving.getQuantity())
+//                                    + CommonUtils.validateString(moving.getComment()),
+//                            getCheckedUserName(moving.getUser()),
+//                        CommentAction.MOVE_COMMENT.getAction(), coming.getCurrentQuantity()));
 
             coming.setStock(this.stockHandler.getStockById(stockId));
             coming.setQuantity(moving.getQuantity());
@@ -263,39 +308,41 @@ public ResponseItem addOneMoving(SoldItem moving, Long stockId) {
 
         } else {
 
+//            coming.setComment(
+//                    this.buildComment(coming.getComments(),
+//                            "c " + coming.getStock().getName() +
+//                                    " на " + this.stockHandler.getStockById(stockId).getName()
+//                                    + getQuantityForComment(moving.getQuantity())
+//                                    + CommonUtils.validateString(moving.getComment()),
+//                            getCheckedUserName(moving.getUser()),
+//                        CommentAction.MOVE_COMMENT.getAction(), coming.getCurrentQuantity()));
+
             ComingItem newComing = new ComingItem();
-            newComing.setComments(new ArrayList<>());
-            coming.setComment(
-                    this.buildComment(coming.getComments(),
-                            "c " + coming.getStock().getName() +
-                                    " на " + this.stockHandler.getStockById(stockId).getName()
-                                    + getQuantityForComment(moving.getQuantity())
-                                    + CommonUtils.validateString(moving.getComment()),
-                            getCheckedUserName(moving.getUser()),
-                        CommentAction.MOVE_COMMENT.getAction(), coming.getCurrentQuantity()));
+//            newComing.setComments(new ArrayList<>());
+//            newComing.setComment(
+//                    this.buildComment(newComing.getComments(),
+//                            "c " + coming.getStock().getName() +
+//                                    " на " + this.stockHandler.getStockById(stockId).getName() +
+//                                    getQuantityForComment(moving.getQuantity())
+//                                    + CommonUtils.validateString(moving.getComment()),
+//                            getCheckedUserName(moving.getUser()),
+//                        CommentAction.MOVE_COMMENT.getAction(), newComing.getCurrentQuantity()));
+//
+//            newComing.setStock(this.stockHandler.getStockById(stockId));
+//            newComing.setUser(moving.getUser());
+//            newComing.setDate(new Date());
+//            newComing.setLastChangeDate(new Date());
+//            newComing.setPriceIn(coming.getPriceIn());
+//            newComing.setPriceOut(moving.getPrice());
+//            newComing.setDoc(coming.getDoc());
+//            newComing.setItem(coming.getItem());
+//            coming.setLastChangeDate(new Date());
+            setCommonMovingFields(coming, newComing, moving, stockId);
 
-            newComing.setComment(
-                    this.buildComment(newComing.getComments(),
-                            "c " + coming.getStock().getName() +
-                                    " на " + this.stockHandler.getStockById(stockId).getName() +
-                                    getQuantityForComment(moving.getQuantity())
-                                    + CommonUtils.validateString(moving.getComment()),
-                            getCheckedUserName(moving.getUser()),
-                        CommentAction.MOVE_COMMENT.getAction(), newComing.getCurrentQuantity()));
-
-            newComing.setStock(this.stockHandler.getStockById(stockId));
             newComing.setQuantity(moving.getQuantity());
             newComing.setCurrentQuantity(moving.getQuantity());
-            newComing.setUser(moving.getUser());
-            newComing.setDate(new Date());
-            newComing.setLastChangeDate(new Date());
-            newComing.setPriceIn(coming.getPriceIn());
-            newComing.setPriceOut(moving.getPrice());
-            newComing.setDoc(coming.getDoc());
-            newComing.setItem(coming.getItem());
             coming.setQuantity(coming.getQuantity().subtract(moving.getQuantity()));
             coming.setCurrentQuantity(coming.getCurrentQuantity().subtract(moving.getQuantity()));
-            coming.setLastChangeDate(new Date());
             coming.setSum(coming.getPriceIn().multiply(coming.getCurrentQuantity())
                     .setScale(2, BigDecimal.ROUND_HALF_UP));
 

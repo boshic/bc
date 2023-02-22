@@ -90,7 +90,6 @@ public class InvoiceHandler extends EntityHandlerImpl {
     public Invoice getWriteOffActById(Long id) {
 
         Invoice invoice = invoiceRepository.findOne(id);
-
         invoice.setComment(this.getCommentByAction(invoice.getComments(),
             CommentAction.WRITE_OFF_ACT_ADDED.getAction()));
 
@@ -108,7 +107,6 @@ public class InvoiceHandler extends EntityHandlerImpl {
     public ResponseItem<Invoice> updateInvoice(Invoice invoice) {
 
         Invoice newInvoice = invoiceRepository.findOne(invoice.getId());
-
         return update(newInvoice, invoice);
     }
 

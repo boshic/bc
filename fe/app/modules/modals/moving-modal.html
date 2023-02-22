@@ -3,7 +3,9 @@
     <span class="glyphicon glyphicon-remove item-blank close-selling-modal" ng-click="closeModal()"></span>
     <div class="items-table table-responsive"
          ng-keyup="handleKeyup($event)">
-        <div style="height: 65px; background: lightgray; padding-top: 3px;">
+        <current-stock-indicator stock="stockFrom" descr=" (Источник)"></current-stock-indicator>
+        <div style="height: 65px; border-top-left-radius: 20px;
+                background: lightgray; padding-top: 3px;">
             <div class="container-sell-buyer-comment-on-selling-pane">
                 <div class="sell-button-on-selling-pane">
                     <button class="glyphicon glyphicon-send sell-icon" title="Переместить"
@@ -22,6 +24,7 @@
                 </div>
             </div>
         </div>
+        <current-stock-indicator stock="stock"  descr=" (Получатель)"></current-stock-indicator>
         <table class="table table-bordered selling-modal-table">
             <tr class="pane-thead">
                 <td style="width: 60px;">Номер</td>
@@ -34,7 +37,8 @@
             <tr class="hoverable" ng-repeat="x in rows track by $index">
                 <td class="price-data" title="Номер">{{ $index + 1 }}</td>
                 <td title="">{{ x.coming.item.name + "(" + x.coming.item.ean + ")"}}</td>
-                <td class="current-quantity unprintable" title="Текущее количество">
+                <td class="text-table-row current-quantity unprintable"
+                    title="Текущее количество">
                     {{ x.coming.currentQuantity }}
                 </td>
                 <td class="hoverable common-number-input" title="К продаже">

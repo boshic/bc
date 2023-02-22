@@ -192,7 +192,6 @@ public class ComingItemHandler extends EntityHandlerImpl {
                                                      ComingItem comingItem) {
 
         List<ComingItem> comings = getComingItemByIdAndStockId(item.getId(), stockId);
-
         if ( comings.size() > 0 ) {
             comingItem.setQuantity(item.getPredefinedQuantity());
 
@@ -202,15 +201,26 @@ public class ComingItemHandler extends EntityHandlerImpl {
                     comingItem.setCurrentQuantity(comingItem.getCurrentQuantity().add(c.getCurrentQuantity()));
                     if(comingItem.getDoc() == null)
                         comingItem.setDoc(c.getDoc());
-
                 }
 
                 if (c.getPriceOut().compareTo( comingItem.getPriceOut()) > 0)
-                    comingItem.setPriceOut(c.getPriceOut());
+                    comingItem.setPriceOut(CommonUtils.validateBigDecimal(c.getPriceOut()));
+
+                if ((c.getFirstImpPrice().compareTo(BigDecimal.ZERO) > 0)
+                    && comingItem.getFirstImpPrice().compareTo(BigDecimal.ZERO) == 0)
+                    comingItem.setFirstImpPrice(CommonUtils.validateBigDecimal(c.getFirstImpPrice()));
+
+                if ((c.getImpOverheadPerc().compareTo(BigDecimal.ZERO) > 0)
+                    && comingItem.getImpOverheadPerc().compareTo(BigDecimal.ZERO) == 0)
+                    comingItem.setImpOverheadPerc(CommonUtils.validateBigDecimal(c.getImpOverheadPerc()));
+
+                if ((c.getPriceIn().compareTo(BigDecimal.ZERO) > 0)
+                    && comingItem.getPriceIn().compareTo(BigDecimal.ZERO) == 0)
+                    comingItem.setPriceIn(CommonUtils.validateBigDecimal(c.getPriceIn()));
+
 
             }
         }
-
     }
 
     private void
@@ -254,6 +264,9 @@ public class ComingItemHandler extends EntityHandlerImpl {
 
         ComingItem comingItem = new ComingItem();
         comingItem.setCurrentQuantity(BigDecimal.ZERO);
+        comingItem.setImpOverheadPerc(BigDecimal.ZERO);
+        comingItem.setFirstImpPrice(BigDecimal.ZERO);
+        comingItem.setPriceIn(new BigDecimal(0));
         comingItem.setPriceOut(new BigDecimal(0));
         comingItem.setItem(item);
         comingItem.setStock(getStockHandler().getStockById(stockId));

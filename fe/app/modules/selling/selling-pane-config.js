@@ -7,7 +7,7 @@ let sellingPaneConfig = {
   checkRowsType: 'selling',
   paneName: 'Продавать!',
   paneId: 'selling-pane',
-  watchingCollectionValue : '[comment, rows, buyer, rows.length]',
+  watchingCollectionValue : '[comment, buyer, rows.length]',
   watchingCollectionFunc : ($s, nv, ov) => {
     if ((nv.indexOf(undefined) < 0)) {
       $s.checkRows();
@@ -18,6 +18,7 @@ let sellingPaneConfig = {
         }
     }
   },
+
   getFindItemParams: (ean, $s) => {
     return {filter: ean, stockId: $s.filter.stock.id};
   },

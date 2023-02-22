@@ -1,12 +1,12 @@
-let getDataFromLastRow = ($s) => {
-  if($s.rows.length)
+let getDataFromLastRow = (rows) => {
+  if(rows.length)
     return {
-      sum: $s.rows[0].sum,
-      price: $s.rows[0].price,
+      sum: rows[0].sum,
+      price: rows[0].price,
       impOverheadPerc: 0,
       firstImpPrice: 0,
       quantity: 0,
-      priceOut: $s.rows[0].priceOut
+      priceOut: rows[0].priceOut
     };
   return {quantity: 0, sum:0, price: 0, priceOut: 0, firstImpPrice: 0, impOverheadPerc:0};
 };
@@ -21,7 +21,7 @@ let newComingDocConfig = {
   watchingCollectionFunc : ($s, nv, ov) => {
     if ((nv.indexOf(undefined) < 0)) {
       $s.checkRows();
-      $s.blankSearch();
+      // $s.blankSearch();!!!!!)))(((поскуда!
     }
   },
 
@@ -91,7 +91,8 @@ let newComingDocConfig = {
 
   getItems : (params, url, $s) => {
             $s.warning = "";
-            params.paneFactory.getHttpService().getItems({params, url, requestParams:$s.requestParams})
+            params.paneFactory.getHttpService().getItems(
+              {params, url, requestParams:$s.requestParams})
                 .then(
                 resp => {
                     $s.canRelease = false;
@@ -115,7 +116,7 @@ let newComingDocConfig = {
                                     : $s.rows.splice(0,0, angular.extend({
                                             item: item,
                                             doc: {name:""}
-                                        }, getDataFromLastRow()));
+                                        }, getDataFromLastRow($s.rows)));
                             index = 0;
                         } else {
                             $s.rows[index].item = item;
@@ -128,7 +129,9 @@ let newComingDocConfig = {
                     } else {
                         $s.warning = "Такого товара нет, нужно добавить!";
                         $s.itemInputVisible = true;
-                        $s.item = angular.extend(getEpmtyItem(), {name: ean, ean: ean});
+                        $s.item = angular.extend($s.getEmptyItem(), {
+                          name: params.filter, ean: params.filter
+                        });
                     }
                 },
                 resp => {

@@ -274,32 +274,27 @@ let docCtrlr = ($s, httpService, itemFactory) => {
 
 };
 
-let stockCntrlr = function ($s, $interval, itemFactory) {
+let stockCntrlr = function ($s, itemFactory) {
 
     $s.stocks = [];
     $s.stockListVisible = false;
-
-    let gettingStocks;
 
     $s.toggleStockList = () => {
       $s.stockListVisible = !$s.stockListVisible;
     };
 
-    let stocksPreSelect = () => {
-      for (let stock of itemFactory.stocks) {
+    let stocksPreSelect = (stocks) => {
+      for (let stock of stocks) {
         if($s.allowAll || (!$s.allowAll && !stock.allowAll))
           $s.stocks.push(angular.extend({}, stock));
         if (stock.selected)
           $s.stock = stock;
       }
     };
-      gettingStocks = $interval(function() {
-        if (itemFactory.stocks.length > 0) {
-          stocksPreSelect();
-          $interval.cancel(gettingStocks);
-        }
-        console.log("stocks filling failed!");
-      }, 1000);
+
+    $s.$on('StocksPrepared', function(event, data) {
+        stocksPreSelect(data);
+    });
 
     $s.clickOnStock = function (value) {
         $s.stock = value;
@@ -311,7 +306,7 @@ let stockCntrlr = function ($s, $interval, itemFactory) {
 
 };
 
-stockCntrlr.$inject = ['$scope', '$interval', 'itemFactory'];
+stockCntrlr.$inject = ['$scope', 'itemFactory'];
 
 angular.module('inputs', ['asyncFilter'])
     .directive( "bankInput", () => {
@@ -504,59 +499,30 @@ angular.module('inputs', ['asyncFilter'])
             scope: { stock: '=stock', allowAll: '<?'},
             template:
             "<div class='dropdown' style='display: inherit;'>" +
-            "<div class='glyphicon glyphicon-home stock-icon' ng-click='toggleStockList()'></div>" +
-            "<ul class='stocks-list' ng-show='stockListVisible'>" +
-            "<li style='list-style: none;'>" +
-            "<table class='table'>" +
-            "<tbody>" +
-            "<tr class='hoverable unselected-stock' " +
-            "ng-repeat='x in stocks' " +
-            "ng-class='{\"selected-stock\": (x.selected)}'>" +
-            "<td class='hoverable' ng-click='clickOnStock(x)'>{{ x.id }}</td>" +
-            "<td class='hoverable' ng-click='clickOnStock(x)'>{{ x.name }}</td>" +
-            "</tr>" +
-            "</tbody>" +
-            "</table>" +
-            "</li>" +
-            "</ul>" +
+            "<button class='glyphicon glyphicon-home stock-icon' ng-click='toggleStockList()'></button>" +
+              "<ul class='stocks-list' ng-show='stockListVisible'>" +
+              "<li style='list-style: none;'>" +
+                "<table class='table'>" +
+                  "<tbody>" +
+                    "<tr class='hoverable unselected-stock' " +
+                        "ng-repeat='x in stocks' " +
+                        "ng-class='{\"selected-stock\": (x.selected)}'>" +
+                        "<td class='hoverable' ng-click='clickOnStock(x)'>{{ x.id }}</td>" +
+                        "<td class='hoverable' ng-click='clickOnStock(x)'>{{ x.name }}</td>" +
+                    "</tr>" +
+                  "</tbody>" +
+                "</table>" +
+              "</li>" +
+              "</ul>" +
             "</div>",
             // templateUrl: 'html/stock/stock-picker.html',
-            controller: ($scope, $interval, itemFactory) => {
-                return stockCntrlr($scope, $interval, itemFactory)
+            controller: ($scope, itemFactory) => {
+                return stockCntrlr($scope, itemFactory)
 
             },
         };
 
     })
-  // .component( "stockPicker", {
-  //
-  //     bindings: {
-  //       allowAll: '=allowAll',
-  //       uploader: '@?uploader',
-  //       stock: '=stock'
-  //     },
-  //     transclude: true,
-  //     template:
-  //       "<div class='dropdown' style='display: inherit;'>" +
-  //       "<div class='glyphicon glyphicon-home stock-icon' ng-click='$ctrl.toggleStockList()'></div>" +
-  //       "<ul class='stocks-list' ng-show='$ctrl.stockListVisible'>" +
-  //       "<li style='list-style: none;'>" +
-  //       "<table class='table'>" +
-  //       "<tbody>" +
-  //       "<tr class='hoverable unselected-stock' " +
-  //       "ng-repeat='x in $ctrl.stocks' " +
-  //       "ng-class='{\"selected-stock\": (x.selected)}'>" +
-  //       "<td class='hoverable' ng-click='$ctrl.clickOnStock(x)'>{{ x.id }}</td>" +
-  //       "<td class='hoverable' ng-click='$ctrl.clickOnStock(x)'>{{ x.name }}</td>" +
-  //       "</tr>" +
-  //       "</tbody>" +
-  //       "</table>" +
-  //       "</li>" +
-  //       "</ul>" +
-  //       "</div>",
-  //     // templateUrl: 'html/stock/stock-picker.html',
-  //     controller: stockCntrlr
-  // })
     .directive( "userPicker", () => {
         return {
             restrict: 'E',
@@ -568,14 +534,7 @@ angular.module('inputs', ['asyncFilter'])
                 $scope.user = { name: "Tes" };
                 $scope.searchInputAutoFocusEnabled = paneFactory.searchInputAutoFocusEnabled;
                 $scope.showMenu = false;
-
                 $scope.user = paneFactory.user;
-
-
-                // userService.getUser().then(
-                //     resp => {$scope.user = resp;},
-                //     resp => {$scope.user.name = resp;}
-                // );
 
                 $scope.searchInputAutoFocusToggle = () => {
                     $scope.searchInputAutoFocusEnabled = !$scope.searchInputAutoFocusEnabled;

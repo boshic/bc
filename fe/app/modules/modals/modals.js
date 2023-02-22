@@ -111,6 +111,7 @@
 
             if($s.modalConfig.data) {
                 let coming = $s.modalConfig.data;
+                $s.stockFrom = coming.stock;
                 $s.comment = "";
                 $s.stock = coming.stock || null;
 
@@ -126,7 +127,6 @@
                         currentQuantity: coming.currentQuantity
                     }
                 );
-
                 $s.modalConfig.data = undefined;
             }
             if($s.rows)

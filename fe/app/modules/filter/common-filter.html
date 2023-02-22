@@ -3,7 +3,7 @@
 
     <li style="text-align: right;" class="filter-row">
         <div class="stock-container-on-coming-filter">
-            <stock-picker ng-hide="filter.inventoryModeEnabled"
+            <stock-picker ng-hide="filter.inventoryModeEnabled || stockPickerDisabled"
                     allow-all="filter.allowAllStocks"
                           stock="filter.stock">
             </stock-picker>

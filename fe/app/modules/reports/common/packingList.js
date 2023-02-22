@@ -80,11 +80,12 @@ let openTextEditModal = ($s, index, modalFactory) => {
                             $scope.reportData.showStamp = JSON.parse($location.search().stamp);
                             $scope.reportData.shipmentBasedOn = "счет-фактура " + " №" +
                                     resp.id + " от " + new Date(resp.date).toLocaleDateString();
+
                             $scope.reportData.rows.map((r) => {
-                              r.comment = tnComment;
-                              if (r.item.section.percOverheadLimit > 0)
-                                r.comment = overheadRestricted;
+                              if (!r.comment.length > 0)
+                                r.comment = (r.item.section.percOverheadLimit > 0) ? overheadRestricted : tnComment;
                             });
+
                             $scope.reportData.accompDocs = accompDocs;
                             $scope.reportData.dateLocal = new Date(resp.date).toLocaleString(
                               'ru', {
@@ -92,12 +93,6 @@ let openTextEditModal = ($s, index, modalFactory) => {
                               month: 'long',
                               day: 'numeric'
                             });
-                            // $timeout(
-                            //     () => {
-                            //         $window.document.title = "ТН " + resp.buyer.name + "по счету " +
-                            //             resp.id + " от " + resp.dateLocal;
-                            //         // $window.print();
-                            //     }, 200);
                         },
                         resp => { console.log(resp); }
                     );

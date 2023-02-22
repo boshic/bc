@@ -316,6 +316,7 @@ import commonReleasePaneCtrlr from '../../controllers/common-pane-release-ctrlr.
         })
         .component( "filterPanelOnReleasePane", {
            bindings: {
+             stockPickerDisabled: '<?',
             paneIsVisible: '<',
             filter: '=',
             resetFilter: '&',
@@ -325,6 +326,7 @@ import commonReleasePaneCtrlr from '../../controllers/common-pane-release-ctrlr.
             "<div class=\"pane-right-menu\" ng-show='$ctrl.paneIsVisible'>" +
             "            <div class=\"coming-pane-right-menu-option\">\n" +
             "                <common-filter filter=\"$ctrl.filter\"\n" +
+            "                               stock-picker-disabled=\"$ctrl.stockPickerDisabled\"\n" +
             "                               reset-filter=\"$ctrl.resetFilter()\">\n" +
             "                </common-filter>\n" +
             "            </div>\n" +
@@ -417,18 +419,6 @@ import commonReleasePaneCtrlr from '../../controllers/common-pane-release-ctrlr.
                 "{{ ((100 * $ctrl.priceOut / $ctrl.price)-100).toFixed(1) + '%'}}</span>",
         controller: function() {}
     })
-      // .component( "sectionOverheadPercentLimNotification", {
-      //   bindings: {
-      //     percent: '<'
-      //   },
-      //   template:
-      //   "<span class='input-notification'" +
-      //       "ng-show='$ctrl.percent'>" +
-      //           "Ограничение наценки:" +
-      //           "<span>{$ctrl.percent}}%</span>" +
-      //   "</span>",
-      //   controller: function() {}
-      // })
       .component( "sectionOverheadPercentageIndicator", {
         bindings: {
           descr: '@?',

@@ -51,16 +51,17 @@ import invoicesPaneConfig from '../modules/selling/invoices-pane-config';
 
                 let checkRowsBeforeSelling = ($s, user) => {
                     if (angular.isDefined($s.buyer.id) && ($s.rows.length)) {
+                        $s.canRelease = true;
                         for(let row of $s.rows) {
-                            if (!row.quantity > 0 || !row.price) {
-                                return $s.canRelease = false;
-                            }
                             row.user = user;
                             row.buyer = $s.buyer;
                             row.comment = $s.comment;
+                            if (!(row.quantity > 0) || !(row.price > 0)) {
+                              $s.canRelease = false;
+                            }
                         }
-                        $s.canRelease = true;
-                        $s.setReportData();
+                        if($s.canRelease)
+                          $s.setReportData();
                     }
                 };
                 let checkRowsBeforeMoving = ($s, user) => {
@@ -68,10 +69,11 @@ import invoicesPaneConfig from '../modules/selling/invoices-pane-config';
                         for (let row of $s.rows) {
                             let stockDestId = angular.isDefined($s.stockDest) ? $s.stockDest.id : row.coming.stock.id;
                             let stockId = angular.isDefined($s.stock) ? $s.stock.id : $s.filter.stock.id;
-                            if (!row.quantity || stockId === stockDestId)
-                                return $s.canRelease = false;
                             row.user = user;
                             row.comment = $s.comment;
+                            if (!row.quantity || stockId === stockDestId)
+                              return $s.canRelease = false;
+
                         }
                         $s.canRelease = true;
                     }
@@ -79,7 +81,6 @@ import invoicesPaneConfig from '../modules/selling/invoices-pane-config';
 
               let checkRowsBeforeComing = ($s, user) => {
                 if ($s.rows.length) {
-                    // $s.totals = calcTotals($s.rows);
                     $s.totalsOut = calcTotals(printFactory.getRowsForReports($s, 'priceOut'));
                     for (let row of $s.rows) {
                       if (!(row.quantity > 0) || !(row.price > 0) || !(row.priceOut > 0))
@@ -159,6 +160,15 @@ import invoicesPaneConfig from '../modules/selling/invoices-pane-config';
 
                 };
 
+                let getNonNullFieldRows = (rows, field) => {
+                  let result = [];
+                  rows.forEach(row => {
+                    if (row[field] > 0)
+                      result.push(row);
+                  });
+                  return result;
+                };
+
                 let getSearchTermsForGetItemsByFilter = ($s, url) => {
 
                     let searchTerms = new Subject();
@@ -171,7 +181,7 @@ import invoicesPaneConfig from '../modules/selling/invoices-pane-config';
                                     filter: JSON.parse(filter)});
                             }),
                             tap((resp) => {
-                                if(resp.entityItems.length === 0 && $s.filter.page != 1) {
+                                if(resp.entityItems.length === 0 && $s.filter.page !== 1) {
                                     $s.filter.calcTotal = true;
                                     $s.filter.page =  1;
                                 }
@@ -310,7 +320,8 @@ import invoicesPaneConfig from '../modules/selling/invoices-pane-config';
                     releaseItems: ($s, url, params) => {
                         if($s.canRelease) {
                             $s.checkRows();
-                            let rows =   $s.rows;
+                            let rows = $s.rows;
+                            $s.rows = [];
                             $s.deleteRows();
                             httpService.addItem({data: rows, url, params, requestParams:$s.requestParams})
                                 .then(
@@ -337,10 +348,12 @@ import invoicesPaneConfig from '../modules/selling/invoices-pane-config';
                         if (i >= 0)
                             $s.rows.splice(i, 1);
                         else {
-                            $s.rows=[];
+                            $s.rows =
+                              (angular.isDefined($s.buyer) && $s.buyer.id > 0) ?
+                              getNonNullFieldRows($s.rows, 'quantity') : [];
                             if(angular.isDefined($s.comment))
                                 $s.comment = "";
-                            if(isItFunction(config.getEmptyBuyer))
+                            if(isItFunction(config.getEmptyBuyer) && ($s.rows.length === 0))
                                 $s.buyer = config.getEmptyBuyer();
                             if(isItFunction(config.getEmptyDoc))
                                 $s.doc = config.getEmptyDoc();
@@ -358,6 +371,7 @@ import invoicesPaneConfig from '../modules/selling/invoices-pane-config';
                                     row.coming = {
                                         item: row.item, stock
                                     };
+                                    row.priceIn = row.price;
                                     row.price = row.priceOut;
                                     row.vat = stock.organization.vatValue;
 
@@ -400,24 +414,17 @@ import invoicesPaneConfig from '../modules/selling/invoices-pane-config';
                             ).then(
                             resp => {
                                 if (resp.success) {
-                                    // rows = $s.rows;
-                                    // newRows = resp.entityItems;
-                                  // $s.rows = rows.concat(newRows);
                                   resp.entityItems.forEach(row => {
                                       index = checkDuplicateRowsByItem(row.item.id, $s.rows);
                                       if (index < 0) {
                                         row.coming = {item : row.item, stock: row.stock};
                                         row.vat = row.stock.organization.vatValue;
+                                        // row.buyer = $s.buyer;
+                                        // row.comment =  (row.comment !== null && row.comment.length > 0) ? row.comment : '';
                                         $s.rows.push(row);
                                       }
                                     });
-                                    // $s.rows = resp.entityItems;
-                                    // $s.rows.forEach(row => {
-                                    //     row.coming = {item : row.item, stock: row.stock};
-                                    //     row.vat = row.stock.organization.vatValue;
-                                    // });
-                                    if (angular.isDefined($s.buyer) && isItFunction($s.getEmptyBuyer)) {
-                                      $s.buyer = ($s.filter.invoiceNumber > 0 ) ?
+                                    if (angular.isDefined($s.buyer) && ($s.filter.invoiceNumber > 0 )) {
                                         httpService.getItemById({id:$s.filter.invoiceNumber, url:'getInvoiceById'}).then(
                                           resp => {
                                             $s.buyer = resp.buyer;
@@ -427,7 +434,7 @@ import invoicesPaneConfig from '../modules/selling/invoices-pane-config';
                                           resp => {
                                             console.log(resp);
                                           }
-                                        ) : $s.getEmptyBuyer();
+                                        );
                                     }
                                 } else {
                                     $s.warning = resp.text;

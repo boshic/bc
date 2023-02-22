@@ -37,9 +37,12 @@ import commonFilterTpl from './common-filter.html';
             return {
                 restrict: 'E',
                 transclude: true,
-                scope: { filter: '=', resetFilter : '&'},
+                scope: {
+                  filter: '=',
+                  stockPickerDisabled: '<?',
+                  resetFilter : '&'
+                },
                 template: commonFilterTpl,
-                // templateUrl: 'html/filter/common-filter.html',
                 controller: ($scope, paneFactory, $element) => {
                     return commonFilterCtrlr($scope, paneFactory, $element);
                 },

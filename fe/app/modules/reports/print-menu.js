@@ -93,6 +93,17 @@
                     {id:7, allowNoId: true, name:'Акт вып.работ', group: 'common', type: 'workCompletionStatement'}
                 ];
 
+                let createReportRowComment = (row, price) => {
+                  // let vat =
+                  if (row.item.section.percOverheadLimit > 0) {
+                    let priceIn = row.priceIn > 0 ? row.priceIn : row.price;
+                    let vat = priceIn - row.firstImpPrice * (1 + row.impOverheadPerc/100);
+                    let overheadPercent = ((100 * (price - vat) / row.firstImpPrice) - 100).toFixed(1);
+                    return "цена импортера: " + row.firstImpPrice + ", опт.надб.: " + overheadPercent + "%";
+                  }
+                  return "";
+                };
+
                 return {
                     getReports: () => {
                         return reports;
@@ -103,7 +114,7 @@
                         $s.rows.forEach((row) => {
                             rows.push({
                                 item: row.item,
-                                comment: '',
+                                comment: createReportRowComment(row, row[priceField]),
                                 quantity: row.quantity,
                                 sum: (row[priceField] * row.quantity).toFixed(2),
                                 doc: $s.doc,
