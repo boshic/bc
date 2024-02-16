@@ -165,6 +165,7 @@
 
         $s.checkRows = () => {
 
+          //
           // if ($s.rows[0].quantity > 0 && quantity != $s.rows[0].quantity) {
           //   $s.rows[0].quantity =
           //     paneFactory.checkNumberLimit($s.rows[0].quantity, $s.rows[0].currentQuantity);
