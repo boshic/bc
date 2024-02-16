@@ -59,5 +59,6 @@ public class ReceiptHandler {
         }
     }
 
+//    void setReceiptPropsBySoldItems() {}
 
 }

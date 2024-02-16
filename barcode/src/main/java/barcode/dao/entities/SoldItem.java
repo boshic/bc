@@ -6,6 +6,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.querydsl.core.annotations.QueryInit;
 import javax.persistence.*;
 import java.math.BigDecimal;
+import java.util.Date;
 
 
 @Entity
@@ -73,8 +74,10 @@ public class SoldItem extends BasicOperationWithCommentEntity {
                     BigDecimal quantity,
                     BigDecimal availQuantityByEan,
                     BigDecimal incomeSum,
-                    BigDecimal incomeSumPercent) {
+                    BigDecimal incomeSumPercent,
+                    Date lastComingDate) {
 
+        super(lastComingDate);
         this.coming = coming;
         this.price = price;
         this.quantity = quantity;

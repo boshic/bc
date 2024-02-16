@@ -93,7 +93,8 @@ import commonFilterTpl from './common-filter.html';
                         'Изменен',
                         'Удален',
                         'Продажа',
-                        'Возврат'
+                        'Возврат',
+                        'Серия'
                     ];
 
                     today = new Date();

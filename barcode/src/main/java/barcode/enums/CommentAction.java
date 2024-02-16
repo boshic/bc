@@ -13,6 +13,7 @@ public enum CommentAction {
     SALE_COMMENT("Продажа"),
     DELETED_SALE_COMMENT("Удаление в режиме продажи"),
     MOVE_COMMENT("Перемещение"),
+    WRITE_OFF_CAUSE("Причина списания"),
     RETURN_COMMENT("Возврат"),
 
     WRITE_OFF_ACT_ADDED("акт на списание"),

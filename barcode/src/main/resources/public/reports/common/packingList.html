@@ -19,7 +19,7 @@
 
         <div class="root-container">
 
-            <div style="display: flex; margin-top: 25%; ">
+            <div style="display: flex; margin-top: 29%; ">
                 <div style="width: 10%; text-align: right; margin-left: 30%; margin-right: 1%;">УНП</div>
                 <div class="regnum-rows">{{reportData.stock.organization.regNum}}</div>
                 <div class="regnum-rows">{{reportData.buyer.unp}}</div>
@@ -33,27 +33,27 @@
                 </button>
             </div>
 
-            <div style="font-style: italic; margin-top: 3%;">
+            <div style="font-style: italic; margin-top: 3%; padding-left: 3%;">
                 <span>Грузоотправитель:</span>
             </div>
-            <div style="font-weight: bold;">
-                <span style="margin-left: 3%">
+            <div style="font-weight: bold; padding-left: 3%;">
+                <span>
                     {{reportData.stock.organization.name + " " + reportData.stock.organization.address}}
                 </span>
             </div>
 
-            <div style="font-style: italic;">
-                <span style="font-style: italic;">Грузополучатель:</span>
+            <div style="font-style: italic; padding-left: 3%;">
+                <span>Грузополучатель:</span>
             </div>
-            <div style="font-weight: bold;">
-                <span style="margin-left: 3%">
+            <div style="font-weight: bold; padding-left: 3%;">
+                <span>
                     {{reportData.buyer.name + ", " + reportData.buyer.address}}
                 </span>
             </div>
 
-            <div style="font-weight: bold; font-style: italic;">
+            <div style="font-style: italic; padding-left: 3%;">
                 <span>Основание отпуска:</span>
-                <span>
+                <span style="font-weight: bold;">
                     {{reportData.shipmentBasedOn}}
                 </span>
                 <button class="glyphicon glyphicon-pencil edit-comment unprintable"
@@ -92,8 +92,8 @@
                                             <td>{{row.item.name}}</td>
                                             <td style="text-align: center;">{{row.item.unit}}</td>
                                             <td style="text-align: center;">{{row.quantity}}</td>
-                                            <td style="text-align: center;">{{row.price}}</td>
-                                            <td style="text-align: center;">{{row.sum}}</td>
+                                            <td style="text-align: center;">{{row.price.toFixed(2)}}</td>
+                                            <td style="text-align: center;">{{row.sum.toFixed(2)}}</td>
                                             <td style="text-align: center;" ng-if="row.vat == 0">Без НДС</td>
                                             <td style="text-align: center;" ng-if="row.vat > 0">{{ row.vat.toFixed(2) }}</td>
                                             <td style="text-align: center;" ng-if="row.vat == 0">Без НДС</td>
@@ -132,7 +132,7 @@
                 <span>{{"Всего сумма НДС:"}}</span>
                 <span style="font-weight: bold;">{{"Без НДС."}}</span>
             </div>
-            <div style="margin-left:3%;"
+            <div style="margin-left:3%;">
                 <span>Всего стоимость с НДС:</span>
                 <span style="font-weight: bold;">{{(reportData.totals.sum).toFixed(2) | num2phrase}}</span>
             </div>

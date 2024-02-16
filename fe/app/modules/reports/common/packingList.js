@@ -87,7 +87,8 @@ let openTextEditModal = ($s, index, modalFactory) => {
                             });
 
                             $scope.reportData.accompDocs = accompDocs;
-                            $scope.reportData.dateLocal = new Date(resp.date).toLocaleString(
+                          // resp.date
+                            $scope.reportData.dateLocal = new Date().toLocaleString(
                               'ru', {
                               year: 'numeric',
                               month: 'long',

@@ -26,6 +26,9 @@
                 </td>
                 <td class="hoverable" title="{{ x.name }}"
                     ng-click="$ctrl.selectItem()(x.id)">
+<!--                    <span ng-show="x.doNotUseForDeductions"-->
+<!--                            class="not-for-deduction-item glyphicon glyphicon-scissors">-->
+<!--                    </span>-->
                     <span style="font-weight: bold">{{ x.name }}</span>
                     <div ng-show="x.ean.length > 0" class="item-input-items-descr">
                         <span>{{'ШК: ' + x.ean}}</span>

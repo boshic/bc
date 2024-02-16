@@ -19,7 +19,9 @@
                 vm.modalData.row.quantity =
                     paneFactory.checkNumberLimit(vm.modalData.row.quantity, vm.modalData.row.limitQuantity);
                 vm.modalData.row.quantity =
-                    paneFactory.fixIfFractional(vm.modalData.row.quantity, vm.modalData.row.item.unit);
+                    paneFactory.fixIfFractional(
+                      vm.modalData.row.quantity,
+                      vm.modalData.row.item.unit);
             }
             if(typeof vm.checkInput === 'function')
                 vm.checkInput();
@@ -89,6 +91,7 @@
 
         $s.quantityInputId = paneFactory.generateUuid();
         $s.modalConfig.hidden = true;
+        let quantity = 0;
         let config = modalFactory[modalParams];
         let getReleaseItemParams = typeof config.getReleaseItemParams === 'function' ?
             config.getReleaseItemParams : () => { return undefined; };
@@ -103,8 +106,15 @@
             quantity: 0
         };
 
-        let checkInput = row => {
-            row.quantity = paneFactory.checkNumberLimit(row.quantity, row.currentQuantity);
+        let checkQuantity = row => {
+          if (row.quantity != 0 && quantity != row.quantity) {
+            row.quantity =
+              paneFactory.checkNumberLimit(row.quantity, row.currentQuantity);
+            row.quantity =
+              paneFactory.fixIfFractional(
+                +row.quantity, row.coming.item.unit);
+            quantity = row.quantity;
+          }
         };
 
         $s.$watchCollection(config.watchingValue, () => {
@@ -154,7 +164,18 @@
         };
 
         $s.checkRows = () => {
-            paneFactory.checkRows($s, paneFactory.user, config.checkingType);
+
+          // if ($s.rows[0].quantity > 0 && quantity != $s.rows[0].quantity) {
+          //   $s.rows[0].quantity =
+          //     paneFactory.checkNumberLimit($s.rows[0].quantity, $s.rows[0].currentQuantity);
+          //   $s.rows[0].quantity =
+          //     paneFactory.fixIfFractional(
+          //       +$s.rows[0].quantity, $s.rows[0].coming.item.unit);
+          //   quantity = $s.rows[0].quantity;
+          // }
+          checkQuantity($s.rows[0]);
+          paneFactory.checkRows($s, paneFactory.user, config.checkingType);
+
         };
 
         $s.release = () => {

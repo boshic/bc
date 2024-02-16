@@ -55,6 +55,7 @@ public class SoldItemFilter extends ComingItemFilter {
         COMING_STOCK_NAME(SortingFields.STOCK_NAME.value),
         COMING_ITEM_SECTION_NAME(SortingFields.SECTION_NAME.value),
         INCOMESUM(SortingFields.INCOMESUM.value),
+        DATE(SortingFields.DATE.value),
         INCOMESUMPERCENT(SortingFields.INCOMESUMPERCENT.value),
         AVAILQUANTITYBYEAN(SortingFields.AVAILQUANTITYBYEAN.value),
         QUANTITY(SortingFields.QUANTITY.value), PRICE(SortingFields.PRICE.value);

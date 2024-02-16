@@ -36,6 +36,9 @@ public class Buyer extends BasicCounterPartyEntity {
     @Column(columnDefinition="varchar(28) COLLATE utf8_general_ci")
     private String account;
 
+    @Column(columnDefinition="varchar(100) COLLATE utf8_general_ci default 'Продажа'")
+    private String commentAction;
+
     @Column(name = "invoice_days_valid", columnDefinition = "integer default 3")
     private Integer invoiceDaysValid;
 
@@ -112,6 +115,14 @@ public class Buyer extends BasicCounterPartyEntity {
 
     public void setDoNotUseForDeductions(Boolean doNotUseForDeductions) {
         this.doNotUseForDeductions = doNotUseForDeductions;
+    }
+
+    public String getCommentAction() {
+        return commentAction;
+    }
+
+    public void setCommentAction(String commentAction) {
+        this.commentAction = commentAction;
     }
 }
 

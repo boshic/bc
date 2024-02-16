@@ -119,7 +119,7 @@
                                 sum: (row[priceField] * row.quantity).toFixed(2),
                                 doc: $s.doc,
                                 price: row[priceField],
-                                vat: stock.organization.vatValue
+                                vat: row.vat > 0 ? row.vat : stock.organization.vatValue
                             });
                         });
                         return rows;

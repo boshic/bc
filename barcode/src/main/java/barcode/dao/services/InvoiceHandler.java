@@ -247,7 +247,7 @@ public class InvoiceHandler extends EntityHandlerImpl {
                     invoice.getInvoiceRows().add(new InvoiceRow(
                         soldItem,
                         DATE_FORMAT_WITH_TIME.format(soldItem.getDate()) + SPACE +
-                        this.getCommentByAction(soldItem.getComments(), WRITE_OFF_CAUSE),
+                        this.getCommentByAction(soldItem.getComments(), CommentAction.WRITE_OFF_CAUSE.getAction()),
                         soldItem.getComing().getPriceIn()));
 
 

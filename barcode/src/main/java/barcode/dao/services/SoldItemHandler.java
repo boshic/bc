@@ -32,6 +32,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import static com.querydsl.core.types.dsl.Expressions.currentDate;
 import static com.querydsl.core.types.dsl.Expressions.stringPath;
 
 @Service
@@ -303,7 +304,7 @@ public class SoldItemHandler extends EntityHandlerImpl {
                     receiptHandler.modifyReceiptBySoldItems(receipt,
                         soldItems.stream().filter(SoldItem::getSold).collect(Collectors.toList()));
 
-                    soldItem.setQuantity(BigDecimal.ZERO);
+                    setValuesWhenNotEnoughQuantity(soldItem,availQuantityByEan);
                     return new ResponseItem<>(
                         getInsufficientQuantityOfGoodsMessage(
                             reqForSell, availQuantityByEan, soldItem.getComing().getItem().getName()),
@@ -325,7 +326,8 @@ public class SoldItemHandler extends EntityHandlerImpl {
                                                     (reqForSell.compareTo(availQuantByComing) > 0) ? availQuantByComing : reqForSell)
                                                     + soldItem.getComment(),
                                             userHandler.checkUser(soldItem.getUser(), null ).getFullName(),
-                                            CommentAction.SALE_COMMENT.getAction(), newSoldItem.getQuantity())
+                                            soldItem.getBuyer().getCommentAction() ==null ? CommentAction.SALE_COMMENT.getAction() : soldItem.getBuyer().getCommentAction(),
+                                        newSoldItem.getQuantity())
                             );
 
                         newSoldItem.setAvailQuantityByEan(
@@ -358,7 +360,8 @@ public class SoldItemHandler extends EntityHandlerImpl {
                                 soldItem.getComment() + " для " + soldItem.getBuyer().getName()
                                     + getQuantityForComment((reqForSell.compareTo(availQuantByComing) > 0) ? availQuantByComing : reqForSell),
                                 userHandler.checkUser(soldItem.getUser(), null ).getFullName(),
-                                CommentAction.SALE_COMMENT.getAction(), coming.getCurrentQuantity())
+                                soldItem.getBuyer().getCommentAction() == null ? CommentAction.SALE_COMMENT.getAction() : soldItem.getBuyer().getCommentAction(),
+                                coming.getCurrentQuantity())
                         );
 
                         if (reqForSell.compareTo(availQuantByComing) > 0) {
@@ -406,7 +409,7 @@ public class SoldItemHandler extends EntityHandlerImpl {
                         soldItem.setSold(true);
 
                         if (reqForSell.compareTo(BigDecimal.ZERO) == 0) break;
-
+            
                     }
                 }
             }
@@ -426,7 +429,8 @@ public class SoldItemHandler extends EntityHandlerImpl {
             coming.item.id.eq(comingItem.item.id).and(comingItem.stock.id.eq(filter.getStock().getId()));
         else
         return
-            filter.getStock().isAllowAll() ? coming.item.section.id.eq(comingItem.item.section.id)
+            filter.getStock().isAllowAll() ?
+                coming.item.section.id.eq(comingItem.item.section.id)
                 : coming.item.section.id.eq(comingItem.item.section.id).and(comingItem.stock.id.eq(filter.getStock().getId()));
     }
 
@@ -476,7 +480,21 @@ public class SoldItemHandler extends EntityHandlerImpl {
                 soldItem.sum.subtract(sipb.getSumForExcludeFromIncome(soldItem))
                     .sum()
                     .divide(totalIncome.subtract(excludeFromIncome))
-                    .as(SoldItemFilter.SortingFieldsForGroupedByItemSoldItems.INCOMESUMPERCENT.getValue())
+                    .as(SoldItemFilter.SortingFieldsForGroupedByItemSoldItems.INCOMESUMPERCENT.getValue()),
+//                ExpressionUtils.as(
+//                    JPAExpressions
+//                        .select(comingItem.doc).from(comingItem)
+//                        .where(coming.item.id.eq(comingItem.item.id)
+//                            .and(comingItem.doc.date.between(comingItem.doc.date, DatePath.currentDate())
+//                        ,
+//                    SoldItemFilter.SortingFieldsForGroupedByItemSoldItems.DATE.getValue()
+//                )
+                ExpressionUtils.as(
+                    JPAExpressions
+                        .select(comingItem.doc.date.max()).from(comingItem)
+                        .where(availQuantityByEanPredicate),
+                    SoldItemFilter.SortingFieldsForGroupedByItemSoldItems.DATE.getValue()
+                )
             )
             .from(soldItem).where(predicate)
             .groupBy(coming.item)
@@ -525,7 +543,8 @@ public class SoldItemHandler extends EntityHandlerImpl {
                     CommonUtils.validateBigDecimal(item.get(1, BigDecimal.class)),
                     CommonUtils.validateBigDecimal(item.get(3, BigDecimal.class)),
                     CommonUtils.validateBigDecimal(item.get(4, BigDecimal.class)),
-                    CommonUtils.validateBigDecimal(item.get(5, BigDecimal.class))
+                    CommonUtils.validateBigDecimal(item.get(5, BigDecimal.class)),
+                    CommonUtils.validateDate(item.get(6, Date.class))
                 )
             );
         });
@@ -722,7 +741,9 @@ public ResponseItem addOneSelling(SoldItem soldItem) {
                         soldItem.getComment() + " для " + soldItem.getBuyer().getName()
                                 + getQuantityForComment(soldItem.getQuantity()),
                         userHandler.checkUser(soldItem.getUser(), null ).getFullName(),
-                    CommentAction.SALE_COMMENT.getAction(), comingItem.getCurrentQuantity())
+                    soldItem.getBuyer().getCommentAction() ==null
+                        ? CommentAction.SALE_COMMENT.getAction() : soldItem.getBuyer().getCommentAction(),
+                    comingItem.getCurrentQuantity())
         );
 
         soldItem.setDate(new Date());
@@ -731,7 +752,9 @@ public ResponseItem addOneSelling(SoldItem soldItem) {
                 this.buildComment(soldItem.getComments(), getQuantityForComment(soldItem.getQuantity())
                                 + soldItem.getComment(),
                         userHandler.checkUser(soldItem.getUser(), null ).getFullName(),
-                    CommentAction.SALE_COMMENT.getAction(), soldItem.getQuantity())
+                    soldItem.getBuyer().getCommentAction() ==null ?
+                        CommentAction.SALE_COMMENT.getAction() : soldItem.getBuyer().getCommentAction(),
+                    soldItem.getQuantity())
         );
 
         soldItem.setPrice(getPriceOfSoldItem(soldItem, comingItem.getPriceIn()));
@@ -825,6 +848,8 @@ public ResponseItem addOneSelling(SoldItem soldItem) {
                             comingSum.divide(coming.getQuantity(), 2, BigDecimal.ROUND_CEILING),
                         priceOut,
                         coming.getCurrentQuantity().subtract(coming.getQuantity()),
+                        coming.getFirstImpPrice(),
+                        coming.getImpOverheadPerc(),
                         new ArrayList<Comment>() {{
                                 add(new Comment(
                                     "",

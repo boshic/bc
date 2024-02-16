@@ -1,3 +1,4 @@
+let paneId = 'selling-pane';
 
 let sellingPaneConfig = {
 
@@ -5,8 +6,8 @@ let sellingPaneConfig = {
   findItemUrl: 'getComingForSell',
   sellItemsUrl: 'addSellingsSet',
   checkRowsType: 'selling',
-  paneName: 'Продавать!',
-  paneId: 'selling-pane',
+  paneName: 'Отпустить!',
+  paneId: paneId,
   watchingCollectionValue : '[comment, buyer, rows.length]',
   watchingCollectionFunc : ($s, nv, ov) => {
     if ((nv.indexOf(undefined) < 0)) {
@@ -33,6 +34,7 @@ let sellingPaneConfig = {
   },
   getDeleteRowsConfig : (params) => {
     return {
+      paneId,
       getEmptyBuyer: params.getEmptyBuyer,
       itemId: params.itemId,
       deletionTrackingUrl: params.deletionTrackingUrl };

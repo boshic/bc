@@ -42,6 +42,7 @@ public class BuyerHandler extends EntityHandlerImpl{
         newBuyer.setAccount(CommonUtils.validateString(buyer.getAccount()));
         newBuyer.setBank(bankHandler.getCheckedItem(buyer.getBank()));
         newBuyer.setUnp(CommonUtils.validateString(buyer.getUnp()));
+        newBuyer.setCommentAction(CommonUtils.validateString(buyer.getCommentAction()));
         newBuyer.setAddress(buyer.getAddress());
         newBuyer.setDiscount(buyer.getDiscount() == null ? DEF_DISCOUNT : buyer.getDiscount());
         newBuyer.setInvoiceDaysValid(buyer.getInvoiceDaysValid() == null ? DEF_INVOICE_DAYS_VALID : buyer.getInvoiceDaysValid());

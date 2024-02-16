@@ -1,7 +1,14 @@
-<span style="margin-top: 35px;" class="input-notification"
-       ng-show="item.debt">Долг:<span>{{item.debt}}</span></span>
-<span style="margin-top: 35px;" class="input-notification" ng-show="item.sellByComingPrices">
-            этому покупателю списывается по учетным ценам!
+<span style="margin-top: 50px;" class="input-notification">
+    <span ng-show="item.debt">Долг:{{item.debt}}</span>
+    <span ng-show="item.doNotUseForDeductions"
+          class="not-for-deduction-item glyphicon glyphicon-scissors">
+    </span>
+</span>
+<span
+        style="margin-top: -17px;" class="input-notification">
+        <span ng-show="item.sellByComingPrices">
+            Этому покупателю списывается по учетным ценам!
+        </span>
 </span>
 <item-input-items-block
         input-id="inputId" item = "item" items = "items"

@@ -104,6 +104,7 @@ let buyerInputCntrlr = ($s, itemFactory) => {
 
 let buyerChangeCtrlr = ($s, itemFactory) => {
 
+    $s.commentCauses = itemFactory.buyerCommentCauses;
     return commonAddEditCtrlr($s, itemFactory, 'buyerConfig');
 };
 
@@ -361,11 +362,13 @@ angular.module('inputs', ['asyncFilter'])
         return {
             restrict: 'E',
             scope: {
+                disabled: '<?',
                 comment:'=ngModel'
             },
             template:
             "<div class='comment-container'>" +
             "<textarea class='form-control comment-on-selling-pane' type='text' " +
+                "ng-readonly='disabled'" +
                 "placeholder='Комментарий' id='comment-input'" +
                 "ng-model='comment'>" +
             "</textarea>" +
@@ -667,11 +670,12 @@ angular.module('inputs', ['asyncFilter'])
         template:
         "<span class='warning-item-input' ng-hide='$ctrl.item.id>0'>" +
             "{{'Не выбран(а)(о) ' + $ctrl.title + '!'}}</span>" +
-        "<textarea rows='2' title='{{$ctrl.item.ean + \"  \" + $ctrl.item.name}}' type='text' " +
+          "<textarea rows='2' title='{{$ctrl.item.ean + \"  \" + $ctrl.item.name}}' type='text' " +
             "class='form-control' placeholder={{$ctrl.title}} id={{$ctrl.inputId}} " +
                 "ng-keydown='$ctrl.keypressHandler()($event, \"name\")'" +
                 "ng-model='$ctrl.item.name'" +
-                "ng-readonly='$ctrl.item.id || $ctrl.item === null'></textarea>" +
+                "ng-readonly='$ctrl.item.id || $ctrl.item === null'>" +
+          "</textarea>" +
         "<span class='item-input-toolbox' ng-hide='$ctrl.item.id > 0 && $ctrl.requestsQuantity === 0'>" +
             "<item-input-total requests-quantity='$ctrl.requestsQuantity'" +
                 "total='$ctrl.items.length'></item-input-total>" +
@@ -750,6 +754,7 @@ angular.module('inputs', ['asyncFilter'])
 
           let incompatableReqSymbols = ['%'];
           let stocks = [];
+          let buyerCommentCauses = ['Продажа','Причина списания'];
           let checkReqForIncompatableSymbols = (request) => {
             if(typeof request === 'string') {
               incompatableReqSymbols.forEach(symbol => {
@@ -769,7 +774,12 @@ angular.module('inputs', ['asyncFilter'])
 
           let getNewBank = () => {return {name: ''};};
             let getNewSupplier = () => { return {name: ''};};
-            let getNewBuyer = () => {return {name: '', bank: getNewBank(), invoiceDaysValid:3};};
+            let getNewBuyer = () => {
+              return {name: '',
+                      commentAction: buyerCommentCauses[0],
+                      bank: getNewBank(),
+                      invoiceDaysValid:3 };
+            };
             let getNewDocument = () => { return {name: '', date: '', supplier : getNewSupplier()};};
             let getNewSection = () => {return {name: ''};};
             let getNewItem = () => {
@@ -790,6 +800,7 @@ angular.module('inputs', ['asyncFilter'])
 
             return {
                 stocks,
+                buyerCommentCauses,
                 getStocks,
                 getItemById,
                 generateUuid : paneFactory.generateUuid,
@@ -946,8 +957,8 @@ angular.module('inputs', ['asyncFilter'])
                         .pipe(
                             debounceTime(400),
                             map(keyword => keyword.trim()),
+                            map(keyword => keyword.replace('\\', '')),
                             // filter(keyword => keyword.length > 0),
-                            // filter(() => $scope.test),
                             // distinctUntilChanged(),
                             switchMap(keyword =>
                                 httpService.getItemsRx({

@@ -4,7 +4,7 @@
 let soldPaneConfig =
     {
         findItemUrl: 'findSoldItemByFilter',
-        paneName: 'Продано',
+        paneName: 'Отпущено',
         paneId: 'sold-pane',
         afterSearch: ($s) => {
             $s.focusOnEanInput();

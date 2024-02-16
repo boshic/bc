@@ -187,6 +187,16 @@ public class ComingItemHandler extends EntityHandlerImpl {
 //        return comingItemRepository.findAll(spec);
     }
 
+    private void setPriceOutWhenGettingForRelease(BigDecimal percOverheadBySection,
+                                                  BigDecimal priceOut,
+                                                  ComingItem comingItem) {
+        if ((comingItem.getPriceOut().compareTo(BigDecimal.ZERO) == 0) ||
+        (percOverheadBySection.compareTo(BigDecimal.ZERO) > 0 && comingItem.getPriceOut().compareTo(priceOut) > 0) ||
+            (percOverheadBySection.compareTo(BigDecimal.ZERO) == 0 && priceOut.compareTo(comingItem.getPriceOut()) > 0))
+                comingItem.setPriceOut(priceOut);
+
+    }
+
     private void setQuantityAndPriceFromComings(Item item,
                                                      Long stockId,
                                                      ComingItem comingItem) {
@@ -203,8 +213,10 @@ public class ComingItemHandler extends EntityHandlerImpl {
                         comingItem.setDoc(c.getDoc());
                 }
 
-                if (c.getPriceOut().compareTo( comingItem.getPriceOut()) > 0)
-                    comingItem.setPriceOut(CommonUtils.validateBigDecimal(c.getPriceOut()));
+//                if (c.getPriceOut().compareTo( comingItem.getPriceOut()) > 0)
+//                    comingItem.setPriceOut(CommonUtils.validateBigDecimal(c.getPriceOut()));
+                setPriceOutWhenGettingForRelease(comingItem.getItem().getSection().getPercOverheadLimit(),
+                                                    c.getPriceOut(), comingItem);
 
                 if ((c.getFirstImpPrice().compareTo(BigDecimal.ZERO) > 0)
                     && comingItem.getFirstImpPrice().compareTo(BigDecimal.ZERO) == 0)
@@ -215,7 +227,7 @@ public class ComingItemHandler extends EntityHandlerImpl {
                     comingItem.setImpOverheadPerc(CommonUtils.validateBigDecimal(c.getImpOverheadPerc()));
 
                 if ((c.getPriceIn().compareTo(BigDecimal.ZERO) > 0)
-                    && comingItem.getPriceIn().compareTo(BigDecimal.ZERO) == 0)
+                    && CommonUtils.validateBigDecimal(comingItem.getPriceIn()).compareTo(BigDecimal.ZERO) == 0)
                     comingItem.setPriceIn(CommonUtils.validateBigDecimal(c.getPriceIn()));
 
 
@@ -311,7 +323,9 @@ public class ComingItemHandler extends EntityHandlerImpl {
                     item,
                     comings.get(0).getStock(),
                     item.getPrice().compareTo(BigDecimal.ZERO) > 0 ? item.getPrice()
-                    : comings.stream().max(Comparator.comparing(ComingItem::getPriceOut)).get().getPriceOut(),
+                    : item.getSection().getPercOverheadLimit().compareTo(BigDecimal.ZERO) > 0 ?
+                        comings.stream().min(Comparator.comparing(ComingItem::getPriceOut)).get().getPriceOut()
+                        : comings.stream().max(Comparator.comparing(ComingItem::getPriceOut)).get().getPriceOut(),
                     comings.stream()
                             .map(ComingItem::getCurrentQuantity)
                             .reduce(BigDecimal.ZERO, BigDecimal::add),
@@ -350,7 +364,7 @@ public class ComingItemHandler extends EntityHandlerImpl {
                     comingItem = responseItem.getEntityItem();
                     if(comingItem != null)
                     {
-                        comingItem.setPriceIn(row.getPrice());
+                        comingItem.setPriceOut(row.getPrice());
                         comingItem.setQuantity(
                             comingItem.getCurrentQuantity().compareTo(row.getQuantity()) > 0 ?
                                 row.getQuantity() : comingItem.getCurrentQuantity()
@@ -616,6 +630,18 @@ public class ComingItemHandler extends EntityHandlerImpl {
 
         if(coming == null)
             return new DtoItemForNewComing(item, item.getPrice(), item.getPrice());
+
+        BigDecimal priceOut = coming.getPriceOut();
+        QComingItem qComingItem = QComingItem.comingItem;
+        coming.setPriceOut(CommonUtils.validateBigDecimal(
+            new JPAQuery<BigDecimal>(abstractEntityManager.getEntityManager())
+                .select(qComingItem.priceOut.min()).from(qComingItem)
+                .where(qComingItem.stock.id.eq(stockId)
+                    .and(qComingItem.item.id.eq(item.getId()))
+                    .and(qComingItem.currentQuantity.gt(BigDecimal.ZERO)))
+                .fetchOne())
+        );
+        setPriceOutWhenGettingForRelease(item.getSection().getPercOverheadLimit(), priceOut, coming);
 
         return new DtoItemForNewComing(coming.getItem(), coming.getPriceIn(), getComingPrice(coming));
     }

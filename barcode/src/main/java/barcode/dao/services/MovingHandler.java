@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 public class MovingHandler extends EntityHandlerImpl {
@@ -93,10 +94,14 @@ public ResponseItem makeMovings(Set<SoldItem> movings, Long stockId) {
                 BigDecimal reqForMove = moving.getQuantity(), availQuant, totalQuantity,
                     availQuantityByEan = comingItemHandler.getAvailQuantityByEan(comings);
 
-                if(reqForMove.compareTo(availQuantityByEan) > 0  || comings.size() == 0)
+                if(reqForMove.compareTo(availQuantityByEan) > 0  || comings.size() == 0) {
+
+                    setValuesWhenNotEnoughQuantity(moving,availQuantityByEan);
                     return new ResponseItem<SoldItem>(getInsufficientQuantityOfGoodsMessage(
-                            reqForMove, availQuantityByEan, moving.getComing().getItem().getName()
-                    ), false);
+                        reqForMove, availQuantityByEan, moving.getComing().getItem().getName()),
+                        movings.stream().filter(s -> !s.getSold()).collect(Collectors.toList()),
+                        false);
+                }
 
                 for(ComingItem coming : comings) {
 
@@ -182,6 +187,7 @@ public ResponseItem makeMovings(Set<SoldItem> movings, Long stockId) {
                             comingItemHandler.saveComingItem(newComing);
                         }
 
+                        moving.setSold(true);
                         if (reqForMove.compareTo(BigDecimal.ZERO) == 0) break;
                     }
                 }

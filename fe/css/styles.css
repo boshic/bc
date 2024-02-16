@@ -510,8 +510,9 @@ span.input-notification {
     position: absolute;
     background: var(--main-color);
     color: aliceblue;
-    padding-right: 2%;
-    padding-left: 2%;
+    margin-left: 2%;
+    /*padding-right: 1%;*/
+    /*padding-left: 1%;*/
 }
 
 button.sell-item-btn {
@@ -2162,4 +2163,15 @@ div.doc-info-on-sold-pane {
 
 div.filter-on-release-pane-enabled {
     border-bottom: 5px dashed var(--main-color);
+}
+
+div.stock-dest-on-moving-modal {
+    background: var(--gray-color);
+    padding: 1px;
+}
+
+.not-for-deduction-item {
+    margin-left: 2px;
+    font-size: 18px;
+    color: var(--white-color);
 }

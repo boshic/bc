@@ -19,6 +19,7 @@ import invoicesPaneConfig from '../modules/selling/invoices-pane-config';
 
                 let generateEanKeyCode = 192;
                 let backSpaceKeyCode = 8;
+                let commentSeparator = "; ";
                 let escKeyCode = 27;
                 let enterKeyCode = 13;
                 let keyCodes = {escKeyCode, enterKeyCode, backSpaceKeyCode};
@@ -27,7 +28,7 @@ import invoicesPaneConfig from '../modules/selling/invoices-pane-config';
                 let successSound =  new Audio(snd);
                 let failSound =  new Audio(failSnd);
 
-                let fractionalUnits = ['кг', 'л', 'м', 'км', 'ч'];
+                let fractionalUnits = ['кг', 'л', 'м', 'км', 'ч', 'м2', 'шт_', 'т'];
                 let user = angular.extend({}, userInfo);
 
                 let generateEan = (ean) => {
@@ -65,13 +66,14 @@ import invoicesPaneConfig from '../modules/selling/invoices-pane-config';
                     }
                 };
                 let checkRowsBeforeMoving = ($s, user) => {
+
                     if ($s.rows.length > 0) {
                         for (let row of $s.rows) {
-                            let stockDestId = angular.isDefined($s.stockDest) ? $s.stockDest.id : row.coming.stock.id;
+                          let stockDestId = angular.isDefined($s.stockDest) ? $s.stockDest.id : row.coming.stock.id;
                             let stockId = angular.isDefined($s.stock) ? $s.stock.id : $s.filter.stock.id;
                             row.user = user;
                             row.comment = $s.comment;
-                            if (!row.quantity || stockId === stockDestId)
+                            if (!row.quantity || stockId === stockDestId || !(row.price > 0))
                               return $s.canRelease = false;
 
                         }
@@ -105,7 +107,7 @@ import invoicesPaneConfig from '../modules/selling/invoices-pane-config';
                 let checkNumberLimit = (value, limit) => {
                     if((!angular.isDefined(value)) || (value === null) ||(value === 'null') || (value < 0) || (value > limit))
                         return 0;
-                    return value;
+                    return +value;
                 };
                 let fixIfFractional = (value, unit) => {
                     return fractionalUnits.indexOf(unit) < 0 ? +value.toFixed(0) : +value.toFixed(3);
@@ -143,7 +145,9 @@ import invoicesPaneConfig from '../modules/selling/invoices-pane-config';
                             row.price = checkNumberLimit(row.price, undefined);
                         if (angular.isDefined(row.vat))
                             row.vat = checkNumberLimit(row.vat, undefined);
-                        row.quantity = checkNumberLimit(row.quantity, row.currentQuantity);
+                        // row.quantity = checkNumberLimit(row.quantity, row.currentQuantity);
+                        // if (row.quantity > 0 && angular.isDefined(row.coming))
+                        //   row.quantity = fixIfFractional(row.quantity, row.currentQuantity);
                         (angular.isDefined(row.sum) && row.sum != null) ? totals.sum += +(row.sum) :
                             totals.sum += +(row.quantity * getDiscountedPrice(row.price, discount));
                         totals.quantity += +row.quantity;
@@ -215,6 +219,10 @@ import invoicesPaneConfig from '../modules/selling/invoices-pane-config';
                     term.next(JSON.stringify(filter));
                 };
 
+                let addOneRowForRelease = (rows, row) => {
+                  rows.splice(0, 0, angular.extend({}, row));
+                };
+
                 let generateUuid = () => {
                     return Math.random().toString(36).substring(2, 15)
                         + Math.random().toString(36).substring(2, 15)
@@ -233,6 +241,8 @@ import invoicesPaneConfig from '../modules/selling/invoices-pane-config';
                   rowsIn.forEach(row => {
                     index = checkDuplicateRowsByItem(row.coming.item.id, rowsOut);
                     if (index < 0) {
+                      row.currentQuantity = (row.availQuantityByEan > 0) ?
+                        row.availQuantityByEan : row.quantity;
                       row.item = row.coming.item;
                       row.vat = row.coming.stock.organization.vatValue;
                       rowsOut.push(row);
@@ -243,7 +253,8 @@ import invoicesPaneConfig from '../modules/selling/invoices-pane-config';
                   let getRowWhenGetItemsForRelease = (row, stock) => {
                     row.coming = { item: row.item, stock };
                     row.priceIn = row.price;
-                    row.price = row.priceOut;
+                    if (row.priceOut !== null && row.priceOut > 0)
+                      row.price = row.priceOut;
                     row.vat = stock.organization.vatValue;
                     return row;
                   };
@@ -375,7 +386,8 @@ import invoicesPaneConfig from '../modules/selling/invoices-pane-config';
                             $s.rows.splice(i, 1);
                         else {
                             $s.rows =
-                              (angular.isDefined($s.buyer) && $s.buyer.id > 0) ?
+                              (angular.isDefined($s.buyer, config.paneId) && $s.buyer.id > 0
+                                && config.paneId === 'selling-pane') ?
                               getNonNullFieldRows($s.rows, 'quantity') : [];
                             if(angular.isDefined($s.comment))
                                 $s.comment = "";
@@ -393,21 +405,14 @@ import invoicesPaneConfig from '../modules/selling/invoices-pane-config';
                                 if (resp.success) {
                                     $s.warning ="";
                                     let stock = angular.isDefined($s.stock) ? $s.stock : $s.filter.stock;
-                                    // let row = resp.entityItem;
                                     let row = getRowWhenGetItemsForRelease(resp.entityItem, stock);
-                                    // row.coming = {
-                                    //     item: row.item, stock
-                                    // };
-                                    // row.priceIn = row.price;
-                                    // row.price = row.priceOut;
-                                    // row.vat = stock.organization.vatValue;
-
                                     let index = checkDuplicateRowsByItem(row.item.id, $s.rows);
                                     let isFractional = fractionalUnits.indexOf(row.item.unit) >= 0;
                                     let quantity = row.quantity;
 
                                     if (index < 0) {
-                                        $s.rows.splice(0, 0, angular.extend({}, row));
+                                        addOneRowForRelease($s.rows, row);
+                                        // $s.rows.splice(0, 0, angular.extend({}, row));
                                         index = 0;
                                         isFractional ? $s.rows[index].quantity = quantity :
                                             $s.rows[index].quantity = quantity || 1;
@@ -444,14 +449,8 @@ import invoicesPaneConfig from '../modules/selling/invoices-pane-config';
                                   resp.entityItems.forEach(row => {
                                       index = checkDuplicateRowsByItem(row.item.id, $s.rows);
                                       if (index < 0) {
-                                        // setRowWhenGetItemsForRelease(row, row.stock);
-                                        // row.coming = {item : row.item, stock: row.stock};
-                                        // row.vat = row.stock.organization.vatValue;
-                                        // row.priceIn = row.price;
-                                        // row.price = row.priceOut;
-                                        // row.buyer = $s.buyer;
-                                        // row.comment =  (row.comment !== null && row.comment.length > 0) ? row.comment : '';
-                                        $s.rows.push(getRowWhenGetItemsForRelease(row, row.stock));
+                                        addOneRowForRelease($s.rows, getRowWhenGetItemsForRelease(row, row.stock));
+                                        // $s.rows.push(getRowWhenGetItemsForRelease(row, row.stock));
                                       }
                                     });
                                     if (angular.isDefined($s.buyer) && ($s.filter.invoiceNumber > 0 )) {
@@ -459,7 +458,9 @@ import invoicesPaneConfig from '../modules/selling/invoices-pane-config';
                                           resp => {
                                             $s.buyer = resp.buyer;
                                             if(angular.isDefined($s.comment))
-                                              $s.comment = "счет-фактура №" + resp.id + " от " + new Date(resp.date).toLocaleDateString();
+                                              $s.comment = "счет-фактура №" + resp.id + " от "
+                                                + new Date(resp.date).toLocaleDateString()
+                                                + commentSeparator + commentSeparator;
                                           },
                                           resp => {
                                             console.log(resp);

@@ -11,10 +11,10 @@
         <pane-search-input
                 input-value = 'barcode' keypress-handler="setEanPrefix" input-id="searchInputId">
         </pane-search-input>
-        <span style="margin-left: 5px;" class="selling-warning" ng-show="warning.length">{{warning}}</span>
         <pane-request-indicator
                 requests-quantity="requestParams.requestsQuantity">
         </pane-request-indicator>
+        <span style="margin-left: 5px;" class="selling-warning" ng-show="warning.length">{{warning}}</span>
     </div>
 
     <button class='glyphicon glyphicon-arrow-up pane-searchinput-btn'

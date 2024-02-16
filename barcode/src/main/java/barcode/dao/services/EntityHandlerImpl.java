@@ -76,7 +76,7 @@ public class EntityHandlerImpl implements EntityHandler {
 
     static final String NEW_REPORT_ADDING_FAILED = FAILED + "Не удалось добавить отчет!";
 
-    static final String WRITE_OFF_CAUSE = "причина списания";
+//    static final String WRITE_OFF_CAUSE = "Причина списания";
 
     static final String AUTO_COMING_MAKER = "Автоприход";
     static final String AUTO_MOVING_MAKER = "Автоперемещение";
@@ -203,6 +203,11 @@ public class EntityHandlerImpl implements EntityHandler {
     <T extends BasicCounterPartyEntity> T getEntityForInventory(QueryDslPredicateExecutor<T> repository, Predicate predicate) {
 
         return repository.findOne(predicate);
+    }
+
+    void setValuesWhenNotEnoughQuantity(SoldItem soldItem, BigDecimal availQuant) {
+        soldItem.setAvailQuantityByEan(availQuant);
+        soldItem.setQuantity(availQuant);
     }
 
 

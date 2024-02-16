@@ -9,11 +9,11 @@ let movingPaneConfig = {
     },
     paneName: 'Перемещение',
     paneId: 'moving-pane',
-    watchingCollectionValue : '[rows, stockDest, rows.length]',
+    watchingCollectionValue : '[comment, stockDest, rows.length]',
     watchingCollectionFunc : ($s, nv, ov) => {
       if ($s.rows.length) {
           $s.checkRows();
-          $s.blankSearch();
+          // $s.blankSearch();
       }
     },
     getFindItemParams: (ean, $s) => {

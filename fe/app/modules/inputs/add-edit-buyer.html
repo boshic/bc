@@ -74,6 +74,18 @@
                 <bank-input bank="item.bank"></bank-input>
             </div>
         </div>
+        <div ng-show = "user.role == 'ROLE_ADMIN'">
+            <span>Комментарий при списании</span>
+        </div>
+        <div style="display: flex; margin-bottom: 5px;"
+             ng-show = "user.role == 'ROLE_ADMIN'">
+            <div>
+                <select style='font-size: 30px;' name='comment-causes-select'
+                        ng-options="option for option in commentCauses track by option"
+                        ng-model='item.commentAction'>
+                </select>
+            </div>
+        </div>
         <div style="display: flex;" ng-show = "user.role == 'ROLE_ADMIN'">
             <input style="zoom: 1.5; position: absolute; margin: auto;"
                    type="checkbox"
