@@ -54,7 +54,9 @@ public class DocumentHandler extends EntityHandlerImpl {
 
     public ResponseItem<Document> addItem(Document document) {
 
-        List<Document> docs = getDocsByNameAndDateBetween(document.getName(), document.getDate(), document.getDate());
+        List<Document> docs =
+            getDocsByNameAndDateBetween(
+                document.getName(), document.getDate(), document.getDate());
 
         if (docs.size() == 0)
             return update(new Document(), document);

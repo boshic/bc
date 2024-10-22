@@ -1,13 +1,16 @@
-let commonPaneReleaseCtrlr = ($s, itemFactory, filterFactory, paneFactory, printFactory, modalFactory, paneConfig) => {
+let commonPaneReleaseCtrlr = ($s, itemFactory, filterFactory, paneFactory,
+                              printFactory, modalFactory, cashboxFactory, paneConfig) => {
 
     let config = paneFactory[paneConfig];
     let getEmptyDoc = itemFactory.documentConfig.getEmptyItem;
 
-    $s.getEmptyItem = itemFactory.itemConfig.getEmptyItem
+    $s.getEmptyItem = itemFactory.itemConfig.getEmptyItem;
     $s.getEmptyBuyer = itemFactory.buyerConfig.getEmptyItem;
     $s.item = $s.getEmptyItem();
     $s.barcode = '';
-    paneFactory.setPaneDefaults($s, {config, filterFactory});
+    paneFactory.setPaneDefaults($s, {config, factories: {
+        itemFactory, filterFactory, printFactory, modalFactory, cashboxFactory
+      }});
     $s.filter = {visible: false, allowAllStocks: false, sortField: '$index', reverseOrder: false};
     $s.canRelease = false;
     $s.totals = { date: new Date, sum: 0, quantity: 0 };
@@ -84,7 +87,8 @@ let commonPaneReleaseCtrlr = ($s, itemFactory, filterFactory, paneFactory, print
 
     $s.$on("tabSelected", (event, data) => {
         if (data.event != null && paneFactory.paneToggler(data.pane) === config.paneId) {
-            $s.blankSearch();
+          (paneFactory.isItFunction(config.tabSelected)) ? config.tabSelected($s) : $s.blankSearch();
+            // $s.blankSearch();
         }
     });
 
@@ -115,7 +119,12 @@ let commonPaneReleaseCtrlr = ($s, itemFactory, filterFactory, paneFactory, print
     };
 
     $s.openQuantityChangerModal = (itemId) => {
-        if($s.rows.length)
+        if(typeof config.openQuantityChangerModal === 'function')
+          config.openQuantityChangerModal(
+              { $s, descr: itemId, modalFactory }
+            );
+        else
+          if($s.rows.length)
             modalFactory.openModalWithConfig({itemId, rows: $s.rows,
                 availQuantityField : 'currentQuantity',
                 limitQuantityField : 'currentQuantity',

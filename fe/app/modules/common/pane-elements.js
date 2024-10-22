@@ -2,6 +2,7 @@ import comingPaneTpl from '../coming/coming-pane.html';
 import newComingDocPaneTpl from '../coming/new-coming-doc.html';
 import soldPaneTpl from '../selling/sold-pane.html';
 import movingPaneTpl from '../moving/moving-pane.html';
+import cashboxPaneTpl from '../cashbox/cashbox-pane.html';
 import sellingPaneTpl from '../selling/selling-pane.html';
 import invoicesPaneTpl from '../selling/invoices-pane.html';
 import itemRowOnPanesTpl from './item-row-on-panes.html';
@@ -103,9 +104,11 @@ import commonReleasePaneCtrlr from '../../controllers/common-pane-release-ctrlr.
                 transclude: true,
                 scope: {},
                 template: comingPaneTpl,
-                controller: ($scope, itemFactory, filterFactory, paneFactory, printFactory, modalFactory ) => {
+                controller: ($scope, itemFactory, filterFactory,
+                             paneFactory, printFactory, modalFactory) => {
 
-                    return commonPaneCtrlr($scope,  itemFactory, filterFactory, paneFactory, printFactory, modalFactory, 'comingPaneConfig');
+                    return commonPaneCtrlr($scope,  itemFactory, filterFactory, paneFactory,
+                      printFactory, modalFactory, 'comingPaneConfig');
                 },
                 link: (scope) => {
                     scope.resetFilter();
@@ -118,8 +121,9 @@ import commonReleasePaneCtrlr from '../../controllers/common-pane-release-ctrlr.
           transclude: true,
           scope: {},
           template: newComingDocPaneTpl,
-          controller: ($scope, itemFactory, filterFactory, paneFactory, printFactory, modalFactory ) => {
-            return commonReleasePaneCtrlr($scope,  itemFactory, filterFactory, paneFactory, printFactory, modalFactory, 'newComingDocConfig');
+          controller: ($scope, itemFactory, filterFactory, paneFactory, printFactory, modalFactory, cashboxFactory ) => {
+            return commonReleasePaneCtrlr($scope,  itemFactory, filterFactory, paneFactory,
+              printFactory, modalFactory, cashboxFactory, 'newComingDocConfig');
           }
           // ,
           // link: (scope) => {
@@ -133,8 +137,9 @@ import commonReleasePaneCtrlr from '../../controllers/common-pane-release-ctrlr.
             transclude: true,
             scope: {},
             template: sellingPaneTpl,
-            controller: ($scope, itemFactory, filterFactory, paneFactory, printFactory, modalFactory ) => {
-              return commonReleasePaneCtrlr($scope,  itemFactory, filterFactory, paneFactory, printFactory, modalFactory, 'sellingPaneConfig');
+            controller: ($scope, itemFactory, filterFactory, paneFactory, printFactory, modalFactory, cashboxFactory ) => {
+              return commonReleasePaneCtrlr($scope,  itemFactory, filterFactory, paneFactory,
+                printFactory, modalFactory, cashboxFactory, 'sellingPaneConfig');
             },
             link: (scope) => {
               scope.resetFilter();
@@ -147,13 +152,30 @@ import commonReleasePaneCtrlr from '../../controllers/common-pane-release-ctrlr.
             transclude: true,
             scope: {},
             template: movingPaneTpl,
-            controller: ($scope, itemFactory, filterFactory, paneFactory, printFactory, modalFactory ) => {
-                return commonReleasePaneCtrlr($scope,  itemFactory, filterFactory, paneFactory, printFactory, modalFactory, 'movingPaneConfig');
+            controller: ($scope, itemFactory, filterFactory, paneFactory, printFactory, modalFactory, cashboxFactory ) => {
+                return commonReleasePaneCtrlr($scope,  itemFactory, filterFactory, paneFactory,
+                  printFactory, modalFactory, cashboxFactory, 'movingPaneConfig');
             },
             link: (scope) => {
                 scope.resetFilter();
             }
           }
+      })
+      .directive( "cashboxPane", () => {
+        return {
+          restrict: 'E',
+          transclude: true,
+          scope: {},
+          template: cashboxPaneTpl,
+          controller: ($scope, itemFactory, filterFactory, paneFactory,
+                       printFactory, modalFactory, cashboxFactory ) => {
+            return commonReleasePaneCtrlr($scope,  itemFactory, filterFactory,
+              paneFactory, printFactory, modalFactory, cashboxFactory, 'cashboxPaneConfig');
+          },
+          link: (scope) => {
+            scope.resetFilter();
+          }
+        }
       })
         .directive( "soldPane", () => {
             return {
@@ -161,8 +183,10 @@ import commonReleasePaneCtrlr from '../../controllers/common-pane-release-ctrlr.
                 transclude: true,
                 scope: true,
                 template: soldPaneTpl,
-                controller: ($scope,  itemFactory, filterFactory, paneFactory, printFactory, modalFactory) => {
-                    return commonPaneCtrlr($scope,  itemFactory, filterFactory, paneFactory, printFactory, modalFactory, 'soldPaneConfig');
+                controller: ($scope,  itemFactory, filterFactory, paneFactory,
+                             printFactory, modalFactory) => {
+                    return commonPaneCtrlr($scope,  itemFactory, filterFactory,
+                      paneFactory, printFactory, modalFactory, 'soldPaneConfig');
                 },
                 link: (scope) => {
                     scope.resetFilter();
@@ -175,8 +199,10 @@ import commonReleasePaneCtrlr from '../../controllers/common-pane-release-ctrlr.
                 transclude: true,
                 scope: true,
                 template: invoicesPaneTpl,
-                controller: ($scope,  itemFactory, filterFactory, paneFactory, printFactory, modalFactory) => {
-                    return commonPaneCtrlr($scope,  itemFactory, filterFactory, paneFactory, printFactory, modalFactory, 'invoicesPaneConfig');
+                controller: ($scope,  itemFactory, filterFactory, paneFactory,
+                             printFactory, modalFactory) => {
+                    return commonPaneCtrlr($scope,  itemFactory, filterFactory, paneFactory,
+                      printFactory, modalFactory, 'invoicesPaneConfig');
                 },
                 link: (scope) => {
                     scope.resetFilter();

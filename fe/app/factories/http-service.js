@@ -4,7 +4,9 @@ angular.module('common-http-service', [])
         .factory('httpService',['$http', '$q',
             function ($http, $q) {
 
-
+                // let tpUrl = "http://localhost:3335/";
+              // let tpUrl = "http://192.168.100.50:3335/";
+              let tpUrl = "http://192.168.43.71:3335/";
 
                 let checkRequestParams = (requestParams) => {
                     return angular.isObject(requestParams);
@@ -82,6 +84,25 @@ angular.module('common-http-service', [])
                             );
                         return defer.promise;
                     },
+                    posttp: (opts) => {
+                      let defer = $q.defer();
+                      addRequestsQuantity(opts.requestParams);
+                      $http({
+                        url: tpUrl + opts.url,
+                        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                        method: "POST",
+                        data: opts.data
+                      })
+                      .then(
+                        resp => {
+                          successHandle(defer, resp, opts);
+                        },
+                        resp => {
+                          errorHandle(defer, resp, opts);
+                        }
+                      );
+                    return defer.promise;
+                  },
                     getItems: (opts) => {
                         let defer = $q.defer();
                         addRequestsQuantity(opts.requestParams);
@@ -96,6 +117,21 @@ angular.module('common-http-service', [])
                             );
                         return defer.promise;
                     },
+
+                  getItemsTp: (opts) => {
+                    let defer = $q.defer();
+                    addRequestsQuantity(opts.requestParams);
+                    $http.get(tpUrl+ opts.url, {params: opts.params})
+                      .then(
+                        resp => {
+                          successHandle(defer, resp, opts);
+                        },
+                        resp => {
+                          errorHandle(defer, resp, opts);
+                        }
+                      );
+                    return defer.promise;
+                  },
 
                     getItemsByFilter: (opts) => {
                         let defer = $q.defer();

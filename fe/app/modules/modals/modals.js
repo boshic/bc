@@ -107,7 +107,7 @@
         };
 
         let checkQuantity = row => {
-          if (row.quantity != 0 && quantity != row.quantity) {
+          if (angular.isDefined(row) && (row.quantity != 0 && quantity != row.quantity)) {
             row.quantity =
               paneFactory.checkNumberLimit(row.quantity, row.currentQuantity);
             row.quantity =

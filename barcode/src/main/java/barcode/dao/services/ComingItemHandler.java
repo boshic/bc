@@ -480,13 +480,11 @@ public class ComingItemHandler extends EntityHandlerImpl {
         }
 
         coming.getDoc().setSupplier(supplier);
-
         responseItem.getEntityItems().add(responseBySupplier);
 
         //doc
         ResponseItem responseBydoc = new ResponseItem("Документ " + coming.getDoc().getName() + " от "
-                                                                            + coming.getDoc().getDate() + SMTH_FOUND);
-
+                                                                           + coming.getDoc().getDate() + SMTH_FOUND);
         Document document = getDocumentHandler()
                 .findOneDocumentByFilter(new DocumentFilter
                                                 (new BasicFilter(
@@ -498,23 +496,27 @@ public class ComingItemHandler extends EntityHandlerImpl {
         if (document == null ) {
             document = getDocumentHandler().addItem(coming.getDoc()).getEntityItem();
             responseBydoc.setText("Документ " + coming.getDoc().getName() + " от "
-                                              + coming.getDoc().getDate() + SMTH_CREATED);
+                + coming.getDoc().getDate() + SMTH_CREATED);
+        }
+
+        if (document == null) {
+            responseBydoc.setText(CHECK_COMING_INVALID_DOC_SUPPL);
+            responseItem.getEntityItems().add(responseBydoc);
+            return responseItem;
         }
 
         coming.setDoc(document);
         responseItem.getEntityItems().add(responseBydoc);
         QComingItem qComingItem = QComingItem.comingItem;
+
         Predicate predicate = qComingItem.doc.eq(coming.getDoc())
-                                            .and(qComingItem.quantity.gt(0))
-                                            .and(qComingItem.item.eq(coming.getItem()))
-                                            .and(qComingItem.priceIn.eq(coming.getPriceIn()));
+            .and(qComingItem.quantity.gt(0))
+            .and(qComingItem.item.eq(coming.getItem()))
+            .and(qComingItem.priceIn.eq(coming.getPriceIn()));
 
         if (comingItemRepository.findAll(predicate).size() > 0) {
-
             responseItem.getEntityItems().add(new ResponseItem(CHECK_COMING_INVALID_DOC));
-
             responseItem.setText(CHECK_COMING_INVALID_DOC);
-
             return responseItem;
         }
 

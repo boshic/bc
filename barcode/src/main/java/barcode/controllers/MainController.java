@@ -1,5 +1,6 @@
 package barcode.controllers;
 
+import barcode.tools.xml.XmlCreator;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -9,14 +10,19 @@ import org.springframework.web.bind.annotation.RequestMapping;
 public class MainController {
 
     @GetMapping("/login")
-    public String redirectLogin() {
-
+    public String redirectLogin(){
         return "login";
     }
 
-    @GetMapping("/home")
-    public String redirectHome() {
 
+//    @RequestMapping(value = "/files", method = RequestMethod.GET)
+//    @ResponseBody public FileSystemResource getFile(HttpServletResponse response) {
+//        response.setContentType("application/xml");
+//        return new FileSystemResource(new File("try.xml")); //Or path to your file
+//    }
+    @GetMapping("/home")
+    public String redirectHome() throws Exception{
+        XmlCreator.create();
         return "home";
     }
 

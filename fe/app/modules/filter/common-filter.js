@@ -160,6 +160,7 @@ import commonFilterTpl from './common-filter.html';
                 };
 
                 return {
+                  resetBasicPaneFilterFields,
                   resetMovingFilter: (filter) => {
 
                         filter.alwaysOpenQuantityChangerModal = true;

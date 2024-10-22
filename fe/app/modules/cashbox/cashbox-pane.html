@@ -1,0 +1,216 @@
+<pane-shader active="requestParams.requestsQuantity"></pane-shader>
+<div>
+    <!--check-input = 'checkRows()'-->
+    <!--after-close = 'blankSearch()'    -->
+    <quantity-changer-modal
+            after-close = "afterCloseQuantityChangerModal()"
+            modal-data="quantityChangerModalData">
+    </quantity-changer-modal>
+</div>
+<div class="menu-panel unprintable" ng-keyup="handleKeyup($event)">
+
+    <div class = "blank-search-row hoverable"
+         ng-click="blankSearch()">
+<!--        <pane-search-input-->
+<!--                input-value = 'filter.ean' keypress-handler="setEanPrefix" input-id="searchInputId">-->
+<!--        </pane-search-input>-->
+        <span style="margin-left: 5px;"
+              class="cashbox-warning" ng-show="warning.length">
+            {{warning}}
+        </span>
+
+    </div>
+
+    <button  ng-hide="true"
+            class='glyphicon glyphicon-arrow-down pane-searchinput-btn'
+            title="найти по фрагменту в наименовании"
+            ng-disabled = "filter.ean.length === 0"
+            ng-click="filter.searchString = filter.ean">
+    </button>
+
+    <div class="pane-right-menu">
+        <div class="coming-pane-right-menu-option" title="Напечатать">
+            <print-menu
+                    ng-show="rows.length > 0"
+                    report-id="undefined"
+                    report-list-visible="reportListVisible"
+                    reports = 'reports'>
+            </print-menu>
+        </div>
+        <div class="coming-pane-right-menu-option">
+            <span class="glyphicon glyphicon-refresh"
+                ng-click="initCashbox()">
+            </span>
+        </div>
+        <div class="coming-pane-right-menu-option" ng-hide="true">
+            <common-filter filter="filter"
+                           reset-filter="resetFilter()">
+            </common-filter>
+        </div>
+    </div>
+</div>
+<div class="items-table">
+    <div style="display: flex;">
+        <div class="on-pane-totals-container">
+            <div ng-show="rows.length > 0">
+                <totals totals="totals"
+                        switch-values-allowed="user.actsAllowed.indexOf('viewComingsTotalsAllowed')>-1">
+                </totals>
+            </div>
+        </div>
+        <div class="quick-filter-container">
+            <quick-filter filter="filter"></quick-filter>
+        </div>
+    </div>
+    <current-stock-indicator stock="filter.stock"></current-stock-indicator>
+    <div style="display: flex; text-align: right;">
+        <div style="width: 50%">
+            <div class="cashbox-group-info">
+                <span class="cashbox-indicator"
+                    ng-class = "{'cashbox-indicator-ok': !cashboxInfo.IsBlocked,
+                                'cashbox-indicator-fail' : cashboxInfo.IsBlocked}">
+                        Касса заблокирована:
+                    <span ng-show = "cashboxInfo.IsBlocked">Да</span>
+                    <span ng-show = "!cashboxInfo.IsBlocked">Нет</span>
+                </span>
+<!--            </div>-->
+<!--            <div class="cashbox-group-info">-->
+                <span class="cashbox-indicator"
+                      ng-class = "{'cashbox-indicator-ok': cashboxInfo.BlockedText,
+                                'cashbox-indicator-fail' : !cashboxInfo.BlockedText}">
+                        {{'Причина блокировки КСА: ' + cashboxInfo.BlockedText}}
+                </span>
+            </div>
+            <div class="cashbox-group-info">
+                <span class="cashbox-indicator"
+                                      ng-class = "{'cashbox-indicator-ok': cashboxInfo.Cashier,
+                                'cashbox-indicator-fail' : !cashboxInfo.Cashier}">
+                {{'Кассир: ' + cashboxInfo.Cashier}}</span>
+                <span class="cashbox-indicator"
+                      ng-class = "{'cashbox-indicator-ok': cashboxInfo.ShiftOpened,
+                                'cashbox-indicator-fail' : !cashboxInfo.ShiftOpened}">
+                      Смена:
+                    <span ng-show = "cashboxInfo.ShiftOpened">Открыта</span>
+                    <span ng-show = "!cashboxInfo.ShiftOpened">Закрыта</span>
+                </span>
+                <span class="cashbox-indicator"
+                      ng-class = "{'cashbox-indicator-ok': cashboxInfo.TotalSum,
+                                'cashbox-indicator-fail' : !cashboxInfo.TotalSum}">
+                {{'Денег в кассе: ' + cashboxInfo.TotalSum}}</span>
+                <span class="cashbox-indicator"
+                      ng-class = "{'cashbox-indicator-ok': cashboxInfo.DocNumber,
+                                'cashbox-indicator-fail' : !cashboxInfo.DocNumber}">
+                    {{'№ след. чека: ' + cashboxInfo.DocNumber}}</span>
+            </div>
+            <div class="cashbox-group-info">
+
+                <span class="cashbox-indicator"
+                      ng-class = "{'cashbox-indicator-ok': cashboxInfo.ReportNumber,
+                                'cashbox-indicator-fail' : !cashboxInfo.ReportNumber}">
+                    {{'№ след. сменного отчета: ' + cashboxInfo.ReportNumber}}</span>
+
+                <span class="cashbox-indicator"
+                      ng-class = "{'cashbox-indicator-ok': cashboxInfo.FirstDocNumber,
+                                'cashbox-indicator-fail' : !cashboxInfo.FirstDocNumber}">
+                  {{'№ 1-го док-та за смену: ' + cashboxInfo.FirstDocNumber}}</span>
+<!--            </div>-->
+<!--            <div class="cashbox-group-info">-->
+                <span class="cashbox-indicator"
+                      ng-class = "{'cashbox-indicator-ok': cashboxInfo.OldestDocumentAge,
+                                'cashbox-indicator-fail' : !cashboxInfo.OldestDocumentAge}">
+                {{'Возраст самого старого документа в сутках: ' + cashboxInfo.OldestDocumentAge}}</span>
+            </div>
+            <div class="cashbox-group-info">
+
+                 <span class="cashbox-indicator cashbox-indicator-small"
+                      ng-class = "{'cashbox-indicator-ok': cashboxInfo.RegisterId,
+                                'cashbox-indicator-fail' : !cashboxInfo.RegisterId}">
+                   {{'Рег. номер ПК:' + cashboxInfo.RegisterId}}
+                 </span>
+                <span class="cashbox-indicator cashbox-indicator-small"
+                      ng-class = "{'cashbox-indicator-ok': cashboxInfo.Model,
+                                'cashbox-indicator-fail' : !cashboxInfo.Model}">
+                       {{'Модель и версия СКО:' + cashboxInfo.Model}}</span>
+                <!--            <span class="cashbox-indicator">{{cashboxInfo.CashInAll}}</span>-->
+
+<!--            </div>-->
+<!--            <div class="cashbox-group-info">-->
+                <span class="cashbox-indicator cashbox-indicator-small"
+                                      ng-class = "{'cashbox-indicator-ok': cashboxInfo.Serial,
+                                'cashbox-indicator-fail' : !cashboxInfo.Serial}">
+                     {{'S/N СКО:' + cashboxInfo.Serial}}
+                 </span>
+                <span class="cashbox-indicator cashbox-indicator-small"
+                  ng-class = "{'cashbox-indicator-ok': cashboxInfo.Version,
+                                'cashbox-indicator-fail' : !cashboxInfo.Version}">
+                      {{'Версия программной кассы:' + cashboxInfo.Version}}</span>
+                <!--            <span class="cashbox-indicator">{{cashboxInfo.CashInAll}}</span>-->
+            </div>
+            <div class="cashbox-group-info">
+                <span class="cashbox-indicator cashbox-indicator-small"
+                  ng-class = "{'cashbox-indicator-ok': cashboxInfo.OrganizationName,
+                                'cashbox-indicator-fail' : !cashboxInfo.OrganizationName}">
+                        {{'Предприятие:' + cashboxInfo.OrganizationName}}</span>
+                <span class="cashbox-indicator cashbox-indicator-small"
+                      ng-class = "{'cashbox-indicator-ok': cashboxInfo.UNP,
+                                'cashbox-indicator-fail' : !cashboxInfo.UNP}">
+                {{'УНП:' + cashboxInfo.UNP}}</span>
+                <span class="cashbox-indicator cashbox-indicator-small"
+                      ng-class = "{'cashbox-indicator-ok': cashboxInfo.RevocationServiceStatus,
+                                'cashbox-indicator-fail' : !cashboxInfo.RevocationServiceStatus}">
+                      {{'Статус СОС: ' + cashboxInfo.RevocationServiceStatus}}
+                </span>
+            </div>
+            <div class="cashbox-group-info">
+
+                <span class="cashbox-indicator cashbox-indicator-small"
+                      ng-class = "{'cashbox-indicator-ok': cashboxInfo.CertExpDate,
+                                'cashbox-indicator-fail' : !cashboxInfo.CertExpDate}">
+                      {{'Срок действия сертификата: ' + cashboxInfo.CertExpDate}}</span>
+
+                <span class="cashbox-indicator cashbox-indicator-small"
+                      ng-class = "{'cashbox-indicator-ok': cashboxInfo.DocumentsSenderStatus,
+                                'cashbox-indicator-fail' : !cashboxInfo.DocumentsSenderStatus}">
+                      {{'Статус отправки документов: ' + cashboxInfo.DocumentsSenderStatus}}</span>
+
+                <span class="cashbox-indicator cashbox-indicator-small"
+                      ng-class = "{'cashbox-indicator-ok': cashboxInfo.ElCheckDefaultUrl,
+                                'cashbox-indicator-fail' : !cashboxInfo.ElCheckDefaultUrl}">
+                      {{'Адрес загрузки эл. чеков: ' + cashboxInfo.ElCheckDefaultUrl}}</span>
+
+                <span class="cashbox-indicator cashbox-indicator-small"
+                      ng-class = "{'cashbox-indicator-ok': cashboxInfo.Mark,
+                                'cashbox-indicator-fail' : !cashboxInfo.Mark}">
+                   Маркированные товары</span>
+            </div>
+        </div>
+        <div style="width: 50%; font-weight: 600;">
+            <div class="cashbox-group-btn">
+                <button class=" cashbox-btn" ng-click="openCashbox()">Откр. сеанс</button>
+                <button class=" cashbox-btn" ng-click="closeCashbox()">Закр. сеанс</button>
+                <button class=" cashbox-btn">Пров. серт.</button>
+                <button class=" cashbox-btn" ng-click="cashboxUpdate()">Статус</button>
+            </div>
+            <div class="cashbox-group-btn">
+                <button class=" cashbox-btn">Откр. смену</button>
+                <button class=" cashbox-btn">Закр. смену</button>
+                <button class=" cashbox-btn">Сброс ключа</button>
+                <button class=" cashbox-btn">Пров. принтера</button>
+            </div>
+            <div class="cashbox-group-btn">
+                <button class=" cashbox-btn">Х-отчет</button>
+                <button class=" cashbox-btn">Копия Z отчета</button>
+                <button class=" cashbox-btn">Контр. лента</button>
+                <button class=" cashbox-btn">Копия последн.</button>
+            </div>
+            <div class="cashbox-group-btn">
+                <button class=" cashbox-btn">Виды оплат</button>
+                <button class=" cashbox-btn" ng-click="openQuantityChangerModal('moneyOrder')">Внесение</button>
+                <button class=" cashbox-btn" ng-click="openQuantityChangerModal('issuingCash')">Изъятие</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!--<coming-modal modal-config="modalConfig"></coming-modal>-->
+<!--<selling-modal modal-config="sellingModalConfig"></selling-modal>-->
+<!--<moving-modal modal-config="movingModalConfig"></moving-modal>-->

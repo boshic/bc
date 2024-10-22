@@ -1,4 +1,5 @@
-let commonPaneCtrlr = ($s, itemFactory, filterFactory, paneFactory, printFactory, modalFactory, paneConfig) => {
+let commonPaneCtrlr = ($s, itemFactory, filterFactory, paneFactory, printFactory,
+                       modalFactory, paneConfig) => {
 
     let config = paneFactory[paneConfig];
     let httpService = paneFactory.getHttpService();
@@ -6,7 +7,9 @@ let commonPaneCtrlr = ($s, itemFactory, filterFactory, paneFactory, printFactory
     $s.reports = [];
     $s.filter = {visible: false, allowAllStocks: true};
 
-    paneFactory.setPaneDefaults($s, {config, filterFactory});
+    paneFactory.setPaneDefaults($s, {config, factories: {
+        itemFactory, filterFactory, printFactory, modalFactory
+      }});
 
     $s.sellingModalConfig = {hidden : true, row: {}};
     $s.textEditModalData = {hidden : true, row: {}};
@@ -78,8 +81,7 @@ let commonPaneCtrlr = ($s, itemFactory, filterFactory, paneFactory, printFactory
 
     $s.$on("tabSelected", (event, data) => {
         if (data.event != null && paneFactory.paneToggler(data.pane) === config.paneId) {
-            // $s.user = paneFactory.user;
-            $s.focusOnEanInput();
+            (paneFactory.isItFunction(config.tabSelected)) ? config.tabSelected($s) : $s.focusOnEanInput();
         }
     });
 

@@ -82,6 +82,8 @@ public class EntityHandlerImpl implements EntityHandler {
     static final String AUTO_MOVING_MAKER = "Автоперемещение";
     static final String CHECK_COMING_INVALID_DOC = FAILED +
             "Приход с указанным товаром, ценой и документом уже содержится! ";
+    static final String CHECK_COMING_INVALID_DOC_SUPPL = FAILED +
+        "Приход с указанным документом уже содержится (ошибочный поставщик)! ";
     static final String ITEM_IS_COMPOSITE_ERROR= FAILED +
             "Для компонентных товаров приход создать нельзя! ";
     static final String TRY_TO_CHANGE_SOLD_COMING_ERROR= FAILED +

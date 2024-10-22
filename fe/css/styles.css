@@ -1814,7 +1814,7 @@ button.add-comment-in-filter-btn {
 }
 
 .item-name-on-qty-changer-modal {
-    font-size: var(--common-font-size);
+    font-size: 35px;
     background: var(--main-color);
     color: var(--white-color);
     text-align: center;
@@ -2175,3 +2175,63 @@ div.stock-dest-on-moving-modal {
     font-size: 18px;
     color: var(--white-color);
 }
+
+button.cashbox-btn {
+    vertical-align: middle;
+    width: 23%;
+    border: 4px solid var(--main-color);
+    background: var(--white-color);
+    font-size: 22px;
+    margin: 2px;
+    border-radius: 6px;
+    height: 83px;
+}
+
+button.cashbox-btn:hover {
+    background-color: var(--main-color);
+    color: var(--white-color);
+}
+
+/* Create an active/current tablink class */
+button.cashbox-btn:active {
+    background-color: var(--white-color);
+}
+
+span.cashbox-warning {
+    font-size: 30px;
+    background: var(--main-color);
+    color: var(--white-color);
+}
+
+span.cashbox-indicator {
+    border: 4px solid var(--white-color);
+    background: var(--white-color);
+    font-size: 18px;
+    margin: 2px;
+    color: coral;
+    font-weight: 600;
+    border-radius: 6px;
+}
+
+span.cashbox-indicator-small {
+    font-size: 12px;
+}
+
+span.cashbox-indicator-ok {
+    color: coral;
+}
+
+span.cashbox-indicator-fail {
+    color: var(--gray-color);
+}
+
+div.cashbox-group-btn {
+    padding: 3px;
+    text-align: center;
+}
+
+div.cashbox-group-info {
+    padding: 1px;
+    display: flex;
+}
+

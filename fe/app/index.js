@@ -18,10 +18,12 @@ import './factories/http-service';
 import './factories/user-service';
 import './factories/buyer-factory';
 import './factories/pane-factory';
+import './factories/cashbox-factory';
 
 // 'selling-pane',
     angular.module('barcode', [
-    'common-http-service', 'user-service', 'pane-factory', 'buyer-factory',
+    'common-http-service', 'user-service', 'pane-factory',
+    'buyer-factory', 'cashbox-factory',
     'inputs', 'modals', 'common-filter',
     'pane-elements', 'text-utils', 'print-menu',
      'coming-item',

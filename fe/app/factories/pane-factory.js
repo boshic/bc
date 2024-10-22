@@ -6,6 +6,7 @@ import { filter, tap, map, debounceTime, distinctUntilChanged, switchMap } from 
 
 import newComingDocConfig from '../modules/coming/new-coming-doc-config';
 import comingPaneConfig from '../modules/coming/coming-pane-config';
+import cashboxPaneConfig from '../modules/cashbox/cashbox-pane-config';
 import movingPaneConfig from '../modules/moving/moving-pane-config';
 import sellingPaneConfig from '../modules/selling/selling-pane-config';
 import soldPaneConfig from '../modules/selling/sold-pane-config';
@@ -28,7 +29,7 @@ import invoicesPaneConfig from '../modules/selling/invoices-pane-config';
                 let successSound =  new Audio(snd);
                 let failSound =  new Audio(failSnd);
 
-                let fractionalUnits = ['кг', 'л', 'м', 'км', 'ч', 'м2', 'шт_', 'т'];
+                let fractionalUnits = ['кг', 'л', 'м', 'км', 'ч', 'м2', 'шт_', 'т', 'BYN'];
                 let user = angular.extend({}, userInfo);
 
                 let generateEan = (ean) => {
@@ -283,6 +284,7 @@ import invoicesPaneConfig from '../modules/selling/invoices-pane-config';
                     getSearchTermsForGetItemsByFilter,
                     invoicesPaneConfig,
                     comingPaneConfig,
+                    cashboxPaneConfig,
                     newComingDocConfig,
                     sellingPaneConfig,
                     movingPaneConfig,
@@ -300,6 +302,15 @@ import invoicesPaneConfig from '../modules/selling/invoices-pane-config';
                         $s.comment = '';
                         $s.warning = '';
                         $s.user = user;
+
+                        for (let prop in params.factories) {
+                          if (prop === params.config.defaultFactoryName) {
+                            params.config.factory = params.factories[prop];
+                            if (isItFunction(params.config.factory[params.config.initMethod]))
+                              params.config.factory[params.config.initMethod]($s);
+                          }
+                        }
+
                         $s.searchInputId = generateUuid();
                         $s.quantityChangerModalData = { hidden : true, row: {} };
                         $s.requestParams = {requestsQuantity: 0};
@@ -307,7 +318,7 @@ import invoicesPaneConfig from '../modules/selling/invoices-pane-config';
                             keyUpHandler(e, params.config.getKeyupCombinations($s, keyCodes));
                         };
                         $s.resetFilter = () => {
-                            params.config.resetFilter(params.filterFactory, $s.filter);
+                            params.config.resetFilter(params.factories.filterFactory, $s.filter);
                         };
                         $s.filterByItem = (row) => {
                           $s.filter.item = row.item;

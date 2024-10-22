@@ -15,18 +15,18 @@ import '../../../filters/num-2-phrase';
 
 import '../../../../css/packingList.css';
 
-(function() {
-
-  // Get Angular's $http module.
-  var initInjector = angular.injector(['ng']);
-  var $http = initInjector.get('$http');
-
-  // Get user info.
-  $http.get('/getUser').then(
-    function(success) {
-      angular.module('userInfo', []).constant('userInfo', success.data);
-    });
-})();
+// (function() {
+//
+//   // Get Angular's $http module.
+//   var initInjector = angular.injector(['ng']);
+//   var $http = initInjector.get('$http');
+//
+//   // Get user info.
+//   $http.get('/getUser').then(
+//     function(success) {
+//       angular.module('userInfo', []).constant('userInfo', success.data);
+//     });
+// })();
 
 let tnComment = "Товар не входит в Перечень 1 ПСМ No713 от 19.10.22";
 let accompDocs = "товарная накладная № _______ серия ____";

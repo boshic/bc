@@ -3,18 +3,26 @@ package barcode.controllers;
 import barcode.dao.entities.ComingItem;
 import barcode.dao.services.ItemHandler;
 import barcode.dto.ResponseItem;
+import barcode.tools.xml.XmlCreator;
+import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
+import sun.misc.IOUtils;
 
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
+import javax.servlet.http.HttpServletResponse;
+import java.io.*;
+import java.nio.file.Files;
 import java.util.List;
 import java.util.Set;
+
+import static com.google.common.io.ByteStreams.toByteArray;
 
 @Controller
 @RequestMapping(path="/tools")
@@ -70,6 +78,21 @@ public class ToolsController {
 ////        }
 //        return ExcelParser.parse(fileName);
 //    }
+
+//    @RequestMapping(value = "/getXml", method = RequestMethod.GET)
+//    @ResponseBody public FileSystemResource getXmlFile(HttpServletResponse response) {
+//        response.setContentType("application/xml");
+//        response.setHeader("Content-disposition",
+//            "attachment; filename=" +
+//                "/home/pab/_temp_/example.xml" );
+//        return new FileSystemResource(new File("/home/pab/_temp_/example.xml")); //Or path to your file
+//    }
+//    @GetMapping("/home")
+//    public String redirectHome() throws Exception{
+//        XmlCreator.create();
+//        return "home";
+//    }
+
 
 //    @GetMapping(path="/uplhtml")
 //    public @ResponseBody List<String> uplhtml(@RequestParam String fileName) {
